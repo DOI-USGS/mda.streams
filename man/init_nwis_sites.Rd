@@ -15,6 +15,8 @@ a character vector of NWIS sites, appended with 'nwis_'
 finds all NWIS sites that meet given data requirements
 }
 \examples{
-init_nwis_sites(p_codes)
+\dontrun{
+init_nwis_sites(p_codes = c('00010', '00060', '00095', '00300'))
+}
 }
 
