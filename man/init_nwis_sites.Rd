@@ -15,6 +15,6 @@ a character vector of NWIS sites, appended with 'nwis_'
 finds all NWIS sites that meet given data requirements
 }
 \examples{
-gen_nwis_sites(p_codes)
+init_nwis_sites(p_codes)
 }
 

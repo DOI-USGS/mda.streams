@@ -5,7 +5,7 @@
 #'@return a character vector of NWIS sites, appended with 'nwis_'
 #'
 #'@examples
-#'gen_nwis_sites(p_codes)
+#'init_nwis_sites(p_codes)
 #'@import powstreams dataRetrieval
 #'@export
 init_nwis_sites <- function(p_codes){
