@@ -7,8 +7,13 @@ create_site(site, session)
 }
 \arguments{
 \item{site}{Local site ID (e.g. NWIS_09238475)}
+
+\item{session}{Session object from \link{authenticate_sb}}
 }
 \description{
 Create new site in SB
+}
+\author{
+Corinna Gries
 }
 

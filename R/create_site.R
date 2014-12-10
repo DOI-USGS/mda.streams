@@ -3,9 +3,9 @@
 #'
 #'
 #'@param site Local site ID (e.g. NWIS_09238475)
+#'@param session Session object from \link{authenticate_sb}
 #'
-#'
-#'
+#'@author Corinna Gries
 #'
 #'
 #'@import sbtools
