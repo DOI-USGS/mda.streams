@@ -8,7 +8,7 @@
 #'\dontrun{
 #'init_nwis_sites(p_codes = c('00010', '00060', '00095', '00300'))
 #'}
-#'@import powstreams dataRetrieval
+#'@import dataRetrieval
 #'@export
 init_nwis_sites <- function(p_codes){
   
