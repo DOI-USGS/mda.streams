@@ -20,7 +20,7 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   
   site <- split_site(site)
   
-  nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
+  nwis_data <- dataRetrieval::readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
   
   if (is.na(nwis_data[1])[1]){
     # bad pcode or site or no data
