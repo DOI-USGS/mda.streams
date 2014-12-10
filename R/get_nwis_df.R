@@ -18,6 +18,8 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   
   #if nwis_site, split and use "site"
   
+  site <- split_site(site)
+  
   nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
   
   if (is.na(nwis_data[1])[1]){
@@ -33,4 +35,10 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
     return(nwis_df)
   }
   
+}
+split_site <- function(site){
+  
+  site <- tail(strsplit(x = site, split = '_')[[1]], 1)
+  
+  return(site)
 }
