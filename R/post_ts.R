@@ -23,7 +23,7 @@ post_ts = function(site, data, variable, session){
 	
 	fpath = tempfile(fileext = '.tsv')
 	
-	write.table(data, fpath, sep='\t', row.names=FALSE)
+	write.table(data, fpath, sep='\t', row.names=FALSE, quote = FALSE)
 	
 	
 	#Check if item already exists
