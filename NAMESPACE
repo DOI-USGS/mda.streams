@@ -3,6 +3,7 @@
 export(create_site)
 export(get_nwis_df)
 export(get_sites)
+export(get_watershed_WFS)
 export(init_nwis_sites)
 export(post_ts)
 import(dataRetrieval)
