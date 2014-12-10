@@ -3,4 +3,3 @@
 export(get_ids)
 export(init_nwis_sites)
 import(dataRetrieval)
-import(powstreams)
