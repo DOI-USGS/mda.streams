@@ -3,5 +3,6 @@
 export(get_sites)
 export(init_nwis_sites)
 export(post_ts)
+export(post_watershed)
 import(dataRetrieval)
 import(sbtools)
