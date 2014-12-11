@@ -46,12 +46,14 @@ post_ts = function(site, data, variable, session){
 	ts_item = item_create(parent_id=site_root$id, 
 												title=ts_varname, session=session)
 	
+  #attach file to item
+  item_append_file(ts_item, filename=fpath, session=session)
+  
 	#tag item with our special identifier
 	item_update_identifier(ts_item, scheme='mda_streams', type=ts_varname, 
 												 key=site, session=session)
 	
-	#attach file to item
-	item_append_file(ts_item, filename=fpath, session=session)
+	
 	
 	return(ts_item)
 }
