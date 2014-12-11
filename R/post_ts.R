@@ -4,7 +4,7 @@
 #'
 #'@param site Unique site ID
 #'@param data A data.frame containing the timeseries
-#'@param variable Timeseries identifiying string eg [ts_stage, ts_doobs, ts_wtr, etc]
+#'@param variable Timeseries identifiying string variable eg [stage, doobs, wtr, etc]
 #'@param session Session object from \link{authenticate_sb}
 #'
 #'@author Luke Winslow, Corinna Gries
@@ -16,6 +16,7 @@
 post_ts = function(site, data, variable, session){
 	
 	
+  ts_varname <- paste('ts', variable, sep = '_')
 	#check input
 	## TODO: check input and format of DATA
 	
@@ -27,7 +28,7 @@ post_ts = function(site, data, variable, session){
 	
 	
 	#Check if item already exists
-	item = query_item_identifier(scheme='mda_streams',type=variable, 
+	item = query_item_identifier(scheme='mda_streams',type=ts_varname, 
 															 key=site, session=session)
 	
 	if(nrow(item) > 0){
@@ -43,10 +44,10 @@ post_ts = function(site, data, variable, session){
 	
 	#Create item if it does not exist
 	ts_item = item_create(parent_id=site_root$id, 
-												title=variable, session=session)
+												title=ts_varname, session=session)
 	
 	#tag item with our special identifier
-	item_update_identifier(ts_item, scheme='mda_streams', type=variable, 
+	item_update_identifier(ts_item, scheme='mda_streams', type=ts_varname, 
 												 key=site, session=session)
 	
 	#attach file to item
