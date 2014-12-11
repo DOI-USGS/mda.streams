@@ -15,8 +15,7 @@ install:
   ps: Bootstrap
 
 build_script:
-  - travis-tool.sh install_github USGS-R/powstreams
-  - travis-tool.sh install_github USGS-R/sbtools
+  - travis-tool.sh install_github USGS-R/powstreams USGS-R/sbtools USGS-R/dataRetrieval
   - travis-tool.sh install_deps
 
 test_script:
