@@ -28,7 +28,7 @@ post_ts = function(site, data, variable, session){
 	
 	
 	#Check if item already exists
-  if(!item_exists(scheme='mda_streams',type=ts_varname, 
+  if(item_exists(scheme='mda_streams',type=ts_varname, 
 															 key=site, session=session)){
     stop('This Timeseries for this site already exists')
   }
