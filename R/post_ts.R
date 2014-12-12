@@ -22,18 +22,18 @@ post_ts = function(site, data, variable, session){
 	
 	#save data as a file
 	
-	fpath = tempfile(fileext = '.tsv')
+	fpath = tempfile(fileext = '.tsv.gz')
 	
-	write.table(data, fpath, sep='\t', row.names=FALSE, quote = FALSE)
-	
+  gz1 <- gzfile(fpath, "w")
+	write.table(data,  gz1, sep='\t', row.names=FALSE, quote = FALSE)
+  close(gz1)
 	
 	#Check if item already exists
-	item = query_item_identifier(scheme='mda_streams',type=ts_varname, 
-															 key=site, session=session)
-	
-	if(nrow(item) > 0){
-		stop('This Timeseries for this site already exists')
-	}	
+  if(item_exists(scheme='mda_streams',type=ts_varname, 
+															 key=site, session=session)){
+    stop('This Timeseries for this site already exists')
+  }
+
 	
 	#find site root
 	site_root = query_item_identifier(scheme='mda_streams', 
