@@ -10,7 +10,7 @@ post_ts(site, data, variable, session)
 
 \item{data}{A data.frame containing the timeseries}
 
-\item{variable}{Timeseries identifiying string eg [ts_stage, ts_doobs, ts_wtr, etc]}
+\item{variable}{Timeseries identifiying string variable eg [stage, doobs, wtr, etc]}
 
 \item{session}{Session object from \link{authenticate_sb}}
 }
