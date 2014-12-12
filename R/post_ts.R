@@ -22,10 +22,11 @@ post_ts = function(site, data, variable, session){
 	
 	#save data as a file
 	
-	fpath = tempfile(fileext = '.tsv')
+	fpath = tempfile(fileext = '.tsv.gz')
 	
-	write.table(data, fpath, sep='\t', row.names=FALSE, quote = FALSE)
-	
+  gz1 <- gzfile(fpath, "w")
+	write.table(data,  gz1, sep='\t', row.names=FALSE, quote = FALSE)
+  close(gz1)
 	
 	#Check if item already exists
   if(item_exists(scheme='mda_streams',type=ts_varname, 
