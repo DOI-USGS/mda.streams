@@ -28,12 +28,11 @@ post_ts = function(site, data, variable, session){
 	
 	
 	#Check if item already exists
-	item = query_item_identifier(scheme='mda_streams',type=ts_varname, 
-															 key=site, session=session)
-	
-	if(nrow(item) > 0){
-		stop('This Timeseries for this site already exists')
-	}	
+  if(!item_exists(scheme='mda_streams',type=ts_varname, 
+															 key=site, session=session)){
+    stop('This Timeseries for this site already exists')
+  }
+
 	
 	#find site root
 	site_root = query_item_identifier(scheme='mda_streams', 
