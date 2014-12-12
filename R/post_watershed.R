@@ -37,6 +37,8 @@ post_watershed = function(site, files, session){
 	item_update_identifier(ws_id, scheme='mda_streams', type='watershed',
 												 key=site, session=session)
 	
+	item_update(ws_id, list('title'=unbox('watershed')), session)
+	
 	return(ws_id)
 	
 }
