@@ -94,7 +94,7 @@ init_nwis_sites <- function(p_codes){
   }
   
   getParamStartEndUV <- function(site.id,param){
-    data.avail <- whatNWISdata(site.id,service = "uv")
+    data.avail <- dataRetrieval::whatNWISdata(site.id,service = "uv")
     param.start <- data.avail[data.avail$parm_cd==param,]$begin_date
     param.end <- data.avail[data.avail$parm_cd==param,]$end_date
     return(data.frame("start"=param.start,"end"=param.end))
