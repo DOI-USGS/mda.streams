@@ -1,9 +1,11 @@
 #'
 #'@title Post a new watershed shape to a site on SB
 #'
-#'@param site The unique site identifier
+#'@param site The unique site identifie?r
 #'@param files String vector of files that make up the shapefile
 #'@param session A SB session from \link{authenticate_sb}
+#'
+#'@return Returns SB id of newly created watershed item
 #'
 #'@author Luke Winslow
 #'
@@ -30,18 +32,11 @@ post_watershed = function(site, files, session){
 		stop('Site root not found or ambiguous, check site ID:', site)
 	}
 	
-	#Create item
-	ws_id = item_create(site_root$id, title='watershed', session=session)  
+	ws_id = item_upload_create(site_root$id, files=files, session=session)
+	
 	item_update_identifier(ws_id, scheme='mda_streams', type='watershed',
 												 key=site, session=session)
 	
-	#upload files
-	for(i in 1:length(files)){
-		item_append_file(ws_id, files[i], session=session)
-	}
-	
-	
-	#Turn into spatial service thingie (HOW??)
-	
+	return(ws_id)
 	
 }

@@ -6,11 +6,14 @@
 post_watershed(site, files, session)
 }
 \arguments{
-\item{site}{The unique site identifier}
+\item{site}{The unique site identifie?r}
 
 \item{files}{String vector of files that make up the shapefile}
 
 \item{session}{A SB session from \link{authenticate_sb}}
+}
+\value{
+Returns SB id of newly created watershed item
 }
 \description{
 
