@@ -5,6 +5,8 @@
 #'@param destination string for a folder location
 #'@param session a valid sciencebase session (see \code{\link[sbtools]{authenticate_sb}}). 
 #'Set \code{session = NULL} (default) for sites on sciencebase that are public.
+#'@param ... additional arguments passed to \code{\link[sbtools]{item_file_download}}, 
+#'for example \code{overwrite_file}
 #'@return file handle for downloaded file
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
 #'@examples
@@ -13,7 +15,7 @@
 #'}
 #'@import sbtools R.utils tools
 #'@export
-download_ts=function(site, variable, destination = NULL, session = NULL){
+download_ts=function(site, variable, destination = NULL, session = NULL, ...){
   
   ts_variable <- make_ts_variable(variable)
   
@@ -40,7 +42,7 @@ download_ts=function(site, variable, destination = NULL, session = NULL){
   #set the intermediate (staging) destination for downloaded gzip file
   if (isGzipped(file_list$url)){
     stage_file <- tempfile(fileext = paste0(get_ts_extension(), '.gz'))
-    stage_file = item_file_download(item$id, file_list$fname, stage_file)
+    stage_file = item_file_download(item$id, file_list$fname, stage_file, ...)
     out_destination = gunzip(stage_file, destname = destination,
                              temporary = FALSE, skip = FALSE, overwrite = FALSE, remove = TRUE, BFR.SIZE = 1e+07)
   } else {

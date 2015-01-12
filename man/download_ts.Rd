@@ -4,7 +4,7 @@
 \alias{download_ts}
 \title{download timeseries data to local file destination}
 \usage{
-download_ts(site, variable, destination = NULL, session = NULL)
+download_ts(site, variable, destination = NULL, session = NULL, ...)
 }
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites})}
@@ -15,6 +15,9 @@ download_ts(site, variable, destination = NULL, session = NULL)
 
 \item{session}{a valid sciencebase session (see \code{\link[sbtools]{authenticate_sb}}).
 Set \code{session = NULL} (default) for sites on sciencebase that are public.}
+
+\item{...}{additional arguments passed to \code{\link[sbtools]{item_file_download}},
+for example \code{overwrite_file}}
 }
 \value{
 file handle for downloaded file

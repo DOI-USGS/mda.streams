@@ -1,6 +1,7 @@
 #'@title read ts format (timeseries) for mda.streams into data.frame
 #'@param file_handle a valid ts file handle
 #'@return a timeseries data.frame
+#'@author Jordan S. Read
 #'@examples
 #'\dontrun{
 #'file_handle <- download_ts(site = 'nwis_01018035', variable = 'doobs')

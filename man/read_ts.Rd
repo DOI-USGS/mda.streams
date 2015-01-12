@@ -21,4 +21,7 @@ file_handle <- download_ts(site = 'nwis_01018035', variable = 'doobs')
 dissolved_oxygen <- read_ts(file_handle)
 }
 }
+\author{
+Jordan S. Read
+}
 
