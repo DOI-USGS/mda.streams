@@ -13,7 +13,7 @@ get_ts_variables(site = NULL, session = NULL)
 Set \code{session = NULL} (default) for sites on sciencebase that are public.}
 }
 \value{
-a character vector of unique timeseries variable names for given sites
+an alphabetically sorted character vector of unique timeseries variable names for given sites
 }
 \description{
 get a vector of timeseries variable name from a site or sites

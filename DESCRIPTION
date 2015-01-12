@@ -16,7 +16,8 @@ Depends:
     R (>= 3.0)
 Imports:
     dataRetrieval,
-    stringr,
-    sbtools
+    sbtools,
+    R.utils,
+    stringr
 LazyLoad: yes
 LazyData: yes
