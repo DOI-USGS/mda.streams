@@ -12,7 +12,7 @@
 #'@export
 get_ts_variables = function(site = NULL, session = NULL){
   
-  ts_pattern = 'ts_'
+  ts_pattern = get_ts_prefix()
   
   ts_variables <- NULL
   

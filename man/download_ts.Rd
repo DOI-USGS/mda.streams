@@ -9,7 +9,7 @@ download_ts(site, variable, destination = NULL, session = NULL)
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites})}
 
-\item{variable}{a valid variable name for timeseries data}
+\item{variable}{a valid variable name for timeseries data (see \link{get_ts_variables})}
 
 \item{destination}{string for a folder location}
 
@@ -26,5 +26,8 @@ download a timeseries file to a user-specified (or temp file) location
 \dontrun{
 download_ts(site = 'nwis_01018035', variable = 'doobs')
 }
+}
+\author{
+Corinna Gries, Jordan S Read, Luke A Winslow
 }
 
