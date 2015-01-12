@@ -12,7 +12,7 @@
 #'@export
 get_ts_variables = function(site = NULL, session = NULL){
   
-  ts_pattern = 'ts_'
+  ts_pattern = get_ts_prefix()
   
   ts_variables <- NULL
   
@@ -22,6 +22,9 @@ get_ts_variables = function(site = NULL, session = NULL){
   } else {
     site_items <- query_item_identifier(scheme = 'mda_streams', key = site, session, limit = 10000)
     
+    if (nrow(site_items) == 0){ 
+      stop(site, ' does not exist')
+    }
     var_names <- site_items$title
     is_ts <- str_detect(var_names, pattern = ts_pattern)
     

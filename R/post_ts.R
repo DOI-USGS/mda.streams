@@ -16,16 +16,16 @@
 post_ts = function(site, data, variable, session){
 	
 	
-  ts_varname <- paste('ts', variable, sep = '_')
+  ts_varname <- make_ts_variable(variable)
 	#check input
 	## TODO: check input and format of DATA
 	
 	#save data as a file
 	
-	fpath = tempfile(fileext = '.tsv.gz')
+	fpath = tempfile(fileext = paste0('.',get_ts_extension(), '.gz'))
 	
   gz1 <- gzfile(fpath, "w")
-	write.table(data,  gz1, sep='\t', row.names=FALSE, quote = FALSE)
+	write.table(data,  gz1, sep=get_ts_delim(), row.names=FALSE, quote = FALSE)
   close(gz1)
 	
 	#Check if item already exists

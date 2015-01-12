@@ -19,5 +19,7 @@ Imports:
     sbtools,
     R.utils,
     stringr
+Suggests:
+    testthat
 LazyLoad: yes
 LazyData: yes
