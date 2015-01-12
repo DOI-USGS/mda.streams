@@ -34,7 +34,7 @@ download_ts=function(site, variable, destination = NULL, session = NULL){
   }
   
   if(is.null(destination)){
-    destination  = file.path(tempdir(), paste0(paste(site, ts_variable, sep = "_" ), get_ts_extension()))
+    destination  = file.path(tempdir(), paste0(paste(site, ts_variable, sep = "_" ), '.', get_ts_extension()))
   }
 
   #set the intermediate (staging) destination for downloaded gzip file
