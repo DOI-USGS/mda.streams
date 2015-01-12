@@ -10,7 +10,7 @@ get_ts_prefix <- function(){
 }
 
 get_ts_extension <- function(){
-  ts_extension = '.tsv'
+  ts_extension = 'tsv'
   return(ts_extension)
 }
 
