@@ -22,7 +22,7 @@ post_ts = function(site, data, variable, session){
 	
 	#save data as a file
 	
-	fpath = tempfile(fileext = paste0(get_ts_extension, '.gz'))
+	fpath = tempfile(fileext = paste0('.',get_ts_extension(), '.gz'))
 	
   gz1 <- gzfile(fpath, "w")
 	write.table(data,  gz1, sep=get_ts_delim(), row.names=FALSE, quote = FALSE)
