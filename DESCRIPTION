@@ -18,7 +18,8 @@ Imports:
     dataRetrieval,
     sbtools,
     R.utils,
-    stringr
+    stringr,
+    jsonlite
 Suggests:
     testthat
 LazyLoad: yes
