@@ -4,10 +4,10 @@
 \alias{post_nwis_ts}
 \title{post timeseries data for all sites for a given variable}
 \usage{
-post_nwis_ts(variable, p_code, session, startDate = "2008-01-01")
+post_nwis_ts(variable_name, p_code, session, startDate = "2008-01-01")
 }
 \arguments{
-\item{variable}{shortname for the variable}
+\item{variable_name}{shortname for the variable}
 
 \item{p_code}{a string for a valid NWIS parameter code}
 
@@ -21,7 +21,7 @@ Will create new item or skip if it already exists
 }
 \examples{
 \dontrun{
-post_nwis_ts(variable = 'wtr', p_code='00010', session, startDate = '2008-01-01')
+post_nwis_ts(variable_name = 'wtr', p_code='00010', session, startDate = '2008-01-01')
 }
 }
 \seealso{
