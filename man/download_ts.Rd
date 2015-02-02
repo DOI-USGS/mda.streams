@@ -27,7 +27,7 @@ download a timeseries file to a user-specified (or temp file) location
 }
 \examples{
 \dontrun{
-download_ts(site = 'nwis_01018035', variable = 'doobs')
+download_ts(site = 'nwis_06893300', variable = 'doobs')
 }
 }
 \author{
