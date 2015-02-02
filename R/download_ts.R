@@ -42,11 +42,11 @@ download_ts=function(site, variable, destination = NULL, session = NULL, ...){
   #set the intermediate (staging) destination for downloaded gzip file
   if (isGzipped(file_list$url)){
     stage_file <- tempfile(fileext = paste0(get_ts_extension(), '.gz'))
-    stage_file = item_file_download(item$id, file_list$fname, stage_file, ...)
+    stage_file = item_file_download(id = item$id, name = file_list$fname, stage_file, ...)
     out_destination = gunzip(stage_file, destname = destination,
                              temporary = FALSE, skip = FALSE, overwrite = FALSE, remove = TRUE, BFR.SIZE = 1e+07)
   } else {
-    out_destination = item_file_download(item$id, file_list$fname, destination)
+    out_destination = item_file_download(id = item$id, names = file_list$fname, destinations = destination, ...)
     
   }
   
