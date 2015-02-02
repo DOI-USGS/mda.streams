@@ -16,8 +16,9 @@
 #'@export
 post_nwis_ts = function(variable, p_code, session, startDate = '2008-01-01'){
   sites <- get_sites()
-  
   type = make_ts_variable(variable)
+
+  
   for (i in 1:length(sites)){
     site <- sites[i]
     exists <- item_exists(scheme = 'mda_streams', type, key = site, session)
