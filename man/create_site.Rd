@@ -4,12 +4,14 @@
 \alias{create_site}
 \title{Create new site in SB}
 \usage{
-create_site(site, session)
+create_site(site, session, replace_existing = FALSE)
 }
 \arguments{
-\item{site}{Local site ID (e.g. NWIS_09238475)}
+\item{site}{Local site ID (e.g. nwis_09238475)}
 
 \item{session}{Session object from \link{authenticate_sb}}
+
+\item{skip_exists}{boolean for skip creation if item already exists.}
 }
 \description{
 Create new site in SB
