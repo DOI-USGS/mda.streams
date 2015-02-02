@@ -4,7 +4,7 @@
 #'
 #'@param site Unique site ID
 #'@param data A data.frame containing the timeseries
-#'@param variable Timeseries identifiying string variable eg [stage, doobs, wtr, etc]
+#'@param variable_name Timeseries identifiying string variable_name eg [stage, doobs, wtr, etc]
 #'@param session Session object from \link{authenticate_sb}
 #'
 #'@author Luke Winslow, Corinna Gries
@@ -13,10 +13,10 @@
 #'@import sbtools
 #'
 #'@export
-post_ts = function(site, data, variable, session){
+post_ts = function(site, data, variable_name, session){
 	
 	
-  ts_varname <- make_ts_variable(variable)
+  ts_varname <- make_ts_variable(variable_name)
 	#check input
 	## TODO: check input and format of DATA
 	

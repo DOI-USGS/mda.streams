@@ -4,14 +4,14 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(site, data, variable, session)
+post_ts(site, data, variable_name, session)
 }
 \arguments{
 \item{site}{Unique site ID}
 
 \item{data}{A data.frame containing the timeseries}
 
-\item{variable}{Timeseries identifiying string variable eg [stage, doobs, wtr, etc]}
+\item{variable_name}{Timeseries identifiying string variable_name eg [stage, doobs, wtr, etc]}
 
 \item{session}{Session object from \link{authenticate_sb}}
 }
