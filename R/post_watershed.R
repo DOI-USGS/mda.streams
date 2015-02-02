@@ -10,7 +10,6 @@
 #'@author Luke Winslow
 #'
 #'
-#'@import jsonlite
 #'@export
 post_watershed = function(site, files, session){
 	#parent as site, scheme, type=watershed, key = site, title=watershed

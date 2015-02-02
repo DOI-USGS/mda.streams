@@ -11,7 +11,7 @@
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
 #'@examples
 #'\dontrun{
-#'download_ts(site = 'nwis_01018035', variable = 'doobs')
+#'download_ts(site = 'nwis_06893300', variable = 'doobs')
 #'}
 #'@import sbtools R.utils tools
 #'@export
