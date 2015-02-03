@@ -18,7 +18,8 @@
 #'# get sites with water temperature
 #'get_sites(with_child_key = 'wtr')
 #'}
-#'@import jsonlite httr
+#'@import jsonlite 
+#'@import httr
 #'@export
 get_sites <- function(with_child_key = NULL, session = NULL, limit = 10000){
   

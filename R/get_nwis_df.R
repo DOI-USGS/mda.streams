@@ -38,6 +38,11 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   }
   
 }
+
+#'@title splot site name into siteID (used for NWIS site numbers)
+#'@param site a valid powstreams site (see \code{\link{get_sites}})
+#'@return a site identifier. Splits on "-"
+#'@export
 split_site <- function(site){
   
   site <- tail(strsplit(x = site, split = '_')[[1]], 1)
