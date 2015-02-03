@@ -14,7 +14,7 @@
 #'download_ts(site = 'nwis_06893300', variable = 'doobs')
 #'}
 #'@import sbtools 
-#'@import R.utils
+#'@importFrom R.utils gunzip 
 #'@import tools
 #'@export
 download_ts=function(site, variable, destination = NULL, session = NULL, ...){
