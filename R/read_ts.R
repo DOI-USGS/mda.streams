@@ -20,6 +20,6 @@ read_ts = function(file_handle){
   
   ts_delim <- get_ts_delim()
   df <- read.table(file_handle, header = TRUE, sep = ts_delim)
-  df[, 1] <- as.POSIXct(df[, 1])
+  df[, 1] <- as.POSIXct(df[, 1], tz = 'GMT')
   return(df)
 }
