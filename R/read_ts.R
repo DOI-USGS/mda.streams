@@ -4,7 +4,7 @@
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
-#'file_handle <- download_ts(site = 'nwis_01018035', variable = 'doobs')
+#'file_handle <- download_ts(site = 'nwis_01408500', variable = 'doobs')
 #'dissolved_oxygen <- read_ts(file_handle)
 #'}
 #'@import tools
@@ -20,5 +20,6 @@ read_ts = function(file_handle){
   
   ts_delim <- get_ts_delim()
   df <- read.table(file_handle, header = TRUE, sep = ts_delim)
+  df[, 1] <- as.POSIXct(df[, 1])
   return(df)
 }
