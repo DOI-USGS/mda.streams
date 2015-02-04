@@ -15,7 +15,6 @@
 #'}
 #'@import sbtools 
 #'@importFrom R.utils gunzip isGzipped
-#'NULL
 #'@import tools
 #'@export
 download_ts=function(site, variable, destination = NULL, session = NULL, ...){
