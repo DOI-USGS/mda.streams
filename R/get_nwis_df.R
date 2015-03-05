@@ -6,7 +6,7 @@
 #'@param p_code NWIS parameter code
 #'@param ... additional arguments passed to \code{\link{readNWISuv}}
 #'@return a data.frame of timeseries data from NWIS, or NULL if no data exist
-#'@import dataRetrieval
+#'@importFrom dataRetrieval readNWISuv
 #'
 #'@examples
 #'\dontrun{
@@ -22,7 +22,7 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   
   site <- split_site(site)
   
-  nwis_data <- dataRetrieval::readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
+  nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
   
   if (nrow(nwis_data) == 0){
     # no data
@@ -30,7 +30,7 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   } else {
     
     ts_name <- paste('ts', variable_name, sep = '_')
-    nwis_df <- data.frame('DateTime' = nwis_data$dateTime, 
+    nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd)
                           ts_name = as.numeric(nwis_data[, ncol(nwis_data)]))
     names(nwis_df) <- c('DateTime', ts_name)
     
