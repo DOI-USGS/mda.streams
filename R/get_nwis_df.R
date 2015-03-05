@@ -5,7 +5,7 @@
 #'@param variable_name short name of variable \code{\link{get_ts_variables}}
 #'@param p_code NWIS parameter code
 #'@param ... additional arguments passed to \code{\link{readNWISuv}}
-#'@return a data.frame of timeseries data from NWIS, or NULL if no data exist
+#'@return a data.frame of timeseries data from NWIS, or empty if no data exist
 #'@importFrom dataRetrieval readNWISuv
 #'
 #'@examples
@@ -24,18 +24,12 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   
   nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
   
-  if (nrow(nwis_data) == 0){
-    # no data
-    return(NULL)
-  } else {
-    
-    ts_name <- make_ts_variable(variable_name)
-    nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd),
-                          ts_name = as.numeric(nwis_data[, ncol(nwis_data)]))
-    names(nwis_df) <- c('DateTime', ts_name)
-    
-    return(nwis_df)
-  }
-  
+
+  ts_name <- make_ts_variable(variable_name)
+  nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd),
+                        ts_name = as.numeric(nwis_data[, ncol(nwis_data)]))
+  names(nwis_df) <- c('DateTime', ts_name)
+
+  return(nwis_df)
 }
 
