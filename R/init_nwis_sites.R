@@ -2,22 +2,24 @@
 #'@description finds all NWIS sites that meet given data requirements
 #'
 #'@param p_codes a character vector of NWIS p_codes
-#'@param stateCd character vector of state codes
+#'@param state_codes a character vector of state codes 
+#'(e.g., \code{c("WA","WI")}). Default is all, which will use all state 
+#'codes available to \code{\link{get_state()}}. Note this includes Puerto Rico and more.
 #'@return a character vector of NWIS sites, appended with 'nwis_'
 #'
 #'@examples
 #'@import dplyr
 #'@import dataRetrieval
 #'\dontrun{
-#'init_nwis_sites(p_codes = c('00095', '00060', '00010', '00300'), stateCd="wi")
+#'init_nwis_sites(p_codes = c('00095', '00060', '00010', '00300'), state_codes="wi")
 #'}
-#'@import dataRetrieval
+#'@importFrom dataRetrieval whatNWISdata
 #'@export
-init_nwis_sites <- function(p_codes, stateCd){
+init_nwis_sites <- function(p_codes, state_codes){
   
   # for loop of stateCd's
   
-  sitesAll <- dataRetrieval::readNWISdata(parameterCd=p_codes, stateCd=stateCd, 
+  sitesAll <- dataRetrieval::readNWISdata(parameterCd=p_codes, stateCd=state_codes, 
                                           outputDataTypeCd="iv", 
                                           seriesCatalogOutput="true",
                                           service = "site")
