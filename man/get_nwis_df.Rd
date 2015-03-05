@@ -16,7 +16,7 @@ get_nwis_df(site, variable_name, p_code, ...)
 \item{...}{additional arguments passed to \code{\link{readNWISuv}}}
 }
 \value{
-a data.frame of timeseries data from NWIS, or NULL if no data exist
+a data.frame of timeseries data from NWIS, or empty if no data exist
 }
 \description{
 get data from nwis and return as create data.frame
