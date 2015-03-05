@@ -9,7 +9,7 @@ create_site(site, session, replace_existing = FALSE)
 \arguments{
 \item{site}{Local site ID (e.g. nwis_09238475)}
 
-\item{session}{Session object from \link{authenticate_sb}}
+\item{session}{Session object from \code{\link[sbtools]{authenticate_sb}}}
 
 \item{skip_exists}{boolean for skip creation if item already exists.}
 }
