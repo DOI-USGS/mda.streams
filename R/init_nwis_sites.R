@@ -2,18 +2,21 @@
 #'@description finds all NWIS sites that meet given data requirements
 #'
 #'@param p_codes a character vector of NWIS p_codes
+#'@param state_codes a character vector of state codes 
+#'(e.g., \code{c("WA","WI")}). Default is all, which will use all state 
+#'codes available to \code{\link{get_state()}}. Note this includes Puerto Rico and more.
 #'@return a character vector of NWIS sites, appended with 'nwis_'
 #'
 #'@examples
 #'\dontrun{
 #'init_nwis_sites(p_codes = c('00010', '00060', '00095', '00300'))
 #'}
-#'@import dataRetrieval
+#'@importFrom dataRetrieval whatNWISdata
 #'@export
-init_nwis_sites <- function(p_codes){
+init_nwis_sites <- function(p_codes, state_codes = "all"){
   
   data(states)
-  
+
   
   # get sites for Stets:
   

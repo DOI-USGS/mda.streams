@@ -2,7 +2,7 @@
 #'@description collects all "site_root" titles from sciencebase, returns as a character vector
 #'
 #'@param with_child_key limit sites to those with children matching the specified key
-#'@param session arguments passed to sbtools \code{\link{query_item_identifier}} for authentication. 
+#'@param session arguments passed to sbtools \code{\link[sbtools]{authenticate_sb}} for authentication. 
 #'Not needed if parent of sites is public
 #'@param limit numeric. Max number of sites to return. Default 10000
 #'@return a character vector of "site_root" titles (keys)

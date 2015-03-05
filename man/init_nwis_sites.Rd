@@ -4,10 +4,14 @@
 \alias{init_nwis_sites}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-init_nwis_sites(p_codes)
+init_nwis_sites(p_codes, state_codes = "all")
 }
 \arguments{
 \item{p_codes}{a character vector of NWIS p_codes}
+
+\item{state_codes}{a character vector of state codes
+(e.g., \code{c("WA","WI")}). Default is all, which will use all state
+codes available to \code{\link{get_state()}}. Note this includes Puerto Rico and more.}
 }
 \value{
 a character vector of NWIS sites, appended with 'nwis_'

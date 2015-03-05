@@ -9,7 +9,7 @@ get_sites(with_child_key = NULL, session = NULL, limit = 10000)
 \arguments{
 \item{with_child_key}{limit sites to those with children matching the specified key}
 
-\item{session}{arguments passed to sbtools \code{\link{query_item_identifier}} for authentication.
+\item{session}{arguments passed to sbtools \code{\link[sbtools]{authenticate_sb}} for authentication.
 Not needed if parent of sites is public}
 
 \item{limit}{numeric. Max number of sites to return. Default 10000}

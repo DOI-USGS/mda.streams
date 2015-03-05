@@ -10,7 +10,7 @@
 #'
 #'@examples
 #'\dontrun{
-#'#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
+#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
 #'                  startDate = '2014-01-01', endDate = '2014-02-01')
 #'df <- get_nwis_df(site = "nwis_06893820", variable_name = "doobs", p_code = "00300", 
 #'                  startDate = '2014-01-01', endDate = '2014-02-01')
@@ -29,8 +29,8 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
     return(NULL)
   } else {
     
-    ts_name <- paste('ts', variable_name, sep = '_')
-    nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd)
+    ts_name <- make_ts_variable(variable_name)
+    nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd),
                           ts_name = as.numeric(nwis_data[, ncol(nwis_data)]))
     names(nwis_df) <- c('DateTime', ts_name)
     

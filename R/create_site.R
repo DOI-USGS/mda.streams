@@ -3,7 +3,7 @@
 #'
 #'
 #'@param site Local site ID (e.g. nwis_09238475)
-#'@param session Session object from \link{authenticate_sb}
+#'@param session Session object from \code{\link[sbtools]{authenticate_sb}}
 #'@param skip_exists boolean for skip creation if item already exists.
 #'
 #'@author Corinna Gries
