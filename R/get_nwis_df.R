@@ -9,10 +9,12 @@
 #'@import dataRetrieval
 #'
 #'@examples
-#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
+#'\dontrun{
+#'#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
 #'                  startDate = '2014-01-01', endDate = '2014-02-01')
 #'df <- get_nwis_df(site = "nwis_06893820", variable_name = "doobs", p_code = "00300", 
 #'                  startDate = '2014-01-01', endDate = '2014-02-01')
+#'}
 #'@export
 get_nwis_df <- function(site, variable_name, p_code, ...){
   
@@ -22,8 +24,8 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   
   nwis_data <- dataRetrieval::readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
   
-  if (is.na(nwis_data[1])[1]){
-    # bad pcode or site or no data
+  if (nrow(nwis_data) == 0){
+    # no data
     return(NULL)
   } else {
     
@@ -36,9 +38,4 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   }
   
 }
-split_site <- function(site){
-  
-  site <- tail(strsplit(x = site, split = '_')[[1]], 1)
-  
-  return(site)
-}
+
