@@ -4,10 +4,12 @@
 \alias{init_nwis_sites}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-init_nwis_sites(p_codes)
+init_nwis_sites(p_codes, stateCd)
 }
 \arguments{
 \item{p_codes}{a character vector of NWIS p_codes}
+
+\item{stateCd}{character vector of state codes}
 }
 \value{
 a character vector of NWIS sites, appended with 'nwis_'
@@ -17,7 +19,8 @@ finds all NWIS sites that meet given data requirements
 }
 \examples{
 \dontrun{
-init_nwis_sites(p_codes = c('00010', '00060', '00095', '00300'))
+sites <- init_nwis_sites(p_codes = c('00095', '00060', '00010', '00300'),
+               stateCd=c("wi","mi"))
 }
 }
 

@@ -4,22 +4,27 @@
 #'
 #'@param site Unique site ID
 #'@param data A data.frame containing the timeseries
-#'@param variable_name Timeseries identifiying string variable_name eg [stage, doobs, wtr, etc]
 #'@param session Session object from \link{authenticate_sb}
 #'
 #'@author Luke Winslow, Corinna Gries
 #'
 #'
 #'@import sbtools
+#'@examples
+#'\dontrun{
+#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
+#'                  startDate = '2014-01-01', endDate = '2014-02-01')
+#'post_ts(site = "06893820", data = df)
+#'}
 #'
 #'@export
-post_ts = function(site, data, variable_name, session){
+post_ts = function(site, data, session){
 	
 	
-  ts_varname <- make_ts_variable(variable_name)
+  ts_varname <-  names(data)[-1]
 	#check input
 	## TODO: check input and format of DATA
-	
+	data[,1] <- strftime(data[,1], usetz = T, tz = 'UTC') # lock in the timezone. coerce to char
 	#save data as a file
 	
 	fpath = tempfile(fileext = paste0('.',get_ts_extension(), '.gz'))
