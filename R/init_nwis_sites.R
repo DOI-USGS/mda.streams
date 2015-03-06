@@ -57,7 +57,7 @@ init_nwis_sites <- function(p_codes, stateCd){
     }
   }
   
-  sites <- paste("nwis",sites,sep="-")
+  sites <- paste("nwis",sites,sep="_")
   
   return(sites)
 

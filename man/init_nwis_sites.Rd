@@ -9,7 +9,7 @@ init_nwis_sites(p_codes, stateCd)
 \arguments{
 \item{p_codes}{a character vector of NWIS p_codes}
 
-\item{stateCd}{character vector of state codes}
+\item{stateCd}{character vector of state codes, or "all" for all data.}
 }
 \value{
 a character vector of NWIS sites, appended with 'nwis_'
