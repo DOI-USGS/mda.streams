@@ -21,7 +21,7 @@ init_nwis_sites <- function(p_codes, stateCd){
   begin_date <- ""
   end_date <- ""
   
-  if(any("all" == stateCd)){
+  if(any("all" == tolower(stateCd))){
     stateCd <- names(states)
   }
   # for loop of stateCd's
