@@ -29,7 +29,7 @@ get_sites()
 session <- authenticate_sb(username, password)
 get_sites(session = session, limit = 10)
 # get sites with water temperature
-get_sites(with_child_key = 'wtr')
+get_sites(with_child_key = 'ts_wtr')
 }
 }
 

@@ -4,8 +4,9 @@
 #'
 #'@param site Local site ID (e.g. nwis_09238475)
 #'@param session Session object from \code{\link[sbtools]{authenticate_sb}}
-#'@param skip_exists boolean for skip creation if item already exists.
-#'
+#'@param skip_exists boolean for skip creation if item already exists. 
+#'if TRUE, site will not be created and an empty list will be returned
+#'@return and item list
 #'@author Corinna Gries
 #'
 #'
@@ -21,7 +22,7 @@ create_site <- function(site, session, replace_existing = FALSE){
     if (replace_existing){
       item_rm(id, session)
     } else {
-      stop('This site already exists')
+      return(list())
     }
   }	
   
