@@ -23,7 +23,7 @@ get data from nwis and return as create data.frame
 }
 \examples{
 \dontrun{
-#'df <- get_nldas_df(site = "06893820", variable_name = "baro", das_code = "pressfc",
+df <- get_nldas_df(site = "06893820", variable_name = "baro", das_code = "pressfc",
                  start_date = '2014-01-01', end_date = '2014-02-01')
 }
 }

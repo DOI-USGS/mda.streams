@@ -7,7 +7,7 @@
 #'file_handle <- download_ts(site = 'nwis_01408500', variable = 'doobs')
 #'dissolved_oxygen <- read_ts(file_handle)
 #'}
-#'@import tools
+#'@import tools 
 #'@export
 read_ts = function(file_handle){
   
