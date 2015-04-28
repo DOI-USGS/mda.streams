@@ -23,7 +23,9 @@ get_nwis_df <- function(site, variable_name, p_code, ...){
   site <- split_site(site)
   
   nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
-  
+  if (ncol(nwis_data)==0){
+    return(nwis_data)
+  }
 
   ts_name <- make_ts_variable(variable_name)
   nwis_df <- data.frame('DateTime' = as.POSIXct(nwis_data$dateTime, tz = nwis_data$tz_cd),

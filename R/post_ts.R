@@ -52,7 +52,7 @@ post_ts = function(site, data, session){
 												title=ts_varname, session=session)
 	
   #attach file to item
-  item_append_file(ts_item, filename=fpath, session=session)
+  item_append_files(ts_item, files=fpath, session=session)
   
 	#tag item with our special identifier
 	item_update_identifier(ts_item, scheme='mda_streams', type=ts_varname, 

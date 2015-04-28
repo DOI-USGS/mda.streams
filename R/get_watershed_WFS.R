@@ -15,7 +15,7 @@
 #'get_watershed_WFS('fake_site'))
 #'}
 #'
-#'@import sbtools
+#'@import sbtools 
 #'@export
 get_watershed_WFS = function(site, session = NULL){
   

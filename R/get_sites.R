@@ -16,7 +16,7 @@
 #'session <- authenticate_sb(username, password)
 #'get_sites(session = session, limit = 10)
 #'# get sites with water temperature
-#'get_sites(with_child_key = 'wtr')
+#'get_sites(with_child_key = 'ts_wtr')
 #'}
 #'@import jsonlite 
 #'@import httr
@@ -41,7 +41,7 @@ get_sites <- function(with_child_key = NULL, session = NULL, limit = 10000){
     response <- content(child_ids, 'parsed')
 
     sites = vector(mode = 'character', length = length(response$items))
-    for(i in 1:length(response$items)){
+    for(i in seq_len(length(response$items))){
       parent_id <- response$items[[i]]$parentId
       # match to the superset
       sites[i] <- identifiers$title[identifiers$id == parent_id]
