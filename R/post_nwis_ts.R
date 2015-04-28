@@ -23,12 +23,20 @@ post_nwis_ts = function(variable_name, p_code, session, startDate = '2008-01-01'
     site <- sites[i]
     exists <- item_exists(scheme = 'mda_streams', type, key = site, session)
     if (!exists){
+      cat('getting nwis data for',site,'\n')
       df <- get_nwis_df(site, variable_name = variable_name, p_code, startDate = '2008-01-01')
-      Sys.sleep(10)
-      post_ts(site = site, data = df, variable = variable_name, session = session)
-      cat('done with ')
-      cat(site)
-      cat('\n')
+      if (ncol(df) > 0){
+        Sys.sleep(10)
+        post_ts(site = site, data = df,session = session)
+        cat('done with ')
+        cat(site)
+        cat('\n')
+      } else{
+        cat('**** NO DATA for  ')
+        cat(site)
+        cat(' ******\n')
+      }
+
     } else {
       cat('skipping ')
       cat(site)

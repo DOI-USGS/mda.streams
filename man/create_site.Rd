@@ -11,7 +11,11 @@ create_site(site, session, replace_existing = FALSE)
 
 \item{session}{Session object from \code{\link[sbtools]{authenticate_sb}}}
 
-\item{skip_exists}{boolean for skip creation if item already exists.}
+\item{skip_exists}{boolean for skip creation if item already exists.
+if TRUE, site will not be created and an empty list will be returned}
+}
+\value{
+and item list
 }
 \description{
 Create new site in SB
