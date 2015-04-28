@@ -22,7 +22,7 @@ Imports:
     stringr,
     jsonlite, 
     httr,
-    geoknife (== 0.5.1)
+    geoknife (>= 0.6.2)
 Suggests:
     testthat
 LazyLoad: yes
