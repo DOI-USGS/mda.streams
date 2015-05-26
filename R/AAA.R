@@ -7,6 +7,9 @@
 define_pkg_env <- function() {
   pkg.env <- new.env()
   pkg.env$scheme <- "mda_streams"
+  pkg.env$ts_prefix <- "ts_"
+  pkg.env$ts_extension <- "tsv"
+  pkg.env$ts_delim <- "\t"
   return(pkg.env)
 }
 pkg.env <- define_pkg_env()
