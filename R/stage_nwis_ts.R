@@ -1,28 +1,29 @@
-#'@title get nwis data as data.frame
-#'@description get data from nwis and return as create data.frame
+#'@title stage nwis data into a file
+#'@description get data from nwis and return created file handle
 #'
-#'@param site valid NWIS site ID
+#'@param sites a character vector of valid NWIS site IDs
 #'@param variable_name short name of variable \code{\link{get_ts_variables}}
 #'@param p_code NWIS parameter code
+#'@param times a length 2 vector of POSIXct dates
 #'@param ... additional arguments passed to \code{\link{readNWISuv}}
-#'@return a data.frame of timeseries data from NWIS, or empty if no data exist
+#'@return a character vector of file handles
 #'@importFrom dataRetrieval readNWISuv
 #'
 #'@examples
 #'\dontrun{
-#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
-#'                  startDate = '2014-01-01', endDate = '2014-02-01')
+#'df <- get_nwis_df(sites = c("nwis_06893820","nwis_01484680"), variable_name = "doobs", p_code = "00300", 
+#'                  times = ('2014-01-01','2014-02-01'))
 #'df <- get_nwis_df(site = "nwis_06893820", variable_name = "doobs", p_code = "00300", 
 #'                  startDate = '2014-01-01', endDate = '2014-02-01')
 #'}
 #'@export
-get_nwis_df <- function(site, variable_name, p_code, ...){
+stage_nwis_ts <- function(sites, variable_name, p_code, ...){
   
   #if nwis_site, split and use "site"
   
-  site <- split_site(site)
+  sites <- split_site(sites)
   
-  nwis_data <- readNWISuv(siteNumbers = site, parameterCd = p_code, ...)
+  nwis_data <- readNWISuv(siteNumbers = sites, parameterCd = p_code, ...)
   if (ncol(nwis_data)==0){
     return(nwis_data)
   }
