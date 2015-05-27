@@ -3,7 +3,6 @@
 #'
 #'@param sites a character vector of valid NWIS site IDs
 #'@param variable_name short name of variable \code{\link{get_ts_variables}}
-#'@param p_code NWIS parameter code
 #'@param times a length 2 vector of POSIXct dates
 #'@param ... additional arguments passed to \code{\link{readNWISuv}}
 #'@return a character vector of file handles
@@ -12,13 +11,13 @@
 #'
 #'@examples
 #'\dontrun{
-#'files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "doobs", p_code = "00300", 
+#'files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "doobs",
 #'                  times = c('2014-01-01','2014-02-01'))
-#'files <- stage_nwis_ts(sites = "nwis_06893820", variable_name = "doobs", p_code = "00300", 
+#'files <- stage_nwis_ts(sites = get_sites(), variable_name = "par",
 #'                  times = c('2014-01-01', '2014-02-01'))
 #'}
 #'@export
-stage_nwis_ts <- function(sites, variable_name, p_code, times, ...){
+stage_nwis_ts <- function(sites, variable_name, times, ...){
   
   #if nwis_site, split and use "site"
   
@@ -26,7 +25,7 @@ stage_nwis_ts <- function(sites, variable_name, p_code, times, ...){
   
   file_handles <- c()
   ts_name <- make_ts_variable(variable_name)
-  
+  p_code <- get_var_codes(variable_name)[['p_code']]
   nwis_data <- readNWISuv(siteNumbers = sites, parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
   if (ncol(nwis_data)!=0){
     un_sites <- unique(sites)

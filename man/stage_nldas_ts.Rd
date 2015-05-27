@@ -4,14 +4,12 @@
 \alias{stage_nldas_ts}
 \title{stage ndlas data into a time series file}
 \usage{
-stage_nldas_ts(sites, variable_name, p_code, times, ...)
+stage_nldas_ts(sites, variable_name, times, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
 \item{variable_name}{short name of variable \code{\link{get_ts_variables}}}
-
-\item{p_code}{NLDAS variable name (see \code{\link[geoknife]{variables}})}
 
 \item{times}{a length 2 vector of POSIXct dates}
 
@@ -25,7 +23,7 @@ get data from nldas and return a file handle
 }
 \examples{
 \dontrun{
-file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "baro", p_code = "pressfc",
+file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "baro",
                 times = c('2014-01-01','2014-02-01'))
 }
 }
