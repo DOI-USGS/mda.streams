@@ -1,4 +1,6 @@
 #'@title get project codes
+#'@description a lookup for parameter codes and longnames based on the shortname  
+#'convention used in mda.streams
 #'@param shortname a valid shortname for project (e.g., 'disch')
 #'@param with.longname boolean for whether to include longnames in output
 #'@examples
