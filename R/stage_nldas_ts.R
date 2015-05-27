@@ -9,14 +9,18 @@
 #'@return a file handle for time series file created 
 #'@importFrom geoknife simplegeom webdata geoknife loadOutput
 #'@importFrom dataRetrieval readNWISsite
+#'@importFrom unitted u
 #'
 #'@examples
 #'\dontrun{
 #'file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "baro", p_code = "pressfc", 
-#'                 times = c('2014-01-01','2014-02-01')
+#'                 times = c('2014-01-01','2014-02-01'))
 #'}
 #'@export
-stage_nldas_ts <- function(sites, variable_name, p_code, start_date, end_date){
+stage_nldas_ts <- function(sites, variable_name, p_code, times, ...){
+  
+  if (length(p_code) > 1) 
+    stop ('p_code must be single value.')
   
   nwis_sites <- split_site(sites)
   site_data <- readNWISsite(nwis_sites)
@@ -34,9 +38,28 @@ stage_nldas_ts <- function(sites, variable_name, p_code, start_date, end_date){
   fabric <- webdata('nldas', variables = p_code, times = times)
   
   job <- geoknife(stencil, fabric, wait = TRUE, ...)
-  data_out <- loadOutput(job)
+  data_out <- loadOutput(job, with.units = TRUE)
   
   # -- coerce into input format for write_ts here --
-  
-  return(write_ts(data_out))
+  #parsing      DateTime nwis_01484680 nwis_06893820 variable statistic    units
+  #1  2011-01-01         88.26         19.34      ppt      MEAN mm/month
+  #2  2011-02-01         42.07         63.05      ppt      MEAN mm/month
+  #3  2011-03-01        108.60         47.59      ppt      MEAN mm/month
+  file_handles <- c()
+  for (i in 1:length(sites)){
+    site_data <- select(data_out, DateTime, matches(sites[i]), variable, units) %>%
+      filter(variable == p_code) %>%
+      select(-variable)
+    
+    units <- unique(site_data$units)
+    site_data <- select(site_data, -units)
+    names(site_data) <- c('DateTime',p_code)
+    site_data <- u(site_data, c(NA, units))
+    file_handle <- sprintf('%s_%s.tsv',site,ts_name)
+    write_unitted(site_data, file = file_handle, ...)
+    file_handles <- c(file_handles, file_handle)
+    #file_handle <- write.unitted(site_df)
+    #file_handles <- c(file_handles, file_handle)
+  }
+  return(file_handles)
 }
