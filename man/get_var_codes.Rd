@@ -12,7 +12,8 @@ get_var_codes(shortname, with.longname = FALSE)
 \item{with.longname}{boolean for whether to include longnames in output}
 }
 \description{
-get project codes
+a lookup for parameter codes and longnames based on the shortname
+convention used in mda.streams
 }
 \examples{
 get_var_codes('wtr')
