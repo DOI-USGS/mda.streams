@@ -8,24 +8,35 @@ model_metabolism(model, site, doobs.type, doobs.src, disch.type, disch.src,
   wtr.type, wtr.src, config)
 }
 \arguments{
-\item{model}{}
+\item{model}{model name shorthand, e.g. "simple"}
 
-\item{site}{}
+\item{site}{site name}
+
+\item{doobs.type}{doobs data type}
+
+\item{doobs.src}{doobs data src}
+
+\item{disch.type}{disch data type}
+
+\item{disch.src}{disch data src}
+
+\item{wtr.type}{wtr data type}
+
+\item{wtr.src}{wtr data src}
 
 \item{config}{data.frame. As an alternative to all preceding arguments, a
 single config argument may be passed in. config is a one-row data.frame
 with columns corresponding precisely to the list of preceding arguments.}
-
-\item{doobs}{}
-
-\item{disch}{}
-
-\item{wtr}{}
 }
 \description{
 Actually run the model as specified by the configuration arguments
 }
 \examples{
-model_metabolism(config=data.frame(model="simple", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
+suppressWarnings(model_metabolism(config=data.frame(
+  model="simple", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
+\dontrun{
+model_metabolism(config=stage_metab_config(
+  tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL))
+}
 }
 

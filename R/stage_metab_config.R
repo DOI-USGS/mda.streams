@@ -7,6 +7,10 @@
 #'   modeling runs.
 #' @param strategy character, or vector of length sites, describing this set of 
 #'   modeling runs in concise English.
+#' @param site site names
+#' @param doobs 2-column data.frame with names "type" and "src" describing where DO data should come from
+#' @param disch 2-column data.frame with names "type" and "src" describing where discharge data should come from
+#' @param wtr 2-column data.frame with names "type" and "src" describing where water temperature data should come from
 #' @param filename character or NULL. If NULL, the function returns a data.frame, 
 #'   otherwise it writes that data.frame to the file specified by filename.
 #' @return file name of the config file
@@ -14,7 +18,7 @@
 #' @export
 #' @examples
 #' head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
-#' model_metabolism(config=stage_metab_config(filename=NULL))
+#' stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)
 stage_metab_config <- function(
   tag, strategy, 
   model="metab_simple",

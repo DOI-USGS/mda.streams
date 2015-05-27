@@ -20,6 +20,14 @@ modeling runs.}
 \item{strategy}{character, or vector of length sites, describing this set of
 modeling runs in concise English.}
 
+\item{site}{site names}
+
+\item{doobs}{2-column data.frame with names "type" and "src" describing where DO data should come from}
+
+\item{disch}{2-column data.frame with names "type" and "src" describing where discharge data should come from}
+
+\item{wtr}{2-column data.frame with names "type" and "src" describing where water temperature data should come from}
+
 \item{filename}{character or NULL. If NULL, the function returns a data.frame,
 otherwise it writes that data.frame to the file specified by filename.}
 }
@@ -34,6 +42,6 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
-model_metabolism(config=stage_metab_config(filename=NULL))
+stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)
 }
 

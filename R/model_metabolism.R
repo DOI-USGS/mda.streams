@@ -1,16 +1,26 @@
 #' Actually run the model as specified by the configuration arguments
 #' 
-#' @param site
-#' @param model
-#' @param doobs
-#' @param disch
-#' @param wtr
+#' @import streamMetabolizer
+#' @import dplyr
+#' @param site site name
+#' @param model model name shorthand, e.g. "simple"
+#' @param doobs.type doobs data type
+#' @param doobs.src doobs data src
+#' @param disch.type disch data type
+#' @param disch.src disch data src
+#' @param wtr.type wtr data type
+#' @param wtr.src wtr data src
 #' @param config data.frame. As an alternative to all preceding arguments, a
 #'   single config argument may be passed in. config is a one-row data.frame
 #'   with columns corresponding precisely to the list of preceding arguments.
 #' @export
 #' @examples
-#' model_metabolism(config=data.frame(model="simple", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
+#' suppressWarnings(model_metabolism(config=data.frame(
+#'   model="simple", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
+#' \dontrun{
+#' model_metabolism(config=stage_metab_config(
+#'   tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL))
+#' }
 model_metabolism <- function(model, site, 
                              doobs.type, doobs.src, 
                              disch.type, disch.src, 
