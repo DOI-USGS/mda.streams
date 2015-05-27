@@ -38,8 +38,18 @@ model_metabolism <- function(model, site,
     }
   } # else args should fail correctly in subsequent lines if misspecified
   
+  # Prepare the data
+  warning("still need to actually download the data")
+  doobs <- locate_ts(site, "doobs", doobs.type, doobs.src)
+  disch <- locate_ts(site, "disch", disch.type, disch.src)
+  wtr <- locate_ts(site, "wtr", wtr.type, wtr.src)
+  
   # Run the model  
   metab_fun <- get(paste0("metab_", model), envir = environment(streamMetabolizer::metab_model))
   warning("function under construction")
-  #metab_fun(model, site, ...) # needs to match the requirements of that metab_fun
+  # for metab_simple, expected.colnames <- c("date.time","DO.obs","DO.sat","depth","temp.water","light")
+  #metab_fun(doobs, disch, wtr) # needs to match the requirements of that metab_fun
+  
+  # Return metabolism predictions
+  return("here are your predictions")
 }

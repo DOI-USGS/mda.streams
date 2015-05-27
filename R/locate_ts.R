@@ -12,7 +12,7 @@ locate_ts <- function(site, var, type, src) {
   sbkey <- switch(
     type,
     local=site,
-    model=site, # for local, site and src should be identical. just pick one.
+    model=site,
     proxy=src)
   sbtype <- switch(
     type,
