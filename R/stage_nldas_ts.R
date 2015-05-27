@@ -26,7 +26,7 @@ stage_nldas_ts <- function(sites, variable_name, times, ...){
   
   lon_lat <- matrix(data = NA, ncol = length(sites), nrow = 2)
   for (i in 1:length(sites)){
-    location <- filter(site_data, site_no == site) %>%
+    location <- filter(site_data, site_no == nwis_sites[i]) %>%
       select(dec_lat_va, dec_long_va) %>% 
       summarize(lon = mean(dec_long_va, na.rm = T), dlat = mean(dec_lat_va, na.rm = T))
     lon_lat[1:2, i]  = as.numeric(location)
