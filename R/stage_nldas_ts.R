@@ -14,8 +14,8 @@
 #'
 #'@examples
 #'\dontrun{
-#'file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro", 
-#'                 times = c('2014-01-01','2014-02-01'))
+#'files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro", 
+#'                 times = c('2014-01-01 00:00','2014-01-01 05:00'))
 #'}
 #'@export
 stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose = FALSE, ...){
@@ -48,21 +48,20 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   data_out <- geoknife(stencil, fabric, knife, ...) %>%
     loadOutput(with.units = TRUE)
   
-  file_handles <- c()
+  file_paths <- c()
   for (i in 1:length(sites)){
     site_data <- select(data_out, DateTime, matches(sites[i]), variable, units) %>%
       filter(variable == p_code) %>%
       select(-variable)
     
-    units <- unique(site_data$units)
+    units <- as.character(site_data$units) %>% unique()
     
     site_data <- select(site_data, -units) %>%
-      setNames(c('DateTime',p_code)) %>%
+      setNames(c('DateTime',variable)) %>%
       u(c("UTC", units))
     
-    file_handle <- sprintf('%s/nwis_%s_%s.tsv', folder, site, ts_name)
-    write_unitted(site_data, file = file_handle)
-    file_handles <- c(file_handles, file_handle)
+    fpath <- write_ts(site_data, sites[i], variable, folder)
+    file_paths <- c(file_paths, fpath)
   }
-  return(file_handles)
+  return(file_paths)
 }
