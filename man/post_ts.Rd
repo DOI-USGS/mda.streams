@@ -4,26 +4,24 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(site, data, session)
+post_ts(files, ...)
 }
 \arguments{
-\item{site}{Unique site ID}
+\item{files}{a string vector of file paths for POSTing}
 
-\item{data}{A data.frame containing the timeseries}
-
-\item{session}{Session object from \link{authenticate_sb}}
+\item{...}{Session object from \link{authenticate_sb}}
 }
 \description{
 
 }
 \examples{
 \dontrun{
-df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300",
-                 startDate = '2014-01-01', endDate = '2014-02-01')
-post_ts(site = "06893820", data = df)
+files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
+                times = c('2014-01-01 00:00','2014-01-01 05:00'))
+post_ts(files, session = sbtools::authenticate_sb())
 }
 }
 \author{
-Luke Winslow, Corinna Gries
+Luke Winslow, Corinna Gries, Jordan S Read
 }
 

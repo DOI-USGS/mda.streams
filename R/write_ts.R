@@ -13,7 +13,7 @@ write_ts <- function(data, site, variable, folder){
   
   ts_name <- make_ts_variable(variable)
   
-  fpath <- file.path(folder, sprintf('%s-%s.%s.gz', folder, site, ts_name, pkg.env$ts_extension))
+  fpath <- file.path(folder, sprintf('%s-%s.%s.gz', site, ts_name, pkg.env$ts_extension))
   gz_con <- gzfile(fpath, "w")
   write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
   close(gz_con)
