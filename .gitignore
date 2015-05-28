@@ -12,3 +12,4 @@
 .Rproj.user
 mda.streams.Rproj
 .Rbuildignore
+**.DS_Store
