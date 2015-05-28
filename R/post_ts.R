@@ -2,63 +2,55 @@
 #'@title Post a new timeseries file to SB
 #'
 #'
-#'@param site Unique site ID
-#'@param data A data.frame containing the timeseries
-#'@param session Session object from \link{authenticate_sb}
+#'@param files a string vector of file paths for POSTing
+#'@param ... Session object from \link{authenticate_sb}
 #'
-#'@author Luke Winslow, Corinna Gries
+#'@author Luke Winslow, Corinna Gries, Jordan S Read
 #'
 #'
 #'@import sbtools
 #'@examples
 #'\dontrun{
-#'df <- get_nwis_df(site = "06893820", variable_name = "doobs", p_code = "00300", 
-#'                  startDate = '2014-01-01', endDate = '2014-02-01')
-#'post_ts(site = "06893820", data = df)
+#'files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro", 
+#'                 times = c('2014-01-01 00:00','2014-01-01 05:00'))
+#'post_ts(files, session = sbtools::authenticate_sb())
 #'}
 #'
 #'@export
-post_ts = function(site, data, session){
+post_ts = function(files, ...){
 	
-	
-  ts_varname <-  names(data)[-1]
-	#check input
-	## TODO: check input and format of DATA
-	data[,1] <- strftime(data[,1], usetz = T, tz = 'UTC') # lock in the timezone. coerce to char
-	#save data as a file
-	
-	fpath = tempfile(fileext = paste0('.',get_ts_extension(), '.gz'))
-	
-  gz1 <- gzfile(fpath, "w")
-	write.table(data,  gz1, sep=get_ts_delim(), row.names=FALSE, quote = FALSE)
-  close(gz1)
-	
-	#Check if item already exists
-  if(item_exists(scheme='mda_streams',type=ts_varname, 
-															 key=site, session=session)){
-    stop('This Timeseries for this site already exists')
-  }
-
-	
-	#find site root
-	site_root = query_item_identifier(scheme='mda_streams', 
-																		type='site_root', key=site, session=session)
-	if(nrow(site_root) != 1){
-		stop('There is no site root available for site:', site)
-	}
-	
-	#Create item if it does not exist
-	ts_item = item_create(parent_id=site_root$id, 
-												title=ts_varname, session=session)
-	
-  #attach file to item
-  item_append_files(ts_item, files=fpath, session=session)
   
-	#tag item with our special identifier
-	item_update_identifier(ts_item, scheme='mda_streams', type=ts_varname, 
-												 key=site, session=session)
-	
-	
-	
-	return(ts_item)
+  scheme = get_scheme()
+  
+	for (i in 1:length(files)){
+    base_file <- basename(files[i])
+    pieces <- strsplit(base_file, '[-.]')
+    site <- pieces[[1]][1]
+	  ts_varname = pieces[[1]][2]
+	  #Check if item already exists
+	  if (item_exists(scheme=scheme,type=ts_varname, 
+	                 key=site, ...)){
+	    stop('The ', ts_varname, ' timeseries for this site already exists')
+	  }
+    
+    #find site root
+    site_root = query_item_identifier(scheme= scheme, 
+                                      type='site_root', key=site, ...)
+    if(nrow(site_root) != 1){
+      stop('There is no site root available for site:', site)
+    }
+    
+	  #Create item if it does not exist
+	  ts_item = item_create(parent_id=site_root$id, 
+	                        title=ts_varname, ...)
+	  
+	  #attach file to item
+	  item_append_files(ts_item, files = files[i], ...)
+	  
+	  #tag item with our special identifier
+	  item_update_identifier(ts_item, scheme = scheme, type = ts_varname, 
+	                         key=site, ...)
+    
+	}
+
 }

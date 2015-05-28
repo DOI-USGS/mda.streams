@@ -28,8 +28,8 @@ get data from nldas and return a file handle
 }
 \examples{
 \dontrun{
-file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
-                times = c('2014-01-01','2014-02-01'))
+files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
+                times = c('2014-01-01 00:00','2014-01-01 05:00'))
 }
 }
 
