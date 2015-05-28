@@ -22,28 +22,46 @@
 stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = FALSE, ...){
   
   
-  sites <- split_site(sites)
+  file_paths <- c()
   
-  file_handles <- c()
-  ts_name <- make_ts_variable(variable)
   p_code <- get_var_codes(variable)
-  nwis_data <- readNWISuv(siteNumbers = sites, parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
+  nwis_data <- readNWISuv(siteNumbers = split_site(sites), parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
   if (ncol(nwis_data)!=0){
     un_sites <- unique(sites)
     for (i in 1:length(un_sites)){
-      site <- un_sites[i]
+      
+      site <- split_site(un_sites[i])
       site_data <- filter(nwis_data, site_no == site) %>%
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
-        setNames(c("DateTime",ts_name)) %>%
+        setNames(c("DateTime",variable)) %>%
         u(c('UTC','units'))
-      
-      file_handle <- sprintf('%s/nwis_%s_%s.tsv', folder, site, ts_name)
-      write_unitted(site_data, file = file_handle)
-      file_handles <- c(file_handles, file_handle)
+
+      fpath <- write_ts(site_data, un_sites[i], variable, folder)
+      file_paths <- c(file_paths, fpath)
     }
   }
 
-  return(file_handles)
+  return(file_paths)
 }
 
+#'@title write timeseries format compressed file
+#'@param data unitted data.frame
+#'@param site the full site name (e.g., 'nwis_06893820')
+#'@param variable the variable name of the output
+#'@param folder the folder to write the file in
+#'@keywords internal
+#'@export
+write_ts <- function(data, site, variable, folder){
+  
+  if (nrow(data) == 0)
+    invisible(NULL)
+  
+  ts_name <- make_ts_variable(variable)
+  
+  fpath <- sprintf('%s/%s_%s.%s.gz', folder, site, ts_name, pkg.env$ts_extension)
+  gz_con <- gzfile(fpath, "w")
+  write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
+  close(gz_con)
+  invisible(fpath)
+}
