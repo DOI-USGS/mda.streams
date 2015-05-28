@@ -2,24 +2,24 @@
 #'@description get data from nldas and return a file handle
 #'
 #'@param sites a character vector of valid NWIS site IDs
-#'@param variable_name short name of variable \code{\link{get_ts_variables}}
+#'@param variable short name of variable \code{\link{get_ts_variables}}
 #'@param times a length 2 vector of POSIXct dates
 #'@param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #'@return a file handle for time series file created 
 #'@importFrom geoknife simplegeom webdata geoknife loadOutput
 #'@importFrom dataRetrieval readNWISsite
-#'@importFrom unitted u
+#'@importFrom unitted u write_unitted
 #'
 #'@examples
 #'\dontrun{
-#'file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable_name = "baro", 
+#'file <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro", 
 #'                 times = c('2014-01-01','2014-02-01'))
 #'}
 #'@export
-stage_nldas_ts <- function(sites, variable_name, times, ...){
+stage_nldas_ts <- function(sites, variable, times, ...){
   
-  if (length(variable_name) > 1) 
-    stop ('variable_name must be single value.')
+  if (length(variable) > 1) 
+    stop ('variable must be single value.')
   
   nwis_sites <- split_site(sites)
   site_data <- readNWISsite(nwis_sites)
@@ -35,7 +35,7 @@ stage_nldas_ts <- function(sites, variable_name, times, ...){
   lon_lat_df <- as.data.frame(lon_lat)
   names(lon_lat_df) <- sites
   
-  p_code <- get_var_codes(variable_name)
+  p_code <- get_var_codes(variable)
   
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variables = p_code, times = times)
