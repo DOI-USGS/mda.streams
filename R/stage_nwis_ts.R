@@ -36,10 +36,10 @@ stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = 
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
         setNames(c("DateTime",ts_name)) %>%
-        u(c(NA,'units'))
+        u(c('UTC','units'))
       
       file_handle <- sprintf('%s/nwis_%s_%s.tsv', folder, site, ts_name)
-      write_unitted(site_data, file = file_handle, row.names = FALSE)
+      write_unitted(site_data, file = file_handle)
       file_handles <- c(file_handles, file_handle)
     }
   }

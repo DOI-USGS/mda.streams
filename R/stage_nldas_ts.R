@@ -8,7 +8,7 @@
 #'@param verbose provide verbose output (currently not implemented)
 #'@param ... additional arguments passed to \code{\link[geoknife]{geoknife}} and \code{\link[unitted]{write_unitted}}
 #'@return a file handle for time series file created 
-#'@importFrom geoknife simplegeom webdata geoknife loadOutput
+#'@importFrom geoknife simplegeom webdata geoknife loadOutput webprocess
 #'@importFrom dataRetrieval readNWISsite
 #'@importFrom unitted u write_unitted
 #'
@@ -30,20 +30,23 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   for (i in 1:length(sites)){
     location <- filter(site_data, site_no == nwis_sites[i]) %>%
       select(dec_lat_va, dec_long_va) %>% 
-      summarize(lon = mean(dec_long_va, na.rm = T), dlat = mean(dec_lat_va, na.rm = T))
+      summarize(lon = mean(dec_long_va, na.rm = T), lat = mean(dec_lat_va, na.rm = T))
     lon_lat[1:2, i]  = as.numeric(location)
 
   }
-  lon_lat_df <- as.data.frame(lon_lat)
-  names(lon_lat_df) <- sites
+  rmv_sites <- is.na(lon_lat[1,]) | is.na(lon_lat[2,])
+  lon_lat_df <- as.data.frame(lon_lat[, !rmv_sites])
+  names(lon_lat_df) <- sites[!rmv_sites]
   
   p_code <- get_var_codes(variable)
   
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variables = p_code, times = times)
   
-  job <- geoknife(stencil, fabric, wait = TRUE, ...)
-  data_out <- loadOutput(job, with.units = TRUE)
+  knife <- webprocess(wait = TRUE)
+  knife@processInputs$REQUIRE_FULL_COVERAGE = 'false'
+  data_out <- geoknife(stencil, fabric, knife, ...) %>%
+    loadOutput(with.units = TRUE)
   
   file_handles <- c()
   for (i in 1:length(sites)){
@@ -52,11 +55,13 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
       select(-variable)
     
     units <- unique(site_data$units)
-    site_data <- select(site_data, -units)
-    names(site_data) <- c('DateTime',p_code)
-    site_data <- u(site_data, c(NA, units))
+    
+    site_data <- select(site_data, -units) %>%
+      setNames(c('DateTime',p_code)) %>%
+      u(c("UTC", units))
+    
     file_handle <- sprintf('%s/nwis_%s_%s.tsv', folder, site, ts_name)
-    write_unitted(site_data, file = file_handle, row.names = FALSE)
+    write_unitted(site_data, file = file_handle)
     file_handles <- c(file_handles, file_handle)
   }
   return(file_handles)
