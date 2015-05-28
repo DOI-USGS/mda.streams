@@ -4,7 +4,8 @@
 \alias{stage_nldas_ts}
 \title{stage ndlas data into a time series file}
 \usage{
-stage_nldas_ts(sites, variable, times, ...)
+stage_nldas_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
+  ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -13,7 +14,11 @@ stage_nldas_ts(sites, variable, times, ...)
 
 \item{times}{a length 2 vector of POSIXct dates}
 
-\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}}
+\item{folder}{a folder to place the file outputs in (defaults to temp directory)}
+
+\item{verbose}{provide verbose output (currently not implemented)}
+
+\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}} and \code{\link[unitted]{write_unitted}}}
 }
 \value{
 a file handle for time series file created
