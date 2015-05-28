@@ -17,21 +17,26 @@
 #'}
 #'
 #'@export
-post_ts = function(files, ...){
+post_ts = function(files, scheme, ...){
 	
+  
+  if (missing(scheme)){
+    scheme = pkg.env$scheme
+  } 
+  
 	for (i in 1:length(files)){
     base_file <- basename(files[i])
     pieces <- strsplit(base_file, '[-.]')
     site <- pieces[[1]][1]
 	  ts_varname = pieces[[1]][2]
 	  #Check if item already exists
-	  if (item_exists(scheme=pkg.env$scheme,type=ts_varname, 
+	  if (item_exists(scheme=scheme,type=ts_varname, 
 	                 key=site, ...)){
 	    stop('The ', ts_varname, ' timeseries for this site already exists')
 	  }
     
     #find site root
-    site_root = query_item_identifier(scheme= pkg.env$scheme, 
+    site_root = query_item_identifier(scheme= scheme, 
                                       type='site_root', key=site, ...)
     if(nrow(site_root) != 1){
       stop('There is no site root available for site:', site)
@@ -45,7 +50,7 @@ post_ts = function(files, ...){
 	  item_append_files(ts_item, files = files[i], ...)
 	  
 	  #tag item with our special identifier
-	  item_update_identifier(ts_item, scheme=pkg.env$scheme, type=ts_varname, 
+	  item_update_identifier(ts_item, scheme = scheme, type = ts_varname, 
 	                         key=site, ...)
     
 	}
