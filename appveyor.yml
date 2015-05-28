@@ -16,7 +16,7 @@ install:
 
 build_script:
   - R --version
-  - travis-tool.sh install_github USGS-R/sbtools USGS-R/dataRetrieval USGS-R/geoknife appling/unitted@v0.2.0
+  - travis-tool.sh install_github USGS-R/streamMetabolizer USGS-R/sbtools USGS-R/dataRetrieval USGS-R/geoknife appling/unitted
   - travis-tool.sh install_deps
 
 test_script:
