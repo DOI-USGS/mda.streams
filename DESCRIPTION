@@ -22,6 +22,7 @@ Imports:
     stringr,
     jsonlite, 
     httr,
+    streamMetabolizer,
     geoknife (>= 0.10.3),
     unitted
 Suggests:
