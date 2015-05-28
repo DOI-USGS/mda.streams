@@ -4,7 +4,7 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, scheme, ...)
+post_ts(files, ...)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}

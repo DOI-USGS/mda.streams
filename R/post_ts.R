@@ -17,12 +17,10 @@
 #'}
 #'
 #'@export
-post_ts = function(files, scheme, ...){
+post_ts = function(files, ...){
 	
   
-  if (missing(scheme)){
-    scheme = pkg.env$scheme
-  } 
+  scheme = get_scheme()
   
 	for (i in 1:length(files)){
     base_file <- basename(files[i])
