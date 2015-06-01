@@ -24,7 +24,7 @@ stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = 
   
   file_paths <- c()
   
-  p_code <- get_var_codes(variable)
+  p_code <- get_var_codes(variable, "p_code")
   nwis_data <- readNWISuv(siteNumbers = split_site(sites), parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
   if (ncol(nwis_data)!=0){
     un_sites <- unique(sites)

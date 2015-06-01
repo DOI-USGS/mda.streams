@@ -38,7 +38,7 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   lon_lat_df <- as.data.frame(lon_lat[, !rmv_sites])
   names(lon_lat_df) <- sites[!rmv_sites]
   
-  p_code <- get_var_codes(variable)
+  p_code <- get_var_codes(variable, "p_code")
   
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variables = p_code, times = times)

@@ -4,19 +4,32 @@
 \alias{get_var_codes}
 \title{get project codes}
 \usage{
-get_var_codes(shortname, with.longname = FALSE)
+get_var_codes(shortname, out = c("p_code", "sm_name", "longname"))
 }
 \arguments{
 \item{shortname}{a valid shortname for project (e.g., 'disch')}
 
-\item{with.longname}{boolean for whether to include longnames in output}
+\item{out}{character or character vector of name types to include in output.
+If there is only one, the result will be a vector/value. One or more of
+these options may be selected:
+\code{c("shortname","p_code","sm_name","longname")} (where \code{shortname}
+is also the rowname)}
+}
+\value{
+vector or data.frame of the requested variables and outnames.
+  \code{shortname} is the name used in mda.streams. \code{p_code} is the
+  corresponding code in the NWIS or NLDAS databases. \code{sm_name} is the
+  name used in streamMetabolizer. \code{longtime} is the human-readable
+  description.
 }
 \description{
-a lookup for parameter codes and longnames based on the shortname
-convention used in mda.streams
+a lookup for parameter codes and longnames based on the
+  shortname convention used in mda.streams
 }
 \examples{
+get_var_codes()
 get_var_codes('wtr')
-get_var_codes('disch', TRUE)
+get_var_codes('disch', 'p_code')
+get_var_codes('baro', c('longname','p_code'))
 }
 
