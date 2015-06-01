@@ -1,6 +1,7 @@
 #' Identify a time series from a variable name, data type, and specific data
 #' source (i.e., as specified in a metab model config file)
 #' 
+#' @param site character. The site ID
 #' @param var character. The variable name, e.g. "doobs", "disch", or "wtr"
 #' @param type character. The source type (e.g., "local", "proxy", "model")
 #' @param src character. The specific source (e.g., "nwis_01474000", "bird")

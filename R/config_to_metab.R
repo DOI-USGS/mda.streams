@@ -10,24 +10,30 @@
 #' @param disch.src disch data src
 #' @param wtr.type wtr data type
 #' @param wtr.src wtr data src
-#' @param config data.frame. As an alternative to all preceding arguments, a
-#'   single config argument may be passed in. config is a one-row data.frame
-#'   with columns corresponding precisely to the list of preceding arguments.
-#' @param config.row integer. The row number of the config data.frame to use for this particular model run.
-#' @param file character. File name or connection from which to read a config data.frame.
+#' @param config data.frame, or file/filename to read a data.frame from. As an 
+#'   alternative to all preceding arguments, this single config argument may be 
+#'   passed in. The data.frame columns must correspond precisely to the list of
+#'   preceding arguments.
+#' @param row integer. The row number of the config data.frame to use for this 
+#'   particular model run.
 #' @export
 #' @examples
 #' suppressWarnings(config_to_metab(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
+#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
+#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
 #' suppressWarnings(config_to_metab(config=data.frame(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
+#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
+#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
 #' suppressWarnings(config_to_metab(config=stage_metab_config(
-#'   tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)))
+#'   tag="0.0.1", strategy="try stage_metab_config", 
+#'   site="nwis_04087142", filename=NULL)))
 #' \dontrun{
 #' config_to_metab(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
+#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
+#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
 #' config_to_metab(config=stage_metab_config(
-#'   tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL))
+#'   tag="0.0.1", strategy="try stage_metab_config", 
+#'   site="nwis_04087142", filename=NULL))
 #' }
 config_to_metab <- function(model, site, 
                              doobs.type, doobs.src, 
@@ -73,6 +79,7 @@ config_to_metab <- function(model, site,
   warning("still need to actually download the data")
   data_needs <- formals(metab_fun)$data %>% eval()
   # confirm that non-needed variables are being specified as "none"-NA
+  sm_name <- ".dplyr.var"
   var_codes <- get_var_codes(out=TRUE) %>% filter(sm_name %in% names(data_needs)) %>% do({rownames(.) <- .$sm_name; .[,"shortname",drop=FALSE]})
   # lapply(names(data_needs), function(need) {
   #   var_codes[need,"shortname"]

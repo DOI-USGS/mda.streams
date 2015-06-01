@@ -1,17 +1,13 @@
-#'@title Create new site in SB
-#'
-#'
-#'
-#'@param site Local site ID (e.g. nwis_09238475)
-#'@param session Session object from \code{\link[sbtools]{authenticate_sb}}
-#'@param skip_exists boolean for skip creation if item already exists. 
-#'if TRUE, site will not be created and an empty list will be returned
-#'@return and item list
-#'@author Corinna Gries
-#'
-#'
-#'@import sbtools
-#'@export
+#' Create new site in SB
+#' 
+#' @param site Local site ID (e.g. nwis_09238475)
+#' @param session Session object from \code{\link[sbtools]{authenticate_sb}}
+#' @param replace_existing logical. Should an item that already exists be
+#'   replaced?
+#' @return an item list
+#' @author Corinna Gries
+#' @import sbtools
+#' @export
 create_site <- function(site, session, replace_existing = FALSE){
   
   #check that it doesn't already exits

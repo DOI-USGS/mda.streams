@@ -8,6 +8,8 @@ source (i.e., as specified in a metab model config file)}
 locate_ts(site, var, type, src)
 }
 \arguments{
+\item{site}{character. The site ID}
+
 \item{var}{character. The variable name, e.g. "doobs", "disch", or "wtr"}
 
 \item{type}{character. The source type (e.g., "local", "proxy", "model")}

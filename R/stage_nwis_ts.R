@@ -21,6 +21,7 @@
 #'@export
 stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = FALSE, ...){
   
+  site_no <- dateTime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
   
   file_paths <- c()
   

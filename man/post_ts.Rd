@@ -12,12 +12,12 @@ post_ts(files, ...)
 \item{...}{Session object from \link{authenticate_sb}}
 }
 \description{
-
+Post a staged file from the local computer to ScienceBase
 }
 \examples{
 \dontrun{
 files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
-                times = c('2014-01-01 00:00','2014-01-01 05:00'))
+                        times = c('2014-01-01 00:00','2014-01-01 05:00'))
 post_ts(files, session = sbtools::authenticate_sb())
 }
 }

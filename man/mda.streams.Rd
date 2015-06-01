@@ -18,8 +18,12 @@ Center project data in particular, see \pkg{powstreams}.
 \section{Logging in}{
 
 
-  Use the \code{\link{authenticate_sb}} command from \pkg{sbtools} to
-  establish session credentials for working with ScienceBase.
+  Use the \code{\link[sbtools]{authenticate_sb}} command from \pkg{sbtools}
+  to establish session credentials for working with ScienceBase.
+
+  Use \code{\link{get_scheme}} and \code{\link{set_scheme}} to see/specify
+  the ScienceBase scheme to use. The default is "mda_streams", but another
+  option is "mda_streams_dev" for trial modifications to SB.
 }
 
 \section{Navigating ScienceBase}{
@@ -60,9 +64,6 @@ Center project data in particular, see \pkg{powstreams}.
   \item \code{\link{init_nwis_sites}} - generate a list of site IDs that meet
   data availability criteria
 
-  \item \code{\link{get_nwis_df}} - downloads data from NWIS to the local R
-  session
-
   }
 }
 
@@ -73,9 +74,6 @@ Center project data in particular, see \pkg{powstreams}.
 
   \item \code{\link{create_site}} - given a site ID, create an SB node for
   the site
-
-  \item \code{\link{post_nwis_ts}} - download the specified NWIS data and
-  post it to SB
 
   \item \code{\link{post_ts}} - given a data.frame with data, do a little
   format checking and post those data to SB. Where would such data come from?

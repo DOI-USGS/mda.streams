@@ -17,7 +17,7 @@ post_watershed(site, files, session)
 Returns SB id of newly created watershed item
 }
 \description{
-
+Posts a file from the local computer to ScienceBase.
 }
 \author{
 Luke Winslow

@@ -7,7 +7,7 @@
 #' @return character name of the scheme
 #' @export
 get_scheme <- function(warn=TRUE) {
-  if(exists("scheme", envi=pkg.env)) {
+  if(exists("scheme", envir=pkg.env)) {
     pkg.env$scheme
   } else {
     if(warn) warning("scheme has not been set")

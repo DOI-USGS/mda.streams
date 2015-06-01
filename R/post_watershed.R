@@ -1,16 +1,13 @@
-#'
-#'@title Post a new watershed shape to a site on SB
-#'
-#'@param site The unique site identifie?r
-#'@param files String vector of files that make up the shapefile
-#'@param session A SB session from \link{authenticate_sb}
-#'
-#'@return Returns SB id of newly created watershed item
-#'
-#'@author Luke Winslow
-#'
-#'
-#'@export
+#' Post a new watershed shape to a site on SB
+#' 
+#' Posts a file from the local computer to ScienceBase.
+#' 
+#' @param site The unique site identifie?r
+#' @param files String vector of files that make up the shapefile
+#' @param session A SB session from \link{authenticate_sb}
+#' @return Returns SB id of newly created watershed item
+#' @author Luke Winslow
+#' @export
 post_watershed = function(site, files, session){
 	#parent as site, scheme, type=watershed, key = site, title=watershed
 

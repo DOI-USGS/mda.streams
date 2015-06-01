@@ -24,26 +24,34 @@ config_to_metab(model, site, doobs.type, doobs.src, disch.type, disch.src,
 
 \item{wtr.src}{wtr data src}
 
-\item{config}{data.frame. As an alternative to all preceding arguments, a
-single config argument may be passed in. config is a one-row data.frame
-with columns corresponding precisely to the list of preceding arguments.}
+\item{config}{data.frame, or file/filename to read a data.frame from. As an
+alternative to all preceding arguments, this single config argument may be
+passed in. The data.frame columns must correspond precisely to the list of
+preceding arguments.}
 
-\item{config.row}{integer. The row number of the config data.frame to use for this particular model run.}
-
-\item{file}{character. File name or connection from which to read a config data.frame.}
+\item{row}{integer. The row number of the config data.frame to use for this
+particular model run.}
 }
 \description{
 Actually run the model as specified by the configuration arguments
 }
 \examples{
 suppressWarnings(config_to_metab(
-  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
+  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
+  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
 suppressWarnings(config_to_metab(config=data.frame(
-  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
+  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
+  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
+suppressWarnings(config_to_metab(config=stage_metab_config(
+  tag="0.0.1", strategy="try stage_metab_config",
+  site="nwis_04087142", filename=NULL)))
 \dontrun{
-config_to_metab(model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
+config_to_metab(
+  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
+  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
 config_to_metab(config=stage_metab_config(
-  tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL))
+  tag="0.0.1", strategy="try stage_metab_config",
+  site="nwis_04087142", filename=NULL))
 }
 }
 
