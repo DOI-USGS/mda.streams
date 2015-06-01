@@ -7,7 +7,7 @@ modeling jobs (one row/job per site-strategy combination). This tsv should
 reflect the full information needed to re-run a set of jobs. The jobs will
 probably, but not necessarily, be run on a Condor cluster.}
 \usage{
-stage_metab_config(tag, strategy, model = "metab_simple",
+stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   site = choose_sites(c("doobs", "disch", "wtr")),
   doobs = choose_data_source("doobs", site),
   disch = choose_data_source("disch", site), wtr = choose_data_source("wtr",

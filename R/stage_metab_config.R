@@ -20,8 +20,8 @@
 #' head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 #' stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)
 stage_metab_config <- function(
-  tag, strategy, 
-  model="metab_simple",
+  tag, strategy, date=Sys.time(), 
+  model="metab_mle",
   site=choose_sites(c("doobs","disch","wtr")), 
   doobs=choose_data_source("doobs", site),
   disch=choose_data_source("disch", site),
@@ -29,8 +29,9 @@ stage_metab_config <- function(
   filename="./condor_config.tsv") {
   
   # Create the config table
-  config <- data.frame(tag=tag, strategy=strategy, date=Sys.time(), 
-                       model=model, site=site, doobs=doobs, disch=disch, wtr=wtr)
+  config <- data.frame(tag=tag, strategy=strategy, date=date, 
+                       model=model, site=site, doobs=doobs, disch=disch, wtr=wtr, 
+                       stringsAsFactors=FALSE)
   
   # Write the table to file if requested
   if(!is.null(filename)) {
