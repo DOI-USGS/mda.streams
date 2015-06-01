@@ -2,21 +2,25 @@
 % Please edit documentation in R/get_ts_variables.R
 \name{get_ts_variables}
 \alias{get_ts_variables}
-\title{get a vector of timeseries variable name from a site or sites}
+\title{Get a vector of timeseries variable names}
 \usage{
 get_ts_variables(site = NULL, session = NULL)
 }
 \arguments{
-\item{site}{a valid mda.streams site (see \link{get_sites}) or NULL for all sites}
+\item{site}{a valid mda.streams site (see \link{get_sites}) or NULL for all
+sites}
 
-\item{session}{a valid sciencebase session (see \code{\link[sbtools]{authenticate_sb}}).
-Set \code{session = NULL} (default) for sites on sciencebase that are public.}
+\item{session}{a valid sciencebase session (see
+\code{\link[sbtools]{authenticate_sb}}). Set \code{session = NULL}
+(default) for sites on sciencebase that are public.}
 }
 \value{
-an alphabetically sorted character vector of unique timeseries variable names for given sites
+an alphabetically sorted character vector of unique timeseries
+  variable names for given sites
 }
 \description{
-get a vector of timeseries variable name from a site or sites
+get_ts_variables() returns a list of all possible timeseries variables, while
+get_ts_variables(site) returns the data available to a specific site.
 }
 \examples{
 get_ts_variables() #list all timeseries variable names

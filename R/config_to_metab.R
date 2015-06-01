@@ -85,24 +85,24 @@ config_to_metab <- function(model, site,
     do({
       rownames(.) <- .$sm_name
       .[,"shortname",drop=FALSE]})
-  ts_dfs <- lapply(names(data_needs), function(need) {
-    var <- var_codes[need,"shortname"]
-    type <- config[,paste0(shortname,".type")]
-    src <- config[,paste0(shortname,".src")]
-    site <- config[,"site"]
-    # Map inputs to SB query terms
-    ts_site <- switch(
-      type,
-      local=site,
-      proxy=src,
-      model=site)
-    ts_var <- switch(
-      type,
-      local=make_ts_name(var),
-      proxy=make_ts_name(var),
-      model=paste0(make_ts_name(var), ".", src))
-    download_ts(sites=ts_site, variable=ts_var) %>% read_ts()
-  })
+  #   ts_dfs <- lapply(rownames(var_codes), function(sm_name) {
+  #     var <- var_codes[sm_name,"shortname"]
+  #     type <- config[,paste0(var,".type")]
+  #     src <- config[,paste0(var,".src")]
+  #     site <- config[,"site"]
+  #     # Map inputs to SB query terms
+  #     ts_site <- switch(
+  #       type,
+  #       local=site,
+  #       proxy=src,
+  #       model=site)
+  #     ts_var <- switch(
+  #       type,
+  #       local=make_ts_name(var),
+  #       proxy=make_ts_name(var),
+  #       model=paste0(make_ts_name(var), ".", src))
+  #     #download_ts(sites=ts_site, variable=ts_var) %>% read_ts()
+  #   })
   # now just need to combine the dfs
   
   # Run the model
