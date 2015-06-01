@@ -4,7 +4,8 @@
 \alias{get_var_codes}
 \title{get project codes}
 \usage{
-get_var_codes(shortname, out = c("p_code", "sm_name", "longname"))
+get_var_codes(shortname, out = c("p_code", "sm_name", "longname"),
+  drop = TRUE)
 }
 \arguments{
 \item{shortname}{a valid shortname for project (e.g., 'disch')}
@@ -14,6 +15,9 @@ If there is only one, the result will be a vector/value. One or more of
 these options may be selected:
 \code{c("shortname","p_code","sm_name","longname")} (where \code{shortname}
 is also the rowname)}
+
+\item{drop}{logical. In data.frame subsetting, should a single column be
+dropped to a vector or a single row be dropped to a list?}
 }
 \value{
 vector or data.frame of the requested variables and outnames.
