@@ -95,3 +95,22 @@ parse_site_name <- function(site, out="sitenum", use_names=length(out)>1){
   }
   parsed
 }
+
+#' Split file path into contents
+#' @param file_path a valid file path for ts file
+#' @param out a character for desired output ('variable','site', or 'file_name')
+#' @return a character
+parse_ts_path <- function(file_path, out = "variable"){
+  
+  
+  base_file <- basename(file_path)
+  pieces <- strsplit(base_file, '[-.]')
+  site <- pieces[[1]][1]
+  variable = parse_ts_name(pieces[[1]][2])
+  out_values <- c(file_name = base_file,
+                    site = site,
+                    variable = variable)
+  
+  return(as.character(sapply(out, function(x)out_values[[x]])))
+  
+}
