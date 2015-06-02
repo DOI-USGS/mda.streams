@@ -11,7 +11,6 @@
 #'@importFrom unitted read_unitted
 #'@export
 read_ts = function(file){
-  
   if (length(file) != 1)
     stop('read_ts only supported for a single file')
   

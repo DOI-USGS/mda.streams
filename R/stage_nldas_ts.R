@@ -23,7 +23,7 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   if (length(variable) > 1) 
     stop ('variable must be single value.')
   
-  nwis_sites <- split_site(sites)
+  nwis_sites <- parse_site_name(sites)
   site_data <- readNWISsite(nwis_sites)
   
   lon_lat <- matrix(data = NA, ncol = length(sites), nrow = 2)

@@ -15,10 +15,10 @@
 #'@import tools
 #'@export
 download_ts=function(site, variable, folder = tempdir(), ...){
-  
+
   ts_variable <- make_ts_variable(variable)
   scheme = get_scheme()
-  
+
   # find item ID for download 
   item = query_item_identifier(scheme=scheme,type=ts_variable, 
                                key=site, ...)
@@ -34,7 +34,7 @@ download_ts=function(site, variable, folder = tempdir(), ...){
   if(nrow(file_list) < 1){
     stop("There is no file available in this item")
   }
-  
+
   destination  = file.path(folder, file_list$fname)
   out_destination = item_file_download(id = item$id, names = file_list$fname, destinations = destination, ...)
   
