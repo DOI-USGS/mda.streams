@@ -7,7 +7,7 @@
 read_ts(file)
 }
 \arguments{
-\item{file_handle}{a valid ts file handle}
+\item{file}{a valid ts file path}
 }
 \value{
 a timeseries data.frame
@@ -17,11 +17,14 @@ read ts format (timeseries) for mda.streams into data.frame
 }
 \examples{
 \dontrun{
-file <- download_ts(site = "nwis_06893820", variable = "baro", overwrite_file = TRUE)
-dissolved_oxygen <- read_ts(file)
+file <- download_ts(site = "nwis_06893820", variable = "baro")
+baro_pressure <- read_ts(file)
 }
 }
 \author{
 Jordan S. Read
+}
+\seealso{
+\code{\link{download_ts}}
 }
 

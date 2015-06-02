@@ -13,8 +13,7 @@ download_ts(site, variable, folder = tempdir(), ...)
 
 \item{folder}{string for a folder location}
 
-\item{...}{additional arguments passed to \code{\link[sbtools]{item_file_download}},
-for example \code{overwrite_file} or session object}
+\item{...}{additional arguments passed to \code{\link[sbtools]{query_item_identifier}},}
 }
 \value{
 file handle for downloaded file

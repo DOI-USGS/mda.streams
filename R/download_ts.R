@@ -3,8 +3,7 @@
 #'@param site a valid mda.streams site (see \link{get_sites})
 #'@param variable a valid variable name for timeseries data (see \link{get_ts_variables})
 #'@param folder string for a folder location
-#'@param ... additional arguments passed to \code{\link[sbtools]{item_file_download}}, 
-#'for example \code{overwrite_file} or session object
+#'@param ... additional arguments passed to \code{\link[sbtools]{query_item_identifier}}, 
 #'@return file handle for downloaded file
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
 #'@examples
@@ -16,7 +15,7 @@
 #'@export
 download_ts=function(site, variable, folder = tempdir(), ...){
 
-  ts_variable <- make_ts_variable(variable)
+  ts_variable <- paste0(pkg.env$ts_prefix, variable)
   scheme = get_scheme()
 
   # find item ID for download 
@@ -36,7 +35,7 @@ download_ts=function(site, variable, folder = tempdir(), ...){
   }
 
   destination  = file.path(folder, file_list$fname)
-  out_destination = item_file_download(id = item$id, names = file_list$fname, destinations = destination, ...)
+  out_destination = item_file_download(id = item$id, names = file_list$fname, destinations = destination)
   
   if(out_destination){
     return(destination)
