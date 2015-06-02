@@ -17,6 +17,10 @@ read_ts = function(file){
   
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
+  variable <- parse_ts_path(file, 'variable')
+  if (!verify_ts(df, variable))
+    stop('timeseries input for site',site,'and variable',varible,'is not valid')
+  
   df[, 1] <- as.POSIXct(df[, 1], tz = get_units(df[,1]))
   
   # -- to do: check that output format is the same needed for input of write_ts() --
