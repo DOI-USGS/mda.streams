@@ -1,4 +1,4 @@
-#' @title stage ndlas data into a time series file
+#' @title stage nldas data into a time series file
 #' @description get data from nldas and return a file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
