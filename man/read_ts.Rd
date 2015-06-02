@@ -10,7 +10,7 @@ read_ts(file)
 \item{file}{a valid ts file path}
 }
 \value{
-a timeseries data.frame
+a timeseries unitted data.frame
 }
 \description{
 read ts format (timeseries) for mda.streams into data.frame

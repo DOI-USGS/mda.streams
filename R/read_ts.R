@@ -1,7 +1,7 @@
 #'@title read ts format (timeseries) for mda.streams into data.frame
 #'@param file a valid ts file path
 #' @seealso \code{\link{download_ts}}
-#'@return a timeseries data.frame
+#'@return a timeseries unitted data.frame
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
