@@ -23,7 +23,7 @@ Imports:
     httr,
     streamMetabolizer,
     geoknife (>= 0.11.0),
-    unitted
+    unitted (>= 0.2.1)
 Suggests:
     testthat
 LazyLoad: yes
