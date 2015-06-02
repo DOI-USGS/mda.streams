@@ -23,7 +23,7 @@
 #'@export
 get_sites <- function(with_child_key = NULL, session = NULL, limit = 10000){
   
-  scheme <- 'mda_streams'
+  scheme <- get_scheme()
   type <- 'site_root'
 
   #get the superset of sites, which is used for both options

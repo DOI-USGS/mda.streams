@@ -27,7 +27,7 @@ get_ts_variables = function(site = NULL, session = NULL){
   if (is.null(site)){
     ts_variables <- ts_variables_superset()
   } else {
-    site_items <- query_item_identifier(scheme = 'mda_streams', key = site, session, limit = 10000)
+    site_items <- query_item_identifier(scheme = get_scheme(), key = site, session, limit = 10000)
     
     if (nrow(site_items) == 0){ 
       stop(site, ' does not exist')

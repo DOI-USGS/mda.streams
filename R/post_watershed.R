@@ -14,14 +14,14 @@ post_watershed = function(site, files, session){
 	##TODO: Check input
 	
 	#Check that it doesn't already exist
-	check = query_item_identifier('mda_streams','watershed', site, session)
+	check = query_item_identifier(get_scheme(),'watershed', site, session)
 	
 	if(nrow(check) > 0){
 		stop('Watershed item already exists for this site')
 	}
 	
 	#get site_root
-	site_root = query_item_identifier(scheme='mda_streams', type='site_root',
+	site_root = query_item_identifier(scheme=get_scheme(), type='site_root',
 												key=site, session)
 	
 	if(nrow(site_root) != 1){
@@ -30,7 +30,7 @@ post_watershed = function(site, files, session){
 	
 	ws_id = item_upload_create(site_root$id, files=files, session=session)
 	
-	item_update_identifier(ws_id, scheme='mda_streams', type='watershed',
+	item_update_identifier(ws_id, scheme=get_scheme(), type='watershed',
 												 key=site, session=session)
 	
 	item_update(ws_id, list('title'=unbox('watershed')), session)

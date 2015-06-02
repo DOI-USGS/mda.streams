@@ -27,7 +27,7 @@ get_watershed_WFS = function(site, session = NULL){
 
 get_watershed_item = function(site, session){
   # session not needed since items are public
-  identifier <- query_item_identifier(scheme = 'mda_streams', type = 'watershed', key = site,  session = session)
+  identifier <- query_item_identifier(scheme = get_scheme(), type = 'watershed', key = site,  session = session)
   
   watershed_id <- identifier$id
   
