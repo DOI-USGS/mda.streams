@@ -4,15 +4,15 @@
 \alias{create_site}
 \title{Create new site in SB}
 \usage{
-create_site(site, session, replace_existing = FALSE)
+create_site(site, replace_existing = FALSE, ...)
 }
 \arguments{
 \item{site}{Local site ID (e.g. nwis_09238475)}
 
-\item{session}{Session object from \code{\link[sbtools]{authenticate_sb}}}
-
 \item{replace_existing}{logical. Should an item that already exists be
 replaced?}
+
+\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 an item list

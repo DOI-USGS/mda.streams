@@ -4,13 +4,17 @@
 #' 
 #' @param site The unique site identifie?r
 #' @param files String vector of files that make up the shapefile
-#' @param session A SB session from \link{authenticate_sb}
+#' @param ... Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}
 #' @return Returns SB id of newly created watershed item
 #' @author Luke Winslow
 #' @export
-post_watershed = function(site, files, session){
+post_watershed = function(site, files, ...){
 	#parent as site, scheme, type=watershed, key = site, title=watershed
-
+	
+	#check session
+	session_check_reauth(...)
+	session = current_session()
+	
 	##TODO: Check input
 	
 	#Check that it doesn't already exist

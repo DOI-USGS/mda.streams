@@ -5,29 +5,31 @@
 #' 
 #' @param site a valid mda.streams site (see \link{get_sites}) or NULL for all 
 #'   sites
-#' @param session a valid sciencebase session (see 
-#'   \code{\link[sbtools]{authenticate_sb}}). Set \code{session = NULL} 
-#'   (default) for sites on sciencebase that are public.
+#' @param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}}, 
+#'   for example \code{username}
+#'
 #' @return an alphabetically sorted character vector of unique timeseries 
 #'   variable names for given sites
 #' @examples
-#' get_ts_variables() #list all timeseries variable names
+#' 
 #' \dontrun{
+#' get_ts_variables() #list all timeseries variable names
 #' get_ts_variables(site = 'nwis_01018035')
 #' }
 #' @import sbtools stringr
 #' @export
-get_ts_variables = function(site = NULL, session = NULL){
+get_ts_variables = function(site = NULL, ...){
   
   ts_pattern = pkg.env$ts_prefix
   
   ts_variables <- NULL
   
+  session_check_reauth(...)
   
   if (is.null(site)){
     ts_variables <- ts_variables_superset()
   } else {
-    site_items <- query_item_identifier(scheme = get_scheme(), key = site, session, limit = 10000)
+    site_items <- query_item_identifier(scheme = get_scheme(), key = site, limit = 10000)
     
     if (nrow(site_items) == 0){ 
       stop(site, ' does not exist')

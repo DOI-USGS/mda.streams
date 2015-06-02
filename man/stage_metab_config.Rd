@@ -50,8 +50,10 @@ reflect the full information needed to re-run a set of jobs. The jobs will
 probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
+\dontrun{
 head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_04087142", filename=NULL)
+  }
 }
 
