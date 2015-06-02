@@ -11,8 +11,9 @@
 #' @return an alphabetically sorted character vector of unique timeseries 
 #'   variable names for given sites
 #' @examples
-#' get_ts_variables() #list all timeseries variable names
+#' 
 #' \dontrun{
+#' get_ts_variables() #list all timeseries variable names
 #' get_ts_variables(site = 'nwis_01018035')
 #' }
 #' @import sbtools stringr

@@ -18,10 +18,10 @@ a character string for WFS url or NULL if watershed doesn't exist for site, or s
 get a WFS url from a site that has a 'watershed'
 }
 \examples{
+\dontrun{
 site <- "nwis_04165500"
 get_watershed_WFS(site)
 
-\dontrun{
 # will fail
 get_watershed_WFS('fake_site'))
 }

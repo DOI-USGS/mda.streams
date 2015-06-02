@@ -7,10 +7,11 @@
 #'@return a character string for WFS url or NULL if watershed doesn't exist for site, or site doesn't exist.
 #'@seealso \code{\link{get_watershed_WMS}}
 #'@examples
+#'
+#'\dontrun{
 #'site <- "nwis_04165500"
 #'get_watershed_WFS(site)
 #'
-#'\dontrun{
 #'# will fail
 #'get_watershed_WFS('fake_site'))
 #'}

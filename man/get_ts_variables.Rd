@@ -22,8 +22,8 @@ get_ts_variables() returns a list of all possible timeseries variables, while
 get_ts_variables(site) returns the data available to a specific site.
 }
 \examples{
-get_ts_variables() #list all timeseries variable names
 \dontrun{
+get_ts_variables() #list all timeseries variable names
 get_ts_variables(site = 'nwis_01018035')
 }
 }
