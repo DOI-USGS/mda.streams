@@ -3,8 +3,7 @@
 #'@param site a valid mda.streams site (see \link{get_sites})
 #'@param variable a valid variable name for timeseries data (see \link{get_ts_variables})
 #'@param folder string for a folder location
-#'@param ... additional arguments passed to \code{\link[sbtools]{query_item_identifier}} 
-#'and \code{\link[sbtools]{query_item_identifier}} 
+#'@param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}} 
 #'
 #'@return file handle for downloaded file
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
@@ -24,10 +23,10 @@ download_ts=function(site, variable, folder = tempdir(), ...){
 
   # find item ID for download 
   item = query_item_identifier(scheme=scheme,type=ts_variable, 
-                               key=site, ...)
+                               key=site)
   
   # find file name for download (get filename)
-  file_list = item_list_files(item$id, ...)
+  file_list = item_list_files(item$id)
   
   #check how many file names are coming back, we need only one  
   if(nrow(file_list) > 1){

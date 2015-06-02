@@ -4,15 +4,14 @@
 \alias{get_sites}
 \title{get site IDS from sciencebase}
 \usage{
-get_sites(with_child_key = NULL, session = NULL, limit = 10000)
+get_sites(with_child_key = NULL, limit = 10000, ...)
 }
 \arguments{
 \item{with_child_key}{limit sites to those with children matching the specified key}
 
-\item{session}{arguments passed to sbtools \code{\link[sbtools]{authenticate_sb}} for authentication.
-Not needed if parent of sites is public}
-
 \item{limit}{numeric. Max number of sites to return. Default 10000}
+
+\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 a character vector of "site_root" titles (keys)
@@ -26,8 +25,8 @@ get_sites()
 }
 \dontrun{
 # get sites if they are private
-session <- authenticate_sb(username, password)
-get_sites(session = session, limit = 10)
+
+get_sites(limit = 10)
 # get sites with water temperature
 get_sites(with_child_key = 'ts_wtr')
 }

@@ -1,15 +1,18 @@
 #' Create new site in SB
 #' 
 #' @param site Local site ID (e.g. nwis_09238475)
-#' @param session Session object from \code{\link[sbtools]{authenticate_sb}}
+#' @param ... Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}
 #' @param replace_existing logical. Should an item that already exists be
 #'   replaced?
 #' @return an item list
 #' @author Corinna Gries
 #' @import sbtools
 #' @export
-create_site <- function(site, session, replace_existing = FALSE){
+create_site <- function(site, replace_existing = FALSE, ...){
   
+	session_check_reauth(...)
+	session = current_session()
+	
   #check that it doesn't already exits
   item = query_item_identifier(scheme='mda_streams',type="site_root", 
                                key=site, session=session)
