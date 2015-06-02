@@ -32,7 +32,7 @@ get_var_codes <- function(shortname, out=c("p_code","units","sm_name","longname"
         'stage', '00065',   'ft',          NA,          'gage height',
         'depth',  NA,       'm',          'depth',      'stream depth',
         'par',   '99988',   'umol/m2/s',  'light',      'photosynthetically active radiation',
-        'baro',  'pressfc',  NA,           NA,          'barometric pressure',
+        'baro',  'pressfc', 'Pa',           NA,          'barometric pressure',
         'sw',    'dswrfsfc', NA,           NA,          'downwelling shortwave radiation'), 
     ncol=length(header_names), byrow=TRUE,
     dimnames=list(NULL, header_names)) %>%
