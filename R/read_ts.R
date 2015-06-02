@@ -17,9 +17,10 @@ read_ts = function(file){
   
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
+  site <- parse_ts_path(file, 'site')
   variable <- parse_ts_path(file, 'variable')
   if (!verify_ts(df, variable))
-    stop('timeseries input for site',site,'and variable',varible,'is not valid')
+    stop('timeseries input for site',site,'and variable',variable,'is not valid')
   
   df[, 1] <- as.POSIXct(df[, 1], tz = get_units(df[,1]))
   

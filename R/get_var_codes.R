@@ -25,15 +25,15 @@ get_var_codes <- function(shortname, out=c("p_code","units","sm_name","longname"
   header_names <- c("shortname","p_code","units","sm_name","longname")
   codes <- matrix(
     data=
-      c('doobs', '00300',   'mg L^-1',       'DO.obs',     'dissolved oxygen concentration',
-        'dosat',  NA,       'mg L^-1',       'DO.sat',     'hypothetical dissolved oxygen concentration at saturation',
-        'wtr',   '00010',   'degC',       'temp.water', 'water temperature',
+      c('doobs', '00300',   'mg L^-1',        'DO.obs',     'dissolved oxygen concentration',
+        'dosat',  NA,       'mg L^-1',        'DO.sat',     'hypothetical dissolved oxygen concentration at saturation',
+        'wtr',   '00010',   'degC',           'temp.water', 'water temperature',
         'disch', '00061',   'ft^3 s^-1',       NA,          'instantaneous discharge',
-        'stage', '00065',   'ft',          NA,          'gage height',
-        'depth',  NA,       'm',          'depth',      'stream depth',
-        'par',   '99988',   'umol m^-2 s^-1',  'light',      'photosynthetically active radiation',
-        'baro',  'pressfc', 'Pa',           NA,          'barometric pressure',
-        'sw',    'dswrfsfc', NA,           NA,          'downwelling shortwave radiation'), 
+        'stage', '00065',   'ft',              NA,          'gage height',
+        'depth',  NA,       'm',              'depth',      'stream depth',
+        'par',   '99988',   'umol m^-2 s^-1', 'light',      'photosynthetically active radiation',
+        'baro',  'pressfc', 'Pa',              NA,          'barometric pressure',
+        'sw',    'dswrfsfc', NA,               NA,          'downwelling shortwave radiation'), 
     ncol=length(header_names), byrow=TRUE,
     dimnames=list(NULL, header_names)) %>%
     as.data.frame(stringsAsFactors=FALSE) %>%

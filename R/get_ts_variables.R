@@ -22,13 +22,10 @@ get_ts_variables = function(site = NULL, ...){
   
   ts_pattern = pkg.env$ts_prefix
   
-  ts_variables <- NULL
-  
-  session_check_reauth(...)
-  
   if (is.null(site)){
     ts_variables <- ts_variables_superset()
   } else {
+    session_check_reauth(...)
     site_items <- query_item_identifier(scheme = get_scheme(), key = site, limit = 10000)
     
     if (nrow(site_items) == 0){ 
@@ -37,6 +34,7 @@ get_ts_variables = function(site = NULL, ...){
     var_names <- site_items$title
     is_ts <- str_detect(var_names, pattern = ts_pattern)
     
+    ts_variables <- NULL
     for (i in which(is_ts)){
       ts_variables = c(ts_variables, str_split_fixed(string = var_names[i], pattern = ts_pattern, n = 2)[2])
     }
