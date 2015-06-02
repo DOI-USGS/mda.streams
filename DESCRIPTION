@@ -18,12 +18,11 @@ Imports:
     dataRetrieval (>= 2.1.2),
     dplyr,
     sbtools,
-    R.utils,
     stringr,
     jsonlite, 
     httr,
     streamMetabolizer,
-    geoknife (>= 0.10.3),
+    geoknife (>= 0.11.0),
     unitted
 Suggests:
     testthat
