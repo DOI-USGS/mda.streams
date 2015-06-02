@@ -16,6 +16,8 @@ since the file names will be variants on the core variable names (e.g.,
 wtr.local, wtr.model, etc.)
 }
 \examples{
+\dontrun{
 choose_sites()
+}
 }
 
