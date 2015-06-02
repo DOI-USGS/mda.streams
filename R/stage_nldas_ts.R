@@ -44,7 +44,7 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variables = p_code, times = times)
   
-  data_out <- geoknife(stencil, fabric, knife, REQUIRE_FULL_COVERAGE = 'false', wait = TRUE) %>%
+  data_out <- geoknife(stencil, fabric, REQUIRE_FULL_COVERAGE = 'false', wait = TRUE) %>%
     loadOutput(with.units = TRUE)
   
   file_paths <- c()
