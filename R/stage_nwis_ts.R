@@ -36,7 +36,7 @@ stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = 
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
         setNames(c("DateTime",variable)) %>%
-        u(c('UTC','units'))
+        u(c('UTC',get_var_codes(variable, 'units')))
 
       fpath <- write_ts(site_data, un_sites[i], variable, folder)
       file_paths <- c(file_paths, fpath)

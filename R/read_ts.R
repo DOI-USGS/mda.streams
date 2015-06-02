@@ -1,24 +1,25 @@
 #'@title read ts format (timeseries) for mda.streams into data.frame
-#'@param file_handle a valid ts file handle
-#'@return a timeseries data.frame
+#'@param file a valid ts file path
+#' @seealso \code{\link{download_ts}}
+#'@return a timeseries unitted data.frame
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
-#'file_handle <- download_ts(site = 'nwis_01408500', variable = 'doobs')
-#'dissolved_oxygen <- read_ts(file_handle)
+#'file <- download_ts(site = "nwis_06893820", variable = "baro")
+#'baro_pressure <- read_ts(file)
 #'}
 #'@import tools 
+#'@importFrom unitted read_unitted get_units
 #'@export
-read_ts = function(file_handle){
+read_ts = function(file){
+  if (length(file) != 1)
+    stop('read_ts only supported for a single file')
   
-  ts_extension <- pkg.env$ts_extension
-  file_extension <- file_ext(file_handle)
-  if (file_extension != ts_extension){
-    stop(file_handle, ' cannot be read by this function')
-  }
+  df <- read_unitted(file, sep=pkg.env$ts_delim)
   
-  ts_delim <- pkg.env$ts_delim()
-  df <- read.table(file_handle, header = TRUE, sep = ts_delim)
-  df[, 1] <- as.POSIXct(df[, 1], tz = 'GMT')
+  df[, 1] <- as.POSIXct(df[, 1], tz = get_units(df[,1]))
+  
+  # -- to do: check that output format is the same needed for input of write_ts() --
   return(df)
 }
+
