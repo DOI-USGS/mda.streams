@@ -3,7 +3,7 @@
 #' Post a staged file from the local computer to ScienceBase
 #' 
 #' @param files a string vector of file paths for POSTing
-#' @param ... Session object from \link{authenticate_sb}
+#' @param ... args passed to \code{\link[sbtools]{session_check_reauth}}
 #' @author Luke Winslow, Corinna Gries, Jordan S Read
 #' @import sbtools
 #' @examples
@@ -14,40 +14,33 @@
 #' }
 #' @export
 post_ts = function(files, ...){
-	
   
-  scheme = get_scheme()
-  
-	for (i in 1:length(files)){
-	  out <- parse_ts_path(files[i], out = c('variable','site','file_name'))
-	  
-    base_file <- out[3]
+  for (i in 1:length(files)){
+    # parse the file name to determine where to post the file
+    out <- parse_ts_path(files[i], out = c('variable','site','file_name'))
     site <- out[2]
-	  ts_varname = make_ts_name(out[1])
-	  #Check if item already exists
-	  if (item_exists(scheme=scheme,type=ts_varname, 
-	                 key=site, ...)){
-	    stop('The ', ts_varname, ' timeseries for this site already exists')
-	  }
+    ts_varname = make_ts_name(out[1])
     
-    #find site root
-    site_root = query_item_identifier(scheme= scheme, 
-                                      type='site_root', key=site, ...)
-    if(nrow(site_root) != 1){
+    # Check if item already exists
+    if (!is.na(locate_ts(variable=out[1], siteid=site, ...))) {
+      stop('The ', ts_varname, ' timeseries for this site already exists')
+    }
+    
+    # find the site root
+    site_root = locate_site(site, ...)
+    if(is.na(site_root)){
       stop('There is no site root available for site:', site)
     }
     
-	  #Create item if it does not exist
-	  ts_item = item_create(parent_id=site_root$id, 
-	                        title=ts_varname, ...)
-	  
-	  #attach file to item
-	  item_append_files(ts_item, files = files[i], ...)
-	  
-	  #tag item with our special identifier
-	  item_update_identifier(ts_item, scheme = scheme, type = ts_varname, 
-	                         key=site, ...)
+    # create the ts item if it does not exist
+    ts_item = item_create(parent_id=site_root, title=ts_varname, ...)
     
-	}
-
+    # attach data file to ts item
+    item_append_files(ts_item, files = files[i], ...)
+    
+    # tag item with our special identifiers
+    item_update_identifier(ts_item, scheme = get_scheme(), type = ts_varname, key=site, ...)
+    
+  }
+  
 }

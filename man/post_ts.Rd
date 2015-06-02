@@ -9,7 +9,7 @@ post_ts(files, ...)
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
 
-\item{...}{Session object from \link{authenticate_sb}}
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Post a staged file from the local computer to ScienceBase
