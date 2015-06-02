@@ -4,22 +4,19 @@
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
-#'file_handle <- download_ts(site = 'nwis_01408500', variable = 'doobs')
-#'dissolved_oxygen <- read_ts(file_handle)
+#'file <- download_ts(site = "nwis_06893820", variable = "baro", overwrite_file = TRUE)
+#'dissolved_oxygen <- read_ts(file)
 #'}
 #'@import tools 
+#'@importFrom unitted read_unitted
 #'@export
-read_ts = function(file_handle){
+read_ts = function(file){
   
+  if (length(file) != 1)
+    stop('read_ts only supported for a single file')
   
-  ts_extension <- get_ts_extension()
-  file_extension <- file_ext(file_handle)
-  if (file_extension != ts_extension){
-    stop(file_handle, ' cannot be read by this function')
-  }
-  
-  ts_delim <- get_ts_delim()
-  df <- read.table(file_handle, header = TRUE, sep = ts_delim)
-  df[, 1] <- as.POSIXct(df[, 1], tz = 'GMT')
+  gz_con <- gzfile(file, open = "rb")
+  df <- read_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
+  close(gz_con)
   return(df)
 }
