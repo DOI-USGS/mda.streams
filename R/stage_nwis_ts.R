@@ -12,9 +12,11 @@
 #'@importFrom unitted u write_unitted
 #'
 #'@examples
+#'
+#'\dontrun{
 #'files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "doobs",
 #'                  times = c('2014-01-01','2014-02-01'))
-#'\dontrun{
+#'                  
 #'files <- stage_nwis_ts(sites = get_sites(), variable = "par",
 #'                  times = c('2014-01-01', '2014-02-01'))
 #'}
