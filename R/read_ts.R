@@ -9,7 +9,7 @@
 #'baro_pressure <- read_ts(file)
 #'}
 #'@import tools 
-#'@importFrom unitted read_unitted
+#'@importFrom unitted read_unitted get_units
 #'@export
 read_ts = function(file){
   if (length(file) != 1)
@@ -17,5 +17,9 @@ read_ts = function(file){
   
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
+  df[, 1] <- as.POSIXct(df[, 1], tz = get_units(df[,1]))
+  
+  # -- to do: check that output format is the same needed for input of write_ts() --
   return(df)
 }
+
