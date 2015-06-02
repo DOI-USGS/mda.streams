@@ -18,7 +18,6 @@ Imports:
     dataRetrieval (>= 2.1.2),
     dplyr,
     sbtools,
-    R.utils,
     stringr,
     jsonlite, 
     httr,
