@@ -6,9 +6,7 @@
 \alias{mda.streams-package}
 \title{Functions for managing the Continental Stream Metabolism data on ScienceBase}
 \description{
-mda.streams stands for Model-Data Assimilation for Streams. We're not
-entirely sure whether this is the appropriate name, but it has its roots in
-good intentions.
+mda.streams stands for Macro Data Analysis for Streams.
 }
 \details{
 For lower-level functions generic to all ScienceBase tasks, see

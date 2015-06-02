@@ -4,7 +4,7 @@
 \alias{parse_site_name}
 \title{Split site name into siteID (used for NWIS site numbers)}
 \usage{
-parse_site_name(site, out = "sitenum", use_names = TRUE)
+parse_site_name(site, out = "sitenum", use_names = length(out) > 1)
 }
 \arguments{
 \item{site}{a valid powstreams site (e.g., "nwis_0338102")}

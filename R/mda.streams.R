@@ -1,8 +1,6 @@
 #' Functions for managing the Continental Stream Metabolism data on ScienceBase
 #' 
-#' mda.streams stands for Model-Data Assimilation for Streams. We're not 
-#' entirely sure whether this is the appropriate name, but it has its roots in 
-#' good intentions.
+#' mda.streams stands for Macro Data Analysis for Streams.
 #' 
 #' For lower-level functions generic to all ScienceBase tasks, see 
 #' \pkg{sbtools}. For higher-level functions that make it easy to use the Powell
