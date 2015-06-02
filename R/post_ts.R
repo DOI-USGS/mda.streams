@@ -19,10 +19,11 @@ post_ts = function(files, ...){
   scheme = get_scheme()
   
 	for (i in 1:length(files)){
-    base_file <- basename(files[i])
-    pieces <- strsplit(base_file, '[-.]')
-    site <- pieces[[1]][1]
-	  ts_varname = pieces[[1]][2]
+	  out <- parse_ts_path(files[i], out = c('variable','site','file_name'))
+	  
+    base_file <- out[3]
+    site <- out[2]
+	  ts_varname = make_ts_name(out[1])
 	  #Check if item already exists
 	  if (item_exists(scheme=scheme,type=ts_varname, 
 	                 key=site, ...)){
