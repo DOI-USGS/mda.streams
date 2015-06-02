@@ -5,6 +5,7 @@
 #' @param logic how to join the constraints in with_timeseries, ...: is any of 
 #'   the listed parameters sufficient, or do you need all of them to be 
 #'   available for a site to qualify?
+#' @param ... additional querying arguments yet to be implemented
 #' @return a character vector of site IDs
 #' @export
 #' @examples 

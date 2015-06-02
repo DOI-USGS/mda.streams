@@ -13,6 +13,8 @@ those listed in get_ts_variables())}
 \item{logic}{how to join the constraints in with_timeseries, ...: is any of
 the listed parameters sufficient, or do you need all of them to be
 available for a site to qualify?}
+
+\item{...}{additional querying arguments yet to be implemented}
 }
 \value{
 a character vector of site IDs

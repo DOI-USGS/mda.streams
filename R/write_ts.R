@@ -9,7 +9,7 @@
 write_ts <- function(data, site, variable, folder){
   
   if (!verify_ts(data, variable))
-    stop('timeseries input for site',site,'and variable',varible,'is not valid')
+    stop('timeseries input for site',site,'and variable',variable,'is not valid')
   
   if (nrow(data) == 0)
     invisible(NULL)

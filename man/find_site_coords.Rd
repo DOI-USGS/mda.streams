@@ -21,7 +21,8 @@ a data.frame of
 Pull the latitude and longitude of a site from ScienceBase
 }
 \examples{
-find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501")) # middle one has missing coords
+# middle site has missing coords:
+find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
 find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501"), format="geoknife")
 }
 
