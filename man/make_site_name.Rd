@@ -5,14 +5,14 @@
 \title{Translate a site name from database and site number to a
 ScienceBase+mda.streams site ID}
 \usage{
-make_site_name(database = c("nwis", "nldas"), sitenum)
+make_site_name(sitenum, database = c("nwis"))
 }
 \arguments{
-\item{database}{a character or character vector of databases, probably in
-\code{c("nwis","nldas")}.}
-
 \item{sitenum}{integer or character, coercible to character, representing the
 site code as used by the database.}
+
+\item{database}{a character or character vector of databases from which the
+site ID is derived, probably \code{"nwis"}.}
 }
 \value{
 site ID in ScienceBase and mda.streams lingo
