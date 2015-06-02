@@ -4,13 +4,12 @@
 \alias{get_watershed_WFS}
 \title{get WFS from site}
 \usage{
-get_watershed_WFS(site, session = NULL)
+get_watershed_WFS(site, ...)
 }
 \arguments{
 \item{site}{a site identifier}
 
-\item{session}{arguments passed to sbtools \code{query_item_identifier} for authentication.
-Not needed if parent of sites is public}
+\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 a character string for WFS url or NULL if watershed doesn't exist for site, or site doesn't exist.
