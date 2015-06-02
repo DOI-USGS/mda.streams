@@ -4,7 +4,7 @@
 \alias{get_var_codes}
 \title{get project codes}
 \usage{
-get_var_codes(shortname, out = c("p_code", "sm_name", "longname"),
+get_var_codes(shortname, out = c("p_code", "units", "sm_name", "longname"),
   drop = TRUE)
 }
 \arguments{

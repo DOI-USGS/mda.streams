@@ -20,21 +20,22 @@
 #' get_var_codes('disch', 'p_code')
 #' get_var_codes('baro', c('longname','p_code'))
 #' @export
-get_var_codes <- function(shortname, out=c("p_code","sm_name","longname"), drop=TRUE){
+get_var_codes <- function(shortname, out=c("p_code","units","sm_name","longname"), drop=TRUE){
   
+  header_names <- c("shortname","p_code","units","sm_name","longname")
   codes <- matrix(
     data=
-      c('doobs', '00300',   'DO.obs',     'dissolved oxygen concentration',
-        'dosat',  NA,       'DO.sat',     'hypothetical dissolved oxygen concentration at saturation',
-        'wtr',   '00010',   'temp.water', 'water temperature',
-        'disch', '00061',    NA,          'instantaneous discharge',
-        'stage', '00065',    NA,          'gage height',
-        'depth',  NA,       'depth',      'stream depth',
-        'par',   '99988',   'light',      'photosynthetically active radiation',
-        'baro',  'pressfc',  NA,          'barometric pressure',
-        'sw',    'dswrfsfc', NA,          'downwelling shortwave radiation'), 
-    ncol=4, byrow=TRUE,
-    dimnames=list(NULL, c("shortname","p_code","sm_name","longname"))) %>%
+      c('doobs', '00300',   'mg/L',       'DO.obs',     'dissolved oxygen concentration',
+        'dosat',  NA,       'mg/L',       'DO.sat',     'hypothetical dissolved oxygen concentration at saturation',
+        'wtr',   '00010',   'degC',       'temp.water', 'water temperature',
+        'disch', '00061',   'ft3/s',       NA,          'instantaneous discharge',
+        'stage', '00065',   'ft',          NA,          'gage height',
+        'depth',  NA,       'm',          'depth',      'stream depth',
+        'par',   '99988',   'umol/m2/s',  'light',      'photosynthetically active radiation',
+        'baro',  'pressfc',  NA,           NA,          'barometric pressure',
+        'sw',    'dswrfsfc', NA,           NA,          'downwelling shortwave radiation'), 
+    ncol=length(header_names), byrow=TRUE,
+    dimnames=list(NULL, header_names)) %>%
     as.data.frame(stringsAsFactors=FALSE) %>%
     do({rownames(.) <- .$shortname; .})
   
