@@ -1,18 +1,25 @@
-#'@title get a vector of timeseries variable name from a site or sites
-#'@param site a valid mda.streams site (see \link{get_sites}) or NULL for all sites
-#'@param session a valid sciencebase session (see \code{\link[sbtools]{authenticate_sb}}). 
-#'Set \code{session = NULL} (default) for sites on sciencebase that are public.
-#'@return an alphabetically sorted character vector of unique timeseries variable names for given sites
-#'@examples
-#'get_ts_variables() #list all timeseries variable names
-#'\dontrun{
-#'get_ts_variables(site = 'nwis_01018035')
-#'}
-#'@import sbtools stringr
-#'@export
+#' Get a vector of timeseries variable names
+#' 
+#' get_ts_variables() returns a list of all possible timeseries variables, while
+#' get_ts_variables(site) returns the data available to a specific site.
+#' 
+#' @param site a valid mda.streams site (see \link{get_sites}) or NULL for all 
+#'   sites
+#' @param session a valid sciencebase session (see 
+#'   \code{\link[sbtools]{authenticate_sb}}). Set \code{session = NULL} 
+#'   (default) for sites on sciencebase that are public.
+#' @return an alphabetically sorted character vector of unique timeseries 
+#'   variable names for given sites
+#' @examples
+#' get_ts_variables() #list all timeseries variable names
+#' \dontrun{
+#' get_ts_variables(site = 'nwis_01018035')
+#' }
+#' @import sbtools stringr
+#' @export
 get_ts_variables = function(site = NULL, session = NULL){
   
-  ts_pattern = get_ts_prefix()
+  ts_pattern = pkg.env$ts_prefix
   
   ts_variables <- NULL
   
@@ -43,6 +50,6 @@ get_ts_variables = function(site = NULL, session = NULL){
 }
 
 ts_variables_superset <- function(){
-  ts_variables <- c('doobs','wtr','disch','stage') # put this in sysdata.rda?
+  ts_variables <- rownames(get_var_codes())
   return(ts_variables)
 }

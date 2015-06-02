@@ -23,10 +23,11 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   if (length(variable) > 1) 
     stop ('variable must be single value.')
   
-  nwis_sites <- split_site(sites)
+  nwis_sites <- parse_site_name(sites)
   site_data <- readNWISsite(nwis_sites)
   
   lon_lat <- matrix(data = NA, ncol = length(sites), nrow = 2)
+  site_no <- dec_lat_va <- dec_long_va <- ".dplyr.var"
   for (i in 1:length(sites)){
     location <- filter(site_data, site_no == nwis_sites[i]) %>%
       select(dec_lat_va, dec_long_va) %>% 
@@ -38,7 +39,7 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
   lon_lat_df <- as.data.frame(lon_lat[, !rmv_sites])
   names(lon_lat_df) <- sites[!rmv_sites]
   
-  p_code <- get_var_codes(variable)
+  p_code <- get_var_codes(variable, "p_code")
   
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variables = p_code, times = times)
@@ -49,6 +50,7 @@ stage_nldas_ts <- function(sites, variable, times, folder = tempdir(), verbose =
     loadOutput(with.units = TRUE)
   
   file_paths <- c()
+  DateTime <- matches <- ".dplyr.var"
   for (i in 1:length(sites)){
     site_data <- select(data_out, DateTime, matches(sites[i]), variable, units) %>%
       filter(variable == p_code) %>%

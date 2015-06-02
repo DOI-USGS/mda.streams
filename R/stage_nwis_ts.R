@@ -21,16 +21,17 @@
 #'@export
 stage_nwis_ts <- function(sites, variable, times, folder = tempdir(), verbose = FALSE, ...){
   
+  site_no <- dateTime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
   
   file_paths <- c()
   
-  p_code <- get_var_codes(variable)
-  nwis_data <- readNWISuv(siteNumbers = split_site(sites), parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
+  p_code <- get_var_codes(variable, "p_code")
+  nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
   if (ncol(nwis_data)!=0){
     un_sites <- unique(sites)
     for (i in 1:length(un_sites)){
       
-      site <- split_site(un_sites[i])
+      site <- parse_site_name(un_sites[i])
       site_data <- filter(nwis_data, site_no == site) %>%
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%

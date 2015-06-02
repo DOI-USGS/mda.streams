@@ -18,8 +18,12 @@ Center project data in particular, see \pkg{powstreams}.
 \section{Logging in}{
 
 
-  Use the \code{\link{authenticate_sb}} command from \pkg{sbtools} to
-  establish session credentials for working with ScienceBase.
+  Use the \code{\link[sbtools]{authenticate_sb}} command from \pkg{sbtools}
+  to establish session credentials for working with ScienceBase.
+
+  Use \code{\link{get_scheme}} and \code{\link{set_scheme}} to see/specify
+  the ScienceBase scheme to use. The default is "mda_streams", but another
+  option is "mda_streams_dev" for trial modifications to SB.
 }
 
 \section{Navigating ScienceBase}{
@@ -60,9 +64,6 @@ Center project data in particular, see \pkg{powstreams}.
   \item \code{\link{init_nwis_sites}} - generate a list of site IDs that meet
   data availability criteria
 
-  \item \code{\link{get_nwis_df}} - downloads data from NWIS to the local R
-  session
-
   }
 }
 
@@ -73,9 +74,6 @@ Center project data in particular, see \pkg{powstreams}.
 
   \item \code{\link{create_site}} - given a site ID, create an SB node for
   the site
-
-  \item \code{\link{post_nwis_ts}} - download the specified NWIS data and
-  post it to SB
 
   \item \code{\link{post_ts}} - given a data.frame with data, do a little
   format checking and post those data to SB. Where would such data come from?
@@ -93,12 +91,8 @@ Center project data in particular, see \pkg{powstreams}.
 
   \item \code{build_data.R} - creates the data needed within the package
 
-  \item \code{\link{split_site}} - currently only used in get_nwis_df. Takes
-  site ID (e.g. "nwis_2345621") and returns the part after the underscore.
-
   \item \code{mda_helpers.R} - utilities used within the package. Includes
-  functions make_ts_variable, get_ts_prefix, get_ts_extension, get_ts_delim,
-  and get_title.
+  functions make_ts_name, parse_ts_name, make_site_name, and parse_site_name.
 
   }
 }

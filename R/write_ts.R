@@ -11,7 +11,7 @@ write_ts <- function(data, site, variable, folder){
   if (nrow(data) == 0)
     invisible(NULL)
   
-  ts_name <- make_ts_variable(variable)
+  ts_name <- make_ts_name(variable)
   
   fpath <- file.path(folder, sprintf('%s-%s.%s.gz', site, ts_name, pkg.env$ts_extension))
   gz_con <- gzfile(fpath, "w")

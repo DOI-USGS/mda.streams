@@ -10,7 +10,7 @@
 #' @examples
 #' choose_sites()
 choose_sites <- function(required_vars=c("disch","doobs","wtr")) {
-  required_vars <- paste0(pkg.env$ts_prefix, required_vars)
+  required_vars <- make_ts_name(required_vars)
   var_sites <- lapply(required_vars, function(var) { 
     get_sites(with_child_key=var)
   })

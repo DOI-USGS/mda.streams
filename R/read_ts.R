@@ -11,14 +11,13 @@
 #'@export
 read_ts = function(file_handle){
   
-  
-  ts_extension <- get_ts_extension()
+  ts_extension <- pkg.env$ts_extension
   file_extension <- file_ext(file_handle)
   if (file_extension != ts_extension){
     stop(file_handle, ' cannot be read by this function')
   }
   
-  ts_delim <- get_ts_delim()
+  ts_delim <- pkg.env$ts_delim()
   df <- read.table(file_handle, header = TRUE, sep = ts_delim)
   df[, 1] <- as.POSIXct(df[, 1], tz = 'GMT')
   return(df)

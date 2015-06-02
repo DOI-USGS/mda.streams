@@ -7,12 +7,14 @@
 choose_data_source(var, site)
 }
 \arguments{
-\item{var}{character. The variable name, e.g. "doobs", "disch", or "wtr"}
+\item{var}{character. The variable name, e.g. "doobs", "disch", or "wtr".}
+
+\item{site}{character. The site code or codes for which to choose data.}
 }
 \value{
 a two-column, one-row data.frame with variable-specific column names
-  and cell values indicating the source type (e.g., "local", "proxy", "model") and
-  specific source (e.g., "nwis_01474000", "bird")
+  and cell values indicating the source type (e.g., "local", "proxy",
+  "model") and specific source (e.g., "nwis_01474000", "bird")
 }
 \description{
 Select the specific data source to use for a given variable and site

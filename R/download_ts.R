@@ -19,7 +19,7 @@
 #'@export
 download_ts=function(site, variable, destination = NULL, session = NULL, ...){
   
-  ts_variable <- make_ts_variable(variable)
+  ts_variable <- make_ts_name(variable)
   
   # find item ID for download 
   item = query_item_identifier(scheme='mda_streams',type=ts_variable, 
@@ -38,13 +38,13 @@ download_ts=function(site, variable, destination = NULL, session = NULL, ...){
   }
   
   if(is.null(destination)){
-    destination  = file.path(tempdir(), paste0(paste(site, ts_variable, sep = "_" ), '.', get_ts_extension()))
+    destination  = file.path(tempdir(), paste0(paste(site, ts_variable, sep = "_" ), '.', pkg.env$ts_extension))
   }
 
   #set the intermediate (staging) destination for downloaded gzip file
   if (isGzipped(file_list$url)){
-    stage_file <- tempfile(fileext = paste0(get_ts_extension(), '.gz'))
-    stage_file = item_file_download(id = item$id, name = file_list$fname, stage_file, ...)
+    stage_file <- tempfile(fileext = paste0(pkg.env$ts_extension, '.gz'))
+    stage_file = item_file_download(id = item$id, names = file_list$fname, stage_file, ...)
     out_destination = gunzip(stage_file, destname = destination,
                              temporary = FALSE, skip = FALSE, overwrite = FALSE, remove = TRUE, BFR.SIZE = 1e+07)
   } else {

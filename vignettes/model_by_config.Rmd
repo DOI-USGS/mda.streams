@@ -1,0 +1,22 @@
+---
+title: "Model metabolism wtih a config file"
+author: "Alison Appling"
+date: "June 1, 2015"
+output: html_document
+---
+
+This package facilitates multiple runs of a metabolism model, each time modeling one or many sites, to compare modeling methods.
+
+```{r}
+config_df <- stage_metab_config(
+  tag="0.0.1", strategy="model_by_config vignette", 
+  model="metab_mle",
+  site=c("nwis_03067510","nwis_11285500","nwis_07109500"), 
+  filename=NULL)
+config_df
+```
+
+```{r}
+config_to_metab(config=config_df[1,])
+```
+
