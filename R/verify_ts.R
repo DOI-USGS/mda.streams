@@ -8,11 +8,13 @@
 #' @return TRUE if is valid, FALSE if not
 #' 
 #' @examples 
+#' \dontrun{
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "doobs",
 #'                  times = c('2014-01-01','2014-02-01'))
 #' ts <- read_ts(files[1]) 
 #' verify_ts(ts)     
 #' verify_ts(ts, variable = 'doobs', checks = c('cols', 'units', 'variable'))            
+#' }
 #' 
 #' @keywords internal
 #' @export
