@@ -29,7 +29,6 @@ get_watershed_item = function(site, ...){
 	
 	session_check_reauth(...)
 	
-  # session not needed since items are public
   identifier <- query_item_identifier(scheme = get_scheme(), type = 'watershed', key = site)
   
   watershed_id <- identifier$id
