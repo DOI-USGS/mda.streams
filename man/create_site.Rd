@@ -20,6 +20,13 @@ an item list
 \description{
 Create new site in SB
 }
+\examples{
+\dontrun{
+locate_site("nwis_08437710", format="url")
+create_site("nwis_08437710") # returns list()
+create_site("nwis_08437710", replace_existing=TRUE)
+}
+}
 \author{
 Corinna Gries
 }
