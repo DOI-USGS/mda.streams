@@ -4,12 +4,12 @@
 \alias{delete_ts}
 \title{Delete a time series item and its data}
 \usage{
-delete_ts(variable, siteid, verbose = TRUE, ...)
+delete_ts(var_src, site_name, verbose = TRUE, ...)
 }
 \arguments{
-\item{variable}{the variable name, e.g., "doobs"}
+\item{var_src}{the variable name, e.g., "doobs_nwis"}
 
-\item{siteid}{the site ID, e.g. "nwis_02322688", whose folder you want}
+\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
 
 \item{verbose}{logical. Should status messages be given?}
 
@@ -20,7 +20,8 @@ Deletes timeseries objects specified by all combinations of variable and site
 }
 \examples{
 \dontrun{
-mda.streams:::delete_ts(c("doobs","wtr"), c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
+mda.streams:::delete_ts(c("doobs_nwis","wtr_nwis"),
+  c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
 }
 }
 \keyword{internal}

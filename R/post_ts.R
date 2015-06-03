@@ -25,39 +25,38 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
     if(verbose) message('posting file ', files[i])
     
     # parse the file name to determine where to post the file
-    out <- parse_ts_path(files[i], out = c('variable','site','file_name'))
-    site <- out[2]
-    ts_varname = make_ts_name(out[1])
+    out <- parse_ts_path(files[i], out = c('ts_name','var_src','site_name','file_name'))
+    site <- out$site_name
     
     # Check if item already exists
-    ts_id <- locate_ts(variable=out[1], siteid=site, ...)
+    ts_id <- locate_ts(var_src=out$var_src, site_name=out$site_name, ...)
     if (!is.na(ts_id)) {
-      if(verbose) message('the ', ts_varname, ' timeseries for site ', site, ' already exists')
+      if(verbose) message('the ', out$ts_name, ' timeseries for site ', out$site_name, ' already exists')
       switch(on_exists,
              "stop"={ stop('item already exists and on_exists="stop"') },
              "skip"={ next },
              "append"={ stop("oops - append isn't implemented yet") },
              "replace"={ if(verbose) message("deleting timeseries item before replacement")
-               delete_ts(out[1], site, verbose=verbose, ...)
+               delete_ts(out$var_src, out$site_name, verbose=verbose, ...)
              })
     }
     
     # find the site root
-    site_root = locate_site(site, ...)
+    site_root = locate_site(out$site_name, ...)
     if(is.na(site_root)){
-      stop('no site folder available for site ', site)
+      stop('no site folder available for site ', out$site_name)
     }
     
-    if(verbose) message("posting file to site ", site, ", timeseries ", ts_varname)
+    if(verbose) message("posting file to site ", out$site_name, ", timeseries ", out$ts_name)
     
     # create the ts item if it does not exist
-    ts_item = item_create(parent_id=site_root, title=ts_varname, ...)
+    ts_item = item_create(parent_id=site_root, title=out$ts_name, ...)
     
     # attach data file to ts item
     item_append_files(ts_item, files = files[i], ...)
     
     # tag item with our special identifiers
-    item_update_identifier(ts_item, scheme = get_scheme(), type = ts_varname, key=site, ...)
+    item_update_identifier(ts_item, scheme = get_scheme(), type = out$ts_name, key=out$site_name, ...)
     
   }
   
@@ -72,14 +71,15 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
 #' @keywords internal
 #' @examples 
 #' \dontrun{
-#' mda.streams:::delete_ts(c("doobs","wtr"), c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
+#' mda.streams:::delete_ts(c("doobs_nwis","wtr_nwis"), 
+#'   c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
 #' }
-delete_ts <- function(variable, siteid, verbose=TRUE, ...) {
+delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
   
-  lapply(setNames(variable, variable), function(var) {
-    lapply(setNames(siteid, siteid), function(site) {
+  lapply(setNames(var_src, var_src), function(var) {
+    lapply(setNames(site_name, site_name), function(site) {
       # find the item id
-      ts_id <- locate_ts(variable=var, siteid=site, ...)
+      ts_id <- locate_ts(var_src=var, site_name=site, ...)
       
       if(is.na(ts_id)) {
         if(verbose) message("skipping missing ", var, " timeseries for site ", site)

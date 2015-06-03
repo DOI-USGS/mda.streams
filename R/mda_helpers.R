@@ -1,40 +1,108 @@
+#' Translate a variable and data source into a var_src
+#' 
+#' @param var a variable shortname from get_var_codes(out="shortname"), e.g.,
+#'   "doobs"
+#' @param src a data source from the comma-separated lists in
+#'   get_var_codes(out="sources")
+make_var_src <- function(var, src) {
+  paste0(var, "_", src)
+}
+
+#' Translate a var_src into a variable and a source
+#' 
+#' @param var_src an underscore-separated combination of a variable and its data
+#'   source
+#' @param out the parsed fields to return.
+#' @param use_names logical. Should names/rownames be attached to the
+#'   vector/data.frame?
+#' @return if length(out)==1 a vector, else a data.frame
+parse_var_src <- function(var_src, out=c("var","src"), use_names=FALSE) {
+  splitcols <- c("var","src")
+  splits <- strsplit(var_src, "_")
+  parsed <- sapply(splits, function(split) split[match(out, splitcols)] )
+  if(!is.null(dim(parsed))) {
+    parsed <- parsed %>% t %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
+  }
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- var_src; .}) 
+      } else {
+        parsed %>% setNames(var_src)
+      }
+  }
+  parsed
+}
+
 #' Translate a timeseries name from mda.streams to ScienceBase
-#' @param variable a timeseries name[s] in mda.streams lingo (e.g., \code{wtr})
+#' @param var_var_src may be either a variable, e.g. "doobs", or a var_src, e.g.
+#'   "doobs_nwis".
+#' @param src a data source; optional if var_var_src is specified with both
+#'   variable and source
 #' @return timseries name[s] in ScienceBase lingo (e.g., "\code{ts_wtr})
-make_ts_name <- function(variable){
+make_ts_name <- function(var_var_src, src) {
+  # combine var & src
+  var_src <- if(!missing(src)) paste0(var_var_src, "_", src) else var_var_src
+  
   # error checking
-  if(any(ts_names <- substr(variable, 1, 3) == pkg.env$ts_prefix))
-    stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", variable[ts_names], collapse=", "))
-  if(any(non_var <- !(variable %in% get_ts_variables()))) 
-    stop("variable is not listed in get_ts_variables(): ", paste0("[", which(non_var), "] ", variable[non_var], collapse=", "))
+  if(any(ts_names <- substr(var_src, 1, 3) == pkg.env$ts_prefix))
+    stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", var_src[ts_names], collapse=", "))
+  if(any(not_two <- sapply(strsplit(var_src, "_"), function(split) length(split)!=2)))
+    stop("improper var_src format: ", paste0("[", which(not_two), "] ", var_src[not_two], collapse=", "))
+  #   if(any(non_var <- !(variable %in% get_ts_variables()))) 
+  #     stop("variable is not listed in get_ts_variables(): ", paste0("[", which(non_var), "] ", variable[non_var], collapse=", "))
+  # would be nice to check here for variable-src match using get_var_codes. see issue #12
   
   # renaming
-  paste(pkg.env$ts_prefix, variable, sep="")
+  paste0(pkg.env$ts_prefix, var_src)
 }
 
 #' Translate a timeseries name from ScienceBase to mda.streams
-#' @param ts_name timeseries name[s] in ScienceBase lingo (e.g., "\code{ts_wtr})
-#' @param use_names logical. Should the return vector be named according to the input values?
+#' 
+#' @import dplyr
+#' @param ts_name timeseries name[s] in ScienceBase lingo (e.g., 
+#'   \code{ts_wtr_nwis})
+#' @param out character, length 1 or 2 selected from \code{c("var_src", 
+#'   "variable", "src")} indicating whether you want to get back the 
+#'   joined variable & source, the variable, the src, or some 
+#'   combination.
+#' @param use_names logical. Should the return vector or data.frame be named
+#'   according to the input values?
 #' @return timeseries name[s]in mda.streams lingo (e.g., \code{wtr})
-parse_ts_name <- function(ts_name, use_names=TRUE) {
+parse_ts_name <- function(ts_name, out="var_src", use_names=length(out)>1) {
   # error checking
+  splitcols <- c("var_src", "variable", "src")
   if(any(non_ts <- substr(ts_name, 1, 3) != pkg.env$ts_prefix)) 
     stop("unexpected ts variable prefix in: ", paste0("[", which(non_ts), "] ", ts_name[non_ts], collapse=", "))
+  if(any(non_out <- !(out %in% splitcols)))
+    stop("unexpected output requested: ", paste0(out[non_out]))
   
   # split
   splits <- strsplit(ts_name, '_')
-  if(any(not_two <- sapply(splits, function(split) length(split) != 2)))
-    stop("ts_name doesn't have two parts split on '_': ", paste0("[", which(not_two), "] ", ts_name[not_two], collapse=", "))
+  if(any(not_three <- sapply(splits, function(split) length(split) != 3)))
+    stop("ts_name doesn't have three parts split on '_': ", paste0("[", which(not_three), "] ", ts_name[not_three], collapse=", "))
   
-  # renaming
-  varnames <- vapply(splits, '[', vector('character', length = 1), 2, USE.NAMES=use_names)
-  
-  # more error checking
+  # more error checking. could also check source here using get_var_codes
+  varnames <- sapply(splits, '[', 2)
   if(any(non_var <- !(varnames %in% get_ts_variables())))
     stop("variable isn't listed in get_ts_variables(): ", paste0("[", which(non_var), "] ", varnames[non_var], collapse=", "))
-    
+  
+  # renaming
+  parsed <- sapply(splits, function(split) replace(split, 1, paste0(split[2],"_",split[3]))[match(out, splitcols)] )
+  if(!is.null(dim(parsed))) {
+    parsed <- parsed %>% t %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
+  }
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- ts_name; .}) 
+      } else {
+        parsed %>% setNames(ts_name)
+      }
+  }
+  
   # return
-  varnames
+  parsed
 }
 
 #' Translate a site name from database and site number to a 
@@ -58,7 +126,7 @@ make_site_name <- function(sitenum, database=c("nwis")) {
 }
 
 #' Split site name into siteID (used for NWIS site numbers)
-#' @param site a valid powstreams site (e.g., "nwis_0338102")
+#' @param site_name a valid ScienceBase site (e.g., "nwis_0338102")
 #' @param out character, length 1 or 2 selected from 
 #'   \code{c("database","sitenum")} indicating whether you want to get back the 
 #'   database, the site number, or both.
@@ -67,50 +135,83 @@ make_site_name <- function(sitenum, database=c("nwis")) {
 #' @return the database, sitenum, or both. If both, the return value is a 
 #'   data.frame; otherwise it's a vector.
 #' @import dplyr
-parse_site_name <- function(site, out="sitenum", use_names=length(out)>1){
+parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
   # split first
   splitcols <- c("database","sitenum")
-  splits <- strsplit(site, '_')
+  splits <- strsplit(site_name, '_')
   
   # error checking
   if(any(not_two <- sapply(splits, function(split) length(split) != 2)))
-    stop("site doesn't have two parts split on '_': ", paste0("[", which(not_two), "] ", site[not_two], collapse=", "))
+    stop("site doesn't have two parts split on '_': ", paste0("[", which(not_two), "] ", site_name[not_two], collapse=", "))
   expected_databases <- eval(formals(make_site_name)$database)
   database <- sapply(splits, '[', match("database", splitcols))
   if(any(bad_db <- !(database %in% expected_databases)))
-    stop("unexpected database: ", paste0("[", which(bad_db), "] ", site[bad_db], collapse=", "))
+    stop("unexpected database: ", paste0("[", which(bad_db), "] ", site_name[bad_db], collapse=", "))
   
   # renaming   
   parsed <- sapply(splits, '[', match(out, splitcols))
   if(!is.null(dim(parsed))) {
-    parsed <- parsed %>% t %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols)
+    parsed <- parsed %>% t %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
   }
   if(use_names) {
     parsed <- 
       if(is.data.frame(parsed)) {
-        parsed %>% do({rownames(.) <- site; .}) 
+        parsed %>% do({rownames(.) <- site_name; .}) 
       } else {
-        parsed %>% setNames(site)
+        parsed %>% setNames(site_name)
       }
   }
   parsed
 }
 
+#' Create a standardized file name for specific file contents
+#' 
+#' @param site_name the full site name, e.g., 'nwis_06893820'
+#' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
+#' @param folder the folder to write the file in, or missing
+#' @return a full file path
+make_ts_path <- function(site_name, ts_name, folder) {
+  # basic error checking - let parse_site_name and parse_ts_name return any errors
+  parse_site_name(site_name)
+  parse_ts_name(ts_name)
+  
+  file_name <- sprintf('%s-%s.%s.%s', site_name, ts_name, pkg.env$ts_extension, (gz_extension="gz"))
+  if(missing(folder)) {
+    file.path(file_name) # pretty sure this does absolutely nothing
+  } else {
+    file.path(folder, file_name)
+  }
+}
+
+
 #' Split file path into contents
+#' @import dplyr
 #' @param file_path a valid file path for ts file
-#' @param out a character for desired output ('variable','site', or 'file_name')
+#' @param out a character for desired output ('file_name', 'site_name', 'ts_name', or any of the out names from parse_ts_name or parse_site_name)
+#' @param use_names logical. Should the return vector be named according to the
+#'   input values?
 #' @return a character
-parse_ts_path <- function(file_path, out = "variable"){
+parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=length(out)>1) {
   
+  file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
+  splits <- strsplit(file_name, '[-.]')
+  parsed <- data.frame(
+    file_name = file_name, 
+    site_name = sapply(splits, "[", 1),
+    ts_name = sapply(splits, "[", 2),
+    stringsAsFactors=FALSE)
+  parsed <- parsed %>%
+    bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "variable", "src"), use_names=FALSE)) %>%
+    bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE))
   
-  base_file <- basename(file_path)
-  pieces <- strsplit(base_file, '[-.]')
-  site <- pieces[[1]][1]
-  variable = parse_ts_name(pieces[[1]][2])
-  out_values <- c(file_name = base_file,
-                    site = site,
-                    variable = variable)
-  
-  return(as.character(sapply(out, function(x)out_values[[x]])))
-  
+  parsed <- parsed[,out]
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- file_name; .}) 
+      } else {
+        parsed %>% setNames(file_name)
+      }
+  }
+  parsed
 }

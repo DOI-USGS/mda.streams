@@ -4,8 +4,8 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, on_exists = c("stop", "skip", "append", "replace"),
-  verbose = TRUE, ...)
+post_ts(files, on_exists = c("stop", "skip", "replace"), verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
