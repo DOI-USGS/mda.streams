@@ -17,7 +17,7 @@ read ts format (timeseries) for mda.streams into data.frame
 }
 \examples{
 \dontrun{
-file <- download_ts(site = "nwis_06893820", variable = "baro")
+file <- download_ts(site = "nwis_06893820", var_src = "baro_nldas")
 baro_pressure <- read_ts(file)
 }
 }

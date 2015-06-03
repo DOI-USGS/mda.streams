@@ -1,8 +1,8 @@
 #' Higher-level site querying function
 #' 
-#' @param with_timeseries character vector of timeseries variables (i.e., 1+ of 
+#' @param with_var_src character vector of timeseries variables (i.e., 1+ of 
 #'   those listed in get_ts_variables())
-#' @param logic how to join the constraints in with_timeseries, ...: is any of 
+#' @param logic how to join the constraints in with_var_src, ...: is any of 
 #'   the listed parameters sufficient, or do you need all of them to be 
 #'   available for a site to qualify?
 #' @param ... additional querying arguments yet to be implemented
@@ -11,16 +11,16 @@
 #' @examples 
 #' \dontrun{
 #'   find_sites()
-#'   find_sites(with_timeseries=c("wtr","doobs"), logic="any")
+#'   find_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
 #' }
-find_sites <- function(with_timeseries = NULL, logic=c("all","any"), ...) {
+find_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   
   logic <- match.arg(logic)
   
-  if(is.null(with_timeseries)){
+  if(is.null(with_var_src)){
     sites <- get_sites()
   } else {
-    types <- make_ts_name(variable = with_timeseries)
+    types <- make_ts_name(with_var_src)
     sites <- vector('character')
     for (k in 1:length(types)){
       sites <- append(sites, get_sites(with_child_key = types[k]))

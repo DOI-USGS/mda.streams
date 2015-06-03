@@ -4,10 +4,10 @@
 \alias{locate_site}
 \title{Find a site folder on ScienceBase}
 \usage{
-locate_site(siteid, format = c("id", "url"), ...)
+locate_site(site_name, format = c("id", "url"), ...)
 }
 \arguments{
-\item{siteid}{the site ID, e.g. "nwis_02322688", whose folder you want}
+\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
 
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}

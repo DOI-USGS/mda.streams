@@ -4,13 +4,13 @@
 \alias{locate_ts}
 \title{Find a timeseries item on ScienceBase}
 \usage{
-locate_ts(variable = "doobs", siteid = "nwis_02322688", format = c("id",
-  "url"), ...)
+locate_ts(var_src = "doobs_nwis", site_name = "nwis_02322688",
+  format = c("id", "url"), ...)
 }
 \arguments{
-\item{variable}{the variable name, e.g., "doobs"}
+\item{var_src}{the variable name, e.g., "doobs_nwis"}
 
-\item{siteid}{the site ID, e.g. "nwis_02322688", whose folder you want}
+\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
 
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}

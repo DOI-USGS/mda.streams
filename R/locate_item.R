@@ -57,7 +57,7 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
 
 #' Find a site folder on ScienceBase
 #' 
-#' @param siteid the site ID, e.g. "nwis_02322688", whose folder you want
+#' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want
 #' @inheritParams locate_item
 #' @export
 #' @examples 
@@ -67,16 +67,16 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
 #' locate_site("nwis_notasite", format="url")
 #' testthat::expect_error(locate_site("notasite", format="url"))
 #' }
-locate_site <- function(siteid, format=c("id","url"), ...) {
-  siteid <- make_site_name(parse_site_name(siteid)) # check that the site name is reasonably valid
+locate_site <- function(site_name, format=c("id","url"), ...) {
+  site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=siteid, type="site_root", format=format, ...)
+  locate_item(key=site_name, type="site_root", format=format, ...)
 }
 
 #' Find a timeseries item on ScienceBase
 #' 
-#' @param variable the variable name, e.g., "doobs"
-#' @param siteid the site ID, e.g. "nwis_02322688", whose folder you want
+#' @param var_src the variable name, e.g., "doobs_nwis"
+#' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want
 #' @inheritParams locate_item
 #' @export
 #' @examples 
@@ -86,9 +86,9 @@ locate_site <- function(siteid, format=c("id","url"), ...) {
 #' locate_ts("doobs", "nwis_notasite", format="url")
 #' testthat::expect_error(locate_ts("notavar", "nwis_notasite"))
 #' }
-locate_ts <- function(variable="doobs", siteid="nwis_02322688", format=c("id","url"), ...) {
-  variable <- make_ts_name(variable) # check that the variable name is valid and add prefix
-  siteid <- make_site_name(parse_site_name(siteid)) # check that the site name is reasonably valid
+locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), ...) {
+  var_src <- make_ts_name(var_src) # check that the variable name is valid and add prefix
+  site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
   format <- switch(match.arg(format), id="id", url="item_url")
-  locate_item(key=siteid, type=variable, format=format, ...)
+  locate_item(key=site_name, type=var_src, format=format, ...)
 }

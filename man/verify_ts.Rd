@@ -4,12 +4,12 @@
 \alias{verify_ts}
 \title{verify timeseries data.frame format and contents}
 \usage{
-verify_ts(data, variable, checks = c("cols", "tz", "units", "variable"))
+verify_ts(data, var_src, checks = c("cols", "tz", "units", "variable"))
 }
 \arguments{
 \item{data}{a \code{\link[unitted]{unitted}} data.frame with date and value}
 
-\item{variable}{optional name for timeseries. If supplied, will check variable column name}
+\item{var_src}{optional name for timeseries. If supplied, will check variable column name}
 
 \item{checks}{tests to run on the data ('cols', 'tz', 'units', 'variable')}
 }

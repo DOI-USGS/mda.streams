@@ -1,7 +1,7 @@
 #'@title download timeseries data to local file destination
 #'@description download a timeseries file to a user-specified (or temp file) location
 #'@param site a valid mda.streams site (see \link{get_sites})
-#'@param variable a valid variable name for timeseries data (see \link{get_ts_variables})
+#'@param var_src a valid variable name for timeseries data (see \link{get_ts_variables})
 #'@param folder string for a folder location
 #'@param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}} 
 #'
@@ -9,14 +9,14 @@
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
 #'@examples
 #'\dontrun{
-#'download_ts(site = 'nwis_06893300', variable = 'doobs')
+#'download_ts(site = 'nwis_06893300', var_src = 'doobs_nwis')
 #'}
 #'@import sbtools 
 #'@import tools
 #'@export
-download_ts=function(site, variable, folder = tempdir(), ...){
+download_ts=function(site, var_src, folder = tempdir(), ...){
 
-  ts_variable <- paste0(pkg.env$ts_prefix, variable)
+  ts_variable <- paste0(pkg.env$ts_prefix, var_src)
   scheme = get_scheme()
   
   session_check_reauth(...)
