@@ -6,7 +6,7 @@
 #'@param times a length 2 vector of POSIXct dates
 #'@param folder a folder to place the file outputs in (defaults to temp directory)
 #'@param verbose provide verbose output (currently not implemented)
-#'@param ... additional arguments passed to \code{\link{readNWISuv}} and \code{\link[unitted]{write_unitted}}
+#'@param ... additional arguments passed to \code{\link{readNWISuv}}
 #'@return a character vector of file handles
 #'@importFrom dataRetrieval readNWISuv
 #'@importFrom unitted u write_unitted

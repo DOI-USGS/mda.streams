@@ -18,7 +18,7 @@ stage_nwis_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
 
 \item{verbose}{provide verbose output (currently not implemented)}
 
-\item{...}{additional arguments passed to \code{\link{readNWISuv}} and \code{\link[unitted]{write_unitted}}}
+\item{...}{additional arguments passed to \code{\link{readNWISuv}}}
 }
 \value{
 a character vector of file handles

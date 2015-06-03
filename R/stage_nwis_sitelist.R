@@ -1,19 +1,21 @@
 #'@title generate nwis site_ids for given p_codes
 #'@description finds all NWIS sites that meet given data requirements
-#'
+#'  
 #'@param p_codes a character vector of NWIS p_codes
 #'@param stateCd character vector of state codes, or "all" for all data.
+#'@param folder directory path, or NULL, indicating where to save the file or
+#'  (NULL) to return it as a character vector
 #'@import dplyr
 #'@importFrom dataRetrieval readNWISdata
 #'@return a character vector of NWIS sites, appended with 'nwis_'
-#'
-#'@examples
-#'\dontrun{
-#'sites <- init_nwis_sites(p_codes = c('00095', '00060', '00010', '00300'), 
-#'                stateCd=c("wi","mi"))
-#'}
+#'  
+#' @examples
+#' \dontrun{
+#' sites <- stage_nwis_sitelist(p_codes = c('00095', '00060', '00010', '00300'), 
+#'                              stateCd=c("wi","mi"))
+#' }
 #'@export
-init_nwis_sites <- function(p_codes, stateCd){
+stage_nwis_sitelist <- function(p_codes, stateCd, folder = NULL) {
   
   parm_cd <- ""
   site_no <- ""
@@ -57,7 +59,11 @@ init_nwis_sites <- function(p_codes, stateCd){
     }
   }
   
-  sites <- paste("nwis",sites,sep="_")
+  sites <- make_site_name(sites, database="nwis")
+  
+  if(!is.null(folder)) {
+    writeLines(sites, con=file.path(folder, 'nwis_sitelist.txt'))
+  }
   
   return(sites)
 
