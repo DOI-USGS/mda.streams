@@ -4,15 +4,17 @@
 \alias{stage_nwis_sitelist}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-stage_nwis_sitelist(p_codes, stateCd, folder = NULL)
+stage_nwis_sitelist(p_codes, state_codes, folder = NULL, verbose = TRUE)
 }
 \arguments{
 \item{p_codes}{a character vector of NWIS p_codes}
 
-\item{stateCd}{character vector of state codes, or "all" for all data.}
+\item{state_codes}{character vector of state codes, or "all" for all data.}
 
 \item{folder}{directory path, or NULL, indicating where to save the file or
 (NULL) to return it as a character vector}
+
+\item{verbose}{logical. Should status messages be given?}
 }
 \value{
 a character vector of NWIS sites, appended with 'nwis_'
@@ -22,8 +24,12 @@ finds all NWIS sites that meet given data requirements
 }
 \examples{
 \dontrun{
-sites <- stage_nwis_sitelist(p_codes = c('00095', '00060', '00010', '00300'),
-                             stateCd=c("wi","mi"))
+sites <- stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'),
+  state_codes=c("wi","mi"))
+sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"),
+  state_codes=c("all"), verbose=TRUE)
+sites_file <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"),
+  state_codes=c("wi"), folder=tempdir()); readLines(sites_file)
 }
 }
 
