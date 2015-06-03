@@ -3,6 +3,9 @@
 #' Post a staged file from the local computer to ScienceBase
 #' 
 #' @param files a string vector of file paths for POSTing
+#' @param on_exists character specifying an action when a file to post already
+#'   exists on ScienceBase
+#' @param verbose logical. Should status messages be given?
 #' @param ... args passed to \code{\link[sbtools]{session_check_reauth}}
 #' @author Luke Winslow, Corinna Gries, Jordan S Read
 #' @import sbtools
@@ -13,24 +16,39 @@
 #' post_ts(files, session = sbtools::authenticate_sb())
 #' }
 #' @export
-post_ts = function(files, ...){
+post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, ...){
+  
+  # check inputs
+  on_exists <- match.arg(on_exists)
   
   for (i in 1:length(files)){
+    if(verbose) message('posting file ', files[i])
+    
     # parse the file name to determine where to post the file
     out <- parse_ts_path(files[i], out = c('variable','site','file_name'))
     site <- out[2]
     ts_varname = make_ts_name(out[1])
     
     # Check if item already exists
-    if (!is.na(locate_ts(variable=out[1], siteid=site, ...))) {
-      stop('The ', ts_varname, ' timeseries for this site already exists')
+    ts_id <- locate_ts(variable=out[1], siteid=site, ...)
+    if (!is.na(ts_id)) {
+      if(verbose) message('the ', ts_varname, ' timeseries for site ', site, ' already exists')
+      switch(on_exists,
+             "stop"={ stop('item already exists and on_exists="stop"') },
+             "skip"={ next },
+             "append"={ stop("oops - append isn't implemented yet") },
+             "replace"={ if(verbose) message("deleting timeseries item before replacement")
+               delete_ts(out[1], site, verbose=verbose, ...)
+             })
     }
     
     # find the site root
     site_root = locate_site(site, ...)
     if(is.na(site_root)){
-      stop('There is no site root available for site:', site)
+      stop('no site folder available for site ', site)
     }
+    
+    if(verbose) message("posting file to site ", site, ", timeseries ", ts_varname)
     
     # create the ts item if it does not exist
     ts_item = item_create(parent_id=site_root, title=ts_varname, ...)
@@ -43,4 +61,44 @@ post_ts = function(files, ...){
     
   }
   
+}
+
+#' Delete a time series item and its data
+#' 
+#' Deletes timeseries objects specified by all combinations of variable and site
+#' 
+#' @inheritParams locate_ts
+#' @param verbose logical. Should status messages be given?
+#' @keywords internal
+#' @examples 
+#' \dontrun{
+#' mda.streams:::delete_ts(c("doobs","wtr"), c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
+#' }
+delete_ts <- function(variable, siteid, verbose=TRUE, ...) {
+  
+  lapply(setNames(variable, variable), function(var) {
+    lapply(setNames(siteid, siteid), function(site) {
+      # find the item id
+      ts_id <- locate_ts(variable=var, siteid=site, ...)
+      
+      if(is.na(ts_id)) {
+        if(verbose) message("skipping missing ", var, " timeseries for site ", site)
+        NULL
+      } else {
+        if(verbose) message("deleting ", var, " timeseries for site ", site)
+        
+        # delete any data files from the item
+        item_rm_files(ts_id) 
+        
+        # sleep to give time for full deletion
+        for(wait in 1:20) {
+          Sys.sleep(0.2)
+          if(nrow(item_list_files(ts_id)) == 0) break
+        }
+        
+        # delete the item itself
+        item_rm(ts_id) 
+      }
+    })
+  })
 }

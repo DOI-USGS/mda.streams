@@ -28,12 +28,14 @@ post_site <- function(sites, replace_existing = FALSE, verbose = TRUE, ...){
     # if it already exists, either replace it or return without doing anything
     if(!is.na(item)) {
       if(replace_existing) {
+        if(isTRUE(verbose)) message("deleting site ", site, " before replacement")
         delete_site(site, verbose=verbose)
         for(wait in 1:10) {
           Sys.sleep(1) # sleep to give time for full deletion
           if(is.na(locate_site(site))) break
         }
       } else {
+        if(isTRUE(verbose)) message("ignoring existing site ", site)
         return(NA)
       }
     }
@@ -108,8 +110,8 @@ delete_site <- function(sites, verbose=TRUE, ...) {
     
     # sleep for a bit so it can finish deleting the children
     for(wait in 1:20) {
-      Sys.sleep(0.5) # sleep to give time for full deletion
-      if(is.na(locate_site(site)) == 0) break
+      Sys.sleep(1) # sleep to give time for full deletion
+      if(nrow(item_list_children(item, limit=2)) == 0) break
     }
     
     # delete the site folder
