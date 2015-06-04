@@ -48,8 +48,8 @@
 #'   
 #'   \itemize{
 #'   
-#'   \item \code{\link{init_nwis_sites}} - generate a list of site IDs that meet
-#'   data availability criteria
+#'   \item \code{\link{stage_nwis_sitelist}} - generate a list of site IDs that
+#'   meet data availability criteria
 #'   
 #'   }
 #'   
@@ -58,7 +58,7 @@
 #'   
 #'   \itemize{
 #'   
-#'   \item \code{\link{create_site}} - given a site ID, create an SB node for 
+#'   \item \code{\link{post_site}} - given a site ID, create an SB node for 
 #'   the site
 #'   
 #'   \item \code{\link{post_ts}} - given a data.frame with data, do a little 

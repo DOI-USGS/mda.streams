@@ -4,12 +4,18 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, ...)
+post_ts(files, on_exists = c("stop", "skip", "replace"), verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
 
-\item{...}{Session object from \link{authenticate_sb}}
+\item{on_exists}{character specifying an action when a file to post already
+exists on ScienceBase}
+
+\item{verbose}{logical. Should status messages be given?}
+
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Post a staged file from the local computer to ScienceBase

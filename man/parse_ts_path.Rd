@@ -4,12 +4,16 @@
 \alias{parse_ts_path}
 \title{Split file path into contents}
 \usage{
-parse_ts_path(file_path, out = "variable")
+parse_ts_path(file_path, out = c("site_name", "ts_name"),
+  use_names = length(out) > 1)
 }
 \arguments{
 \item{file_path}{a valid file path for ts file}
 
-\item{out}{a character for desired output ('variable','site', or 'file_name')}
+\item{out}{a character for desired output ('file_name', 'site_name', 'ts_name', or any of the out names from parse_ts_name or parse_site_name)}
+
+\item{use_names}{logical. Should the return vector be named according to the
+input values?}
 }
 \value{
 a character

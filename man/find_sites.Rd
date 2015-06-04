@@ -4,13 +4,13 @@
 \alias{find_sites}
 \title{Higher-level site querying function}
 \usage{
-find_sites(with_timeseries = NULL, logic = c("all", "any"), ...)
+find_sites(with_var_src = NULL, logic = c("all", "any"), ...)
 }
 \arguments{
-\item{with_timeseries}{character vector of timeseries variables (i.e., 1+ of
+\item{with_var_src}{character vector of timeseries variables (i.e., 1+ of
 those listed in get_ts_variables())}
 
-\item{logic}{how to join the constraints in with_timeseries, ...: is any of
+\item{logic}{how to join the constraints in with_var_src, ...: is any of
 the listed parameters sufficient, or do you need all of them to be
 available for a site to qualify?}
 
@@ -25,7 +25,7 @@ Higher-level site querying function
 \examples{
 \dontrun{
   find_sites()
-  find_sites(with_timeseries=c("wtr","doobs"), logic="any")
+  find_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
 }
 }
 

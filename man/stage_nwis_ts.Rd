@@ -14,11 +14,12 @@ stage_nwis_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
 
 \item{times}{a length 2 vector of POSIXct dates}
 
-\item{folder}{a folder to place the file outputs in (defaults to temp directory)}
+\item{folder}{a folder to place the file outputs in (defaults to temp
+directory)}
 
 \item{verbose}{provide verbose output (currently not implemented)}
 
-\item{...}{additional arguments passed to \code{\link{readNWISuv}} and \code{\link[unitted]{write_unitted}}}
+\item{...}{additional arguments passed to \code{\link{readNWISuv}}}
 }
 \value{
 a character vector of file handles
@@ -28,11 +29,11 @@ get data from nwis and return created file handle
 }
 \examples{
 \dontrun{
-files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "doobs",
-                 times = c('2014-01-01','2014-02-01'))
+files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"),
+  variable = "doobs", times = c('2014-01-01','2014-02-01'), verbose=TRUE)
 
 files <- stage_nwis_ts(sites = get_sites(), variable = "par",
-                 times = c('2014-01-01', '2014-02-01'))
+  times = c('2014-01-01', '2014-02-01'))
 }
 }
 

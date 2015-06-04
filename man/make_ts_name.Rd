@@ -4,10 +4,14 @@
 \alias{make_ts_name}
 \title{Translate a timeseries name from mda.streams to ScienceBase}
 \usage{
-make_ts_name(variable)
+make_ts_name(var_var_src, src)
 }
 \arguments{
-\item{variable}{a timeseries name[s] in mda.streams lingo (e.g., \code{wtr})}
+\item{var_var_src}{may be either a variable, e.g. "doobs", or a var_src, e.g.
+"doobs_nwis".}
+
+\item{src}{a data source; optional if var_var_src is specified with both
+variable and source}
 }
 \value{
 timseries name[s] in ScienceBase lingo (e.g., "\code{ts_wtr})

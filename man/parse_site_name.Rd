@@ -4,10 +4,10 @@
 \alias{parse_site_name}
 \title{Split site name into siteID (used for NWIS site numbers)}
 \usage{
-parse_site_name(site, out = "sitenum", use_names = length(out) > 1)
+parse_site_name(site_name, out = "sitenum", use_names = length(out) > 1)
 }
 \arguments{
-\item{site}{a valid powstreams site (e.g., "nwis_0338102")}
+\item{site_name}{a valid ScienceBase site (e.g., "nwis_0338102")}
 
 \item{out}{character, length 1 or 2 selected from
 \code{c("database","sitenum")} indicating whether you want to get back the

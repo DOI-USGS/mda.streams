@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage_nldas_ts.R
 \name{stage_nldas_ts}
 \alias{stage_nldas_ts}
-\title{stage ndlas data into a time series file}
+\title{stage nldas data into a time series file}
 \usage{
 stage_nldas_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
   ...)

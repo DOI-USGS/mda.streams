@@ -3,7 +3,7 @@
 #' Checks to see a given data.frame meets project criteria
 #' 
 #' @param data a \code{\link[unitted]{unitted}} data.frame with date and value
-#' @param variable optional name for timeseries. If supplied, will check variable column name
+#' @param var_src optional name for timeseries. If supplied, will check variable column name
 #' @param checks tests to run on the data ('cols', 'tz', 'units', 'variable')
 #' @return TRUE if is valid, FALSE if not
 #' 
@@ -18,16 +18,16 @@
 #' 
 #' @keywords internal
 #' @export
-verify_ts <- function(data, variable, checks = c('cols', 'tz', 'units', 'variable')){
+verify_ts <- function(data, var_src, checks = c('cols', 'tz', 'units', 'variable')){
   
   tests <- list('cols' = function(x,...) ncol(x) == 2,
                 'tz' = function(x,...) get_units(x[,1]) == 'UTC',
-                'units' = function(x,v,...) get_units(x[,2]) == get_var_codes(v, 'units'),
+                'units' = function(x,v,...) get_units(x[,2]) == get_var_codes(parse_var_src(v,"var"), 'units'),
                 'variable' = function(x,v,...) names(x)[2] == v)
   
   
   for (check in checks){
-    if (!tests[[check]](x = data, v = variable))
+    if (!tests[[check]](x = data, v = var_src))
       return(FALSE)
   }
   return(TRUE)

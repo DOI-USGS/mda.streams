@@ -23,7 +23,7 @@ get_ts_variables = function(site = NULL, ...){
   ts_pattern = pkg.env$ts_prefix
   
   if (is.null(site)){
-    ts_variables <- ts_variables_superset()
+    ts_variables <- get_var_codes(out="shortname")
   } else {
     session_check_reauth(...)
     site_items <- query_item_identifier(scheme = get_scheme(), key = site, limit = 10000)
@@ -40,16 +40,11 @@ get_ts_variables = function(site = NULL, ...){
     }
     ts_variables = unique(ts_variables)
     
-    if (any(!ts_variables %in% ts_variables_superset())){
+    if (any(!ts_variables %in% get_var_codes(out="shortname"))){
       warning('some variables from ', site, ' not found in all-site catalog. ')
     }
   }
   
   ts_variables <- sort(ts_variables)
-  return(ts_variables)
-}
-
-ts_variables_superset <- function(){
-  ts_variables <- rownames(get_var_codes())
   return(ts_variables)
 }

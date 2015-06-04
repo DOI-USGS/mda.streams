@@ -5,7 +5,7 @@
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
-#'file <- download_ts(site = "nwis_06893820", variable = "baro")
+#'file <- download_ts(site = "nwis_06893820", var_src = "baro_nldas")
 #'baro_pressure <- read_ts(file)
 #'}
 #'@import tools 
@@ -17,12 +17,12 @@ read_ts = function(file){
   
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
-  site <- parse_ts_path(file, 'site')
-  variable <- parse_ts_path(file, 'variable')
-  if (!verify_ts(df, variable))
-    stop('timeseries input for site',site,'and variable',variable,'is not valid')
+  site <- parse_ts_path(file, 'site_name')
+  var_src <- parse_ts_path(file, 'var_src')
+  if (!verify_ts(df, var_src))
+    stop('timeseries input for site ',site,' and variable ',var_src,' is not valid')
   
-  df[, 1] <- as.POSIXct(df[, 1], tz = get_units(df[,1]))
+  df[, 1] <- u(as.POSIXct(df[, 1], tz = get_units(df[,1])), NA)
   
   # -- to do: check that output format is the same needed for input of write_ts() --
   return(df)

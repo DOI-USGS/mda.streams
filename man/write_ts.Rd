@@ -4,14 +4,16 @@
 \alias{write_ts}
 \title{write timeseries format compressed file}
 \usage{
-write_ts(data, site, variable, folder)
+write_ts(data, site, var, src, folder)
 }
 \arguments{
 \item{data}{unitted data.frame}
 
-\item{site}{the full site name (e.g., 'nwis_06893820')}
+\item{site}{the full site name, e.g., 'nwis_06893820'}
 
-\item{variable}{the variable name of the output}
+\item{var}{the variable name of the output, e.g., 'doobs'}
+
+\item{src}{the source of the data, e.g., 'nwis' or 'nldas'}
 
 \item{folder}{the folder to write the file in}
 }
