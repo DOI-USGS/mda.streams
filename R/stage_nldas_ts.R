@@ -2,8 +2,7 @@
 #' @description get data from nldas and return a file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param var short name of var as in
-#'   \code{\link{get_var_codes(out='var')}}
+#' @param var short name of var as in \code{get_var_codes(out='var')}
 #' @param times a length 2 vector of POSIXct dates
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
@@ -44,7 +43,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   if(isTRUE(verbose)) message("Finished downloading data; now writing to file[s]")
   
   file_paths <- c()
-  DateTime <- matches <- ".dplyr.var"
+  DateTime <- matches <- variable <- ".dplyr.var"
   for (i in 1:length(sites)){
 
     site_data <- select(data_out, DateTime, matches(sites[i]), variable, units) %>%

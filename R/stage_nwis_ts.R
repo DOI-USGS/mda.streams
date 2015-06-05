@@ -2,8 +2,7 @@
 #' @description get data from nwis and return created file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param var short name of variable as in
-#'   \code{\link{get_var_codes(out='var')}}
+#' @param var short name of variable as in \code{get_var_codes(out='var')}
 #' @param times a length 2 vector of POSIXct dates
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)

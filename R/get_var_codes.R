@@ -57,6 +57,7 @@ get_var_codes <- function(var, out=c(names(var_codes), "var_src"), type=c("ts","
   # var_src combination. by doing this here, after filtering by var and type, we
   # can provide the results with rows/elements sorted according to the
   # user-specified var argument (and still have multiple rows per var as needed)
+  . <- '.dplyr.var'
   var_src_codes <- var_codes %>%
     dplyr::select(var, src) %>%
     dplyr::group_by(var) %>%

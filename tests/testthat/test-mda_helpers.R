@@ -11,7 +11,7 @@ test_that("ts variable names can be made and parsed", {
   # make_ts_name
   expect_equal(mda.streams:::make_ts_name(c("doobs","doobs","wtr"), "nwis"), c("ts_doobs_nwis","ts_doobs_nwis","ts_wtr_nwis"))
   expect_equal(mda.streams:::make_ts_name(c("doobs_nwis","doobs_nwis","wtr_nwis")), c("ts_doobs_nwis","ts_doobs_nwis","ts_wtr_nwis"))
-  expect_equal(mda.streams:::make_ts_name(c("doobs","depth","wtr"), c("nwis","calc","nwis")), c("ts_doobs_nwis","ts_depth_calc","ts_wtr_nwis"))
+  expect_equal(mda.streams:::make_ts_name(c("doobs","depth","wtr"), c("nwis","google","nwis")), c("ts_doobs_nwis","ts_depth_google","ts_wtr_nwis"))
   expect_equal(mda.streams:::make_ts_name("doobs_nwis"), "ts_doobs_nwis")
   expect_error(mda.streams:::make_ts_name("ts_doobs"), "ScienceBase format already")
   expect_error(mda.streams:::make_ts_name("ts_doobs_nwis"), "ScienceBase format already")
@@ -20,10 +20,10 @@ test_that("ts variable names can be made and parsed", {
   #expect_error(mda.streams:::make_ts_name(c("wtr","dobbythehouseelf"), "nwis"))
   
   # parse_ts_name
-  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis")), c("doobs_nwis", "disch_nwis"))
-  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="variable"), c("doobs", "disch"))
-  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="src"), c("nwis", "nwis"))
-  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out=c("variable","src"), use_names=FALSE), 
+  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis")), c(ts_doobs_nwis="doobs_nwis", ts_disch_nwis="disch_nwis"))
+  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="var", use_names=FALSE), c("doobs", "disch"))
+  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="src", use_names=FALSE), c("nwis", "nwis"))
+  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out=c("var","src"), use_names=FALSE), 
                data.frame(variable=c("doobs","disch"), src=c("nwis", "nwis"), stringsAsFactors=FALSE))
   expect_error(mda.streams:::parse_ts_name(c("doobs","ts_doobs")))
   expect_error(mda.streams:::parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")))

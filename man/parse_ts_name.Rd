@@ -27,7 +27,7 @@ Translate a timeseries name from ScienceBase to mda.streams
 \examples{
 mda.streams:::parse_ts_name("ts_doobs_nwis")
 mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
-mda.streams:::parse_ts_name("ts_doobs_nwis", c("var_src","src"))
+mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
 mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
 }
 

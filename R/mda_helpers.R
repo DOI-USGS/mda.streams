@@ -80,7 +80,7 @@ make_ts_name <- function(var_var_src, src) {
 #' @examples 
 #' mda.streams:::parse_ts_name("ts_doobs_nwis")
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
-#' mda.streams:::parse_ts_name("ts_doobs_nwis", c("var_src","src"))
+#' mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
 parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   # error checking
