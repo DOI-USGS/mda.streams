@@ -9,7 +9,7 @@ download_ts(site, var_src, folder = tempdir(), ...)
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites})}
 
-\item{var_src}{a valid variable name for timeseries data (see \link{get_ts_variables})}
+\item{var_src}{a valid variable name for timeseries data (see \link{get_var_codes(out="shortname")})}
 
 \item{folder}{string for a folder location}
 

@@ -1,7 +1,7 @@
 #'@title download timeseries data to local file destination
 #'@description download a timeseries file to a user-specified (or temp file) location
 #'@param site a valid mda.streams site (see \link{get_sites})
-#'@param var_src a valid variable name for timeseries data (see \link{get_ts_variables})
+#'@param var_src a valid variable name for timeseries data (see \link{get_var_codes(out="shortname")})
 #'@param folder string for a folder location
 #'@param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}} 
 #'

@@ -49,8 +49,8 @@ make_ts_name <- function(var_var_src, src) {
     stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", var_src[ts_names], collapse=", "))
   if(any(not_two <- sapply(strsplit(var_src, "_"), function(split) length(split)!=2)))
     stop("improper var_src format: ", paste0("[", which(not_two), "] ", var_src[not_two], collapse=", "))
-  #   if(any(non_var <- !(variable %in% get_ts_variables()))) 
-  #     stop("variable is not listed in get_ts_variables(): ", paste0("[", which(non_var), "] ", variable[non_var], collapse=", "))
+  #   if(any(non_var <- !(variable %in% get_var_codes()))) 
+  #     stop("variable is not listed in get_var_codes(): ", paste0("[", which(non_var), "] ", variable[non_var], collapse=", "))
   # would be nice to check here for variable-src match using get_var_codes. see issue #12
   
   # renaming
@@ -84,8 +84,8 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(out)>1) {
   
   # more error checking. could also check source here using get_var_codes
   varnames <- sapply(splits, '[', 2)
-  if(any(non_var <- !(varnames %in% get_ts_variables())))
-    stop("variable isn't listed in get_ts_variables(): ", paste0("[", which(non_var), "] ", varnames[non_var], collapse=", "))
+  if(any(non_var <- !(varnames %in% get_var_codes())))
+    stop("variable isn't listed in get_var_codes(): ", paste0("[", which(non_var), "] ", varnames[non_var], collapse=", "))
   
   # renaming
   parsed <- sapply(splits, function(split) replace(split, 1, paste0(split[2],"_",split[3]))[match(out, splitcols)] )

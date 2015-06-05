@@ -19,8 +19,9 @@
 #' get_var_codes('wtr')
 #' get_var_codes('disch', 'p_code')
 #' get_var_codes('baro', c('longname','p_code'))
+#' get_var_codes(out='shortname')
 #' @export
-get_var_codes <- function(shortname, out=c("p_code","units","sm_name","longname","sources"), drop=TRUE){
+get_var_codes <- function(shortname, out=c("shortname","p_code","units","sm_name","longname","sources"), drop=TRUE){
   
   header_names <- c("shortname","p_code","units","sm_name","longname","sources")
   codes <- matrix(

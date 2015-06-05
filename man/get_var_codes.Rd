@@ -4,8 +4,8 @@
 \alias{get_var_codes}
 \title{get project codes}
 \usage{
-get_var_codes(shortname, out = c("p_code", "units", "sm_name", "longname",
-  "sources"), drop = TRUE)
+get_var_codes(shortname, out = c("shortname", "p_code", "units", "sm_name",
+  "longname", "sources"), drop = TRUE)
 }
 \arguments{
 \item{shortname}{a valid shortname for project (e.g., 'disch')}
@@ -35,5 +35,6 @@ get_var_codes()
 get_var_codes('wtr')
 get_var_codes('disch', 'p_code')
 get_var_codes('baro', c('longname','p_code'))
+get_var_codes(out='shortname')
 }
 

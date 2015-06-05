@@ -63,7 +63,7 @@ post_site <- function(sites, replace_existing = FALSE, verbose = TRUE, ...){
 #' @examples
 #' \dontrun{
 #' cat(locate_site("nwis_08437710", format="url"))
-#' files <- sapply(get_ts_variables("nwis_08437710"), function(var) {
+#' files <- sapply(list_datasets("nwis_08437710"), function(var) {
 #'   download_ts("nwis_08437710", var)
 #' })
 #' 

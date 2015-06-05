@@ -37,7 +37,7 @@ site.ids <- split_site(list_sites())
 sites <- readNWISsite(site.ids) %>% select(site_no, station_nm)
 beaty_creek_id <- paste0("nwis_", sites[grep("Beaty Creek near Jay, OK", sites$station_nm),"site_no"])
 # Download all available timeseries data
-beaty_creek <- load_timeseries(site=beaty_creek_id, variables=get_ts_variables(beaty_creek_id), join.fun=full_join) %>%
+beaty_creek <- load_timeseries(site=beaty_creek_id, variables=list_datasets(beaty_creek_id), join.fun=full_join) %>%
   mutate(date.time=convert_GMT_to_solartime(DateTime, longitude=site_location(beaty_creek_id)$longitude, time.type="apparent solar"))
 ```
 

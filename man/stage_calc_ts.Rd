@@ -9,7 +9,7 @@ stage_calc_ts(sites, variable, folder = tempdir(), verbose = FALSE, ...)
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{variable}{short name of variable \code{\link{get_ts_variables}}}
+\item{variable}{short name of variable as in \code{\link{get_var_codes(out='shortname')}}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp directory)}
 

@@ -2,9 +2,10 @@
 #' @description get data from nwis and return created file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param variable short name of variable \code{\link{get_ts_variables}}
+#' @param variable short name of variable as in
+#'   \code{\link{get_var_codes(out='shortname')}}
 #' @param times a length 2 vector of POSIXct dates
-#' @param folder a folder to place the file outputs in (defaults to temp
+#' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param verbose provide verbose output (currently not implemented)
 #' @param ... additional arguments passed to \code{\link{readNWISuv}}

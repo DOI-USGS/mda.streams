@@ -10,7 +10,8 @@ stage_nldas_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{variable}{short name of variable \code{\link{get_ts_variables}}}
+\item{variable}{short name of variable as in
+\code{\link{get_var_codes(out='shortname')}}}
 
 \item{times}{a length 2 vector of POSIXct dates}
 
