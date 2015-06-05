@@ -4,11 +4,13 @@
 \alias{list_datasets}
 \title{Get a vector of timeseries variable names}
 \usage{
-list_datasets(site = NULL, ...)
+list_datasets(site, type = c("ts", "watershed"), ...)
 }
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites}) or NULL for all
 sites}
+
+\item{type}{character. one or more dataset types to return}
 
 \item{...}{additional arguments passed to \code{\link[sbtools]{session_check_reauth}},
   for example \code{username}}
@@ -23,7 +25,6 @@ list_datasets(site) returns the data available to a specific site.
 }
 \examples{
 \dontrun{
-list_datasets() #list all timeseries variable names
 list_datasets(site = 'nwis_01018035')
 }
 }

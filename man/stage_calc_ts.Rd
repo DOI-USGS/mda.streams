@@ -4,12 +4,12 @@
 \alias{stage_calc_ts}
 \title{stage calculated or modeled data into a time series file}
 \usage{
-stage_calc_ts(sites, variable, folder = tempdir(), verbose = FALSE, ...)
+stage_calc_ts(sites, var, folder = tempdir(), verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{variable}{short name of variable as in \code{\link{get_var_codes(out='shortname')}}}
+\item{var}{short name of variable as in \code{get_var_codes(out='var')}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp directory)}
 

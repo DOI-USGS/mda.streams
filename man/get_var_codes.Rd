@@ -2,39 +2,48 @@
 % Please edit documentation in R/get_var_codes.R
 \name{get_var_codes}
 \alias{get_var_codes}
-\title{get project codes}
+\title{Get variable codes used in this project}
 \usage{
-get_var_codes(shortname, out = c("shortname", "p_code", "units", "sm_name",
-  "longname", "sources"), drop = TRUE)
+get_var_codes(var, out = c(names(var_codes), "var_src"), type = c("ts",
+  "watershed"), drop = (length(out) == 1), use_names)
 }
 \arguments{
-\item{shortname}{a valid shortname for project (e.g., 'disch')}
+\item{var}{a valid variable name for project (e.g., 'disch')}
 
 \item{out}{character or character vector of name types to include in output.
-If there is only one, the result will be a vector/value. One or more of
-these options may be selected:
-\code{c("shortname","p_code","sm_name","longname")} (where \code{shortname}
-is also the rowname)}
+If there is only one, the result will be a vector/value. One or more of the
+given options may be selected}
+
+\item{type}{optional filter criterion: setting type to a subset of the
+default options will restrict the output to variables that have one of
+those selected variable types.}
 
 \item{drop}{logical. In data.frame subsetting, should a single column be
 dropped to a vector or a single row be dropped to a list?}
+
+\item{use_names}{logical. Should names be attached to the data.frame rows or
+vector elements? The default tries to be smart about what would be
+convenient.}
 }
 \value{
 vector or data.frame of the requested variables and outnames.
-  \code{shortname} is the name used in mda.streams. \code{p_code} is the
-  corresponding code in the NWIS or NLDAS databases. \code{sm_name} is the
-  name used in streamMetabolizer. \code{longtime} is the human-readable
+  \code{var} is the name used in mda.streams. \code{p_code} is the
+  corresponding code in the NWIS or NLDAS databases. \code{metab_name} is the
+  name used in streamMetabolizer. \code{long_name} is the human-readable
   description.
 }
 \description{
-a lookup for parameter codes and longnames based on the
-  shortname convention used in mda.streams
+A lookup for parameter codes and long_names based on the var
+  convention used in mda.streams
 }
 \examples{
 get_var_codes()
 get_var_codes('wtr')
 get_var_codes('disch', 'p_code')
-get_var_codes('baro', c('longname','p_code'))
-get_var_codes(out='shortname')
+get_var_codes('baro', c('long_name','p_code'))
+get_var_codes(out='var')
+get_var_codes(out='var_src')
+get_var_codes(out='units')
+dplyr::filter(get_var_codes(), !is.na(metab_var))
 }
 

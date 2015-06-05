@@ -9,17 +9,20 @@ download_ts(site, var_src, folder = tempdir(), ...)
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites})}
 
-\item{var_src}{a valid variable name for timeseries data (see \link{get_var_codes(out="shortname")})}
+\item{var_src}{a valid variable name for timeseries data (see
+\code{get_var_codes(out='var_src', type='ts')})}
 
 \item{folder}{string for a folder location}
 
-\item{...}{additional arguments passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{...}{additional arguments passed to
+ \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 file handle for downloaded file
 }
 \description{
-download a timeseries file to a user-specified (or temp file) location
+download a timeseries file to a user-specified (or temp file)
+ location
 }
 \examples{
 \dontrun{

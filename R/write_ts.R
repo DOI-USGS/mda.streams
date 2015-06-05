@@ -10,7 +10,7 @@ write_ts <- function(data, site, var, src, folder){
   
   var_src <- make_var_src(var, src)
   if (!verify_ts(data, var_src))
-    stop('timeseries input for site',site,'and variable',var_src,'is not valid')
+    stop('timeseries input for site ',site,' and var_src ',var_src,' is not valid')
   
   if (nrow(data) == 0)
     invisible(NULL)

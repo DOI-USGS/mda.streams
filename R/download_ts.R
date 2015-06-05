@@ -1,17 +1,20 @@
 #'@title download timeseries data to local file destination
-#'@description download a timeseries file to a user-specified (or temp file) location
+#'@description download a timeseries file to a user-specified (or temp file)
+#'  location
 #'@param site a valid mda.streams site (see \link{get_sites})
-#'@param var_src a valid variable name for timeseries data (see \link{get_var_codes(out="shortname")})
+#'@param var_src a valid variable name for timeseries data (see
+#'  \code{get_var_codes(out='var_src', type='ts')})
 #'@param folder string for a folder location
-#'@param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}} 
-#'
+#'@param ... additional arguments passed to
+#'  \code{\link[sbtools]{session_check_reauth}}
+#'  
 #'@return file handle for downloaded file
 #'@author Corinna Gries, Jordan S Read, Luke A Winslow
 #'@examples
 #'\dontrun{
 #'download_ts(site = 'nwis_06893300', var_src = 'doobs_nwis')
 #'}
-#'@import sbtools 
+#'@import sbtools
 #'@import tools
 #'@export
 download_ts=function(site, var_src, folder = tempdir(), ...){

@@ -1,11 +1,20 @@
 #' Translate a variable and data source into a var_src
 #' 
-#' @param var a variable shortname from get_var_codes(out="shortname"), e.g.,
-#'   "doobs"
-#' @param src a data source from the comma-separated lists in
-#'   get_var_codes(out="sources")
+#' @param var a variable shortname from get_var_codes(out='var'), e.g., "doobs"
+#' @param src a data source from the sources available for the given var; see 
+#'   get_var_codes(var)['src']
 make_var_src <- function(var, src) {
+  
+  # error checking - make sure the specified src is an option for the specified
+  # var. need to use raw var_codes table rather than get_var_codes() because
+  # this function is called by get_var_codes().
+  if(any(missing_src <- mapply(function(var1,src1) !(src1 %in% strsplit(var_codes[var_codes$var==var1, 'src'], "|", fixed=TRUE)[[1]]), var, src))) {
+    stop("var-src mismatch[es] for ", paste0(var[missing_src], "-" ,src[missing_src], collapse=", "))
+  }
+  
+  # name creation
   paste0(var, "_", src)
+  
 }
 
 #' Translate a var_src into a variable and a source
@@ -49,9 +58,8 @@ make_ts_name <- function(var_var_src, src) {
     stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", var_src[ts_names], collapse=", "))
   if(any(not_two <- sapply(strsplit(var_src, "_"), function(split) length(split)!=2)))
     stop("improper var_src format: ", paste0("[", which(not_two), "] ", var_src[not_two], collapse=", "))
-  #   if(any(non_var <- !(variable %in% get_var_codes()))) 
-  #     stop("variable is not listed in get_var_codes(): ", paste0("[", which(non_var), "] ", variable[non_var], collapse=", "))
-  # would be nice to check here for variable-src match using get_var_codes. see issue #12
+  if(any(non_var <- !(var_src %in% get_var_codes(out="var_src")))) 
+    stop("var_src is not listed in get_var_codes(): ", paste0("[", which(non_var), "] ", non_var[non_var], collapse=", "))
   
   # renaming
   paste0(pkg.env$ts_prefix, var_src)
@@ -63,34 +71,37 @@ make_ts_name <- function(var_var_src, src) {
 #' @param ts_name timeseries name[s] in ScienceBase lingo (e.g., 
 #'   \code{ts_wtr_nwis})
 #' @param out character, length 1 or 2 selected from \code{c("var_src", 
-#'   "variable", "src")} indicating whether you want to get back the 
+#'   "var", "src")} indicating whether you want to get back the 
 #'   joined variable & source, the variable, the src, or some 
 #'   combination.
 #' @param use_names logical. Should the return vector or data.frame be named
 #'   according to the input values?
 #' @return timeseries name[s]in mda.streams lingo (e.g., \code{wtr})
-parse_ts_name <- function(ts_name, out="var_src", use_names=length(out)>1) {
+#' @examples 
+#' mda.streams:::parse_ts_name("ts_doobs_nwis")
+#' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
+#' mda.streams:::parse_ts_name("ts_doobs_nwis", c("var_src","src"))
+#' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
+parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   # error checking
-  splitcols <- c("var_src", "variable", "src")
+  splitcols <- c("var_src", "var", "src")
   if(any(non_ts <- substr(ts_name, 1, 3) != pkg.env$ts_prefix)) 
     stop("unexpected ts variable prefix in: ", paste0("[", which(non_ts), "] ", ts_name[non_ts], collapse=", "))
   if(any(non_out <- !(out %in% splitcols)))
     stop("unexpected output requested: ", paste0(out[non_out]))
-  
-  # split
+  var_src <- substring(ts_name, 4)
+  if(any(non_var <- !(var_src %in% get_var_codes(out='var_src'))))
+    stop("var_src isn't listed in get_var_codes(): ", paste0("[", which(non_var), "] ", var_src[non_var], collapse=", "))
   splits <- strsplit(ts_name, '_')
   if(any(not_three <- sapply(splits, function(split) length(split) != 3)))
     stop("ts_name doesn't have three parts split on '_': ", paste0("[", which(not_three), "] ", ts_name[not_three], collapse=", "))
   
-  # more error checking. could also check source here using get_var_codes
-  varnames <- sapply(splits, '[', 2)
-  if(any(non_var <- !(varnames %in% get_var_codes())))
-    stop("variable isn't listed in get_var_codes(): ", paste0("[", which(non_var), "] ", varnames[non_var], collapse=", "))
-  
   # renaming
-  parsed <- sapply(splits, function(split) replace(split, 1, paste0(split[2],"_",split[3]))[match(out, splitcols)] )
-  if(!is.null(dim(parsed))) {
-    parsed <- parsed %>% t %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
+  parsed <- do.call(rbind, splits)
+  parsed[,1] <- var_src
+  parsed <- parsed[,match(out, splitcols)]
+  if(length(match(out, splitcols)) > 1) {
+    parsed <- parsed %>% t() %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
   }
   if(use_names) {
     parsed <- 
@@ -201,7 +212,7 @@ parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=len
     ts_name = sapply(splits, "[", 2),
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
-    bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "variable", "src"), use_names=FALSE)) %>%
+    bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
     bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE))
   
   parsed <- parsed[,out]

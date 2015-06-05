@@ -12,8 +12,8 @@
 #'   
 #' @examples
 #' \dontrun{
-#' sites <- stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'), 
-#'   state_codes=c("wi","mi"))
+#' stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'), 
+#'   state_codes=c("wi","Michigan"))
 #' sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"), 
 #'   state_codes=c("all"), verbose=TRUE)
 #' sites_file <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"), 
@@ -27,7 +27,9 @@ stage_nwis_sitelist <- function(p_codes, state_codes, folder = NULL, verbose = T
   p_codes <- unique(p_codes[order(p_codes)])
   if(isTRUE(verbose)) message("searching for sites with all of these p_codes: ", paste0(p_codes, collapse=", "))
   if("all" %in% tolower(state_codes)) {
-    state_codes <- names(states)
+    state_codes <- dataRetrieval::stateCd$STUSAB
+  } else {
+    state_codes <- unname(sapply(state_codes, dataRetrieval::stateCdLookup))
   }
 
   # for loop of state_codes's

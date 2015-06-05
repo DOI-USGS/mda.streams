@@ -24,8 +24,8 @@ finds all NWIS sites that meet given data requirements
 }
 \examples{
 \dontrun{
-sites <- stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'),
-  state_codes=c("wi","mi"))
+stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'),
+  state_codes=c("wi","Michigan"))
 sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"),
   state_codes=c("all"), verbose=TRUE)
 sites_file <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"),

@@ -1,10 +1,10 @@
 #' Higher-level site querying function
 #' 
-#' @param with_var_src character vector of timeseries variables (i.e., 1+ of 
-#'   those listed in get_var_codes(out='shortname'))
-#' @param logic how to join the constraints in with_var_src, ...: is any of 
-#'   the listed parameters sufficient, or do you need all of them to be 
-#'   available for a site to qualify?
+#' @param with_var_src character vector of data variables (i.e., 1+ of those
+#'   listed in get_var_codes(out='var_src'))
+#' @param logic how to join the constraints in with_var_src, ...: is any of the
+#'   listed parameters sufficient, or do you need all of them to be available
+#'   for a site to qualify?
 #' @param ... additional querying arguments yet to be implemented
 #' @return a character vector of site IDs
 #' @export

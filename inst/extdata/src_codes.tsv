@@ -1,0 +1,6 @@
+src	url	long_name	r_package	r_function
+nwis	http://waterdata.usgs.gov/nwis	National Water Information System	data_retrieval	readNWISuv
+nldas	http://ldas.gsfc.nasa.gov/nldas/	Land Data Assimilation Systems	geoknife	geoknife
+google	http://www.google.com	Manual Google searches	NA	NA
+gagesii	http://water.usgs.gov/GIS/metadata/usgswrd/XML/gagesII_Sept2011.xml	GAGES-II: Geospatial Attributes of Gages for Evaluating Streamflow	NA	?
+nhdplus	http://water.usgs.gov/GIS/metadata/usgswrd/XML/streamgagebasins.xml	USGS Streamgage NHDPlus Version 1 Basins 2011	NA	?

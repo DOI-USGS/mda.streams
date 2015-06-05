@@ -4,14 +4,13 @@
 \alias{stage_nwis_ts}
 \title{stage nwis data into a file}
 \usage{
-stage_nwis_ts(sites, variable, times, folder = tempdir(), verbose = FALSE,
-  ...)
+stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{variable}{short name of variable as in
-\code{\link{get_var_codes(out='shortname')}}}
+\item{var}{short name of variable as in
+\code{\link{get_var_codes(out='var')}}}
 
 \item{times}{a length 2 vector of POSIXct dates}
 
@@ -31,9 +30,9 @@ get data from nwis and return created file handle
 \examples{
 \dontrun{
 files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"),
-  variable = "doobs", times = c('2014-01-01','2014-02-01'), verbose=TRUE)
+  var = "doobs", times = c('2014-01-01','2014-02-01'), verbose=TRUE)
 
-files <- stage_nwis_ts(sites = get_sites(), variable = "par",
+files <- stage_nwis_ts(sites = get_sites(), var = "par",
   times = c('2014-01-01', '2014-02-01'))
 }
 }

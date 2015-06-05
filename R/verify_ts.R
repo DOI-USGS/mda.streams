@@ -22,12 +22,12 @@ verify_ts <- function(data, var_src, checks = c('cols', 'tz', 'units', 'variable
   
   tests <- list('cols' = function(x,...) ncol(x) == 2,
                 'tz' = function(x,...) get_units(x[,1]) == 'UTC',
-                'units' = function(x,v,...) get_units(x[,2]) == get_var_codes(parse_var_src(v,"var"), 'units'),
+                'units' = function(x,v,...) get_units(x[,2]) == unique(get_var_codes(v, 'units')),
                 'variable' = function(x,v,...) names(x)[2] == v)
   
   
   for (check in checks){
-    if (!tests[[check]](x = data, v = var_src))
+    if (!tests[[check]](x = data, v = parse_var_src(var_src, "var")))
       return(FALSE)
   }
   return(TRUE)
