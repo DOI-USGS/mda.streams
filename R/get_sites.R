@@ -36,7 +36,7 @@ get_sites <- function(with_var_src = NULL, limit = 10000, ...){
   } else {
     
     # find all the time series items for the specified var_src
-    if(length(var_src) != 1) stop("with_var_src must have length 1")
+    if(length(with_var_src) != 1) stop("with_var_src must have length 1")
     # create the query
     filter_items = list('scheme'=get_scheme(), 'type'=with_var_src)
     filter = paste0('itemIdentifier=', toJSON(filter_items, auto_unbox=TRUE))

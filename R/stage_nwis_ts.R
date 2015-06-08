@@ -3,7 +3,7 @@
 #'   
 #' @param sites a character vector of valid NWIS site IDs
 #' @param var short name of variable as in \code{get_var_codes(out='var')}
-#' @param times a length 2 vector of POSIXct dates
+#' @param times a length 2 vector of text dates in YYYY-MM-DD format
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param verbose provide verbose output (currently not implemented)

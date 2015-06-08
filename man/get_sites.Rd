@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_sites.R
 \name{get_sites}
 \alias{get_sites}
-\title{get site IDS from sciencebase}
+\title{A helper to find_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
 get_sites(with_var_src = NULL, limit = 10000, ...)
 }
@@ -19,8 +19,9 @@ var_src key}
 a character vector of "site_root" titles (keys)
 }
 \description{
-collects all "site_root" titles from sciencebase (e.g.,
-  "nwis_02948375"), returns as a character vector
+Collects from sciencebase all site names ("site_root" titles, e.g.,
+"nwis_02948375") or the names of sites containing a particular var_src
+dataset, and returns as a character vector of those site names
 }
 \examples{
 \donttest{

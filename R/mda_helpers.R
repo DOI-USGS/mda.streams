@@ -3,6 +3,7 @@
 #' @param var a variable shortname from get_var_codes(out='var'), e.g., "doobs"
 #' @param src a data source from the sources available for the given var; see 
 #'   get_var_codes(var)['src']
+#' @export
 make_var_src <- function(var, src) {
   
   # error checking - make sure the specified src is an option for the specified
@@ -25,6 +26,7 @@ make_var_src <- function(var, src) {
 #' @param use_names logical. Should names/rownames be attached to the
 #'   vector/data.frame?
 #' @return if length(out)==1 a vector, else a data.frame
+#' @export
 parse_var_src <- function(var_src, out=c("var","src"), use_names=FALSE) {
   splitcols <- c("var","src")
   splits <- strsplit(var_src, "_")

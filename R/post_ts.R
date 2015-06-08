@@ -19,9 +19,10 @@
 post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, ...){
   
   # check inputs
+  if(is.null(files)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
   
-  for (i in 1:length(files)){
+  posted_items <- sapply(1:length(files), function(i) {
     if(verbose) message('posting file ', files[i])
     
     # parse the file name to determine where to post the file
@@ -58,8 +59,10 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
     # tag item with our special identifiers
     item_update_identifier(ts_item, scheme = get_scheme(), type = out$ts_name, key=out$site_name, ...)
     
-  }
+    ts_item
+  })
   
+  invisible(posted_items)
 }
 
 #' Delete a time series item and its data
@@ -76,7 +79,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
 #' }
 delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
   
-  lapply(setNames(var_src, var_src), function(var) {
+  deletion_msgs <- lapply(setNames(var_src, var_src), function(var) {
     lapply(setNames(site_name, site_name), function(site) {
       # find the item id
       ts_id <- locate_ts(var_src=var, site_name=site, ...)
@@ -101,4 +104,6 @@ delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
       }
     })
   })
+  
+  invisible(deletion_msgs)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_datasets.R
 \name{list_datasets}
 \alias{list_datasets}
-\title{Get a vector of timeseries variable names}
+\title{Get a vector of timeseries dataset names}
 \usage{
 list_datasets(site, type = c("ts", "watershed"), ...)
 }
@@ -12,16 +12,17 @@ sites}
 
 \item{type}{character. one or more dataset types to return}
 
-\item{...}{additional arguments passed to \code{\link[sbtools]{session_check_reauth}},
-  for example \code{username}}
+\item{...}{additional arguments passed to
+  \code{\link[sbtools]{session_check_reauth}}, for example \code{username}}
 }
 \value{
 an alphabetically sorted character vector of unique timeseries
   variable names for given sites
 }
 \description{
-list_datasets() returns a list of all possible timeseries variables, while
-list_datasets(site) returns the data available to a specific site.
+list_datasets(site) returns the data available to a specific site. In
+contrast, get_var_codes() returns a list of all possible variables and
+get_var_codes(type="ts") returns all possible timeseries variables.
 }
 \examples{
 \dontrun{

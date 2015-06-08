@@ -1,14 +1,15 @@
-#' Get a vector of timeseries variable names
+#' Get a vector of timeseries dataset names
 #' 
-#' list_datasets() returns a list of all possible timeseries variables, while
-#' list_datasets(site) returns the data available to a specific site.
+#' list_datasets(site) returns the data available to a specific site. In
+#' contrast, get_var_codes() returns a list of all possible variables and
+#' get_var_codes(type="ts") returns all possible timeseries variables.
 #' 
 #' @param site a valid mda.streams site (see \link{get_sites}) or NULL for all 
 #'   sites
 #' @param type character. one or more dataset types to return
-#' @param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}}, 
-#'   for example \code{username}
-#'
+#' @param ... additional arguments passed to
+#'   \code{\link[sbtools]{session_check_reauth}}, for example \code{username}
+#'   
 #' @return an alphabetically sorted character vector of unique timeseries 
 #'   variable names for given sites
 #' @examples
