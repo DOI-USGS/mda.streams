@@ -32,8 +32,8 @@ Center project data in particular, see \pkg{powstreams}.
   \item \code{\link{get_sites}} - lists all site IDs (e.g. "nwis_04067500")
   that are currently on ScienceBase
 
-  \item \code{\link{get_ts_variables}} - Given a site ID, returns a list of
-  timeseries variables stored for that site
+  \item \code{\link{list_datasets}} - Given a site ID, returns a list of
+  timeseries and other datasets stored for that site
 
   }
 }

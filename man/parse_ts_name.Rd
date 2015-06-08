@@ -4,14 +4,14 @@
 \alias{parse_ts_name}
 \title{Translate a timeseries name from ScienceBase to mda.streams}
 \usage{
-parse_ts_name(ts_name, out = "var_src", use_names = length(out) > 1)
+parse_ts_name(ts_name, out = "var_src", use_names = length(ts_name) > 1)
 }
 \arguments{
 \item{ts_name}{timeseries name[s] in ScienceBase lingo (e.g.,
 \code{ts_wtr_nwis})}
 
 \item{out}{character, length 1 or 2 selected from \code{c("var_src",
-"variable", "src")} indicating whether you want to get back the
+"var", "src")} indicating whether you want to get back the
 joined variable & source, the variable, the src, or some
 combination.}
 
@@ -23,5 +23,11 @@ timeseries name[s]in mda.streams lingo (e.g., \code{wtr})
 }
 \description{
 Translate a timeseries name from ScienceBase to mda.streams
+}
+\examples{
+mda.streams:::parse_ts_name("ts_doobs_nwis")
+mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
+mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
+mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
 }
 

@@ -7,12 +7,12 @@
 find_sites(with_var_src = NULL, logic = c("all", "any"), ...)
 }
 \arguments{
-\item{with_var_src}{character vector of timeseries variables (i.e., 1+ of
-those listed in get_ts_variables())}
+\item{with_var_src}{character vector of data variables (i.e., 1+ of those
+listed in get_var_codes(out='var_src'))}
 
-\item{logic}{how to join the constraints in with_var_src, ...: is any of
-the listed parameters sufficient, or do you need all of them to be
-available for a site to qualify?}
+\item{logic}{how to join the constraints in with_var_src, ...: is any of the
+listed parameters sufficient, or do you need all of them to be available
+for a site to qualify?}
 
 \item{...}{additional querying arguments yet to be implemented}
 }

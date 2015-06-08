@@ -79,14 +79,14 @@ config_to_metab <- function(model, site,
   warning("still need to actually download the data")
   data_needs <- formals(metab_fun)$data %>% eval()
   # confirm that non-needed variables are being specified as "none"-NA
-  sm_name <- ".dplyr.var"
-  var_codes <- get_var_codes(out=TRUE) %>% 
-    filter(sm_name %in% names(data_needs)) %>% 
+  metab_name <- ".dplyr.var"
+  var_codes <- get_var_codes(type="ts") %>% 
+    filter(metab_name %in% names(data_needs)) %>% 
     do({
-      rownames(.) <- .$sm_name
-      .[,"shortname",drop=FALSE]})
-  #   ts_dfs <- lapply(rownames(var_codes), function(sm_name) {
-  #     var <- var_codes[sm_name,"shortname"]
+      rownames(.) <- .$metab_name
+      .[,"var",drop=FALSE]})
+  #   ts_dfs <- lapply(rownames(var_codes), function(metab_name) {
+  #     var <- var_codes[metab_name,"shortname"]
   #     type <- config[,paste0(var,".type")]
   #     src <- config[,paste0(var,".src")]
   #     site <- config[,"site"]

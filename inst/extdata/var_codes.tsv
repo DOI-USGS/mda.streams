@@ -1,0 +1,11 @@
+var	src	units	type	p_code	long_name	metab_var
+doobs	nwis	mg L^-1	ts	'00300'	dissolved oxygen concentration	DO.obs
+dosat	NA	mg L^-1	ts	NA	hypothetical dissolved oxygen concentration at saturation	DO.sat
+wtr	nwis	degC	ts	'00010'	water temperature	temp.water
+disch	nwis	ft^3 s^-1	ts	'00061'	instantaneous discharge	NA
+stage	nwis	ft	ts	'00065'	gage height	NA
+depth	google|gagesii	m	ts	NA	stream depth	depth
+par	nwis	umol m^-2 s^-1	ts	'99988'	photosynthetically active radiation	light
+baro	nldas	Pa	ts	pressfc	barometric pressure	NA
+sw	nldas	?	ts	dswrfsfc	downwelling shortwave radiation	NA
+shed	NA	NA	watershed	NA	watershed shapefile	NA

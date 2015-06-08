@@ -1,10 +1,11 @@
 #' Get a vector of timeseries variable names
 #' 
-#' get_ts_variables() returns a list of all possible timeseries variables, while
-#' get_ts_variables(site) returns the data available to a specific site.
+#' list_datasets() returns a list of all possible timeseries variables, while
+#' list_datasets(site) returns the data available to a specific site.
 #' 
 #' @param site a valid mda.streams site (see \link{get_sites}) or NULL for all 
 #'   sites
+#' @param type character. one or more dataset types to return
 #' @param ... additional arguments passed to \code{\link[sbtools]{session_check_reauth}}, 
 #'   for example \code{username}
 #'
@@ -13,17 +14,16 @@
 #' @examples
 #' 
 #' \dontrun{
-#' get_ts_variables() #list all timeseries variable names
-#' get_ts_variables(site = 'nwis_01018035')
+#' list_datasets(site = 'nwis_01018035')
 #' }
 #' @import sbtools stringr
 #' @export
-get_ts_variables = function(site = NULL, ...){
+list_datasets = function(site, type=c("ts","watershed"), ...){
   
   ts_pattern = pkg.env$ts_prefix
   
-  if (is.null(site)){
-    ts_variables <- get_var_codes(out="shortname")
+  if (missing(site)){
+    stop("site required. looking for a list of possible dataset variables? try ?get_var_codes.")
   } else {
     session_check_reauth(...)
     site_items <- query_item_identifier(scheme = get_scheme(), key = site, limit = 10000)
@@ -40,7 +40,7 @@ get_ts_variables = function(site = NULL, ...){
     }
     ts_variables = unique(ts_variables)
     
-    if (any(!ts_variables %in% get_var_codes(out="shortname"))){
+    if (any(!ts_variables %in% get_var_codes(out="var_src"))){
       warning('some variables from ', site, ' not found in all-site catalog. ')
     }
   }
