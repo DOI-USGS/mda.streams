@@ -101,7 +101,8 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   parsed[,1] <- var_src
   parsed <- parsed[,match(out, splitcols)]
   if(length(match(out, splitcols)) > 1) {
-    parsed <- parsed %>% t() %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
+    if(is.null(dim(parsed))) parsed <- parsed %>% t() 
+    parsed <- parsed %>% as.data.frame(stringsAsFactors=FALSE) %>% setNames(splitcols[match(out, splitcols)])
   }
   if(use_names) {
     parsed <- 

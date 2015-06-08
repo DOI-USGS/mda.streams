@@ -20,13 +20,17 @@ test_that("ts variable names can be made and parsed", {
   #expect_error(mda.streams:::make_ts_name(c("wtr","dobbythehouseelf"), "nwis"))
   
   # parse_ts_name
+  expect_equal(mda.streams:::parse_ts_name("ts_doobs_nwis"), "doobs_nwis")
+  expect_equal(mda.streams:::parse_ts_name("ts_doobs_nwis", use_names=TRUE), c(ts_doobs_nwis="doobs_nwis"))
   expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis")), c(ts_doobs_nwis="doobs_nwis", ts_disch_nwis="disch_nwis"))
   expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="var", use_names=FALSE), c("doobs", "disch"))
   expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out="src", use_names=FALSE), c("nwis", "nwis"))
-  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out=c("var","src"), use_names=FALSE), 
-               data.frame(variable=c("doobs","disch"), src=c("nwis", "nwis"), stringsAsFactors=FALSE))
-  expect_error(mda.streams:::parse_ts_name(c("doobs","ts_doobs")))
-  expect_error(mda.streams:::parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")))
+  expect_equal(mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_disch_nwis"), out=c("var","var_src","src"), use_names=FALSE),
+               data.frame(var=c("doobs","disch"), var_src=c("doobs_nwis","disch_nwis"), src=c("nwis", "nwis"), stringsAsFactors=FALSE))
+  expect_equal(mda.streams:::parse_ts_name("ts_disch_nwis", out=c("var","src"), use_names=FALSE),
+               data.frame(var="disch", src="nwis", stringsAsFactors=FALSE), info="1 row, several columns")
+  expect_error(mda.streams:::parse_ts_name(c("doobs","ts_doobs")), "unexpected ts variable prefix")
+  expect_error(mda.streams:::parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")), "var_src isn't listed in get_var_codes()")
   
   # back and forth
   expect_equal(mda.streams:::parse_ts_name(mda.streams:::make_ts_name("wtr","nwis")), "wtr_nwis")
@@ -61,7 +65,7 @@ test_that("ts file paths can be made and parsed", {
   # parse_ts_path
   expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", use_names=FALSE), data.frame(site_name="nwis_12398074", ts_name="ts_doobs_nwis", stringsAsFactors=FALSE))
   expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="ts_name"), "ts_doobs_nwis")
-  expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="variable"), "doobs")
+  expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="var"), "doobs")
   expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="src"), "nwis")
   expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="var_src"), "doobs_nwis")
   expect_equal(mda.streams:::parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", out="site_name"), "nwis_12398074")
