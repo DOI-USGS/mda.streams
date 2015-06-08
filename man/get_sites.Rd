@@ -4,31 +4,32 @@
 \alias{get_sites}
 \title{get site IDS from sciencebase}
 \usage{
-get_sites(with_child_key = NULL, limit = 10000, ...)
+get_sites(with_var_src = NULL, limit = 10000, ...)
 }
 \arguments{
-\item{with_child_key}{limit sites to those with children matching the specified key}
+\item{with_var_src}{limit sites to those with children matching the specified
+var_src key}
 
 \item{limit}{numeric. Max number of sites to return. Default 10000}
 
-\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
+\item{...}{Additional parameters supplied to
+\code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 a character vector of "site_root" titles (keys)
 }
 \description{
-collects all "site_root" titles from sciencebase, returns as a character vector
+collects all "site_root" titles from sciencebase (e.g.,
+  "nwis_02948375"), returns as a character vector
 }
 \examples{
 \donttest{
 get_sites()
 }
 \dontrun{
-# get sites if they are private
-
 get_sites(limit = 10)
-# get sites with water temperature
-get_sites(with_child_key = 'ts_wtr')
+# get those sites that have water temperature
+get_sites(with_var_src = 'ts_wtr')
 }
 }
 
