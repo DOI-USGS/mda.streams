@@ -101,7 +101,7 @@ config_to_metab <- function(model, site,
   #       local=make_ts_name(var),
   #       proxy=make_ts_name(var),
   #       model=paste0(make_ts_name(var), ".", src))
-  #     #download_ts(sites=ts_site, variable=ts_var) %>% read_ts()
+  #     #download_ts(var_src=ts_var, site_name=ts_site) %>% read_ts()
   #   })
   # now just need to combine the dfs
   

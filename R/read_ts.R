@@ -5,7 +5,7 @@
 #'@author Jordan S. Read
 #'@examples
 #'\dontrun{
-#'file <- download_ts(site = "nwis_06893820", var_src = "baro_nldas")
+#'file <- download_ts(var_src = "baro_nldas", site_name = "nwis_06893820")
 #'baro_pressure <- read_ts(file)
 #'}
 #'@import tools 

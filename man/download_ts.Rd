@@ -4,25 +4,29 @@
 \alias{download_ts}
 \title{download timeseries data to local file destination}
 \usage{
-download_ts(site, var_src, folder = tempdir(), on_exists = c("stop", "skip",
-  "replace"), ...)
+download_ts(var_src, site_name, folder = tempdir(),
+  on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
+  "skip", "replace"), ...)
 }
 \arguments{
-\item{site}{a valid mda.streams site (see \link{get_sites})}
-
 \item{var_src}{a valid variable name for timeseries data (see
 \code{get_var_codes(out='var_src', type='ts')})}
 
+\item{site_name}{a valid mda.streams site (see \link{get_sites})}
+
 \item{folder}{string for a folder location}
 
-\item{on_exists}{character indicating what to do if the folder already
+\item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
 
 \item{...}{additional arguments passed to
-  \code{\link[sbtools]{session_check_reauth}}}
+\code{\link[sbtools]{session_check_reauth}}}
+
+\item{on_remote_exists}{character indicating what to do if the}
 }
 \value{
-file handle for downloaded file
+file handle (character path) for the downloaded file, or NA if the
+  timeseries is unavailable on ScienceBase
 }
 \description{
 download a timeseries file to a user-specified (or temp file)
@@ -30,10 +34,10 @@ download a timeseries file to a user-specified (or temp file)
 }
 \examples{
 \dontrun{
-download_ts(site = 'nwis_06893300', var_src = 'doobs_nwis')
+download_ts(var_src = 'doobs_nwis', site_name = 'nwis_06893300')
 }
 }
 \author{
-Corinna Gries, Jordan S Read, Luke A Winslow
+Corinna Gries, Jordan S Read, Luke A Winslow, Alison P Appling
 }
 

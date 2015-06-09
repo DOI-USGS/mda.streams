@@ -4,14 +4,18 @@
 \alias{summarize_ts}
 \title{Summarize a timeseries}
 \usage{
-summarize_ts(var_src, site_name, ...)
+summarize_ts(var_src, site_name, out = c("start_date", "end_date", "num_rows",
+  "num_complete"), ...)
 }
 \arguments{
 \item{var_src}{character vector of dataset types to summarize.}
 
-\item{site_name}{character vector of the same length as var_src specifying the
-site or sites (e.g., "nwis_24309857") where each timeseries dataset should
-be sought.}
+\item{site_name}{character vector of the same length as var_src specifying
+the site or sites (e.g., "nwis_24309857") where each timeseries dataset
+should be sought.}
+
+\item{out}{a list of one or more outputs to include in the summary dataframe,
+in addition to the var_src and site_name and id columns.}
 
 \item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
@@ -20,7 +24,8 @@ Summarize a timeseries
 }
 \examples{
 \dontrun{
-summarize_ts("doobs_nwis", "nwis_01021050")
+summarize_ts(rep(c("doobs_nwis", "wtr_nwis"), each=4),
+  rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 }
 }
 

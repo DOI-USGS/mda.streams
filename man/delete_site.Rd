@@ -23,8 +23,8 @@ Delete a site and all its files.
 \examples{
 \dontrun{
 cat(locate_site("nwis_08437710", format="url"))
-files <- sapply(list_datasets("nwis_08437710"), function(var) {
-  download_ts("nwis_08437710", var)
+files <- sapply(list_datasets("nwis_08437710", type="ts"), function(var_src) {
+  download_ts(var_src, "nwis_08437710")
 })
 
 # try delete_site
