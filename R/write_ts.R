@@ -8,14 +8,13 @@
 #' @export
 write_ts <- function(data, site, var, src, folder){
   
-  var_src <- make_var_src(var, src)
-  if (!verify_ts(data, var_src))
-    stop('timeseries input for site ',site,' and var_src ',var_src,' is not valid')
+  if (!verify_ts(data, var))
+    stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
   
   if (nrow(data) == 0)
     invisible(NULL)
   
-  fpath <- make_ts_path(site, make_ts_name(var_src), folder)
+  fpath <- make_ts_path(site, make_ts_name(var, src), folder)
   gz_con <- gzfile(fpath, "w")
   write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
   close(gz_con)
