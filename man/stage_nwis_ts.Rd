@@ -11,7 +11,7 @@ stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
 
 \item{var}{short name of variable as in \code{get_var_codes(out='var')}}
 
-\item{times}{a length 2 vector of POSIXct dates}
+\item{times}{a length 2 vector of text dates in YYYY-MM-DD format}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp
 directory)}

@@ -4,7 +4,8 @@
 \alias{download_ts}
 \title{download timeseries data to local file destination}
 \usage{
-download_ts(site, var_src, folder = tempdir(), ...)
+download_ts(site, var_src, folder = tempdir(), on_exists = c("stop", "skip",
+  "replace"), ...)
 }
 \arguments{
 \item{site}{a valid mda.streams site (see \link{get_sites})}
@@ -14,15 +15,18 @@ download_ts(site, var_src, folder = tempdir(), ...)
 
 \item{folder}{string for a folder location}
 
+\item{on_exists}{character indicating what to do if the folder already
+contains a file with the intended download name}
+
 \item{...}{additional arguments passed to
- \code{\link[sbtools]{session_check_reauth}}}
+  \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 file handle for downloaded file
 }
 \description{
 download a timeseries file to a user-specified (or temp file)
- location
+  location
 }
 \examples{
 \dontrun{
