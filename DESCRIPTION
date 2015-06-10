@@ -19,6 +19,7 @@ Imports:
     dplyr,
     sbtools,
     stringr,
+    lubridate,
     jsonlite, 
     httr,
     streamMetabolizer,

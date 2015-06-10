@@ -4,8 +4,8 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, on_exists = c("stop", "skip", "replace"), verbose = TRUE,
-  ...)
+post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
@@ -22,9 +22,9 @@ Post a staged file from the local computer to ScienceBase
 }
 \examples{
 \dontrun{
-files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
+files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), var = "baro",
                         times = c('2014-01-01 00:00','2014-01-01 05:00'))
-post_ts(files, session = sbtools::authenticate_sb())
+post_ts(files)
 }
 }
 \author{

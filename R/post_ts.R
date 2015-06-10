@@ -9,37 +9,60 @@
 #' @param ... args passed to \code{\link[sbtools]{session_check_reauth}}
 #' @author Luke Winslow, Corinna Gries, Jordan S Read
 #' @import sbtools
+#' @importFrom lubridate tz
+#' @importFrom unitted u v get_units
 #' @examples
 #' \dontrun{
-#' files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro", 
+#' files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), var = "baro", 
 #'                         times = c('2014-01-01 00:00','2014-01-01 05:00'))
-#' post_ts(files, session = sbtools::authenticate_sb())
+#' post_ts(files)
 #' }
 #' @export
-post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, ...){
+post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE, ...){
   
-  # check inputs
+  # check inputs & session
   if(is.null(files)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
+  session_check_reauth(...)
   
+  # loop through files, posting each
   posted_items <- sapply(1:length(files), function(i) {
-    if(verbose) message('posting file ', files[i])
+    if(verbose) message('preparing to post file ', files[i])
     
     # parse the file name to determine where to post the file
-    out <- parse_ts_path(files[i], out = c('ts_name','var_src','site_name','file_name'))
-    site <- out$site_name
+    out <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
     
-    # Check if item already exists
-    ts_id <- locate_ts(var_src=out$var_src, site_name=out$site_name, ...)
+    # check & respond if item already exists
+    ts_id <- locate_ts(var_src=out$var_src, site_name=out$site_name)
     if (!is.na(ts_id)) {
       if(verbose) message('the ', out$ts_name, ' timeseries for site ', out$site_name, ' already exists')
-      switch(on_exists,
-             "stop"={ stop('item already exists and on_exists="stop"') },
-             "skip"={ next },
-             "append"={ stop("oops - append isn't implemented yet") },
-             "replace"={ if(verbose) message("deleting timeseries item before replacement")
-               delete_ts(out$var_src, out$site_name, verbose=verbose, ...)
-             })
+      switch(
+        on_exists,
+        "stop"={ stop('item already exists and on_exists="stop"') },
+        "skip"={ 
+          if(verbose) message("skipping timeseries item already on ScienceBase: ", ts_id)
+          return(NA) 
+        },
+        "replace"={ 
+          if(verbose) message("deleting timeseries item before replacement: ", ts_id)
+          delete_ts(out$var_src, out$site_name, verbose=verbose)
+        },
+        "merge"={ 
+          if(verbose) message("merging new timeseries with old: ", ts_id)
+          ts_old <- read_ts(download_ts(var_src=out$var_src, site_name=out$site_name, on_local_exists="replace"))
+          ts_new <- read_ts(files[i])
+          # join. these lines should be changed once unitted::full_join.unitted is implemented
+          if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
+          ts_merged <- u(full_join(v(ts_old), v(ts_new), by=names(ts_old)), get_units(ts_old)) 
+          if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
+          ts_merged$DateTime <- u(ts_merged$DateTime, 'UTC')
+          # replace the input file, but write to a nearby directory so we don't overwrite the user's file
+          merge_dir <- file.path(out$dir_name, "post_merge_temp")
+          dir.create(merge_dir)
+          files[i] <- write_ts(data=ts_merged, site=out$site_name, var=out$var, src=out$src, folder=merge_dir)
+          # delete the old one in preparation for overwriting
+          delete_ts(out$var_src, out$site_name, verbose=verbose)
+        })
     }
     
     # find the site root
@@ -51,13 +74,14 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
     if(verbose) message("posting file to site ", out$site_name, ", timeseries ", out$ts_name)
     
     # create the ts item if it does not exist
-    ts_item = item_create(parent_id=site_root, title=out$ts_name, ...)
+    ts_item = item_create(parent_id=site_root, title=out$ts_name)
     
-    # attach data file to ts item
-    item_append_files(ts_item, files = files[i], ...)
+    # attach data file to ts item. SB quirk: must be done before tagging with 
+    # identifiers, or identifiers will be lost
+    item_append_files(ts_item, files = files[i])
     
     # tag item with our special identifiers
-    item_update_identifier(ts_item, scheme = get_scheme(), type = out$ts_name, key=out$site_name, ...)
+    item_update_identifier(ts_item, scheme = get_scheme(), type = out$ts_name, key=out$site_name)
     
     ts_item
   })
@@ -79,10 +103,13 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace"), verbose=TRUE, 
 #' }
 delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
   
+  # check inputs & session
+  session_check_reauth(...)
+  
   deletion_msgs <- lapply(setNames(var_src, var_src), function(var) {
     lapply(setNames(site_name, site_name), function(site) {
       # find the item id
-      ts_id <- locate_ts(var_src=var, site_name=site, ...)
+      ts_id <- locate_ts(var_src=var, site_name=site)
       
       if(is.na(ts_id)) {
         if(verbose) message("skipping missing ", var, " timeseries for site ", site)
