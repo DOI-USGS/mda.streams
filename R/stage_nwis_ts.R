@@ -43,7 +43,8 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
         setNames(c("DateTime",var)) %>%
-        u(c('UTC',get_var_codes(var, 'units')))
+        filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
+        u(c(NA,get_var_codes(var, 'units')))
 
       if(nrow(site_data) > 0) {
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder)
