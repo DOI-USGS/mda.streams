@@ -44,12 +44,24 @@ locate_item <- function(key=c("nwis_02322688", "project", "presentations", "prop
 locate_item_by_dir <- function(parent, title, format=c("id","item_url","folder_url"), ...) {
   # process arguments
   format <- match.arg(format) # only one format per call to locate_item
+  query_args <- data.frame(parent=parent, title=title, stringsAsFactors=FALSE)
   session_check_reauth(...)
-
-  kids <- item_list_children(parent)
-  # orphans are kids with parents and titles but not necessarily identity tags.
-  orphans <- kids[sapply(kids$id, function(kid) item_get(kid)$title == title)]
-  format_item(orphans, format)
+  
+  # run the query or queries
+  sapply(seq_len(nrow(query_args)), function(argnum) {
+    one_parent <- query_args$parent[argnum]
+    one_title <- query_args$title[argnum]
+    
+    # find all children of the specified parent
+    kids <- item_list_children(one_parent)
+    
+    # orphans are kids with parents and titles but not necessarily identity tags.
+    is_orphan <- sapply(kids$id, function(kid) item_get(kid)$title == one_title)
+    orphans <- if(length(is_orphan) > 0) kids[is_orphan,] else data.frame()
+    
+    # return properly formatted
+    format_item(orphans, format)
+  })
 }
 
 #' Format an item as a ScienceBase ID or URL, as requested
