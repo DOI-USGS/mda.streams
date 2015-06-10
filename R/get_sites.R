@@ -12,10 +12,8 @@
 #' @return a character vector of "site_root" titles (keys)
 #' @import sbtools
 #' @examples
-#' \donttest{
-#' get_sites()
-#' }
 #' \dontrun{
+#' get_sites()
 #' get_sites(limit = 10)
 #' # get those sites that have water temperature
 #' get_sites(with_var_src = 'ts_wtr')

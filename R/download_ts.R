@@ -5,7 +5,7 @@
 #' @param var_src a valid variable name for timeseries data (see 
 #'   \code{get_var_codes(out='var_src', type='ts')})
 #' @param folder string for a folder location
-#' @param on_remote_exists character indicating what to do if the 
+#' @param on_remote_missing character indicating what to do if the 
 #' @param on_local_exists character indicating what to do if the folder already 
 #'   contains a file with the intended download name
 #' @param ... additional arguments passed to 

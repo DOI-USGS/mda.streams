@@ -16,13 +16,13 @@ download_ts(var_src, site_name, folder = tempdir(),
 
 \item{folder}{string for a folder location}
 
+\item{on_remote_missing}{character indicating what to do if the}
+
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
 
 \item{...}{additional arguments passed to
 \code{\link[sbtools]{session_check_reauth}}}
-
-\item{on_remote_exists}{character indicating what to do if the}
 }
 \value{
 file handle (character path) for the downloaded file, or NA if the
