@@ -13,7 +13,7 @@ locate_folder(folder = c("project", "presentations", "proposals",
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
 
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Find a high-level folder on ScienceBase

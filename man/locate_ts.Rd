@@ -5,7 +5,7 @@
 \title{Find a timeseries item on ScienceBase}
 \usage{
 locate_ts(var_src = "doobs_nwis", site_name = "nwis_02322688",
-  format = c("id", "url"), ...)
+  format = c("id", "url"), by = c("tag", "dir"), ...)
 }
 \arguments{
 \item{var_src}{the variable name, e.g., "doobs_nwis"}
@@ -15,7 +15,10 @@ locate_ts(var_src = "doobs_nwis", site_name = "nwis_02322688",
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
 
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{by}{character indicating how to search for the item: using tags
+(the default) or by scanning the parent directory for the desired title?}
+
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Find a timeseries item on ScienceBase
