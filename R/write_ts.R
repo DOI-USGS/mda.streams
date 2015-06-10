@@ -10,11 +10,14 @@
 #' @export
 write_ts <- function(data, site, var, src, folder){
   
+  if (!verify_ts(data, var, checks=c('ncol','names')))
+    stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
+  
   # store the timezone code in the units field; read_ts will pull it back out
-  if(!("" == get_units())) stop("timeseries DateTime units should be empty on ")
+  if(!("" == get_units(data$DateTime))) stop("timeseries DateTime units should be empty on ")
   data$DateTime <- u(data$DateTime, tz(data$DateTime))
   
-  if (!verify_ts(data, var))
+  if (!verify_ts(data, var, checks=c('tz','units')))
     stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
   
   if (nrow(data) == 0)
