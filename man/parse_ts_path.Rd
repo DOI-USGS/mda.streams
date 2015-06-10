@@ -10,7 +10,9 @@ parse_ts_path(file_path, out = c("site_name", "ts_name"),
 \arguments{
 \item{file_path}{a valid file path for ts file}
 
-\item{out}{a character for desired output ('file_name', 'site_name', 'ts_name', or any of the out names from parse_ts_name or parse_site_name)}
+\item{out}{a character for desired output ('dir_name','file_name',
+'site_name', 'ts_name', or any of the out names from parse_ts_name or
+parse_site_name)}
 
 \item{use_names}{logical. Should the return vector be named according to the
 input values?}
