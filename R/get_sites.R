@@ -46,8 +46,10 @@ get_sites <- function(with_var_src = NULL, limit = 10000, ...){
     
     # convert from parents of these items to site names
     parents <- sapply(response$items, function(item) item$parentId ) # get the parents (site items) of the timeseries items
-    if (length(parents==0))
+    if (length(parents)==0){
       return( vector('character'))
+    }
+      
     # -- ignore specified limiter on query: 
     
     identifiers <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
