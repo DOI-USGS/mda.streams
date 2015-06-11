@@ -10,10 +10,10 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#'   find_sites()
-#'   find_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
+#'   list_sites()
+#'   list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
 #' }
-find_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
+list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   
   logic <- match.arg(logic)
   
