@@ -28,7 +28,8 @@ dataset, and returns as a character vector of those site names
 get_sites()
 get_sites(limit = 10)
 # get those sites that have water temperature
-get_sites(with_var_src = 'ts_wtr')
+get_sites(with_var_src = 'ts_wtr_nwis')
 }
 }
+\keyword{internal}
 
