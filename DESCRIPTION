@@ -17,7 +17,7 @@ Depends:
 Imports:
     dataRetrieval (>= 2.1.2),
     dplyr,
-    sbtools,
+    sbtools (>= 0.10.2),
     stringr,
     lubridate,
     jsonlite, 
