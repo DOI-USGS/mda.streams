@@ -24,10 +24,8 @@ Collects from sciencebase all site names ("site_root" titles, e.g.,
 dataset, and returns as a character vector of those site names
 }
 \examples{
-\donttest{
-get_sites()
-}
 \dontrun{
+get_sites()
 get_sites(limit = 10)
 # get those sites that have water temperature
 get_sites(with_var_src = 'ts_wtr')

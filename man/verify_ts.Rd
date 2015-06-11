@@ -4,14 +4,20 @@
 \alias{verify_ts}
 \title{verify timeseries data.frame format and contents}
 \usage{
-verify_ts(data, var_src, checks = c("cols", "tz", "units", "variable"))
+verify_ts(data, var, checks = c("ncol", "tz", "units", "names"),
+  on_fail = warning)
 }
 \arguments{
 \item{data}{a \code{\link[unitted]{unitted}} data.frame with date and value}
 
-\item{var_src}{optional name for timeseries. If supplied, will check variable column name}
-
 \item{checks}{tests to run on the data ('cols', 'tz', 'units', 'variable')}
+
+\item{on_fail}{function to call when a test fails. good options are warning
+and stop. if the function does not halt evaluation, FALSE is returned after
+the function is first called.}
+
+\item{var_src}{optional name for timeseries. If supplied, will check variable
+column name}
 }
 \value{
 TRUE if is valid, FALSE if not
@@ -21,11 +27,12 @@ Checks to see a given data.frame meets project criteria
 }
 \examples{
 \dontrun{
-files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "doobs",
+files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), var = "doobs",
                  times = c('2014-01-01','2014-02-01'))
+files <- download_ts("doobs_nwis", "nwis_01073389", on_local_exists="skip")
 ts <- read_ts(files[1])
-verify_ts(ts)
-verify_ts(ts, variable = 'doobs', checks = c('cols', 'units', 'variable'))
+verify_ts(ts, var='doobs', checks=c('ncol','units','names')) # TRUE
+verify_ts(ts, var='wtr', checks=c('ncol','units','names')) # warning + FALSE
 }
 }
 \keyword{internal}

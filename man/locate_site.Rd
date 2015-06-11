@@ -4,7 +4,7 @@
 \alias{locate_site}
 \title{Find a site folder on ScienceBase}
 \usage{
-locate_site(site_name, format = c("id", "url"), ...)
+locate_site(site_name, format = c("id", "url"), by = c("tag", "dir"), ...)
 }
 \arguments{
 \item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
@@ -12,7 +12,10 @@ locate_site(site_name, format = c("id", "url"), ...)
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
 
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{by}{character indicating how to search for the item: using tags
+(the default) or by scanning the parent directory for the desired title?}
+
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Find a site folder on ScienceBase

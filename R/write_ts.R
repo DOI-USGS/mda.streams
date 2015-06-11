@@ -5,17 +5,25 @@
 #' @param src the source of the data, e.g., 'nwis' or 'nldas'
 #' @param folder the folder to write the file in
 #' @keywords internal
+#' @importFrom lubridate tz
+#' @importFrom unitted u
 #' @export
 write_ts <- function(data, site, var, src, folder){
   
-  var_src <- make_var_src(var, src)
-  if (!verify_ts(data, var_src))
-    stop('timeseries input for site ',site,' and var_src ',var_src,' is not valid')
+  if (!verify_ts(data, var, checks=c('ncol','names')))
+    stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
+  
+  # store the timezone code in the units field; read_ts will pull it back out
+  if(!("" == get_units(data$DateTime))) stop("timeseries DateTime units should be empty on ")
+  data$DateTime <- u(data$DateTime, tz(data$DateTime))
+  
+  if (!verify_ts(data, var, checks=c('tz','units')))
+    stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
   
   if (nrow(data) == 0)
     invisible(NULL)
   
-  fpath <- make_ts_path(site, make_ts_name(var_src), folder)
+  fpath <- make_ts_path(site, make_ts_name(var, src), folder)
   gz_con <- gzfile(fpath, "w")
   write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
   close(gz_con)

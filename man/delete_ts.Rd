@@ -13,7 +13,7 @@ delete_ts(var_src, site_name, verbose = TRUE, ...)
 
 \item{verbose}{logical. Should status messages be given?}
 
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Deletes timeseries objects specified by all combinations of variable and site

@@ -16,20 +16,37 @@
 #' 
 #' \dontrun{
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), 
-#'   var = "doobs", times = c('2014-01-01','2014-02-01'), verbose=TRUE)
+#'   var = "doobs", times = c('2014-01-01','2014-01-02'), verbose=TRUE)
+#' read_ts(files[1])
+#' 
 #' # par is unavailable for all sites, so returns NULL
-#' files <- stage_nwis_ts(sites = get_sites(), var = "par",
+#' stage_nwis_ts(sites = get_sites(), var = "par",
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
 stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
+
+  # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
+  # all_sites <- get_sites()
+  # all_files <- stage_nwis_ts(sites = all_sites, var = "doobs", times = c('2014-06-01','2014-06-02'), verbose=TRUE)
+  # tz_00 <- sapply(setNames(all_files, mda.streams:::parse_ts_path(all_files, "site_name")), function(file) format(unitted::v(read_ts(file)[1,"DateTime"]), "%H") == "00")
+  # tz_01 <- sapply(setNames(all_files, mda.streams:::parse_ts_path(all_files, "site_name")), function(file) format(unitted::v(read_ts(file)[1,"DateTime"]), "%H") == "01")
+  # tz_other <- sapply(setNames(all_files, mda.streams:::parse_ts_path(all_files, "site_name")), function(file) !(format(unitted::v(read_ts(file)[1,"DateTime"]), "%H") %in% c("00","01")))
+  # write.table(mda.streams:::parse_ts_path(all_files[tz_00], "sitenum"), "C:/Users/aappling/desktop/right_time.txt", sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
+  # write.table(mda.streams:::parse_ts_path(all_files[tz_01], "sitenum"), "C:/Users/aappling/desktop/wrong_time.txt", sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
+  # write.table(mda.streams:::parse_ts_path(all_files[tz_other], "sitenum"), "C:/Users/aappling/desktop/other_time.txt", sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
   
   # download the full dataset from NWIS all at once
   if(length(var) > 1) stop("one var at a time, please")
   p_code <- get_var_codes(var, "p_code")
+  # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
+  # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
+  truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
+  asktimes <- format(truetimes + as.difftime(c(-1, 0), units="hours"), "%Y-%m-%dT%H:%MZ")
+  # download the data
   if(isTRUE(verbose)) message("downloading data from NWIS for p_code ", p_code)
-  nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = times[1], endDate = times[2], ...)
-
+  nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], ...)
+  
   # loop through to filter and write the data
   if(isTRUE(verbose)) message("writing the downloaded data to file")
   file_paths <- c()
@@ -43,7 +60,8 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
         mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
         select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
         setNames(c("DateTime",var)) %>%
-        u(c('UTC',get_var_codes(var, 'units')))
+        filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
+        u(c(NA,get_var_codes(var, 'units')))
 
       if(nrow(site_data) > 0) {
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder)

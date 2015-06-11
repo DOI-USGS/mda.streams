@@ -54,7 +54,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
     
     site_data <- select(site_data, -units) %>%
       setNames(c('DateTime',var)) %>%
-      u(c("UTC", units))
+      u(c(NA, units))
     
     fpath <- write_ts(site_data, site=sites[i], var=var, src="nldas", folder)
     file_paths <- c(file_paths, fpath)

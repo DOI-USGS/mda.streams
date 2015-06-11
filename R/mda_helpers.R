@@ -201,15 +201,19 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' Split file path into contents
 #' @import dplyr
 #' @param file_path a valid file path for ts file
-#' @param out a character for desired output ('file_name', 'site_name', 'ts_name', or any of the out names from parse_ts_name or parse_site_name)
-#' @param use_names logical. Should the return vector be named according to the
+#' @param out a character for desired output ('dir_name','file_name',
+#'   'site_name', 'ts_name', or any of the out names from parse_ts_name or
+#'   parse_site_name)
+#' @param use_names logical. Should the return vector be named according to the 
 #'   input values?
 #' @return a character
 parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=length(out)>1) {
   
+  dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
   splits <- strsplit(file_name, '[-.]')
   parsed <- data.frame(
+    dir_name = dir_name,
     file_name = file_name, 
     site_name = sapply(splits, "[", 1),
     ts_name = sapply(splits, "[", 2),
