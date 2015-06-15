@@ -6,7 +6,6 @@
 #' @param on_exists character specifying an action when a file to post already
 #'   exists on ScienceBase
 #' @param verbose logical. Should status messages be given?
-#' @param ... args passed to \code{\link[sbtools]{session_check_reauth}}
 #' @author Luke Winslow, Corinna Gries, Jordan S Read
 #' @import sbtools
 #' @importFrom lubridate tz
@@ -18,12 +17,12 @@
 #' post_ts(files)
 #' }
 #' @export
-post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE, ...){
+post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE){
   
   # check inputs & session
   if(is.null(files)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  session_check_reauth(...)
+  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
   
   # loop through files, posting each
   posted_items <- sapply(1:length(files), function(i) {
@@ -55,7 +54,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
           ts_merged <- u(full_join(v(ts_old), v(ts_new), by=names(ts_old)), get_units(ts_old)) 
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
-          ts_merged$DateTime <- u(ts_merged$DateTime, 'UTC')
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
           merge_dir <- file.path(out$dir_name, "post_merge_temp")
           dir.create(merge_dir)
@@ -66,7 +64,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     }
     
     # find the site root
-    site_root = locate_site(out$site_name, ...)
+    site_root = locate_site(out$site_name)
     if(is.na(site_root)){
       stop('no site folder available for site ', out$site_name)
     }
@@ -101,16 +99,16 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
 #' mda.streams:::delete_ts(c("doobs_nwis","wtr_nwis"), 
 #'   c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
 #' }
-delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
+delete_ts <- function(var_src, site_name, verbose=TRUE) {
   
-  # check inputs & session
-  session_check_reauth(...)
+  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
   
   deletion_msgs <- lapply(setNames(var_src, var_src), function(var) {
     lapply(setNames(site_name, site_name), function(site) {
-      # find the item id
-      ts_id <- locate_ts(var_src=var, site_name=site)
+      # find the item id by hook or by crook (aka tag or dir)
+      ts_id <- locate_ts(var_src=var, site_name=site, by="either")
       
+      # if the item exists, delete it and its children
       if(is.na(ts_id)) {
         if(verbose) message("skipping missing ", var, " timeseries for site ", site)
         NULL
@@ -118,16 +116,25 @@ delete_ts <- function(var_src, site_name, verbose=TRUE, ...) {
         if(verbose) message("deleting ", var, " timeseries for site ", site)
         
         # delete any data files from the item
-        item_rm_files(ts_id) 
+        item_status <- item_rm_files(ts_id)
+        if(!is.list(item_status)) stop("couldn't delete item because couldn't find children")
         
         # sleep to give time for full deletion
-        for(wait in 1:20) {
+        for(wait in 1:50) {
           Sys.sleep(0.2)
           if(nrow(item_list_files(ts_id)) == 0) break
+          if(wait==50) stop("failed to delete children & therefore item")
         }
         
         # delete the item itself
-        item_rm(ts_id) 
+        deletion_msg <- item_rm(ts_id) 
+        
+        # sleep (again!) to give time for full deletion
+        for(wait in 1:50) {
+          Sys.sleep(0.2)
+          if(all(!is.na(locate_ts(var_src=var, site_name=site, by="either"))))
+          if(wait==50) stop("failed to delete item")
+        }
       }
     })
   })

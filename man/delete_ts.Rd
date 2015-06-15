@@ -4,16 +4,16 @@
 \alias{delete_ts}
 \title{Delete a time series item and its data}
 \usage{
-delete_ts(var_src, site_name, verbose = TRUE, ...)
+delete_ts(var_src, site_name, verbose = TRUE)
 }
 \arguments{
-\item{var_src}{the variable name, e.g., "doobs_nwis"}
+\item{var_src}{the variable name, e.g., "doobs_nwis", for which you want the
+timeseries}
 
-\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
+\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want to
+look in}
 
 \item{verbose}{logical. Should status messages be given?}
-
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Deletes timeseries objects specified by all combinations of variable and site

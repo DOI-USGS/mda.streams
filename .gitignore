@@ -13,3 +13,6 @@
 mda.streams.Rproj
 .Rbuildignore
 **.DS_Store
+
+# Temporary files
+tests/temp/

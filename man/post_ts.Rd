@@ -5,7 +5,7 @@
 \title{Post a new timeseries file to SB}
 \usage{
 post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
-  verbose = TRUE, ...)
+  verbose = TRUE)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
@@ -14,8 +14,6 @@ post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
 exists on ScienceBase}
 
 \item{verbose}{logical. Should status messages be given?}
-
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Post a staged file from the local computer to ScienceBase
