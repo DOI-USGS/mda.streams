@@ -5,7 +5,8 @@
 \title{Find a high-level folder on ScienceBase}
 \usage{
 locate_folder(folder = c("project", "presentations", "proposals",
-  "publications", "sites"), format = c("id", "url"), ...)
+  "publications", "sites"), format = c("id", "url"), by = c("tag", "dir",
+  "either"), limit = 5000)
 }
 \arguments{
 \item{folder}{the folder to locate}
@@ -13,7 +14,13 @@ locate_folder(folder = c("project", "presentations", "proposals",
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
 
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{by}{character indicating how to search for the item: using tags ("tag",
+the default and recommended option), by scanning the parent directory for
+the desired title ("dir"), or both in combination ("either")?}
+
+\item{limit}{number of items to return, as in
+\code{\link[sbtools]{query_item_identifier}} or
+\code{\link[sbtools]{item_list_children}}}
 }
 \description{
 Find a high-level folder on ScienceBase
