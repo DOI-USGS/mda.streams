@@ -11,21 +11,19 @@
 #'   \code{\link[sbtools]{session_check_reauth}}
 #' @return a character vector of "site_root" titles (keys)
 #' @import sbtools
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' get_sites()
 #' get_sites(limit = 10)
 #' # get those sites that have water temperature
-#' get_sites(with_var_src = 'ts_wtr')
+#' get_sites(with_var_src = 'ts_wtr_nwis')
 #' }
 #' @import jsonlite
 #' @import httr
 #' @import sbtools
 #' @export
 get_sites <- function(with_var_src = NULL, limit = 10000, ...){
-  
-  # log in to ScienceBase
-  session_check_reauth(...)
 
   if (is.null(with_var_src)){
     # get the superset of sites. this query is used in both if{} blocks but with
@@ -45,8 +43,13 @@ get_sites <- function(with_var_src = NULL, limit = 10000, ...){
     
     # convert from parents of these items to site names
     parents <- sapply(response$items, function(item) item$parentId ) # get the parents (site items) of the timeseries items
-    parents <- parents[seq_len(limit)] # limit the number of responses
-    identifiers <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000) #DON'T limit the number of id->sitename translation entries
+    if (length(parents)==0){
+      return( vector('character'))
+    }
+      
+    # -- ignore specified limiter on query: 
+    
+    identifiers <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
     sites <- identifiers$title[match(parents, identifiers$id)] # translate IDs to site names
 
     # this code would be slower because it involves many SB queries:

@@ -4,48 +4,44 @@
 #' contrast, get_var_codes() returns a list of all possible variables and
 #' get_var_codes(type="ts") returns all possible timeseries variables.
 #' 
-#' @param site a valid mda.streams site (see \link{get_sites}) or NULL for all 
-#'   sites
+#' @param site_name a character vector of length one with a site name such 
+#'   as those returned from make_site_name()
 #' @param type character. one or more dataset types to return
 #' @param ... additional arguments passed to
-#'   \code{\link[sbtools]{session_check_reauth}}, for example \code{username}
+#'   \code{\link[sbtools]{query_item_identifier}}, for example \code{limit}
 #'   
 #' @return an alphabetically sorted character vector of unique timeseries 
 #'   variable names for given sites
 #' @examples
-#' 
 #' \dontrun{
-#' list_datasets(site = 'nwis_01018035')
+#' list_datasets(site_name = 'nwis_01021050')
 #' }
-#' @import sbtools stringr
+#' @import sbtools
+#' @importFrom stringr str_detect
 #' @export
-list_datasets = function(site, type=c("ts","watershed"), ...){
+list_datasets = function(site_name, type=c("ts","watershed"), ...){
   
-  ts_pattern = pkg.env$ts_prefix
+  type <- match.arg(type, several.ok = TRUE)
+  str_match_patterns <- c('ts' = pkg.env$ts_prefix, 'watershed' = 'watershed')[type] %>%
+    as.character()
   
-  if (missing(site)){
-    stop("site required. looking for a list of possible dataset variables? try ?get_var_codes.")
+  if (missing(site_name)){
+    stop("site_name required. looking for a list of possible dataset variables? try ?get_var_codes.")
   } else {
-    session_check_reauth(...)
-    site_items <- query_item_identifier(scheme = get_scheme(), key = site, limit = 10000)
+    site_items <- query_item_identifier(scheme = get_scheme(), key = site_name, limit = 10000)
     
     if (nrow(site_items) == 0){ 
-      stop(site, ' does not exist')
+      stop(site_name, ' does not exist')
     }
     var_names <- site_items$title
-    is_ts <- str_detect(var_names, pattern = ts_pattern)
+    is_dataset <- sapply(str_match_patterns, function (x) str_detect(var_names, pattern = x)) %>%
+      rowSums() > 0
     
-    ts_variables <- NULL
-    for (i in which(is_ts)){
-      ts_variables = c(ts_variables, str_split_fixed(string = var_names[i], pattern = ts_pattern, n = 2)[2])
-    }
-    ts_variables = unique(ts_variables)
     
-    if (any(!ts_variables %in% get_var_codes(out="var_src"))){
-      warning('some variables from ', site, ' not found in all-site catalog. ')
-    }
-  }
+   datasets <- site_items$title[is_dataset] %>%
+     unique() %>%
+     sort()
+   return(datasets)
   
-  ts_variables <- sort(ts_variables)
-  return(ts_variables)
+  }
 }

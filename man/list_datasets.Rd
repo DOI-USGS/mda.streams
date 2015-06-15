@@ -4,16 +4,16 @@
 \alias{list_datasets}
 \title{Get a vector of timeseries dataset names}
 \usage{
-list_datasets(site, type = c("ts", "watershed"), ...)
+list_datasets(site_name, type = c("ts", "watershed"), ...)
 }
 \arguments{
-\item{site}{a valid mda.streams site (see \link{get_sites}) or NULL for all
-sites}
+\item{site_name}{a character vector of length one with a site name such
+as those returned from make_site_name()}
 
 \item{type}{character. one or more dataset types to return}
 
 \item{...}{additional arguments passed to
-  \code{\link[sbtools]{session_check_reauth}}, for example \code{username}}
+  \code{\link[sbtools]{query_item_identifier}}, for example \code{limit}}
 }
 \value{
 an alphabetically sorted character vector of unique timeseries
@@ -26,7 +26,7 @@ get_var_codes(type="ts") returns all possible timeseries variables.
 }
 \examples{
 \dontrun{
-list_datasets(site = 'nwis_01018035')
+list_datasets(site_name = 'nwis_01021050')
 }
 }
 
