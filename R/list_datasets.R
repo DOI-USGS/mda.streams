@@ -16,7 +16,8 @@
 #' \dontrun{
 #' list_datasets(site_name = 'nwis_01021050')
 #' }
-#' @import sbtools stringr
+#' @import sbtools
+#' @importFrom stringr str_detect
 #' @export
 list_datasets = function(site_name, type=c("ts","watershed"), ...){
   
