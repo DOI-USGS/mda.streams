@@ -25,7 +25,7 @@ Higher-level site querying function
 \examples{
 \dontrun{
   list_sites()
-  list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
+  list_sites(with_var_src=c("wtr_nwis","doobs_nwis","watershed"), logic="any")
 }
 }
 
