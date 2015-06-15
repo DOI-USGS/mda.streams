@@ -62,8 +62,8 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       kids <- item_list_children(query_args$parent[argnum], limit=limit)
       itemnum <- NA
       for(i in seq_len(nrow(kids))) {
-        kid_title <- tolower(item_get(kids[i,"id"])$title)
-        if(kid_title == query_args$title[argnum]) {
+        kid_title <- tryCatch(tolower(item_get(kids[i,"id"])$title), error=function(e) NA)
+        if(isTRUE(kid_title == query_args$title[argnum])) {
           itemnum <- i
           break
         }
@@ -100,6 +100,7 @@ format_item <- function(item, format) {
 #' 
 #' @param folder the folder to locate
 #' @inheritParams locate_item
+#' @import sbtools
 #' @export
 #' @examples 
 #' \dontrun{
@@ -110,6 +111,8 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
                           format=c("id","url"), by=c("tag","dir","either"), limit=5000) {
   folder <- tolower(folder)
   folder <- match.arg(folder)
+  if(folder != 'sites' && is.null(current_session())) 
+    stop("session is NULL, so only the sites folder is visible. see authenticate_sb()")
   format <- switch(match.arg(format), id="id", url="folder_url")
   locate_item(key=folder, type="root", parent=locate_folder("project"), title=folder, by=by, format=format, limit=limit)
 }
