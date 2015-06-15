@@ -24,9 +24,6 @@
 #' @import sbtools
 #' @export
 get_sites <- function(with_var_src = NULL, limit = 10000, ...){
-  
-  # log in to ScienceBase
-  session_check_reauth(...)
 
   if (is.null(with_var_src)){
     # get the superset of sites. this query is used in both if{} blocks but with

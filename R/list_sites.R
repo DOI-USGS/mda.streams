@@ -11,7 +11,7 @@
 #' @examples 
 #' \dontrun{
 #'   list_sites()
-#'   list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
+#'   list_sites(with_var_src=c("wtr_nwis","doobs_nwis","watershed"), logic="any")
 #' }
 list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   
@@ -20,10 +20,18 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   if(is.null(with_var_src)){
     sites <- get_sites()
   } else {
-    types <- make_ts_name(with_var_src)
+    var_codes <- get_var_codes(out = c('type','var_src'))
+    types <- vector(length = length(with_var_src))
+    for (i in 1:length(types)){
+      types[i] <- ifelse(with_var_src[i] %in% var_codes$var_src && 
+                           var_codes$type[which(var_codes$var_src %in% with_var_src[i])] == 'ts',
+                         make_ts_name(with_var_src[i]), 
+                         with_var_src[i])
+    }
+    
     sites <- vector('character')
     for (k in 1:length(types)){
-      sites <- append(sites, get_sites(with_child_key = types[k]))
+      sites <- append(sites, get_sites(with_var_src = types[k]))
     }
     tbl_sites <- data.frame(table(sites))
     

@@ -4,7 +4,7 @@
 \alias{choose_sites}
 \title{Identify sites with sufficient data to run a metabolism model}
 \usage{
-choose_sites(required_vars = c("disch", "doobs", "wtr"))
+choose_sites(required_vars = c("disch_nwis", "doobs_nwis", "wtr_nwis"))
 }
 \arguments{
 \item{required_vars}{character vector of variable names that are all required
