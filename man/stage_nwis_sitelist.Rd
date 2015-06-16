@@ -4,10 +4,11 @@
 \alias{stage_nwis_sitelist}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-stage_nwis_sitelist(p_codes, state_codes, folder = NULL, verbose = TRUE)
+stage_nwis_sitelist(vars, state_codes, folder = NULL, verbose = TRUE)
 }
 \arguments{
-\item{p_codes}{a character vector of NWIS p_codes}
+\item{vars}{a character vector of mda.streams var codes, as in
+dplyr::filter(get_var_codes(), src=='nwis')$var}
 
 \item{state_codes}{character vector of state codes, or "all" for all data.}
 
@@ -24,7 +25,7 @@ finds all NWIS sites that meet given data requirements
 }
 \examples{
 \dontrun{
-stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'),
+stage_nwis_sitelist(vars=c('doobs','wtr','disch','stage'),
   state_codes=c("wi","Michigan"))
 sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"),
   state_codes=c("all"), verbose=TRUE)

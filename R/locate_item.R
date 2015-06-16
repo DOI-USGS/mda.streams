@@ -195,9 +195,10 @@ repair_ts <- function(var_src, site_name, limit=5000) {
   
   # if we can't find the item, throw an error
   if(any(bad_rows <- is.na(query_args$ts_id_dir))) {
-    stop("couldn't find the ts for ", 
-         paste(query_args[bad_rows,'var_src_site'], collapse=" or "),
+    warning("couldn't find the ts for\n", 
+         paste(query_args[bad_rows,'var_src_site'], collapse=" or\n"),
          ", even searching by dir")
+    query_args <- query_args[!bad_rows,]
   }
   
   sapply(setNames(seq_len(nrow(query_args)), query_args$ts_id_dir), function(arg) {

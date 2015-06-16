@@ -35,8 +35,8 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
   on_exists <- match.arg(on_exists)
   if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
   
-  # loop through files, posting each
-  posted_items <- sapply(1:length(files), function(i) {
+  # loop through files, posting each and recording whether we'll need to add tags
+  ts_ids <- sapply(1:length(files), function(i) {
     if(verbose) message('preparing to post file ', files[i])
     
     # parse the file name to determine where to post the file
@@ -59,7 +59,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         "stop"={ stop('item already exists and on_exists="stop"') },
         "skip"={ 
           if(verbose) message("skipping timeseries item already on ScienceBase: ", ts_id)
-          return(NA) 
+          return(NA) # na is signal that doesn't need new tags
         },
         "replace"={ 
           if(verbose) message("deleting timeseries data before replacement: ", ts_id)
@@ -73,6 +73,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
           ts_merged <- u(full_join(v(ts_old), v(ts_new), by=names(ts_old)), get_units(ts_old)) 
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
+          if(verbose) message("num rows before & after merge: old=", nrow(ts_old), ", new=", nrow(ts_new), ", merged=", nrow(ts_merged))
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
           merge_dir <- file.path(ts_path$dir_name, "post_merge_temp")
           dir.create(merge_dir, showWarnings=FALSE)
@@ -82,11 +83,26 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         })
     }
     
-    if(verbose) message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
-    
     # attach data file to ts item. SB quirk: must be done before tagging with 
     # identifiers, or identifiers will be lost
+    if(verbose) message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
     item_append_files(ts_id, files = files[i])
+
+    # return id as signal that needs tags
+    return(ts_id)
+  })
+  
+  # separate loop to increase probability of success in re-tagging files when length(files) >> 1
+  posted_items <- sapply(1:length(ts_ids), function(i) {
+    
+    # if we skipped it once, skip it again
+    if(is.na(ts_ids[i])) 
+      return(NA)
+    else
+      ts_id <- ts_ids[i]
+    
+    # parse (again) the file name to determine where to post the file
+    ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
     
     # tag item with our special identifiers. if the item already existed,
     # identifiers should be wiped out by a known SB quirk, so sleep to give time
