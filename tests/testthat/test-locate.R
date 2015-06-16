@@ -36,4 +36,21 @@ if(!is.null(sbtools::current_session())) {
     expect_equal(nchar(locate_ts("doobs_nwis", "nwis_01021050", by="dir")), 24)
     expect_equal(nchar(locate_ts("doobs_nwis", "nwis_01021050", by="either")), 24)
   })
+  
+  test_that("locate_folder, locate_site, and locate_ts work in Dev/Sites", {
+    set_scheme("mda_streams_dev")
+    
+    # locate_folder
+    expect_equal(nchar(locate_folder("project")), 24)
+    expect_equal(nchar(locate_folder("sites", by="dir")), 24)
+
+    # locate_site
+    expect_equal(nchar(locate_site("nwis_040871488")), 24)
+    
+    # locate_ts
+    expect_true(is.na(locate_ts("par_nwis", "nwis_040871488")))
+    expect_equal(nchar(locate_ts("doobs_nwis", "nwis_040871488")), 24)
+    
+    set_scheme("mda_streams")
+  })
 }

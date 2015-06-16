@@ -44,6 +44,9 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
     ) %>%
     lapply(tolower) %>%
     as.data.frame(stringsAsFactors=FALSE)
+  
+  if(get_scheme() == 'mda_streams_dev' && is.null(current_session())) 
+    stop("log in to use mda_streams_dev. see authenticate_sb()")
 
   # run the query or queries
   sapply(1:nrow(query_args), function(argnum) {
@@ -113,6 +116,8 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
   folder <- match.arg(folder)
   if(folder != 'sites' && is.null(current_session())) 
     stop("session is NULL, so only the sites folder is visible. see authenticate_sb()")
+  if(folder == 'project' && by %in% c("dir", "either"))
+    stop("'by' must be 'tag' when searching for the project folder")
   format <- switch(match.arg(format), id="id", url="folder_url")
   locate_item(key=folder, type="root", parent=locate_folder("project"), title=folder, by=by, format=format, limit=limit)
 }
@@ -133,7 +138,7 @@ locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","eithe
   by <- match.arg(by)
   site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=site_name, type="site_root", parent=locate_folder("sites"), title=site_name, by=by, format=format, limit=limit)
+  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by=by), title=site_name, by=by, format=format, limit=limit)
 }
 
 #' Find a timeseries item on ScienceBase
@@ -156,5 +161,70 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
   var_src <- make_ts_name(var_src) # check that the variable name is valid and add prefix
   site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
   format <- switch(match.arg(format), id="id", url="item_url")
-  locate_item(key=site_name, type=var_src, parent=locate_site(site_name), title=var_src, by=by, format=format, limit=limit)
+  locate_item(key=site_name, type=var_src, parent=locate_site(site_name, by=by), title=var_src, by=by, format=format, limit=limit)
+}
+
+
+#' Repair a ts item that is missing its identifier tags
+#' 
+#' Sometimes ts items/files get posted but the identifiers don't get updated, 
+#' making it harder to search for the ts item. This function gives ScienceBase 
+#' another chance to add tags.
+#' 
+#' @param var_src one or more var_src strings, e.g., "doobs_nwis"
+#' @param site_name one or more site names, e.g., "nwis_040871488"
+#' @param limit the maximum number of items to return in the SB query to find 
+#'   all listed var_src:site_name combinations
+#'   
+#' @import sbtools
+#' @export
+repair_ts <- function(var_src, site_name, limit=5000) {
+  
+  # check the session; we'll need write access
+  if(is.null(current_session()))
+    stop("log in to repair data. see authenticate_sb()")
+  
+  # package the args together for arg replication & easier looping
+  query_args <- data.frame(
+    var_src=var_src, site_name=site_name, 
+    var_src_site=paste0(var_src, "-", site_name),
+    ts_id_tag=locate_ts(var_src=var_src, site_name=site_name, by='tag', limit=limit),
+    ts_id_dir=locate_ts(var_src=var_src, site_name=site_name, by='either', limit=limit),
+    stringsAsFactors=FALSE
+  )
+  
+  # if we can't find the item, throw an error
+  if(any(bad_rows <- is.na(query_args$ts_id_dir))) {
+    stop("couldn't find the ts for ", 
+         paste(query_args[bad_rows,'var_src_site'], collapse=" or "),
+         ", even searching by dir")
+  }
+  
+  sapply(setNames(seq_len(nrow(query_args)), query_args$ts_id_dir), function(arg) {
+    # unpackage the df row
+    var_src <- query_args[arg, "var_src"]
+    site_name <- query_args[arg, "site_name"]
+    ts_id_tag <- query_args[arg, "ts_id_tag"]
+    ts_id_dir <- query_args[arg, "ts_id_dir"]
+    
+    # if we found the ts by tags, we're already good to return
+    if(!is.na(ts_id_tag)) return(NA)
+    
+    # redo the action that somehow failed before
+    idlist <- list(type=make_ts_name(var_src), scheme=get_scheme(), key=site_name)
+    item_update_identifier(ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key)
+    
+    # waiting and checking is required
+    for(wait in 1:100) {
+      Sys.sleep(0.2)
+      is_updated <- isTRUE(all.equal(item_get(ts_id_dir)$identifiers[[1]], idlist))
+      if(is_updated) break
+      if(wait==100) {
+        warning("identifiers couldn't be replaced; try again later with ",
+                "repair_ts('", var_src, "', '", site_name, ")")
+        return(FALSE)
+      }
+    }
+    return(TRUE)
+  })
 }

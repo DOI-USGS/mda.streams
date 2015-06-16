@@ -12,9 +12,20 @@
 #' @importFrom unitted u v get_units
 #' @examples
 #' \dontrun{
-#' files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), var = "baro", 
-#'                         times = c('2014-01-01 00:00','2014-01-01 05:00'))
+#' sbtools::authenticate_sb()
+#' set_scheme("mda_streams_dev")
+#' 
+#' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
+#' post_site(sites, on_exists="clear")
+#' files <- stage_nwis_ts(sites = sites, var = "doobs", 
+#'   times = c('2014-01-01 00:00','2014-01-01 05:00'))
 #' post_ts(files)
+#' locate_ts("doobs_nwis", sites) # find the newly posted data online
+#' post_ts(files, on_exists="skip")
+#' post_ts(files, on_exists="replace")
+#' post_site(sites, on_exists="clear")
+#'  
+#' set_scheme("mda_streams_")
 #' }
 #' @export
 post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE){
@@ -29,12 +40,20 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     if(verbose) message('preparing to post file ', files[i])
     
     # parse the file name to determine where to post the file
-    out <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
+    ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
     
-    # check & respond if item already exists
-    ts_id <- locate_ts(var_src=out$var_src, site_name=out$site_name)
-    if (!is.na(ts_id)) {
-      if(verbose) message('the ', out$ts_name, ' timeseries for site ', out$site_name, ' already exists')
+    # find the site root
+    site_root = locate_site(ts_path$site_name)
+    if(is.na(site_root)){
+      stop('no site folder available for site ', ts_path$site_name)
+    }
+
+    # look for an existing ts and respond appropriately
+    ts_id <- locate_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, by="either")
+    if (is.na(ts_id)) {
+      ts_id <- item_create(parent_id=site_root, title=ts_path$ts_name)
+    } else {
+      if(verbose) message('the ', ts_path$ts_name, ' timeseries for site ', ts_path$site_name, ' already exists')
       switch(
         on_exists,
         "stop"={ stop('item already exists and on_exists="stop"') },
@@ -43,45 +62,46 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           return(NA) 
         },
         "replace"={ 
-          if(verbose) message("deleting timeseries item before replacement: ", ts_id)
-          delete_ts(out$var_src, out$site_name, verbose=verbose)
+          if(verbose) message("deleting timeseries data before replacement: ", ts_id)
+          delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
-          ts_old <- read_ts(download_ts(var_src=out$var_src, site_name=out$site_name, on_local_exists="replace"))
+          ts_old <- read_ts(download_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, on_local_exists="replace"))
           ts_new <- read_ts(files[i])
           # join. these lines should be changed once unitted::full_join.unitted is implemented
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
           ts_merged <- u(full_join(v(ts_old), v(ts_new), by=names(ts_old)), get_units(ts_old)) 
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
-          merge_dir <- file.path(out$dir_name, "post_merge_temp")
-          dir.create(merge_dir)
-          files[i] <- write_ts(data=ts_merged, site=out$site_name, var=out$var, src=out$src, folder=merge_dir)
+          merge_dir <- file.path(ts_path$dir_name, "post_merge_temp")
+          dir.create(merge_dir, showWarnings=FALSE)
+          files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=merge_dir)
           # delete the old one in preparation for overwriting
-          delete_ts(out$var_src, out$site_name, verbose=verbose)
+          delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
         })
     }
     
-    # find the site root
-    site_root = locate_site(out$site_name)
-    if(is.na(site_root)){
-      stop('no site folder available for site ', out$site_name)
-    }
-    
-    if(verbose) message("posting file to site ", out$site_name, ", timeseries ", out$ts_name)
-    
-    # create the ts item if it does not exist
-    ts_item = item_create(parent_id=site_root, title=out$ts_name)
+    if(verbose) message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
     
     # attach data file to ts item. SB quirk: must be done before tagging with 
     # identifiers, or identifiers will be lost
-    item_append_files(ts_item, files = files[i])
+    item_append_files(ts_id, files = files[i])
     
-    # tag item with our special identifiers
-    item_update_identifier(ts_item, scheme = get_scheme(), type = out$ts_name, key=out$site_name)
-    
-    ts_item
+    # tag item with our special identifiers. if the item already existed,
+    # identifiers should be wiped out by a known SB quirk, so sleep to give time
+    # for the files to be added and the identifiers to disappear so we can replace them
+    for(wait in 1:100) {
+      Sys.sleep(0.2)
+      if(nrow(sbtools::item_list_files(ts_id)) > 0 && is.null(item_get(ts_id)$identifiers)) break
+      if(wait==100) stop("identifiers didn't disappear and so can't be replaced; try again later with ",
+                        "repair_ts('", ts_path$var_src, "', '", ts_path$site_name, "')")
+    }
+    if(verbose) message("adding/replacing identifiers for item ", ts_id, ": ",
+                        "scheme=", get_scheme(), ", type=", ts_path$ts_name, ", key=", ts_path$site_name)
+    repair_ts(ts_path$var_src, ts_path$site_name, limit=5000)
+      
+    ts_id
   })
   
   invisible(posted_items)
@@ -92,52 +112,75 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
 #' Deletes timeseries objects specified by all combinations of variable and site
 #' 
 #' @inheritParams locate_ts
+#' @param files_only logical. If TRUE, only the files will be deleted, leaving
+#'   an empty ts item
 #' @param verbose logical. Should status messages be given?
 #' @keywords internal
 #' @examples 
 #' \dontrun{
-#' mda.streams:::delete_ts(c("doobs_nwis","wtr_nwis"), 
-#'   c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
+#' sbtools::authenticate_sb()
+#' set_scheme("mda_streams_dev")
+#' 
+#' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
+#' files <- stage_nwis_ts(sites = sites, var = "doobs", 
+#'   times = c('2014-01-01 00:00','2014-01-01 05:00'))
+#' post_ts(files)
+#' locate_ts("doobs_nwis", sites) # find the newly posted data online
+#' mda.streams:::delete_ts("doobs_nwis", sites)
+#' locate_ts("doobs_nwis", sites, by="either") # confirm it's all gone
+#'  
+#' set_scheme("mda_streams")
 #' }
-delete_ts <- function(var_src, site_name, verbose=TRUE) {
+delete_ts <- function(var_src, site_name, files_only=FALSE, verbose=TRUE) {
   
   if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
   
-  deletion_msgs <- lapply(setNames(var_src, var_src), function(var) {
-    lapply(setNames(site_name, site_name), function(site) {
-      # find the item id by hook or by crook (aka tag or dir)
-      ts_id <- locate_ts(var_src=var, site_name=site, by="either")
+  # find the item id by hook or by crook (aka tag or dir)
+  query_args <- data.frame(var_src=var_src, site_name=site_name, 
+                           ts_id=locate_ts(var_src=var_src, site_name=site_name, by="either"), 
+                           stringsAsFactors=FALSE)
+  
+  deletion_msgs <- 
+    lapply(1:nrow(query_args), function(arg) {
+      var <- query_args[arg, "var_src"]
+      site <- query_args[arg, "site_name"]
+      ts_id <- query_args[arg, "ts_id"]
       
       # if the item exists, delete it and its children
       if(is.na(ts_id)) {
-        if(verbose) message("skipping missing ", var, " timeseries for site ", site)
-        NULL
+        if(verbose) message("skipping deletion of missing ", var, " timeseries for site ", site)
+        return(NA) # do nothing if it's already not there
       } else {
         if(verbose) message("deleting ", var, " timeseries for site ", site)
         
         # delete any data files from the item
         item_status <- item_rm_files(ts_id)
-        if(!is.list(item_status)) stop("couldn't delete item because couldn't find children")
+        if(!is.list(item_status)) stop("couldn't delete item because couldn't find files")
         
         # sleep to give time for full deletion
         for(wait in 1:50) {
           Sys.sleep(0.2)
           if(nrow(item_list_files(ts_id)) == 0) break
-          if(wait==50) stop("failed to delete children & therefore item")
+          if(wait==50) stop("failed to delete files & therefore item")
         }
         
-        # delete the item itself
-        deletion_msg <- item_rm(ts_id) 
-        
-        # sleep (again!) to give time for full deletion
-        for(wait in 1:50) {
-          Sys.sleep(0.2)
-          if(all(!is.na(locate_ts(var_src=var, site_name=site, by="either"))))
-          if(wait==50) stop("failed to delete item")
+        # delete the ts item itself or return its ID
+        if(files_only) {
+          return(ts_id) 
+        } else {
+          # delete the item
+          out <- item_rm(ts_id) 
+          # sleep (again!) to give time for full deletion
+          for(wait in 1:50) {
+            Sys.sleep(0.2)
+            if(is.na(locate_ts(var_src=var, site_name=site, by="either"))) break
+            if(wait==50) stop("failed to delete item")
+          }
+          # if it worked, return the output
+          return(out)
         }
       }
     })
-  })
   
   invisible(deletion_msgs)
 }
