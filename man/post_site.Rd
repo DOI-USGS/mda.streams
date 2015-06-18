@@ -10,10 +10,9 @@ post_site(sites, on_exists = c("stop", "skip", "clear", "replace"),
 \arguments{
 \item{sites}{one or more local site IDs (e.g. nwis_09238475)}
 
-\item{verbose}{logical. Should status messages be given?}
+\item{on_exists}{character. what should be done when an item already exists?}
 
-\item{replace_existing}{logical. Should an item that already exists be
-replaced?}
+\item{verbose}{logical. Should status messages be given?}
 }
 \value{
 an item list

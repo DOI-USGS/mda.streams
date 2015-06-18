@@ -9,7 +9,7 @@
 #' @param verbose provide verbose output (currently not implemented)
 #' @param ... additional arguments passed to \code{\link{readNWISuv}}
 #' @return a character vector of file handles
-#' @importFrom dataRetrieval readNWISuv
+#' @importFrom dataRetrieval constructNWISURL importRDB1
 #' @importFrom unitted u write_unitted
 #'   
 #' @examples
@@ -17,7 +17,7 @@
 #' \dontrun{
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), 
 #'   var = "doobs", times = c('2014-01-01','2014-01-02'), verbose=TRUE)
-#' read_ts(files[1])
+#' head(read_ts(files[1]))
 #' 
 #' # par is unavailable for all sites, so returns NULL
 #' stage_nwis_ts(sites = get_sites(), var = "par",
@@ -43,22 +43,35 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
   asktimes <- format(truetimes + as.difftime(c(-1, 0), units="hours"), "%Y-%m-%dT%H:%MZ")
-  # download the data
-  if(isTRUE(verbose)) message("downloading data from NWIS for p_code ", p_code)
-  nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], ...)
+
+  # download the data. rather than using xml (as in readNWISuv), use tsv because
+  # it's much faster. the drawback is that if the file is incomplete, we won't
+  # be told. that's life.
+  if(isTRUE(verbose)) message("requesting data from NWIS for p_code ", p_code)
+  #nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], ...)
+  url <- constructNWISURL(siteNumber = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], service="uv", format="tsv")
+  nwis_data <- tryCatch(
+    importRDB1(url, asDateTime = TRUE),
+    error=function(e) {
+      if(isTRUE(verbose)) {
+        message("data are unavailable for this p_code-site combo. msg from NWIS:\n  ", strsplit(as.character(e), "\n")[[1]][1])
+      }
+      data.frame()
+    })
   
   # loop through to filter and write the data
-  if(isTRUE(verbose)) message("writing the downloaded data to file")
   file_paths <- c()
-  site_no <- dateTime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
+  site_no <- datetime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
   if (ncol(nwis_data)!=0){
+    if(isTRUE(verbose)) message("writing the downloaded data to file")
     un_sites <- unique(sites)
     for (i in 1:length(un_sites)){
       
       site <- parse_site_name(un_sites[i])
+      datacol <- names(nwis_data)[5]
       site_data <- filter(nwis_data, site_no == site) %>%
-        mutate(DateTime = as.POSIXct(dateTime, tz = tz_cd)) %>%
-        select(DateTime, matches(tail(names(nwis_data),1)), -ends_with("_cd")) %>%
+        mutate(DateTime = as.POSIXct(datetime, tz = ifelse(tz_cd=="UTC", "GMT", tz_cd))) %>%
+        select_('DateTime', datacol) %>%
         setNames(c("DateTime",var)) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
         u(c(NA,get_var_codes(var, 'units')))

@@ -1,8 +1,7 @@
 #' Create new site in SB
 #' 
 #' @param sites one or more local site IDs (e.g. nwis_09238475)
-#' @param replace_existing logical. Should an item that already exists be 
-#'   replaced?
+#' @param on_exists character. what should be done when an item already exists?
 #' @param verbose logical. Should status messages be given?
 #' @return an item list
 #' @author Corinna Gries
