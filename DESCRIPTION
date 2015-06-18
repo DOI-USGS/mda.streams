@@ -1,7 +1,7 @@
 Package: mda.streams
 Type: Package
 Title: mda.streams
-Version: 0.7.1
+Version: 0.7.2
 Date: 2014-12-08
 Author: Luke A Winslow, Jordan S Read, Alison Appling
 Maintainer: Alison Appling <aappling@usgs.gov>
