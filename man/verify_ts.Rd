@@ -4,7 +4,7 @@
 \alias{verify_ts}
 \title{verify timeseries data.frame format and contents}
 \usage{
-verify_ts(data, var, checks = c("ncol", "tz", "units", "names"),
+verify_ts(data, var, checks = c("ncol", "unitted", "tz", "units", "names"),
   on_fail = warning)
 }
 \arguments{

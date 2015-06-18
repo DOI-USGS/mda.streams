@@ -25,7 +25,8 @@ find_site_coords <- function(site_names, format=c("normal","geoknife"), attach.u
   . <- site_no <- dec_lat_va <- dec_long_va <- lat <- lon <- ".dplyr.var"
   lon_lat <- site_data %>% group_by(site_no) %>%
     summarize(lon = mean(dec_long_va, na.rm = T), lat = mean(dec_lat_va, na.rm = T)) %>%
-    transmute(site_name=make_site_name(site_no), lat, lon)
+    transmute(site_name=make_site_name(site_no), lat, lon) %>%
+    as.data.frame() # see unitted issue #14 - data.frame will be better than tbl_df for units for now
  
   if(format=="geoknife") {
     lon_lat <- lon_lat[c("lon","lat")] %>%

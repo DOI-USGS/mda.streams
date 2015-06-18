@@ -22,8 +22,10 @@ read_ts = function(file){
   
   # convert units to tz field for DateTime
   df$DateTime <- u(as.POSIXct(df$DateTime, tz = get_units(df$DateTime)), NA)
+  if(names(df)[2] == "suntime") {
+    df$suntime <- u(as.POSIXct(df$suntime, tz = get_units(df$suntime)), NA)
+  }
   
-  # -- to do: check that output format is the same needed for input of write_ts() --
   return(df)
 }
 

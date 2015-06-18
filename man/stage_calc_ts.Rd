@@ -27,7 +27,9 @@ accept calculated/modeled data as a data.frame and return a file handle
 }
 \examples{
 \dontrun{
-files <- stage_calc_ts(sites="nwis_01484680", var="dosat", src="calcGG")
+files <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="calcLon", verbose=TRUE)
+str(read_ts(files))
+files <- stage_calc_ts(sites="nwis_01484680", var="dosat", src="calcGG", verbose=TRUE)
 }
 }
 

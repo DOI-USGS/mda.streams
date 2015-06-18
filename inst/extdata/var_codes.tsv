@@ -8,6 +8,6 @@ K600	calcNight	s^-1	ts	NA	gas exchange rate
 par	nwis|calcLat	umol m^-2 s^-1	ts	'99988'	photosynthetically active radiation	light
 shed	NA	NA	watershed	NA	watershed shapefile	NA
 stage	nwis	ft	ts	'00065'	gage height	NA
-suntime	calcLon	NA	ts	NA	apparent solar time	local.time
+suntime	calcLon	UTC	ts	NA	apparent solar time	local.time
 sw	nldas	?	ts	dswrfsfc	downwelling shortwave radiation	NA
 wtr	nwis	degC	ts	'00010'	water temperature	temp.water
