@@ -5,7 +5,7 @@
 \title{Post a new timeseries file to SB}
 \usage{
 post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
-  verbose = TRUE, ...)
+  verbose = TRUE)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
@@ -14,17 +14,26 @@ post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
 exists on ScienceBase}
 
 \item{verbose}{logical. Should status messages be given?}
-
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Post a staged file from the local computer to ScienceBase
 }
 \examples{
 \dontrun{
-files <- stage_nldas_ts(sites = c("nwis_06893820","nwis_01484680"), var = "baro",
-                        times = c('2014-01-01 00:00','2014-01-01 05:00'))
+sbtools::authenticate_sb()
+set_scheme("mda_streams_dev")
+
+sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
+post_site(sites, on_exists="clear")
+files <- stage_nwis_ts(sites = sites, var = "doobs",
+  times = c('2014-01-01 00:00','2014-01-01 05:00'))
 post_ts(files)
+locate_ts("doobs_nwis", sites) # find the newly posted data online
+post_ts(files, on_exists="skip")
+post_ts(files, on_exists="replace")
+post_site(sites, on_exists="clear")
+
+set_scheme("mda_streams_")
 }
 }
 \author{

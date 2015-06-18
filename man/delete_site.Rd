@@ -4,44 +4,34 @@
 \alias{delete_site}
 \title{Delete a site and all its files.}
 \usage{
-delete_site(sites, verbose = TRUE, ...)
+delete_site(sites, children_only = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{sites}{one or more site IDs such as "nwis_08437710" to look up and
 delete}
 
-\item{verbose}{logical. Should status messages be given?}
+\item{children_only}{logical. If TRUE, only the child items in the site
+folder will be deleted, leaving an empty site folder}
 
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{verbose}{logical. Should status messages be given?}
 }
 \value{
-anything passed back from the final item_rm
+anything passed back from the final item_rm if children_only==FALSE,
+  or a pointer to the remaining item if children_only==TRUE
 }
 \description{
 Delete a site and all its files.
 }
 \examples{
 \dontrun{
-cat(locate_site("nwis_08437710", format="url"))
-files <- sapply(list_datasets("nwis_08437710", type="ts"), function(var_src) {
-  download_ts(var_src, "nwis_08437710")
-})
+sbtools::authenticate_sb()
+set_scheme("mda_streams_dev")
 
-# try delete_site
-mda.streams:::delete_site("nwis_08437710")
-mda.streams:::delete_site(c("nwis_08437710","nwis_03401385","nwis_02423397"))
+sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
+post_site(sites)
+mda.streams:::delete_site(sites)
 
-# now repair the damage
-post_site("nwis_08437710")
-Sys.sleep(1)
-post_ts(files[!is.na(files)])
-
-# or if you REALLY messed it up:
-files <- sapply(c("doobs","disch","stage","wtr"), function(var) {
-  staged <- stage_nwis_ts("nwis_08437710", var,
-    times=as.POSIXct(paste(c("2014-01-01","2015-01-01"), "00:00:00"), tz="UTC"))
-  if(is.null(staged)) NA else staged
-})
+set_scheme("mda_streams")
 }
 }
 \keyword{internal}

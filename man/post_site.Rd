@@ -4,17 +4,15 @@
 \alias{post_site}
 \title{Create new site in SB}
 \usage{
-post_site(sites, replace_existing = FALSE, verbose = TRUE, ...)
+post_site(sites, on_exists = c("stop", "skip", "clear", "replace"),
+  verbose = TRUE)
 }
 \arguments{
 \item{sites}{one or more local site IDs (e.g. nwis_09238475)}
 
-\item{replace_existing}{logical. Should an item that already exists be
-replaced?}
+\item{on_exists}{character. what should be done when an item already exists?}
 
 \item{verbose}{logical. Should status messages be given?}
-
-\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 an item list
@@ -24,10 +22,17 @@ Create new site in SB
 }
 \examples{
 \dontrun{
-locate_site(c("nwis_08437710","nwis_03401385","nwis_02423397"), format="url")
-post_site("nwis_08437710") # returns NA
-post_site("nwis_08437710", replace_existing=TRUE)
-post_site(c("nwis_08437710","nwis_03401385","nwis_02423397"), replace_existing=TRUE)
+sbtools::authenticate_sb()
+set_scheme("mda_streams_dev")
+
+sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
+is.null(post_site()) # returns NULL (empty list) if sites is missing or NULL
+(post_site(sites)) # adds sites, returns item IDs
+(post_site(sites, on_exists="skip")) # leaves existing items untouched, returns item IDs
+(post_site(sites, on_exists="clear")) # empties existing sites of child items, returns item IDs
+mda.streams:::delete_site(sites)
+
+set_scheme("mda_streams")
 }
 }
 \author{

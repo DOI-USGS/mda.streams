@@ -4,12 +4,14 @@
 \alias{stage_calc_ts}
 \title{stage calculated or modeled data into a time series file}
 \usage{
-stage_calc_ts(sites, var, folder = tempdir(), verbose = FALSE, ...)
+stage_calc_ts(sites, var, src, folder = tempdir(), verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
 \item{var}{short name of variable as in \code{get_var_codes(out='var')}}
+
+\item{src}{short name of src as in \code{get_src_codes()}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp directory)}
 
@@ -25,8 +27,7 @@ accept calculated/modeled data as a data.frame and return a file handle
 }
 \examples{
 \dontrun{
-files <- stage_calc_ts(sites = c("nwis_06893820","nwis_01484680"), variable = "baro",
-                 times = c('2014-01-01 00:00','2014-01-01 05:00'))
+files <- stage_calc_ts(sites="nwis_01484680", var="dosat", src="calcGG")
 }
 }
 

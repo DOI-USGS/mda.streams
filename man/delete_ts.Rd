@@ -4,24 +4,37 @@
 \alias{delete_ts}
 \title{Delete a time series item and its data}
 \usage{
-delete_ts(var_src, site_name, verbose = TRUE, ...)
+delete_ts(var_src, site_name, files_only = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{var_src}{the variable name, e.g., "doobs_nwis"}
+\item{var_src}{the variable name, e.g., "doobs_nwis", for which you want the
+timeseries}
 
-\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
+\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want to
+look in}
+
+\item{files_only}{logical. If TRUE, only the files will be deleted, leaving
+an empty ts item}
 
 \item{verbose}{logical. Should status messages be given?}
-
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Deletes timeseries objects specified by all combinations of variable and site
 }
 \examples{
 \dontrun{
-mda.streams:::delete_ts(c("doobs_nwis","wtr_nwis"),
-  c("nwis_03271510", "nwis_412126095565201", "nwis_03409500"), verbose=TRUE)
+sbtools::authenticate_sb()
+set_scheme("mda_streams_dev")
+
+sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
+files <- stage_nwis_ts(sites = sites, var = "doobs",
+  times = c('2014-01-01 00:00','2014-01-01 05:00'))
+post_ts(files)
+locate_ts("doobs_nwis", sites) # find the newly posted data online
+mda.streams:::delete_ts("doobs_nwis", sites)
+locate_ts("doobs_nwis", sites, by="either") # confirm it's all gone
+
+set_scheme("mda_streams")
 }
 }
 \keyword{internal}
