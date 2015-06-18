@@ -23,14 +23,12 @@
 #' @export
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
   
-  if (length(var) > 1) 
-    stop ('var must be single value.')
+  if(length(var) > 1) stop("one var at a time, please")
+  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code)
   
   # get site coordinates and format for geoknife
   lon_lat <- find_site_coords(sites, format="geoknife")
   lon_lat_df <- lon_lat[complete.cases(t(lon_lat))]
-  
-  p_code <- get_var_codes(var, "p_code")
   
   stencil <- simplegeom(lon_lat_df)
   fabric <- webdata('nldas', variable = p_code, times = times)

@@ -68,6 +68,7 @@ stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE
     }
   }
   sites <- make_site_name(sites, database="nwis")
+  sites <- sort(sites)
   
   if(!is.null(folder)) {
     file_handle <- file.path(folder, 'nwis_sitelist.txt')

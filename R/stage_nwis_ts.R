@@ -38,7 +38,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   
   # download the full dataset from NWIS all at once
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var, "p_code")
+  p_code <- get_var_codes(var) %>% filter(src=="nwis") %>% select(p_code)
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
