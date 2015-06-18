@@ -46,7 +46,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   DateTime <- matches <- variable <- ".dplyr.var"
   for (i in 1:length(sites)){
 
-    site_data <- select(data_out, DateTime, matches(sites[i]), variable, units) %>%
+    site_data <- select_(data_out,'DateTime',sites[i],'variable','units') %>%
       filter(variable == p_code) %>%
       select(-variable)
     
