@@ -112,13 +112,12 @@ delete_site <- function(sites, children_only=FALSE, verbose=TRUE) {
         }
         item_rm(child) # delete the child itself
       }
-    }
-    
-    # sleep for a bit so it can finish deleting the children
-    for(wait in 1:100) {
-      Sys.sleep(0.2)
-      if(nrow(item_list_children(site_id, limit=2)) == 0) break
-      if(wait==100) stop("failed to delete children of site ", site)
+      # sleep for a bit so it can finish deleting the children
+      for(wait in 1:100) {
+        Sys.sleep(0.2)
+        if(nrow(item_list_children(site_id, limit=2)) == 0) break
+        if(wait==100) stop("failed to delete children of site ", site)
+      }
     }
     
     # delete the site folder or return its ID
