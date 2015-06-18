@@ -4,7 +4,8 @@
 \alias{stage_nwis_sitelist}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-stage_nwis_sitelist(vars, state_codes, folder = NULL, verbose = TRUE)
+stage_nwis_sitelist(vars, state_codes, folder = NULL, verbose = TRUE,
+  p_codes)
 }
 \arguments{
 \item{vars}{a character vector of mda.streams var codes, as in
@@ -16,6 +17,9 @@ dplyr::filter(get_var_codes(), src=='nwis')$var}
 (NULL) to return it as a character vector}
 
 \item{verbose}{logical. Should status messages be given?}
+
+\item{p_codes}{optional - allows you to specify p_codes that aren't in
+get_var_codes for exploratory purposes}
 }
 \value{
 a character vector of NWIS sites, appended with 'nwis_'

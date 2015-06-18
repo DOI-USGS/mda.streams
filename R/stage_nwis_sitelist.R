@@ -1,12 +1,14 @@
 #' @title generate nwis site_ids for given p_codes
 #' @description finds all NWIS sites that meet given data requirements
 #'   
-#' @param vars a character vector of mda.streams var codes, as in
+#' @param vars a character vector of mda.streams var codes, as in 
 #'   dplyr::filter(get_var_codes(), src=='nwis')$var
 #' @param state_codes character vector of state codes, or "all" for all data.
 #' @param folder directory path, or NULL, indicating where to save the file or 
 #'   (NULL) to return it as a character vector
 #' @param verbose logical. Should status messages be given?
+#' @param p_codes optional - allows you to specify p_codes that aren't in
+#'   get_var_codes for exploratory purposes
 #' @import dplyr
 #' @importFrom dataRetrieval readNWISdata
 #' @return a character vector of NWIS sites, appended with 'nwis_'
@@ -21,9 +23,13 @@
 #'   state_codes=c("wi"), folder=tempdir()); readLines(sites_file)
 #' }
 #' @export
-stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE) {
+stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE, p_codes) {
   
-  p_codes <- get_var_codes(vars, "p_code")
+  if(missing(p_codes)) {
+    p_codes <- get_var_codes(vars, "p_code")
+  } else if(!missing(vars)) {
+    stop("please provide vars or p_codes but not both")
+  }
   
   parm_cd <- site_no <- pcodes <- begin_date <- end_date <- '.dplyr.var'
   
@@ -43,7 +49,8 @@ stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE
     possibleError <- tryCatch(
       sitesAll <- dataRetrieval::readNWISdata(
         parameterCd=p_codes, stateCd=state_code, 
-        outputDataTypeCd="iv", seriesCatalogOutput="true", service = "site"),
+        #outputDataTypeCd="iv", 
+        seriesCatalogOutput="true", service = "site"),
       error=function(e) e
     )
     if(!inherits(possibleError, "error")){
