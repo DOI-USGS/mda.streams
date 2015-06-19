@@ -1,7 +1,7 @@
 Package: mda.streams
 Type: Package
 Title: mda.streams
-Version: 0.7.2
+Version: 0.7.3
 Date: 2014-12-08
 Author: Luke A Winslow, Jordan S Read, Alison Appling
 Maintainer: Alison Appling <aappling@usgs.gov>
@@ -23,7 +23,7 @@ Imports:
     jsonlite, 
     httr,
     streamMetabolizer,
-    geoknife (>= 0.11.0),
+    geoknife (>= 0.11.2),
     unitted (>= 0.2.1)
 Suggests:
     testthat
