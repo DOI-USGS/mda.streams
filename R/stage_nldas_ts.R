@@ -24,7 +24,7 @@
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code)
+  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code) %>% as.character()
   
   # get site coordinates and format for geoknife
   lon_lat <- find_site_coords(sites, format="geoknife")
