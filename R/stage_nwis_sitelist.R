@@ -1,7 +1,8 @@
 #' @title generate nwis site_ids for given p_codes
 #' @description finds all NWIS sites that meet given data requirements
 #'   
-#' @param p_codes a character vector of NWIS p_codes
+#' @param vars a character vector of mda.streams var codes, as in
+#'   dplyr::filter(get_var_codes(), src=='nwis')$var
 #' @param state_codes character vector of state codes, or "all" for all data.
 #' @param folder directory path, or NULL, indicating where to save the file or 
 #'   (NULL) to return it as a character vector
@@ -12,7 +13,7 @@
 #'   
 #' @examples
 #' \dontrun{
-#' stage_nwis_sitelist(p_codes=c('00095','00060','00010','00300'), 
+#' stage_nwis_sitelist(vars=c('doobs','wtr','disch','stage'), 
 #'   state_codes=c("wi","Michigan"))
 #' sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"), 
 #'   state_codes=c("all"), verbose=TRUE)
@@ -20,7 +21,9 @@
 #'   state_codes=c("wi"), folder=tempdir()); readLines(sites_file)
 #' }
 #' @export
-stage_nwis_sitelist <- function(p_codes, state_codes, folder = NULL, verbose = TRUE) {
+stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE) {
+  
+  p_codes <- get_var_codes(vars, "p_code")
   
   parm_cd <- site_no <- pcodes <- begin_date <- end_date <- '.dplyr.var'
   
@@ -65,6 +68,7 @@ stage_nwis_sitelist <- function(p_codes, state_codes, folder = NULL, verbose = T
     }
   }
   sites <- make_site_name(sites, database="nwis")
+  sites <- sort(sites)
   
   if(!is.null(folder)) {
     file_handle <- file.path(folder, 'nwis_sitelist.txt')

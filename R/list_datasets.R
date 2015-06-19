@@ -21,6 +21,7 @@
 #' @export
 list_datasets = function(site_name, type=c("ts","watershed"), ...){
   
+  if(length(site_name) != 1) stop("expecting site_name to be a character vector of length 1")
   type <- match.arg(type, several.ok = TRUE)
   str_match_patterns <- c('ts' = pkg.env$ts_prefix, 'watershed' = 'watershed')[type] %>%
     as.character()

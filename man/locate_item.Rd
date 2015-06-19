@@ -4,22 +4,37 @@
 \alias{locate_item}
 \title{Find a folder or other item on ScienceBase}
 \usage{
-locate_item(key = c("nwis_02322688", "project", "presentations", "proposals",
-  "publications", "sites"), type = c("site_root", "root"), format = c("id",
-  "item_url", "folder_url"), ...)
+locate_item(key, type, format = c("id", "item_url", "folder_url"),
+  by = c("tag", "dir", "either"), parent, title, limit = 5000)
 }
 \arguments{
-\item{key}{the item key, probably identical to the folder name}
+\item{key}{the item key, probably identical to the folder name. Examples are
+c("nwis_02322688", "project", "presentations", "proposals", "publications",
+"sites")}
 
-\item{type}{the item type, probably either root or site_root}
+\item{type}{the item type, probably either root or site_root. Examples are
+c("site_root","root")}
 
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
 
-\item{...}{args passed to \code{\link[sbtools]{session_check_reauth}}}
+\item{by}{character indicating how to search for the item: using tags ("tag",
+the default and recommended option), by scanning the parent directory for
+the desired title ("dir"), or both in combination ("either")?}
+
+\item{parent}{the ScienceBase ID of the parent whose children to search if
+\code{by \%in\% c("dir","either")}}
+
+\item{title}{the title to seek among the children if \code{by \%in\%
+c("dir","either")}}
+
+\item{limit}{number of items to return, as in
+\code{\link[sbtools]{query_item_identifier}} or
+\code{\link[sbtools]{item_list_children}}}
 }
 \description{
-Find a folder or other item on ScienceBase
+locate_item is case insensitive. This function is only guaranteed to return
+the first match; others may exist and may or may not be returned.
 }
 \examples{
 \dontrun{

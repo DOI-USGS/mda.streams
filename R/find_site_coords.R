@@ -7,13 +7,14 @@
 #' @param format character specifying the desired output format. normal is a 
 #'   human-readable, dplyr-friendly format. geoknife works well for geoknife and
 #'   excludes sites with incomplete coordinate data.
+#' @param attach.units logical. Should units be attached?
 #' @return a data.frame of
 #' @export
 #' @examples 
 #' # middle site has missing coords:
 #' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501")) 
 #' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501"), format="geoknife")
-find_site_coords <- function(site_names, format=c("normal","geoknife")) {
+find_site_coords <- function(site_names, format=c("normal","geoknife"), attach.units=(format=="normal")) {
 
   format <- match.arg(format)
     
@@ -29,6 +30,12 @@ find_site_coords <- function(site_names, format=c("normal","geoknife")) {
   if(format=="geoknife") {
     lon_lat <- lon_lat[c("lon","lat")] %>%
       t() %>% as.data.frame() %>% setNames(lon_lat$site_name)
+    if(attach.units) stop("sorry - can't attach units to geoknife format")
+  }
+  
+  if(attach.units) {
+    units <- c(site_name=NA, lat="degN", lon="degE")
+    lon_lat <- u(lon_lat, units[match(names(lon_lat), names(units))])
   }
    
   lon_lat
