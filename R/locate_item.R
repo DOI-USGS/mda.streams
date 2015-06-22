@@ -81,8 +81,8 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
 
 #' Format an item as a ScienceBase ID or URL, as requested
 #' 
-#' Internal helper to locate_item and locate_item_by_dir. Doesn't check the
-#' value of format - that's up to the calling functions to do, for efficiency.
+#' Internal helper to locate_item. Doesn't check the value of format - that's up
+#' to the calling functions to do, for efficiency.
 #' 
 #' @param item a ScienceBase item data.frame, e.g., as returned from 
 #'   query_item_identifier
@@ -178,6 +178,11 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
 #'   
 #' @import sbtools
 #' @export
+#' 
+#' @examples 
+#' \dontrun{
+#' repair_ts("wtr_nwis", "nwis_01374019")
+#' }
 repair_ts <- function(var_src, site_name, limit=5000) {
   
   # check the session; we'll need write access
@@ -213,7 +218,10 @@ repair_ts <- function(var_src, site_name, limit=5000) {
     
     # redo the action that somehow failed before
     idlist <- list(type=make_ts_name(var_src), scheme=get_scheme(), key=site_name)
-    item_update_identifier(ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key)
+    tryCatch(
+      item_update_identifier(id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      warning=function(w) { message("warning in item_update_identifier: ", w) }
+    )
     
     # waiting and checking is required
     for(wait in 1:100) {
@@ -221,7 +229,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
       is_updated <- isTRUE(all.equal(item_get(ts_id_dir)$identifiers[[1]], idlist))
       if(is_updated) break
       if(wait==100) {
-        warning("identifiers couldn't be replaced; try again later with ",
+        warning("identifiers couldn't be restored; try again later with ",
                 "repair_ts('", var_src, "', '", site_name, ")")
         return(FALSE)
       }

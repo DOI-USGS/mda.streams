@@ -11,8 +11,8 @@ format_item(item, format)
 query_item_identifier}
 }
 \description{
-Internal helper to locate_item and locate_item_by_dir. Doesn't check the
-value of format - that's up to the calling functions to do, for efficiency.
+Internal helper to locate_item. Doesn't check the value of format - that's up
+to the calling functions to do, for efficiency.
 }
 \keyword{internal}
 
