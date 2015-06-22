@@ -2,7 +2,7 @@ var	src	units	type	p_code	long_name	metab_var
 baro	nldas|calcElev	Pa	ts	pressfc	barometric pressure	NA
 depth	calcDisch|google|gagesii	m	ts	NA	stream depth	depth
 disch	nwis	ft^3 s^-1	ts	'00060'	discharge	NA
-doobs	nwis	mg L^-1	ts	'00300'	dissolved oxygen concentration	DO.obs
+doobs	nwis|simModel	mg L^-1	ts	'00300'	dissolved oxygen concentration	DO.obs
 dosat	calcGG	mg L^-1	ts	NA	hypothetical dissolved oxygen concentration at saturation	DO.sat
 K600	calcNight	s^-1	ts	NA	gas exchange rate	
 par	nwis|calcLat	umol m^-2 s^-1	ts	'99988'	photosynthetically active radiation	light
@@ -11,3 +11,5 @@ stage	nwis	ft	ts	'00065'	gage height	NA
 suntime	calcLon	UTC	ts	NA	apparent solar time	local.time
 sw	nldas	?	ts	dswrfsfc	downwelling shortwave radiation	NA
 wtr	nwis	degC	ts	'00010'	water temperature	temp.water
+GPP	simCopy	g m^-2 d^-1	ts	NA	gross primary productivity	GPP
+ER	simCopy	g m^-2 d^-1	ts	NA	ecosystem respiration	ER

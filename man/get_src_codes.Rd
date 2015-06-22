@@ -4,7 +4,7 @@
 \alias{get_src_codes}
 \title{Get source codes used in this project}
 \usage{
-get_src_codes(src, out = names(src_codes), type = c("data", "calc"),
+get_src_codes(src, out = names(src_codes), type = c("data", "calc", "sim"),
   drop = (length(out) == 1), use_names)
 }
 \arguments{
