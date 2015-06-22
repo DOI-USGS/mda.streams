@@ -62,10 +62,10 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       # find all children of the specified parent. for finding a site, it'd be
       # more efficient to only list children once rather than every iteration of
       # the sapply, but this should be a rare case.
-      kids <- item_list_children(query_args$parent[argnum], limit=limit)
+      kids <- item_list_children(id=query_args$parent[argnum], limit=limit)
       itemnum <- NA
       for(i in seq_len(nrow(kids))) {
-        kid_title <- tryCatch(tolower(item_get(kids[i,"id"])$title), error=function(e) NA)
+        kid_title <- tryCatch(tolower(item_get(id=kids[i,"id"])$title), error=function(e) NA)
         if(isTRUE(kid_title == query_args$title[argnum])) {
           itemnum <- i
           break

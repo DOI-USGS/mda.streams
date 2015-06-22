@@ -5,7 +5,7 @@
 \title{Summarize a timeseries}
 \usage{
 summarize_ts(var_src, site_name, out = c("date_updated", "start_date",
-  "end_date", "num_rows", "num_complete"), ...)
+  "end_date", "num_rows", "num_complete"))
 }
 \arguments{
 \item{var_src}{character vector of dataset types to summarize.}
@@ -16,8 +16,6 @@ should be sought.}
 
 \item{out}{a list of one or more outputs to include in the summary dataframe,
 in addition to the var_src and site_name and id columns.}
-
-\item{...}{other args passed to \code{\link[sbtools]{session_check_reauth}}}
 }
 \description{
 Summarize a timeseries

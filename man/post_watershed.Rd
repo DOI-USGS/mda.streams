@@ -4,14 +4,12 @@
 \alias{post_watershed}
 \title{Post a new watershed shape to a site on SB}
 \usage{
-post_watershed(site, files, ...)
+post_watershed(site, files)
 }
 \arguments{
 \item{site}{The unique site identifie?r}
 
 \item{files}{String vector of files that make up the shapefile}
-
-\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 Returns SB id of newly created watershed item

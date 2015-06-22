@@ -5,9 +5,11 @@
 #' @param var_src a valid variable name for timeseries data (see 
 #'   \code{get_var_codes(out='var_src', type='ts')})
 #' @param folder string for a folder location
-#' @param on_remote_missing character indicating what to do if the 
+#' @param on_remote_missing character indicating what to do if the
 #' @param on_local_exists character indicating what to do if the folder already 
 #'   contains a file with the intended download name
+#' @param config_download configuration options passed to
+#'   \code{\link[sbtools]{item_file_download}}
 #' @return file handle (character path) for the downloaded file, or NA if the 
 #'   timeseries is unavailable on ScienceBase
 #'   
@@ -21,7 +23,7 @@
 #' @export
 download_ts <- function(var_src, site_name, folder = tempdir(), 
                         on_remote_missing=c("stop","return_NA"), 
-                        on_local_exists=c("stop","skip","replace")) {
+                        on_local_exists=c("stop","skip","replace"), config_download) {
 
   # check inputs & session
   on_local_exists <- match.arg(on_local_exists)
@@ -62,7 +64,7 @@ download_ts <- function(var_src, site_name, folder = tempdir(),
           "stop"=stop("for ", item_name, ", download destination already has a file and on_local_exists=='stop'"),
           "skip"=NA )
       } else if(!file.exists(destination) || on_local_exists=="replace") {
-        item_file_download(id=item, names=file_list$fname, destinations=destination, overwrite_file=TRUE)
+        item_file_download(id=item, config=config_download, names=file_list$fname, destinations=destination, overwrite_file=TRUE)
       } else {
         stop("unexpected destination file condition or on_local_exists value")
       }
