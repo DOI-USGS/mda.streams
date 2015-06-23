@@ -6,7 +6,7 @@
 \usage{
 download_ts(var_src, site_name, folder = tempdir(),
   on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
-  "skip", "replace"), config_download)
+  "skip", "replace"))
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see
@@ -20,9 +20,6 @@ download_ts(var_src, site_name, folder = tempdir(),
 
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
-
-\item{config_download}{configuration options passed to
-\code{\link[sbtools]{item_file_download}}}
 }
 \value{
 file handle (character path) for the downloaded file, or NA if the
