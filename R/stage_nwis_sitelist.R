@@ -74,6 +74,7 @@ stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE
       if(isTRUE(verbose)) message("NWIS doesn't have data on ", state_code)
     }
   }
+  if(length(sites) == 0) return(NULL)
   sites <- make_site_name(sites, database="nwis")
   sites <- sort(sites)
   
