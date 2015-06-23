@@ -42,7 +42,6 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       dir=data.frame(parent=parent, title=title, stringsAsFactors=FALSE),
       either=data.frame(key=key, type=type, parent=parent, title=title, stringsAsFactors=FALSE)
     ) %>%
-    lapply(tolower) %>%
     as.data.frame(stringsAsFactors=FALSE)
   
   if(get_scheme() == 'mda_streams_dev' && is.null(current_session())) 
