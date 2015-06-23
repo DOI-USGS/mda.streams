@@ -5,7 +5,8 @@
 \title{Find a timeseries item on ScienceBase}
 \usage{
 locate_ts(var_src = "doobs_nwis", site_name = "nwis_02322688",
-  format = c("id", "url"), by = c("tag", "dir", "either"), limit = 5000)
+  format = c("id", "url"), by = c("tag", "dir", "either"), limit = 5000,
+  browser = (format == "url"))
 }
 \arguments{
 \item{var_src}{the variable name, e.g., "doobs_nwis", for which you want the
@@ -24,6 +25,8 @@ the desired title ("dir"), or both in combination ("either")?}
 \item{limit}{number of items to return, as in
 \code{\link[sbtools]{query_item_identifier}} or
 \code{\link[sbtools]{item_list_children}}}
+
+\item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
 Find a timeseries item on ScienceBase
