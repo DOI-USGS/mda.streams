@@ -12,8 +12,14 @@ calcManning	depth	NA	"calculate depth using Manning's equation"	streamMetabolize
 calcLat	par	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	calc	TRUE
 calcNight	K600	NA	calculate K600 using nighttime regressions on select days	streamMetabolizer	NA	calc	TRUE
 calcElev	baro	NA	"calculate baro assuming constant pressure, later to be corrected for elevation"	streamMetabolizer	NA	calc	TRUE
-simNew	GPP|ER	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	TRUE
-simCopy	depth	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	TRUE
+simNew	gpp|er	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	TRUE
+simCopy	doobs	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	TRUE
+simLon	suntime	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	TRUE
+simGG	dosat	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	sim	TRUE
+simDisch	depth	NA	calculate depth from discharge and Raymond et al. 2012 equation	streamMetabolizer	calc_depth	sim	TRUE
+simLat	par	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	sim	TRUE
 simModel	doobs	NA	simulate depth by running the DO model forward	streamMetabolizer	NA	sim	TRUE
-simWhite	doobs	NA	simulate depth by running the DO model forward and adding white noise	streamMetabolizer	NA	sim	TRUE
-simAR1	doobs	NA	simulate depth by running the DO model forward and adding autocorrelated noise	streamMetabolizer	NA	sim	TRUE
+simErrObs	doobs	NA	simulate depth by running the DO model forward and adding observation white noise	streamMetabolizer	NA	sim	TRUE
+simErrARObs	doobs	NA	simulate depth by running the DO model forward and adding autocorrelated observation noise	streamMetabolizer	NA	sim	TRUE
+simErrProc	doobs	NA	simulate depth by running the DO model forward and adding process white noise	streamMetabolizer	NA	sim	TRUE
+simErrARProc	doobs	NA	simulate depth by running the DO model forward and adding autocorrelated process noise	streamMetabolizer	NA	sim	TRUE

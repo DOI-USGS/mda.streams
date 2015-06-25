@@ -9,9 +9,12 @@ probably, but not necessarily, be run on a Condor cluster.}
 \usage{
 stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   site = choose_sites(c("doobs", "disch", "wtr")),
+  suntime = choose_data_source("suntime", site),
   doobs = choose_data_source("doobs", site),
-  disch = choose_data_source("disch", site), wtr = choose_data_source("wtr",
-  site), filename = "./condor_config.tsv")
+  dosat = choose_data_source("dosat", site),
+  depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
+  site), light = choose_data_source("light", site),
+  filename = "./condor_config.tsv")
 }
 \arguments{
 \item{tag}{character of form "1.0.2" that uniquely identifies this set of
@@ -27,14 +30,23 @@ strongly recommended to use the default.}
 
 \item{site}{site names}
 
+\item{suntime}{2-column data.frame with names "type" and "src" describing where
+apparent solar time data should come from}
+
 \item{doobs}{2-column data.frame with names "type" and "src" describing where
 DO data should come from}
 
-\item{disch}{2-column data.frame with names "type" and "src" describing where
-discharge data should come from}
+\item{dosat}{2-column data.frame with names "type" and "src" describing where
+DO saturation data should come from}
+
+\item{depth}{2-column data.frame with names "type" and "src" describing where
+stream depth data should come from}
 
 \item{wtr}{2-column data.frame with names "type" and "src" describing where
 water temperature data should come from}
+
+\item{light}{2-column data.frame with names "type" and "src" describing where
+light (PAR) data should come from}
 
 \item{filename}{character or NULL. If NULL, the function returns a
 data.frame, otherwise it writes that data.frame to the file specified by

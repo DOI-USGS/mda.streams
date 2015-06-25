@@ -11,12 +11,18 @@
 #'   strongly recommended to use the default.
 #' @param model character. the name of the metabolism model to construct
 #' @param site site names
+#' @param suntime 2-column data.frame with names "type" and "src" describing where
+#'   apparent solar time data should come from
 #' @param doobs 2-column data.frame with names "type" and "src" describing where
 #'   DO data should come from
-#' @param disch 2-column data.frame with names "type" and "src" describing where
-#'   discharge data should come from
+#' @param dosat 2-column data.frame with names "type" and "src" describing where
+#'   DO saturation data should come from
+#' @param depth 2-column data.frame with names "type" and "src" describing where
+#'   stream depth data should come from
 #' @param wtr 2-column data.frame with names "type" and "src" describing where
 #'   water temperature data should come from
+#' @param light 2-column data.frame with names "type" and "src" describing where
+#'   light (PAR) data should come from
 #' @param filename character or NULL. If NULL, the function returns a
 #'   data.frame, otherwise it writes that data.frame to the file specified by
 #'   filename.
@@ -33,14 +39,20 @@ stage_metab_config <- function(
   tag, strategy, date=Sys.time(), 
   model="metab_mle",
   site=choose_sites(c("doobs","disch","wtr")), 
+  suntime=choose_data_source("suntime", site),
   doobs=choose_data_source("doobs", site),
-  disch=choose_data_source("disch", site),
+  dosat=choose_data_source("dosat", site),
+  depth=choose_data_source("depth", site),
   wtr=choose_data_source("wtr", site),
+  light=choose_data_source("light", site),
   filename="./condor_config.tsv") {
   
   # Create the config table
   config <- data.frame(tag=tag, strategy=strategy, date=date, 
-                       model=model, site=site, doobs=doobs, disch=disch, wtr=wtr, 
+                       model=model, site=site, 
+                       suntime=suntime, doobs=doobs, 
+                       dosat=dosat, depth=depth,
+                       wtr=wtr, light=light,
                        stringsAsFactors=FALSE)
   
   # Write the table to file if requested

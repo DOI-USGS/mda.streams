@@ -4,25 +4,38 @@
 \alias{config_to_metab}
 \title{Actually run the model as specified by the configuration arguments}
 \usage{
-config_to_metab(model, site, doobs.type, doobs.src, disch.type, disch.src,
-  wtr.type, wtr.src, config, row = 1)
+config_to_metab(model, site, suntime.type, suntime.src, doobs.type, doobs.src,
+  dosat.type, dosat.src, depth.type, depth.src, wtr.type, wtr.src, light.type,
+  light.src, config, row = 1)
 }
 \arguments{
 \item{model}{model name shorthand, e.g. "simple"}
 
 \item{site}{site name}
 
+\item{suntime.type}{suntime data type}
+
+\item{suntime.src}{suntime data src}
+
 \item{doobs.type}{doobs data type}
 
 \item{doobs.src}{doobs data src}
 
-\item{disch.type}{disch data type}
+\item{dosat.type}{dosat data type}
 
-\item{disch.src}{disch data src}
+\item{dosat.src}{dosat data src}
+
+\item{depth.type}{depth data type}
+
+\item{depth.src}{depth data src}
 
 \item{wtr.type}{wtr data type}
 
 \item{wtr.src}{wtr data src}
+
+\item{light.type}{light data type}
+
+\item{light.src}{light data src}
 
 \item{config}{data.frame, or file/filename to read a data.frame from. As an
 alternative to all preceding arguments, this single config argument may be
@@ -37,18 +50,15 @@ Actually run the model as specified by the configuration arguments
 }
 \examples{
 suppressWarnings(config_to_metab(
-  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
-  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
-suppressWarnings(config_to_metab(config=data.frame(
-  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
-  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
-suppressWarnings(config_to_metab(config=stage_metab_config(
-  tag="0.0.1", strategy="try stage_metab_config",
-  site="nwis_04087142", filename=NULL)))
+  model="metab_mle", site=NA,
+  suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA,
+  dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA,
+  wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA))
 \dontrun{
 config_to_metab(
-  model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA,
-  disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
+  model="metab_mle", site=NA, suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA,
+  dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA,
+  wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA)
 config_to_metab(config=stage_metab_config(
   tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_04087142", filename=NULL))

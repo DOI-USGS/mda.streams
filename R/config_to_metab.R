@@ -4,12 +4,18 @@
 #' @import dplyr
 #' @param site site name
 #' @param model model name shorthand, e.g. "simple"
+#' @param suntime.type suntime data type
+#' @param suntime.src suntime data src
 #' @param doobs.type doobs data type
 #' @param doobs.src doobs data src
-#' @param disch.type disch data type
-#' @param disch.src disch data src
+#' @param dosat.type dosat data type
+#' @param dosat.src dosat data src
+#' @param depth.type depth data type
+#' @param depth.src depth data src
 #' @param wtr.type wtr data type
 #' @param wtr.src wtr data src
+#' @param light.type light data type
+#' @param light.src light data src
 #' @param config data.frame, or file/filename to read a data.frame from. As an 
 #'   alternative to all preceding arguments, this single config argument may be 
 #'   passed in. The data.frame columns must correspond precisely to the list of
@@ -19,27 +25,27 @@
 #' @export
 #' @examples
 #' suppressWarnings(config_to_metab(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
-#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA))
-#' suppressWarnings(config_to_metab(config=data.frame(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
-#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)))
-#' suppressWarnings(config_to_metab(config=stage_metab_config(
-#'   tag="0.0.1", strategy="try stage_metab_config", 
-#'   site="nwis_04087142", filename=NULL)))
+#'   model="metab_mle", site=NA, 
+#'   suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA, 
+#'   dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA, 
+#'   wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA))
 #' \dontrun{
 #' config_to_metab(
-#'   model="metab_mle", site=NA, doobs.type=NA, doobs.src=NA, 
-#'   disch.type=NA, disch.src=NA, wtr.type=NA, wtr.src=NA)
+#'   model="metab_mle", site=NA, suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA, 
+#'   dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA, 
+#'   wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA)
 #' config_to_metab(config=stage_metab_config(
 #'   tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL))
 #' }
 config_to_metab <- function(model, site, 
-                             doobs.type, doobs.src, 
-                             disch.type, disch.src, 
-                             wtr.type, wtr.src, 
-                             config, row=1) {
+                            suntime.type, suntime.src,
+                            doobs.type, doobs.src, 
+                            dosat.type, dosat.src, 
+                            depth.type, depth.src, 
+                            wtr.type, wtr.src, 
+                            light.type, light.src, 
+                            config, row=1) {
 
   # Check the input
   cols_expected <- formals(config_to_metab) %>% replace(c("config", "row"), NULL) %>% names() # config values we expect

@@ -4,7 +4,8 @@
 \alias{stage_calc_ts}
 \title{stage calculated or modeled data into a time series file}
 \usage{
-stage_calc_ts(sites, var, src, folder = tempdir(), verbose = FALSE, ...)
+stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -13,23 +14,89 @@ stage_calc_ts(sites, var, src, folder = tempdir(), verbose = FALSE, ...)
 
 \item{src}{short name of src as in \code{get_src_codes()}}
 
-\item{folder}{a folder to place the file outputs in (defaults to temp directory)}
+\item{folder}{a folder to place the file outputs in (defaults to temp
+directory)}
+
+\item{inputs}{appropriate only when src is a simXxxx type. a list of named
+inputs (data.frames, constants, etc.) to pass to the specified calculation
+function. These inputs are downloaded from standard locations for the
+calcXxxx variants.}
 
 \item{verbose}{provide verbose output (currently not implemented)}
 
-\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}} and \code{\link[unitted]{write_unitted}}}
+\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}
+and \code{\link[unitted]{write_unitted}}}
 }
 \value{
 a file handle for time series file created
 }
 \description{
-accept calculated/modeled data as a data.frame and return a file handle
+accept calculated/modeled data as a data.frame and return a file
+  handle
 }
 \examples{
 \dontrun{
-files <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="calcLon", verbose=TRUE)
-str(read_ts(files))
-files <- stage_calc_ts(sites="nwis_01484680", var="dosat", src="calcGG", verbose=TRUE)
+set_scheme("mda_streams_dev")
+
+# calc
+
+file_suntime <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="calcLon", verbose=TRUE)
+head(read_ts(file_suntime))
+post_ts(file_suntime, on_exists="skip", verbose=TRUE) # need this posted for next calcs
+
+file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
+head(read_ts(file_par))
+post_ts(file_par, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
+
+file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch", verbose=TRUE)
+head(read_ts(file_depth))
+post_ts(file_depth, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
+
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGG", verbose=TRUE)
+head(read_ts(file_dosat))
+post_ts(file_dosat, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
+
+# sim
+
+library(dplyr); library(unitted)
+real_doobs <- read_ts(download_ts("doobs_nwis", "nwis_08062500", on_local_exists="replace")) \%>\%
+  subset(v(DateTime) > as.POSIXct("2014-07-13", tz="UTC") &
+    v(DateTime) <= as.POSIXct("2014-07-15", tz="UTC"))
+
+file_suntime <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="simLon", verbose=TRUE,
+  inputs=list(utctime=real_doobs$DateTime, longitude=u(-96.46304, "degE")))
+head(read_ts(file_suntime))
+
+file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="simLat", verbose=TRUE,
+  inputs=list(utctime=real_doobs$DateTime, suntime=read_ts(file_suntime)$suntime,
+  latitude=u(32.42653, "degN")))
+head(read_ts(file_par))
+
+file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="simDisch", verbose=TRUE,
+  inputs=list(utctime=real_doobs$DateTime, disch=u(rep(2900, nrow(real_doobs)), "ft^3 s^-1")))
+head(read_ts(file_depth))
+
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGG", verbose=TRUE,
+  inputs=list(utctime=real_doobs$DateTime, wtr=u(rep(12, 192), "degC"), baro=u(90000, "Pa")))
+head(read_ts(file_dosat))
+
+# simNew
+
+file_par2 <- stage_calc_ts(sites="nwis_08062500", var="par", src="simNew", verbose=TRUE,
+  inputs=list(utctime=real_doobs$DateTime,
+              value=u(rnorm(real_doobs$DateTime, 10, 2), "umol m^-2 s^-1")))
+head(read_ts(file_par2))
+
+# simCopy
+
+file_suntime2 <- stage_calc_ts(sites="styx_001001", var="suntime", src="simCopy", verbose=TRUE,
+  inputs=list(from_src="calcLon", from_site="nwis_08062500", filter_fun=function(df) {
+    df[df$DateTime > as.POSIXct("2015-05-14", tz="UTC") &
+         df$DateTime < as.POSIXct("2015-05-17", tz="UTC"), ] }))
+file_suntime2
+head(read_ts(file_suntime2))
+
+set_scheme("mda_streams")
 }
 }
 
