@@ -24,7 +24,7 @@
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code)
+  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code) %>% as.character()
   
   # get site coordinates and format for geoknife
   lon_lat <- find_site_coords(sites, format="geoknife")
@@ -44,21 +44,26 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   DateTime <- matches <- variable <- ".dplyr.var"
   for (i in 1:length(sites)){
 
-    site_data <- select_(data_out,'DateTime',sites[i],'variable','units') %>%
-      filter(variable == p_code) %>%
-      select(-variable)
-    
-    units <- as.character(site_data$units) %>% unique()
-    
-    site_data <- select(site_data, -units) %>%
-      setNames(c('DateTime',var)) %>%
-      u(c(NA, units))
-    
-    if (!all(is.na(site_data[var]))){
-      fpath <- write_ts(site_data, site=sites[i], var=var, src="nldas", folder)
-      file_paths <- c(file_paths, fpath)
+    if (sites[i] %in% names(data_out)){
+      site_data <- select_(data_out,'DateTime',sites[i],'variable','units') %>%
+        filter(variable == p_code) %>%
+        select(-variable)
+      
+      units <- as.character(site_data$units) %>% unique()
+      
+      site_data <- select(site_data, -units) %>%
+        setNames(c('DateTime',var)) %>%
+        u(c(NA, units))
+      
+      if (!all(is.na(site_data[var]))){
+        fpath <- write_ts(site_data, site=sites[i], var=var, src="nldas", folder)
+        file_paths <- c(file_paths, fpath)
+      } else {
+        if(isTRUE(verbose)) message("site ",sites[i], " has all NA values. Skipping file write")
+      }
+    } else {
+      if(isTRUE(verbose)) message("site ",sites[i], " not found. Skipping file write")
     }
-    
   }
   return(file_paths)
 }
