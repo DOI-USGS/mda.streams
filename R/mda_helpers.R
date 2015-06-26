@@ -221,7 +221,8 @@ parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=len
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
-    bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE))
+    bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE)) %>%
+    as.data.frame()
   
   parsed <- parsed[,out]
   if(use_names) {
