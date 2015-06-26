@@ -124,9 +124,10 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 #' @param sitenum integer or character, coercible to character, representing the
 #'   site code as used by the database.
 #' @param database a character or character vector of databases from which the 
-#'   site ID is derived, probably \code{"nwis"}.
+#'   site ID is derived, probably \code{"nwis"} (from the USGS NWIS database) or
+#'   \code{"styx"} (made-up data).
 #' @return site ID in ScienceBase and mda.streams lingo
-make_site_name <- function(sitenum, database=c("nwis")) {
+make_site_name <- function(sitenum, database=c("nwis", "styx")) {
   # error checking
   expected_databases <- paste0("^", paste0(eval(formals(make_site_name)$database), collapse="|"))
   if(any(non_db <- grepl(expected_databases, as.character(sitenum))))
@@ -220,7 +221,8 @@ parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=len
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
-    bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE))
+    bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE)) %>%
+    as.data.frame()
   
   parsed <- parsed[,out]
   if(use_names) {

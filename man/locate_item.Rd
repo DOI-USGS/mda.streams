@@ -5,7 +5,8 @@
 \title{Find a folder or other item on ScienceBase}
 \usage{
 locate_item(key, type, format = c("id", "item_url", "folder_url"),
-  by = c("tag", "dir", "either"), parent, title, limit = 5000)
+  by = c("tag", "dir", "either"), parent, title, limit = 5000,
+  browser = (format \%in\% c("item_url", "folder_url")))
 }
 \arguments{
 \item{key}{the item key, probably identical to the folder name. Examples are
@@ -31,6 +32,8 @@ c("dir","either")}}
 \item{limit}{number of items to return, as in
 \code{\link[sbtools]{query_item_identifier}} or
 \code{\link[sbtools]{item_list_children}}}
+
+\item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
 locate_item is case insensitive. This function is only guaranteed to return

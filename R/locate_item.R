@@ -20,6 +20,7 @@
 #' @param limit number of items to return, as in 
 #'   \code{\link[sbtools]{query_item_identifier}} or 
 #'   \code{\link[sbtools]{item_list_children}}
+#' @param browser logical. Should the URL be opened in a browser?
 #' @import dplyr
 #' @import sbtools
 #' @examples 
@@ -30,7 +31,8 @@
 #' mda.streams:::locate_item(key="nwis_02322688", type="site_root")
 #' }
 locate_item <- function(key, type, format=c("id","item_url","folder_url"), 
-                        by=c("tag","dir","either"), parent, title, limit=5000) {
+                        by=c("tag","dir","either"), parent, title, limit=5000, 
+                        browser=(format %in% c("item_url","folder_url"))) {
   
   # process arguments
   format <- match.arg(format) # only one format per call to locate_item
@@ -42,7 +44,6 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       dir=data.frame(parent=parent, title=title, stringsAsFactors=FALSE),
       either=data.frame(key=key, type=type, parent=parent, title=title, stringsAsFactors=FALSE)
     ) %>%
-    lapply(tolower) %>%
     as.data.frame(stringsAsFactors=FALSE)
   
   if(get_scheme() == 'mda_streams_dev' && is.null(current_session())) 
@@ -62,10 +63,10 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       # find all children of the specified parent. for finding a site, it'd be
       # more efficient to only list children once rather than every iteration of
       # the sapply, but this should be a rare case.
-      kids <- item_list_children(query_args$parent[argnum], limit=limit)
+      kids <- item_list_children(id=query_args$parent[argnum], limit=limit)
       itemnum <- NA
       for(i in seq_len(nrow(kids))) {
-        kid_title <- tryCatch(tolower(item_get(kids[i,"id"])$title), error=function(e) NA)
+        kid_title <- tryCatch(item_get(id=kids[i,"id"])$title, error=function(e) NA)
         if(isTRUE(kid_title == query_args$title[argnum])) {
           itemnum <- i
           break
@@ -73,22 +74,23 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       }
       item <- if(!is.na(itemnum)) kids[itemnum,,drop=FALSE] else data.frame()
     }    
-    
     # reformat the result to our liking
-    format_item(item, format)
+    format_item(item, format, browser)
   })
 }
 
 #' Format an item as a ScienceBase ID or URL, as requested
 #' 
-#' Internal helper to locate_item and locate_item_by_dir. Doesn't check the
-#' value of format - that's up to the calling functions to do, for efficiency.
+#' Internal helper to locate_item. Doesn't check the value of format - that's up
+#' to the calling functions to do, for efficiency.
 #' 
 #' @param item a ScienceBase item data.frame, e.g., as returned from 
 #'   query_item_identifier
+#' @inheritParams locate_item
+#' @import httr
 #' @keywords internal
-format_item <- function(item, format) {
-  if(nrow(item) == 0) {
+format_item <- function(item, format, browser) {
+  out <- if(nrow(item) == 0) {
     NA
   } else {
     switch(
@@ -97,6 +99,20 @@ format_item <- function(item, format) {
       item_url=paste0("https://www.sciencebase.gov/catalog/item/", item$id),
       folder_url=paste0("https://www.sciencebase.gov/catalog/folder/", item$id))
   }
+  if(browser) {
+    if(format=="id") {
+      ids <- sbtools::item_get(out)$identifiers[[1]]
+      if(!is.null(ids))
+        browser_format <- if(ids$type %in% c("root", "site_root")) "folder_url" else "item_url"
+      else 
+        browser_format <- "item_url"
+      url <- format_item(item, format=browser_format, browser=FALSE)
+    } else {
+      url <- out
+    }
+    if(!is.na(url)) BROWSE(url)
+  }
+  out
 }
 
 #' Find a high-level folder on ScienceBase
@@ -111,15 +127,16 @@ format_item <- function(item, format) {
 #' testthat::expect_error(locate_folder("cvs", format="url"))
 #' }
 locate_folder <- function(folder=c("project","presentations","proposals","publications","sites"), 
-                          format=c("id","url"), by=c("tag","dir","either"), limit=5000) {
+                          format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   folder <- tolower(folder)
   folder <- match.arg(folder)
   if(folder != 'sites' && is.null(current_session())) 
     stop("session is NULL, so only the sites folder is visible. see authenticate_sb()")
   if(folder == 'project' && by %in% c("dir", "either"))
     stop("'by' must be 'tag' when searching for the project folder")
+  browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=folder, type="root", parent=locate_folder("project"), title=folder, by=by, format=format, limit=limit)
+  locate_item(key=folder, type="root", parent=locate_folder("project"), title=folder, by=by, format=format, limit=limit, browser=browser)
 }
 
 #' Find a site folder on ScienceBase
@@ -134,11 +151,12 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
 #' locate_site("nwis_notasite", format="url")
 #' testthat::expect_error(locate_site("notasite", format="url"))
 #' }
-locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","either"), limit=5000) {
+locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
   site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
+  browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by=by), title=site_name, by=by, format=format, limit=limit)
+  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by=by), title=site_name, by=by, format=format, limit=limit, browser=browser)
 }
 
 #' Find a timeseries item on ScienceBase
@@ -156,12 +174,13 @@ locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","eithe
 #' locate_ts("doobs", "nwis_notasite", format="url")
 #' testthat::expect_error(locate_ts("notavar", "nwis_notasite"))
 #' }
-locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), by=c("tag","dir","either"), limit=5000) {
+locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
   var_src <- make_ts_name(var_src) # check that the variable name is valid and add prefix
   site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
+  browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="item_url")
-  locate_item(key=site_name, type=var_src, parent=locate_site(site_name, by=by), title=var_src, by=by, format=format, limit=limit)
+  locate_item(key=site_name, type=var_src, parent=locate_site(site_name, by=by), title=var_src, by=by, format=format, limit=limit, browser=browser)
 }
 
 
@@ -178,6 +197,11 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
 #'   
 #' @import sbtools
 #' @export
+#' 
+#' @examples 
+#' \dontrun{
+#' repair_ts("wtr_nwis", "nwis_01374019")
+#' }
 repair_ts <- function(var_src, site_name, limit=5000) {
   
   # check the session; we'll need write access
@@ -213,7 +237,10 @@ repair_ts <- function(var_src, site_name, limit=5000) {
     
     # redo the action that somehow failed before
     idlist <- list(type=make_ts_name(var_src), scheme=get_scheme(), key=site_name)
-    item_update_identifier(ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key)
+    tryCatch(
+      item_update_identifier(id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      warning=function(w) { message("warning in item_update_identifier: ", w) }
+    )
     
     # waiting and checking is required
     for(wait in 1:100) {
@@ -221,7 +248,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
       is_updated <- isTRUE(all.equal(item_get(ts_id_dir)$identifiers[[1]], idlist))
       if(is_updated) break
       if(wait==100) {
-        warning("identifiers couldn't be replaced; try again later with ",
+        warning("identifiers couldn't be restored; try again later with ",
                 "repair_ts('", var_src, "', '", site_name, ")")
         return(FALSE)
       }

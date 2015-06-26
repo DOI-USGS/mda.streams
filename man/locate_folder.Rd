@@ -6,7 +6,7 @@
 \usage{
 locate_folder(folder = c("project", "presentations", "proposals",
   "publications", "sites"), format = c("id", "url"), by = c("tag", "dir",
-  "either"), limit = 5000)
+  "either"), limit = 5000, browser = (format == "url"))
 }
 \arguments{
 \item{folder}{the folder to locate}
@@ -21,6 +21,8 @@ the desired title ("dir"), or both in combination ("either")?}
 \item{limit}{number of items to return, as in
 \code{\link[sbtools]{query_item_identifier}} or
 \code{\link[sbtools]{item_list_children}}}
+
+\item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
 Find a high-level folder on ScienceBase

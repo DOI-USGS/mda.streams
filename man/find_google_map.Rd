@@ -4,11 +4,13 @@
 \alias{find_google_map}
 \title{Get a URL to the gage location on Google Maps}
 \usage{
-find_google_map(site_names)
+find_google_map(site_names, browser = TRUE)
 }
 \arguments{
 \item{site_names}{a list of site names such as those returned from
 make_site_name()}
+
+\item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
 Get a URL to the gage location on Google Maps

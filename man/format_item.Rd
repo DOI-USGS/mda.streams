@@ -4,15 +4,20 @@
 \alias{format_item}
 \title{Format an item as a ScienceBase ID or URL, as requested}
 \usage{
-format_item(item, format)
+format_item(item, format, browser)
 }
 \arguments{
 \item{item}{a ScienceBase item data.frame, e.g., as returned from
 query_item_identifier}
+
+\item{format}{character indicating whether the folder should be returned as
+an ID or as a full URL}
+
+\item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
-Internal helper to locate_item and locate_item_by_dir. Doesn't check the
-value of format - that's up to the calling functions to do, for efficiency.
+Internal helper to locate_item. Doesn't check the value of format - that's up
+to the calling functions to do, for efficiency.
 }
 \keyword{internal}
 

@@ -21,7 +21,7 @@
 #' get_src_codes('nwis')
 #' get_src_codes(out=c('r_function'), type='calc')
 #' @export
-get_src_codes <- function(src, out=names(src_codes), type=c("data","calc"), drop=(length(out) == 1), use_names) {
+get_src_codes <- function(src, out=names(src_codes), type=c("data","calc","sim"), drop=(length(out) == 1), use_names) {
   
   # take a guess for use_names
   if(missing(use_names)) {

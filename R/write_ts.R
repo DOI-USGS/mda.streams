@@ -13,12 +13,19 @@ write_ts <- function(data, site, var, src, folder){
   if (!verify_ts(data, var, checks=c('ncol','names')))
     stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
   
-  # store the timezone code in the units field; read_ts will pull it back out
+  # store the timezone code[s] in the units field[s]; read_ts will pull it back out
   if(!("" == get_units(data$DateTime))) stop("timeseries DateTime units should be empty on ")
   data$DateTime <- u(data$DateTime, tz(data$DateTime))
   
   if (!verify_ts(data, var, checks=c('tz','units')))
     stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
+  
+  # store the timezone code in the units field for suntime, too, now that we've checked
+  if(names(data)[2] == "suntime") {
+    if(tz(data$suntime) != "UTC") stop("tz of suntime must be 'UTC'")
+    if(get_units(data$suntime) != "") stop("suntime units should be empty on ")
+    data$suntime <- u(data$suntime, 'UTC')
+  }
   
   if (nrow(data) == 0)
     invisible(NULL)

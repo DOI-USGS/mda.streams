@@ -6,7 +6,6 @@
 #'   should be sought.
 #' @param out a list of one or more outputs to include in the summary dataframe,
 #'   in addition to the var_src and site_name and id columns.
-#' @param ... other args passed to \code{\link[sbtools]{session_check_reauth}}
 #' @import dplyr
 #' @export
 #' @examples
@@ -14,11 +13,10 @@
 #' summarize_ts(rep(c("doobs_nwis", "wtr_nwis"), each=4), 
 #'   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 #' }
-summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_rows","num_complete"), ...) {
+summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_rows","num_complete")) {
   
   # check inputs & session
   out <- match.arg(out, several.ok=TRUE)
-  session_check_reauth(...)
   
   # collect the vector inputs. as a side benefit, this will throw an error if
   # var_src and site_name have incompatible dimensions

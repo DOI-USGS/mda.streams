@@ -38,7 +38,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   
   # download the full dataset from NWIS all at once
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var) %>% filter(src=="nwis") %>% select(p_code)
+  p_code <- get_var_codes(var) %>% filter(src=="nwis") %>% select(p_code) %>% as.character()
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
@@ -54,7 +54,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
     importRDB1(url, asDateTime = TRUE),
     error=function(e) {
       if(isTRUE(verbose)) {
-        message("data are unavailable for this p_code-site combo. msg from NWIS:\n  ", strsplit(as.character(e), "\n")[[1]][1])
+        message("data are unavailable for ", p_code, "-", site,". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
       }
       data.frame()
     })

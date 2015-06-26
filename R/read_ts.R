@@ -17,13 +17,18 @@ read_ts = function(file){
   
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
+  # convert units to tz field for suntime before verify_ts
+  if(names(df)[2] == "suntime") {
+    df$suntime <- u(as.POSIXct(df$suntime, tz=get_units(df$suntime)), NA)
+  }
+  
+  # check the data for mda.streams validity
   if (!verify_ts(df, parse_ts_path(file, 'var')))
     stop('timeseries in file ', file, 'is not valid')
   
   # convert units to tz field for DateTime
-  df$DateTime <- u(as.POSIXct(df$DateTime, tz = get_units(df$DateTime)), NA)
+  df$DateTime <- u(as.POSIXct(df$DateTime, tz=get_units(df$DateTime)), NA)
   
-  # -- to do: check that output format is the same needed for input of write_ts() --
   return(df)
 }
 
