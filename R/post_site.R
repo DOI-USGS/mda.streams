@@ -95,7 +95,6 @@ delete_site <- function(sites, children_only=FALSE, verbose=TRUE) {
       if(isTRUE(verbose)) message("skipping deletion of missing site ", site)
       return(NA) # do nothing if it's already not there
     }
-    if(isTRUE(verbose)) message("deleting site ", site)
     
     # delete the children and their files
     children <- item_list_children(site_id, limit=100)
@@ -124,6 +123,7 @@ delete_site <- function(sites, children_only=FALSE, verbose=TRUE) {
       return(site_id)
     } else {
       # delete the folder
+      if(isTRUE(verbose)) message("deleting site ", site)
       out <- item_rm(site_id)
       # sleep again to finish deleting the folder
       for(wait in 1:100) {
