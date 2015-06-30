@@ -2,13 +2,15 @@
 #' @description finds all NWIS sites that meet given data requirements
 #'   
 #' @param vars a character vector of mda.streams var codes, as in 
-#'   dplyr::filter(get_var_codes(), src=='nwis')$var
-#' @param state_codes character vector of state codes, or "all" for all data.
+#'   \code{unique(get_var_src_codes(out='var'))}
+#' @param state_codes character vector of state codes, e.g., ('CO','wi'), or 
+#'   'all' for all data.
 #' @param folder directory path, or NULL, indicating where to save the file or 
 #'   (NULL) to return it as a character vector
 #' @param verbose logical. Should status messages be given?
-#' @param p_codes optional - allows you to specify p_codes that aren't in
-#'   get_var_codes for exploratory purposes
+#' @param p_codes optional - allows you to specify p_codes that aren't in 
+#'   \code{get_var_src_codes(!is.na(p_code), out=c("var","src","p_code"))} for 
+#'   exploratory purposes
 #' @import dplyr
 #' @importFrom dataRetrieval readNWISdata
 #' @return a character vector of NWIS sites, appended with 'nwis_'
@@ -17,16 +19,19 @@
 #' \dontrun{
 #' stage_nwis_sitelist(vars=c('doobs','wtr','disch','stage'), 
 #'   state_codes=c("wi","Michigan"))
-#' sites <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"), 
+#' sites <- stage_nwis_sitelist(
+#'   p_codes=get_var_src_codes(var=="doobs",!is.na(p_code),out="p_code"), 
 #'   state_codes=c("all"), verbose=TRUE)
-#' sites_file <- stage_nwis_sitelist(p_codes=get_var_codes("doobs","p_code"), 
+#' sites_file <- stage_nwis_sitelist(
+#'   p_codes=get_var_src_codes(var=="doobs",!is.na(p_code),out="p_code"), 
 #'   state_codes=c("wi"), folder=tempdir()); readLines(sites_file)
 #' }
 #' @export
 stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE, p_codes) {
   
   if(missing(p_codes)) {
-    p_codes <- get_var_codes(vars, "p_code")
+    p_code <- '.dplyr_var'
+    p_codes <- get_var_src_codes(var%in%vars,!is.na(p_code),out="p_code")
   } else if(!missing(vars)) {
     stop("please provide vars or p_codes but not both")
   }

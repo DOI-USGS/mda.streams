@@ -10,9 +10,7 @@
 #'   and stop. if the function does not halt evaluation, FALSE is returned after
 #'   the function is first called.
 #' @return TRUE if is valid, FALSE if not
-#' 
 #' @importFrom unitted is.unitted get_units
-#'   
 #' @examples 
 #' \dontrun{
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), var = "doobs",
@@ -22,15 +20,13 @@
 #' verify_ts(ts, var='doobs', checks=c('ncol','units','names')) # TRUE
 #' verify_ts(ts, var='wtr', checks=c('ncol','units','names')) # warning + FALSE
 #' }
-#' 
-#' @keywords internal
 #' @export
 verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'names'), on_fail=warning){
   
   tests <- list('ncol' = function(x,...) ncol(x) == 2,
                 'unitted' = function(x,...) is.unitted(x),
                 'tz' = function(x,...) get_units(x[,1]) == 'UTC',
-                'units' = function(x,v,...) get_units(x[,2]) == unique(get_var_codes(v, 'units')),
+                'units' = function(x,v,...) get_units(x[,2]) == unique(get_var_src_codes(var==v, 'units')),
                 'names' = function(x,v,...) names(x)[2] == v)
   
   pass <- TRUE

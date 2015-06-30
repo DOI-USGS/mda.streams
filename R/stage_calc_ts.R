@@ -3,13 +3,15 @@
 #'   handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param var short name of variable as in \code{get_var_codes(out='var')}
-#' @param src short name of src as in \code{get_src_codes()}
+#' @param var short name of variable as in 
+#'   \code{unique(get_var_src_codes(out='var'))}
+#' @param src short name of src as in \code{get_var_src_codes(var==myvar,
+#'   out='src')}
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param inputs appropriate only when src is a simXxxx type. a list of named 
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
-#'   function. These inputs are downloaded from standard locations for the
+#'   function. These inputs are downloaded from standard locations for the 
 #'   calcXxxx variants.
 #' @param verbose provide verbose output (currently not implemented)
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
@@ -90,7 +92,8 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
   
   if(length(var) > 1) stop("one var at a time, please")
   if(length(src) > 1) stop("one src at a time, please")
-  if(!(src %in% get_src_codes(out="src"))) stop("couldn't find src in get_src_codes(out='src')")
+  vars <- var # need renamed var for filtering in get_var_src_codes
+  if(!(src %in% get_var_src_codes(var==vars, out="src"))) stop("couldn't find src in get_var_src_codes(var==vars, out='src')")
   
   # loop through sites, adding to file_paths for any successfully computed & written ts files
   file_paths <- c()

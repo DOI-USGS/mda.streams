@@ -4,13 +4,13 @@
 \alias{list_datasets}
 \title{Get a vector of timeseries dataset names}
 \usage{
-list_datasets(site_name, type = c("ts", "watershed"), ...)
+list_datasets(site_name, data_type = c("ts", "watershed"), ...)
 }
 \arguments{
-\item{site_name}{a character vector of length one with a site name such
-as those returned from make_site_name()}
+\item{site_name}{a character vector of length one with a site name such as
+those returned from make_site_name()}
 
-\item{type}{character. one or more dataset types to return}
+\item{data_type}{character. one or more dataset types to return}
 
 \item{...}{additional arguments passed to
   \code{\link[sbtools]{query_item_identifier}}, for example \code{limit}}
@@ -21,8 +21,8 @@ an alphabetically sorted character vector of unique timeseries
 }
 \description{
 list_datasets(site) returns the data available to a specific site. In
-contrast, get_var_codes() returns a list of all possible variables and
-get_var_codes(type="ts") returns all possible timeseries variables.
+contrast, \code{get_var_src_codes(out="var_src")} returns a list of all
+possible variables.
 }
 \examples{
 \dontrun{

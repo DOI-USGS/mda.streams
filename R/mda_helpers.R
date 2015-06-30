@@ -1,15 +1,17 @@
 #' Translate a variable and data source into a var_src
 #' 
-#' @param var a variable shortname from get_var_codes(out='var'), e.g., "doobs"
-#' @param src a data source from the sources available for the given var; see 
-#'   get_var_codes(var)['src']
+#' @param var a variable shortname from
+#'   \code{unique(get_var_src_codes(out='var'))}, e.g., "doobs"
+#' @param src a data source from the sources available for the given var; e.g., 
+#'   see \code{get_var_src_codes(var=='doobs', out='src')}
 #' @export
 make_var_src <- function(var, src) {
   
-  # error checking - make sure the specified src is an option for the specified
-  # var. need to use raw var_codes table rather than get_var_codes() because
-  # this function is called by get_var_codes().
-  if(any(missing_src <- mapply(function(var1,src1) !(src1 %in% strsplit(var_codes[var_codes$var==var1, 'src'], "|", fixed=TRUE)[[1]]), var, src))) {
+  # error checking - make sure the specified src is an option for the specified 
+  # var. don't use get_var_src_codes because that function calls this one.
+  if(any(missing_src <- mapply(function(var1,src1) {
+    !(src1 %in% var_src_codes[var_src_codes$var==var1, 'src'])
+  }, var, src))) {
     stop("var-src mismatch[es] for ", paste0(var[missing_src], "-" ,src[missing_src], collapse=", "))
   }
   
@@ -60,8 +62,8 @@ make_ts_name <- function(var_var_src, src) {
     stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", var_src[ts_names], collapse=", "))
   if(any(not_two <- sapply(strsplit(var_src, "_"), function(split) length(split)!=2)))
     stop("improper var_src format: ", paste0("[", which(not_two), "] ", var_src[not_two], collapse=", "))
-  if(any(non_var <- !(var_src %in% get_var_codes(out="var_src")))) 
-    stop("var_src is not listed in get_var_codes(): ", paste0("[", which(non_var), "] ", non_var[non_var], collapse=", "))
+  if(any(non_var <- !(var_src %in% get_var_src_codes(out="var_src")))) 
+    stop("var_src is not listed in get_var_src_codes(out='var_src': ", paste0("[", which(non_var), "] ", non_var[non_var], collapse=", "))
   
   # renaming
   paste0(pkg.env$ts_prefix, var_src)
@@ -92,8 +94,8 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   if(any(non_out <- !(out %in% splitcols)))
     stop("unexpected output requested: ", paste0(out[non_out]))
   var_src <- substring(ts_name, 4)
-  if(any(non_var <- !(var_src %in% get_var_codes(out='var_src'))))
-    stop("var_src isn't listed in get_var_codes(): ", paste0("[", which(non_var), "] ", var_src[non_var], collapse=", "))
+  if(any(non_var <- !(var_src %in% get_var_src_codes(out='var_src'))))
+    stop("var_src isn't listed in get_var_src_codes(out='var_src'): ", paste0("[", which(non_var), "] ", var_src[non_var], collapse=", "))
   splits <- strsplit(ts_name, '_')
   if(any(not_three <- sapply(splits, function(split) length(split) != 3)))
     stop("ts_name doesn't have three parts split on '_': ", paste0("[", which(not_three), "] ", ts_name[not_three], collapse=", "))
@@ -129,10 +131,13 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 #' @return site ID in ScienceBase and mda.streams lingo
 make_site_name <- function(sitenum, database=c("nwis", "styx")) {
   # error checking
+  if(missing(database)) database <- "nwis"
   expected_databases <- paste0("^", paste0(eval(formals(make_site_name)$database), collapse="|"))
   if(any(non_db <- grepl(expected_databases, as.character(sitenum))))
     stop("variable is in ScienceBase format already: ", paste0("[", which(non_db), "] ", sitenum[non_db], collapse=", "))
-  database <- match.arg(database)
+  expected_databases <- eval(formals(make_site_name)$database)
+  if(length(odd_db <- which(!(database %in% expected_databases))) > 0) 
+    stop("unexpected database: ", paste0("(",odd_db,") ", database[odd_db], collapse=" "))
   # could check sitenum against known site nums, but that would be time
   # consuming, so relying on the user's good judgement here
   

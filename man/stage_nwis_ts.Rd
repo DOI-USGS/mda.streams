@@ -9,7 +9,8 @@ stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{var}{short name of variable as in \code{get_var_codes(out='var')}}
+\item{var}{short name of variable as in
+\code{unique(get_var_src_codes(out="var"))}}
 
 \item{times}{a length 2 vector of text dates in YYYY-MM-DD format}
 

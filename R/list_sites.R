@@ -1,7 +1,7 @@
 #' Higher-level site querying function
 #' 
 #' @param with_var_src character vector of data variables (i.e., 1+ of those
-#'   listed in get_var_codes(out='var_src'))
+#'   listed in get_var_src_codes(out='var_src'))
 #' @param logic how to join the constraints in with_var_src, ...: is any of the
 #'   listed parameters sufficient, or do you need all of them to be available
 #'   for a site to qualify?
@@ -15,19 +15,19 @@
 #' }
 list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   
+  # process args
   logic <- match.arg(logic)
+  if(any(bad_var_src <- !(with_var_src %in% get_var_src_codes(out="var_src"))))
+    stop("with_var_src=",paste0(with_var_src[bad_var_src],collapse=",")," not in get_var_src_codes(out='var_src')")
   
   if(is.null(with_var_src)){
+    # if no criteria are specified, return all sites
     sites <- get_sites()
   } else {
-    var_codes <- get_var_codes(out = c('type','var_src'))
-    types <- vector(length = length(with_var_src))
-    for (i in 1:length(types)){
-      types[i] <- ifelse(with_var_src[i] %in% var_codes$var_src && 
-                           var_codes$type[which(var_codes$var_src %in% with_var_src[i])] == 'ts',
-                         make_ts_name(with_var_src[i]), 
-                         with_var_src[i])
-    }
+    # convert with_var_src to a vector of dataset names
+    data_codes <- get_var_src_codes(out = c('data_type','var_src'))
+    data_types <- data_codes[match(with_var_src, data_codes$var_src),'data_type']
+    data_names <- ifelse(data_types=="ts", make_ts_name(with_var_src), with_var_src)
     
     # get the sites meeting each criterion individually
     sites <- vector('character')
