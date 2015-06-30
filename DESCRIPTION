@@ -22,6 +22,7 @@ Imports:
     lubridate,
     jsonlite, 
     httr,
+    lazyeval,
     streamMetabolizer,
     geoknife (>= 0.11.2),
     unitted (>= 0.2.1)
