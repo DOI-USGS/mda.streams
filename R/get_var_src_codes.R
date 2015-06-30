@@ -2,8 +2,11 @@
 #' Retrieve the var and src codes for mda.streams
 #' 
 #' Facilitates quick filtering and selecting
-#' @param filter_by a list of arguments to pass to \code{dplyr::filter_}
+#' @param ... a list of unnamed arguments to pass to \code{dplyr::filter_}
 #' @param out a list of arguments to pass to \code{dplyr::select_}
+#' @param drop logical. if the filtering & selection lead to a data.frame whose 
+#'   dimensions would ordinarily be dropped using z[x,y] location, should the 
+#'   dimensions be dropped?
 #' @import dplyr
 #' @importFrom lazyeval lazy_dots
 #' @examples 

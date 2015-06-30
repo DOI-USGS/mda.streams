@@ -7,9 +7,13 @@
 get_var_src_codes(..., out, drop = TRUE)
 }
 \arguments{
+\item{...}{a list of unnamed arguments to pass to \code{dplyr::filter_}}
+
 \item{out}{a list of arguments to pass to \code{dplyr::select_}}
 
-\item{filter_by}{a list of arguments to pass to \code{dplyr::filter_}}
+\item{drop}{logical. if the filtering & selection lead to a data.frame whose
+dimensions would ordinarily be dropped using z[x,y] location, should the
+dimensions be dropped?}
 }
 \description{
 Facilitates quick filtering and selecting
