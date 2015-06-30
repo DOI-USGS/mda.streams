@@ -11,7 +11,7 @@ test_that("internal function get_sites works for multisites", {
   # so i'm commenting it out.
   #expect_equal(get_sites(), list_sites())
 
-  expect_error(get_sites(with_var_src=c("wtr_nwis","doobs_nwis")))
+  expect_error(get_sites(with_dataset_name=c("wtr_nwis","doobs_nwis")))
 })
   
 

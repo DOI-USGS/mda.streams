@@ -29,17 +29,18 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
                          with_var_src[i])
     }
     
+    # get the sites meeting each criterion individually
     sites <- vector('character')
-    for (k in 1:length(types)){
-      sites <- append(sites, get_sites(with_var_src = types[k]))
+    for (k in 1:length(data_names)){
+      sites <- append(sites, get_sites(with_dataset_name = data_names[k]))
     }
     tbl_sites <- data.frame(table(sites))
     
     sites <- as.character(tbl_sites$sites[
       switch(
         logic,
-        "all" = tbl_sites$Freq == length(types), # if any, sites must be repeated as many times as the number of types used
-        "any" = TRUE # just need them to show up once
+        "all" = tbl_sites$Freq == length(data_names), # if all, sites must be repeated as many times as the number of data_names used
+        "any" = TRUE # if any, just need them to show up once
       )])
   }
   
