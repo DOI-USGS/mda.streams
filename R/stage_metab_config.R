@@ -7,24 +7,26 @@
 #'   modeling runs.
 #' @param strategy character, or vector of length sites, describing this set of 
 #'   modeling runs in concise English.
-#' @param date POSIXct indicating the date of config construction. It is
+#' @param date POSIXct indicating the date of config construction. It is 
 #'   strongly recommended to use the default.
 #' @param model character. the name of the metabolism model to construct
+#' @param model_args character, in R language, specifying any arguments to pass
+#'   to the model function
 #' @param site site names
-#' @param suntime 2-column data.frame with names "type" and "src" describing where
-#'   apparent solar time data should come from
+#' @param suntime 2-column data.frame with names "type" and "src" describing
+#'   where apparent solar time data should come from
 #' @param doobs 2-column data.frame with names "type" and "src" describing where
 #'   DO data should come from
 #' @param dosat 2-column data.frame with names "type" and "src" describing where
 #'   DO saturation data should come from
 #' @param depth 2-column data.frame with names "type" and "src" describing where
 #'   stream depth data should come from
-#' @param wtr 2-column data.frame with names "type" and "src" describing where
+#' @param wtr 2-column data.frame with names "type" and "src" describing where 
 #'   water temperature data should come from
 #' @param light 2-column data.frame with names "type" and "src" describing where
 #'   light (PAR) data should come from
-#' @param filename character or NULL. If NULL, the function returns a
-#'   data.frame, otherwise it writes that data.frame to the file specified by
+#' @param filename character or NULL. If NULL, the function returns a 
+#'   data.frame, otherwise it writes that data.frame to the file specified by 
 #'   filename.
 #' @return file name of the config file
 #' @import dplyr
@@ -34,11 +36,11 @@
 #' head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 #' stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL)
-#'   }
+#' }
 stage_metab_config <- function(
   tag, strategy, date=Sys.time(), 
-  model="metab_mle",
-  site=choose_sites(c("doobs","disch","wtr")), 
+  model="metab_mle", model_args="list()",
+  site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis")), 
   suntime=choose_data_source("suntime", site),
   doobs=choose_data_source("doobs", site),
   dosat=choose_data_source("dosat", site),
