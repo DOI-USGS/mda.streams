@@ -11,7 +11,7 @@ test_that("internal function get_sites works for multisites", {
   # so i'm commenting it out.
   #expect_equal(get_sites(), list_sites())
 
-  expect_error(get_sites(with_var_src=c("wtr_nwis","doobs_nwis")))
+  expect_error(get_sites(with_dataset_name=c("wtr_nwis","doobs_nwis")))
 })
   
 
@@ -23,8 +23,8 @@ test_that("list_datasets ", {
   expect_true(length(datasets) > 1)
   
   expect_error(list_datasets(site_name = 'nwis_01021050asdf')) 
-  expect_error(list_datasets(site_name = 'nwis_01021050',type = 'dog')) 
+  expect_error(list_datasets(site_name = 'nwis_01021050',data_type = 'dog')) 
   expect_error(list_datasets(type = 'watershed')) 
   expect_error(list_datasets(type = 'ts')) 
-  expect_is(list_datasets(site_name = 'nwis_01021050', type = 'ts'), 'character')
+  expect_is(list_datasets(site_name = 'nwis_01021050', data_type = 'ts'), 'character')
 })

@@ -1,13 +1,13 @@
 #' Get a vector of timeseries dataset names
 #' 
-#' list_datasets(site) returns the data available to a specific site. In
-#' contrast, get_var_codes() returns a list of all possible variables and
-#' get_var_codes(type="ts") returns all possible timeseries variables.
+#' list_datasets(site) returns the data available to a specific site. In 
+#' contrast, \code{get_var_src_codes(out="var_src")} returns a list of all
+#' possible variables.
 #' 
-#' @param site_name a character vector of length one with a site name such 
-#'   as those returned from make_site_name()
-#' @param type character. one or more dataset types to return
-#' @param ... additional arguments passed to
+#' @param site_name a character vector of length one with a site name such as 
+#'   those returned from make_site_name()
+#' @param data_type character. one or more dataset types to return
+#' @param ... additional arguments passed to 
 #'   \code{\link[sbtools]{query_item_identifier}}, for example \code{limit}
 #'   
 #' @return an alphabetically sorted character vector of unique timeseries 
@@ -19,30 +19,33 @@
 #' @import sbtools
 #' @importFrom stringr str_detect
 #' @export
-list_datasets = function(site_name, type=c("ts","watershed"), ...){
+list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
   
+  # process args
   if(length(site_name) != 1) stop("expecting site_name to be a character vector of length 1")
-  type <- match.arg(type, several.ok = TRUE)
-  str_match_patterns <- c('ts' = pkg.env$ts_prefix, 'watershed' = 'watershed')[type] %>%
+  data_type <- match.arg(data_type, several.ok = TRUE)
+  str_match_patterns <- c('ts' = pkg.env$ts_prefix, 'watershed' = 'watershed')[data_type] %>%
     as.character()
-  
   if (missing(site_name)){
-    stop("site_name required. looking for a list of possible dataset variables? try ?get_var_codes.")
-  } else {
-    site_items <- query_item_identifier(scheme = get_scheme(), key = site_name, limit = 10000)
-    
-    if (nrow(site_items) == 0){ 
-      stop(site_name, ' does not exist')
-    }
-    var_names <- site_items$title
-    is_dataset <- sapply(str_match_patterns, function (x) str_detect(var_names, pattern = x)) %>%
-      rowSums() > 0
-    
-    
-   datasets <- site_items$title[is_dataset] %>%
-     unique() %>%
-     sort()
-   return(datasets)
-  
+    stop("site_name required. looking for a list of possible dataset variables? try ?get_var_src_codes.")
   }
+  
+  # get list of site items, then filter to those of the proper data_type
+  site_items <- query_item_identifier(scheme = get_scheme(), key = site_name, limit = 10000)
+  if (nrow(site_items) == 0){ 
+    stop('site ', site_name, ' does not exist')
+  } else {
+    site_items <- site_items[site_items$title != site_name, ]
+  }
+  if(nrow(site_items) > 0) {
+    is_dataset <- sapply(str_match_patterns, function (x) str_detect(site_items$title, pattern = x)) %>%
+      rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
+    datasets <- site_items$title[is_dataset] %>%
+      unique() %>%
+      sort()
+  } else {
+    datasets <- character(0)
+  }    
+  
+  return(datasets)
 }

@@ -7,10 +7,11 @@
 make_var_src(var, src)
 }
 \arguments{
-\item{var}{a variable shortname from get_var_codes(out='var'), e.g., "doobs"}
+\item{var}{a variable shortname from
+\code{unique(get_var_src_codes(out='var'))}, e.g., "doobs"}
 
-\item{src}{a data source from the sources available for the given var; see
-get_var_codes(var)['src']}
+\item{src}{a data source from the sources available for the given var; e.g.,
+see \code{get_var_src_codes(var=='doobs', out='src')}}
 }
 \description{
 Translate a variable and data source into a var_src

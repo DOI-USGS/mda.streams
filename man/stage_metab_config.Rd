@@ -8,8 +8,8 @@ reflect the full information needed to re-run a set of jobs. The jobs will
 probably, but not necessarily, be run on a Condor cluster.}
 \usage{
 stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
-  site = choose_sites(c("doobs", "disch", "wtr")),
-  suntime = choose_data_source("suntime", site),
+  model_args = "list()", site = list_sites(c("doobs_nwis", "disch_nwis",
+  "wtr_nwis")), suntime = choose_data_source("suntime", site),
   doobs = choose_data_source("doobs", site),
   dosat = choose_data_source("dosat", site),
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
@@ -28,10 +28,13 @@ strongly recommended to use the default.}
 
 \item{model}{character. the name of the metabolism model to construct}
 
+\item{model_args}{character, in R language, specifying any arguments to pass
+to the model function}
+
 \item{site}{site names}
 
-\item{suntime}{2-column data.frame with names "type" and "src" describing where
-apparent solar time data should come from}
+\item{suntime}{2-column data.frame with names "type" and "src" describing
+where apparent solar time data should come from}
 
 \item{doobs}{2-column data.frame with names "type" and "src" describing where
 DO data should come from}
@@ -66,6 +69,6 @@ probably, but not necessarily, be run on a Condor cluster.
 head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_04087142", filename=NULL)
-  }
+}
 }
 

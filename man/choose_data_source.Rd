@@ -4,22 +4,44 @@
 \alias{choose_data_source}
 \title{Select the specific data source to use for a given variable and site}
 \usage{
-choose_data_source(var, site)
+choose_data_source(var, site, logic = c("priority local"), type = c(NA,
+  "ts", "meta", "file", "const"), src)
 }
 \arguments{
-\item{var}{character. The variable name, e.g. "doobs", "disch", or "wtr".}
+\item{var}{character. A single variable name as in
+\code{unique(get_var_src_codes(out="var"))}.}
 
 \item{site}{character. The site code or codes for which to choose data.}
+
+\item{logic}{character specifying the algorithm to use, or the manual logic
+that was used by the user, to choose the \code{type} and \code{src}. if an
+element of logic is not one of the options given in the argument
+definition, then the corresponding elements of \code{type} and \code{src}
+must be specified.}
+
+\item{type}{character in \code{c("ts","meta","file","const")}.}
+
+\item{src}{character indicating a src to be interpreted in the context of
+\code{type}}
 }
 \value{
-a two-column, one-row data.frame with variable-specific column names
-  and cell values indicating the source type (e.g., "local", "proxy",
-  "model") and specific source (e.g., "nwis_01474000", "bird")
+a 4-column data.frame component of a config file
 }
 \description{
-Select the specific data source to use for a given variable and site
+Var and site are always required fields. logic is required by has a default
+value that may be used without explict specification. For every element of
+logic that equals one of the default options, the specified chosing algorithm
+will be used to supply values for type and src. If logic is unrecognized,
+then type and src are also required and the row will be constructed from the
+manually specified elements of site, type, src, and logic.
 }
 \examples{
-choose_data_source("doobs", "nwis_03067510")
+choose_data_source(var="baro", site="nwis_03067510", logic='priority local')
+\dontrun{
+# expect warnings:
+choose_data_source(var="baro", site=c("nwis_08062500","nwis_03067510"),
+  logic='my made-up data', type="file", src=c("myfile1.txt","myfile2.txt"))
+choose_data_source(var="dosat", site="nwis_03067510", logic='priority local')
+}
 }
 

@@ -2,7 +2,8 @@
 #' @description get data from nldas and return a file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param var short name of var as in \code{get_var_codes(out='var')}
+#' @param var short name of var as in
+#'   \code{unique(get_var_src_codes(out='var'))}
 #' @param times a length 2 vector of POSIXct dates
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
@@ -12,7 +13,7 @@
 #' @return a file handle for time series file created
 #' @importFrom geoknife simplegeom webdata geoknife loadOutput webprocess
 #' @importFrom dataRetrieval readNWISsite
-#' @importFrom unitted u write_unitted
+#' @importFrom unitted u write_unitted get_units unitbundle
 #'   
 #' @examples
 #' \dontrun{
@@ -24,7 +25,10 @@
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var) %>% filter(src=="nldas") %>% select(p_code) %>% as.character()
+  vars <- var # need a renamed version for get_var_src_codes filter on var
+  p_code <- '.dplyr_var'
+  p_codes <- get_var_src_codes(src=="nldas",var%in%vars,!is.na(p_code),out="p_code")
+  expected_units <- get_var_src_codes(var==vars, src=='nwis', out='units')
   
   # get site coordinates and format for geoknife
   lon_lat <- find_site_coords(sites, format="geoknife")
@@ -50,6 +54,8 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
         select(-variable)
       
       units <- as.character(site_data$units) %>% unique()
+      if(get_units(unitbundle(units)) != expected_units) 
+        warning("expected units of ", expected_units, " but found units of ", units)
       
       site_data <- select(site_data, -units) %>%
         setNames(c('DateTime',var)) %>%

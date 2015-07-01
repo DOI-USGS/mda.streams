@@ -8,7 +8,7 @@ list_sites(with_var_src = NULL, logic = c("all", "any"), ...)
 }
 \arguments{
 \item{with_var_src}{character vector of data variables (i.e., 1+ of those
-listed in get_var_codes(out='var_src'))}
+listed in get_var_src_codes(out='var_src'))}
 
 \item{logic}{how to join the constraints in with_var_src, ...: is any of the
 listed parameters sufficient, or do you need all of them to be available
@@ -24,8 +24,10 @@ Higher-level site querying function
 }
 \examples{
 \dontrun{
-  list_sites()
-  list_sites(with_var_src=c("wtr_nwis","doobs_nwis","watershed"), logic="any")
+list_sites()
+list_sites(with_var_src=c("wtr_nwis","doobs_nwis","shed_nhdplus"), logic="any")
+list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simModel"),
+                any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
 }
 }
 

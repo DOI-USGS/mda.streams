@@ -10,9 +10,11 @@ stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{var}{short name of variable as in \code{get_var_codes(out='var')}}
+\item{var}{short name of variable as in
+\code{unique(get_var_src_codes(out='var'))}}
 
-\item{src}{short name of src as in \code{get_src_codes()}}
+\item{src}{short name of src as in \code{get_var_src_codes(var==myvar,
+out='src')}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp
 directory)}

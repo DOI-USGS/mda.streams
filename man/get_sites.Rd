@@ -4,13 +4,13 @@
 \alias{get_sites}
 \title{A helper to find_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
-get_sites(with_var_src = NULL, limit = 10000, ...)
+get_sites(with_dataset_name = NULL, limit = 10000, ...)
 }
 \arguments{
-\item{with_var_src}{limit sites to those with children matching the specified
-var_src key}
+\item{with_dataset_name}{limit sites to those with children matching the
+specified ts or other dataset name (e.g., "ts_doobs_nwis")}
 
-\item{limit}{numeric. Max number of sites to return. Default 10000}
+\item{limit}{numeric. Max number of sites to return}
 
 \item{...}{Additional parameters supplied to
 \code{\link[sbtools]{session_check_reauth}}}
@@ -28,7 +28,7 @@ dataset, and returns as a character vector of those site names
 get_sites()
 get_sites(limit = 10)
 # get those sites that have water temperature
-get_sites(with_var_src = 'ts_wtr_nwis')
+get_sites(with_dataset_name = 'ts_wtr_nwis')
 }
 }
 \keyword{internal}

@@ -2,50 +2,22 @@
 #' 
 #' @import streamMetabolizer
 #' @import dplyr
-#' @param site site name
-#' @param model model name shorthand, e.g. "simple"
-#' @param suntime.type suntime data type
-#' @param suntime.src suntime data src
-#' @param doobs.type doobs data type
-#' @param doobs.src doobs data src
-#' @param dosat.type dosat data type
-#' @param dosat.src dosat data src
-#' @param depth.type depth data type
-#' @param depth.src depth data src
-#' @param wtr.type wtr data type
-#' @param wtr.src wtr data src
-#' @param light.type light data type
-#' @param light.src light data src
+#' @param ... args passed to stage_metab_config to construct a config object, in
+#'   lieu of actually supplying the config argument
 #' @param config data.frame, or file/filename to read a data.frame from. As an 
 #'   alternative to all preceding arguments, this single config argument may be 
-#'   passed in. The data.frame columns must correspond precisely to the list of
+#'   passed in. The data.frame columns must correspond precisely to the list of 
 #'   preceding arguments.
 #' @param row integer. The row number of the config data.frame to use for this 
 #'   particular model run.
 #' @export
 #' @examples
-#' suppressWarnings(config_to_metab(
-#'   model="metab_mle", site=NA, 
-#'   suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA, 
-#'   dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA, 
-#'   wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA))
 #' \dontrun{
-#' config_to_metab(
-#'   model="metab_mle", site=NA, suntime.type=NA, suntime.src=NA, doobs.type=NA, doobs.src=NA, 
-#'   dosat.type=NA, dosat.src=NA, depth.type=NA, depth.src=NA, 
-#'   wtr.type=NA, wtr.src=NA, light.type=NA, light.src=NA)
 #' config_to_metab(config=stage_metab_config(
 #'   tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL))
 #' }
-config_to_metab <- function(model, site, 
-                            suntime.type, suntime.src,
-                            doobs.type, doobs.src, 
-                            dosat.type, dosat.src, 
-                            depth.type, depth.src, 
-                            wtr.type, wtr.src, 
-                            light.type, light.src, 
-                            config, row=1) {
+config_to_metab <- function(..., config, row=1) {
 
   # Check the input
   cols_expected <- formals(config_to_metab) %>% replace(c("config", "row"), NULL) %>% names() # config values we expect
@@ -85,9 +57,9 @@ config_to_metab <- function(model, site,
   warning("still need to actually download the data")
   data_needs <- formals(metab_fun)$data %>% eval()
   # confirm that non-needed variables are being specified as "none"-NA
-  metab_name <- ".dplyr.var"
-  var_codes <- get_var_codes(type="ts") %>% 
-    filter(metab_name %in% names(data_needs)) %>% 
+  data_type <- metab_var <- ".dplyr.var"
+  var_codes <- var_src_codes %>%
+    filter(data_type=="ts", metab_var %in% names(data_needs)) %>% 
     do({
       rownames(.) <- .$metab_name
       .[,"var",drop=FALSE]})

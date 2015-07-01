@@ -2,7 +2,7 @@ Package: mda.streams
 Type: Package
 Title: mda.streams
 Version: 0.7.5
-Date: 2015-06-26
+Date: 2015-06-30
 Author: Luke A Winslow, Jordan S Read, Alison Appling
 Maintainer: Alison Appling <aappling@usgs.gov>
 Description: Back end tools for powstreams.
@@ -22,6 +22,7 @@ Imports:
     lubridate,
     jsonlite, 
     httr,
+    lazyeval,
     streamMetabolizer,
     geoknife (>= 0.11.2),
     unitted (>= 0.2.1)

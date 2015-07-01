@@ -30,7 +30,7 @@ test_that("ts variable names can be made and parsed", {
   expect_equal(mda.streams:::parse_ts_name("ts_disch_nwis", out=c("var","src"), use_names=FALSE),
                data.frame(var="disch", src="nwis", stringsAsFactors=FALSE), info="1 row, several columns")
   expect_error(mda.streams:::parse_ts_name(c("doobs","ts_doobs")), "unexpected ts variable prefix")
-  expect_error(mda.streams:::parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")), "var_src isn't listed in get_var_codes()")
+  expect_error(mda.streams:::parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")), "var_src isn't listed in get_var_src_codes")
   
   # back and forth
   expect_equal(mda.streams:::parse_ts_name(mda.streams:::make_ts_name("wtr","nwis")), "wtr_nwis")

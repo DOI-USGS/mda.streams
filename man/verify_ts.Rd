@@ -10,14 +10,14 @@ verify_ts(data, var, checks = c("ncol", "unitted", "tz", "units", "names"),
 \arguments{
 \item{data}{a \code{\link[unitted]{unitted}} data.frame with date and value}
 
+\item{var}{optional name for timeseries. If supplied, will check variable
+column name}
+
 \item{checks}{tests to run on the data ('cols', 'tz', 'units', 'variable')}
 
 \item{on_fail}{function to call when a test fails. good options are warning
 and stop. if the function does not halt evaluation, FALSE is returned after
 the function is first called.}
-
-\item{var_src}{optional name for timeseries. If supplied, will check variable
-column name}
 }
 \value{
 TRUE if is valid, FALSE if not
@@ -35,5 +35,4 @@ verify_ts(ts, var='doobs', checks=c('ncol','units','names')) # TRUE
 verify_ts(ts, var='wtr', checks=c('ncol','units','names')) # warning + FALSE
 }
 }
-\keyword{internal}
 

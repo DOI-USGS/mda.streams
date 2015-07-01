@@ -2,7 +2,8 @@
 #' @description get data from nwis and return created file handle
 #'   
 #' @param sites a character vector of valid NWIS site IDs
-#' @param var short name of variable as in \code{get_var_codes(out='var')}
+#' @param var short name of variable as in
+#'   \code{unique(get_var_src_codes(out="var"))}
 #' @param times a length 2 vector of text dates in YYYY-MM-DD format
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
@@ -36,9 +37,13 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   # write.table(mda.streams:::parse_ts_path(all_files[tz_01], "sitenum"), "C:/Users/aappling/desktop/wrong_time.txt", sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
   # write.table(mda.streams:::parse_ts_path(all_files[tz_other], "sitenum"), "C:/Users/aappling/desktop/other_time.txt", sep="\n", col.names=FALSE, row.names=FALSE, quote=FALSE)
   
-  # download the full dataset from NWIS all at once
+  # process inputs
   if(length(var) > 1) stop("one var at a time, please")
-  p_code <- get_var_codes(var) %>% filter(src=="nwis") %>% select(p_code) %>% as.character()
+  vars <- var # need a renamed version for get_var_src_codes filter on var
+  p_code <- '.dplyr_var'
+  p_code <- get_var_src_codes(src=="nwis",var%in%vars,!is.na(p_code),out="p_code")
+  var_units <- get_var_src_codes(var==vars, src=='nwis', out='units')
+  
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
@@ -74,7 +79,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
         select_('DateTime', datacol) %>%
         setNames(c("DateTime",var)) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
-        u(c(NA,get_var_codes(var, 'units')))
+        u(c(NA,var_units))
 
       if(nrow(site_data) > 0) {
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder)

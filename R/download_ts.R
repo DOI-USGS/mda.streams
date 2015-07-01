@@ -3,7 +3,7 @@
 #'   location
 #' @param site_name a valid mda.streams site (see \link{get_sites})
 #' @param var_src a valid variable name for timeseries data (see 
-#'   \code{get_var_codes(out='var_src', type='ts')})
+#'   \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), var_src)})
 #' @param folder string for a folder location
 #' @param on_remote_missing character indicating what to do if the
 #' @param on_local_exists character indicating what to do if the folder already 

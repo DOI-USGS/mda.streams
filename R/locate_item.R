@@ -45,37 +45,42 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       either=data.frame(key=key, type=type, parent=parent, title=title, stringsAsFactors=FALSE)
     ) %>%
     as.data.frame(stringsAsFactors=FALSE)
-  
+
   if(get_scheme() == 'mda_streams_dev' && is.null(current_session())) 
     stop("log in to use mda_streams_dev. see authenticate_sb()")
 
   # run the query or queries
-  sapply(1:nrow(query_args), function(argnum) {
-    
-    # query by tag
-    item <- data.frame()
-    if(by %in% c("tag","either")) {
+  if(by %in% c("tag","either")) {
+    items <- bind_rows(lapply(1:nrow(query_args), function(argnum) {
+      # query by tag
       item <- query_item_identifier(scheme = get_scheme(), type = query_args$type[argnum], key = query_args$key[argnum], limit=limit)
-    }
-    
-    # query by dir
-    if(by == "dir" || (isTRUE(nrow(item)==0) && by == "either")) {
-      # find all children of the specified parent. for finding a site, it'd be
-      # more efficient to only list children once rather than every iteration of
-      # the sapply, but this should be a rare case.
-      kids <- item_list_children(id=query_args$parent[argnum], limit=limit)
-      itemnum <- NA
-      for(i in seq_len(nrow(kids))) {
-        kid_title <- tryCatch(item_get(id=kids[i,"id"])$title, error=function(e) NA)
-        if(isTRUE(kid_title == query_args$title[argnum])) {
-          itemnum <- i
-          break
-        }
+      # create a df of NAs if item wasn't found
+      if(ncol(item) == 0) item <- data.frame(title=NA, id=NA)
+      # attach argnum and return
+      data.frame(query_args[argnum,], argnum=argnum, setNames(item, c("item.title","id")))
+    })) %>% as.data.frame(stringsAsFactors=FALSE)
+  } else if(by == "dir") {
+    # just set up df so that the next block will do the search
+    items <- data.frame(query_args, argnum=1:nrow(query_args), item.title=NA, id=NA)
+  }
+  
+  # query by title as requested+needed
+  if(by %in% c("dir","either")) {
+    needy_argnums <- unique(items[is.na(items$id), "argnum"])
+    for(i in needy_argnums) {
+      query <- items[items$argnum == i, ]
+      query_out <- query_item_in_folder(text=query$title[1], folder=query$parent[1], limit=limit)
+      query_match <- query_out[query_out$title == query$title[1],]
+      if(nrow(query_match) > 0) {
+      	items[items$argnum == i, "id"] <- query_match$id
+      	items[items$argnum == i, "title"] <- query_match$title
       }
-      item <- if(!is.na(itemnum)) kids[itemnum,,drop=FALSE] else data.frame()
-    }    
-    # reformat the result to our liking
-    format_item(item, format, browser)
+    }
+  }
+  
+  # reformat the results to our liking
+  sapply(1:nrow(items), function(item) {
+    format_item(items[item,], format, browser)
   })
 }
 
@@ -101,12 +106,16 @@ format_item <- function(item, format, browser) {
   }
   if(browser) {
     if(format=="id") {
-      ids <- sbtools::item_get(out)$identifiers[[1]]
-      if(!is.null(ids))
-        browser_format <- if(ids$type %in% c("root", "site_root")) "folder_url" else "item_url"
-      else 
-        browser_format <- "item_url"
-      url <- format_item(item, format=browser_format, browser=FALSE)
+      if(is.na(out)) {
+        url <- NA
+      } else {
+        ids <- sbtools::item_get(out)$identifiers[[1]]
+        if(!is.null(ids))
+          browser_format <- if(ids$type %in% c("root", "site_root")) "folder_url" else "item_url"
+        else 
+          browser_format <- "item_url"
+        url <- format_item(item, format=browser_format, browser=FALSE)
+      }
     } else {
       url <- out
     }
@@ -136,7 +145,7 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
     stop("'by' must be 'tag' when searching for the project folder")
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=folder, type="root", parent=locate_folder("project"), title=folder, by=by, format=format, limit=limit, browser=browser)
+  locate_item(key=folder, type="root", parent=locate_folder("project", by="tag"), title=folder, by=by, format=format, limit=limit, browser=browser)
 }
 
 #' Find a site folder on ScienceBase
@@ -153,10 +162,10 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
 #' }
 locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
-  site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
+  site_name <- do.call(make_site_name, parse_site_name(site_name, out=c("sitenum","database"), use_names=FALSE)) # check the site name
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by=by), title=site_name, by=by, format=format, limit=limit, browser=browser)
+  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by="tag"), title=site_name, by=by, format=format, limit=limit, browser=browser)
 }
 
 #' Find a timeseries item on ScienceBase
@@ -177,10 +186,16 @@ locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","eithe
 locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
   var_src <- make_ts_name(var_src) # check that the variable name is valid and add prefix
-  site_name <- make_site_name(parse_site_name(site_name)) # check that the site name is reasonably valid
+  site_name <- do.call(make_site_name, parse_site_name(site_name, out=c("sitenum","database"), use_names=FALSE)) # check the site name
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="item_url")
-  locate_item(key=site_name, type=var_src, parent=locate_site(site_name, by=by), title=var_src, by=by, format=format, limit=limit, browser=browser)
+  if(by %in% c("dir","either")) {
+    site_parent <- locate_site(site_name, by="either")
+    if(is.na(site_parent)) stop("couldn't find the site folder for the ts")
+  } else {
+    site_parent <- NA
+  }
+  locate_item(key=site_name, type=var_src, parent=site_parent, title=var_src, by=by, format=format, limit=limit, browser=browser)
 }
 
 
