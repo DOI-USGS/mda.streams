@@ -28,6 +28,18 @@
 #' choose_data_source(var="baro", site=c("nwis_08062500","nwis_03067510"), 
 #'   logic='my made-up data', type="file", src=c("myfile1.txt","myfile2.txt"))
 #' choose_data_source(var="dosat", site="nwis_03067510", logic='priority local')
+#' 
+#' # as in default to stage_metab_config
+#' site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[40:49]
+#' suntime=choose_data_source("suntime", site)
+#' doobs=choose_data_source("doobs", site)
+#' dosat=choose_data_source("dosat", site)
+#' depth=choose_data_source("depth", site)
+#' wtr=choose_data_source("wtr", site)
+#' par=choose_data_source("par", site)
+#' 
+#' # as in verify_config
+#' choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
 #' }
 choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"ts","meta","file","const"), src) {
 
@@ -50,7 +62,7 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
     stringsAsFactors=FALSE)
   
   # setup operations & checks as needed
-  if('priority local' %in% logic) {
+  if('priority local' %in% logic || 'ts' %in% type) {
     priority <- '.dplyr.var'
     myvar <- var # need a name that differs from the var_src_codes col name
     ranked_src <- get_var_src_codes(var==myvar, out=c("src","priority")) %>% arrange(priority)

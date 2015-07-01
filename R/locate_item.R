@@ -191,7 +191,7 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
   format <- switch(match.arg(format), id="id", url="item_url")
   if(by %in% c("dir","either")) {
     site_parent <- locate_site(site_name, by="either")
-    if(is.na(site_parent)) stop("couldn't find the site folder for the ts")
+    if(any(na_site <- is.na(site_parent))) stop("couldn't find the site folder[s] ", paste0(site_name[na_site], collapse=", "))
   } else {
     site_parent <- NA
   }

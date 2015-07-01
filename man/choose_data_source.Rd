@@ -42,6 +42,18 @@ choose_data_source(var="baro", site="nwis_03067510", logic='priority local')
 choose_data_source(var="baro", site=c("nwis_08062500","nwis_03067510"),
   logic='my made-up data', type="file", src=c("myfile1.txt","myfile2.txt"))
 choose_data_source(var="dosat", site="nwis_03067510", logic='priority local')
+
+# as in default to stage_metab_config
+site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[40:49]
+suntime=choose_data_source("suntime", site)
+doobs=choose_data_source("doobs", site)
+dosat=choose_data_source("dosat", site)
+depth=choose_data_source("depth", site)
+wtr=choose_data_source("wtr", site)
+par=choose_data_source("par", site)
+
+# as in verify_config
+choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
 }
 }
 
