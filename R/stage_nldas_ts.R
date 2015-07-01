@@ -35,7 +35,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   lon_lat_df <- lon_lat[complete.cases(t(lon_lat))]
   
   stencil <- simplegeom(lon_lat_df)
-  fabric <- webdata('nldas', variable = p_code, times = times)
+  fabric <- webdata('nldas', variable = p_codes, times = times)
   
   if(isTRUE(verbose)) message("Starting remote processing and data download")
   
