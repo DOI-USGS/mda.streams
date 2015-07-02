@@ -130,7 +130,6 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
               warning("file in row ", row, " doesn't exist on this machine")
           },
           const={
-            warning("const not currently implemented")
           },
           none={
             if(!is.na(config[row,'site'])) stop('when type=none need site=NA')

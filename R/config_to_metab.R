@@ -39,9 +39,11 @@ config_to_metab <- function(config, rows) {
     
     # Prepare the data
     metab_data <- config_to_data(config[row,], row, metab_fun, metab_args)
+    metab_data <- v(metab_data) # eventually want to hot have to do this
+    metab_data <- metab_data[complete.cases(metab_data),]
     
     # Run the model
-    #metab_fun()
+    fit <- do.call(metab_fun, c(list(data=metab_data), metab_args))
   })    
     
   # Return metabolism predictions

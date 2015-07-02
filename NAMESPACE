@@ -2,6 +2,7 @@
 
 export(choose_data_source)
 export(combine_ts)
+export(config_to_data)
 export(config_to_metab)
 export(download_ts)
 export(find_google_map)
