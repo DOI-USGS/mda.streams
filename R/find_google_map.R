@@ -6,8 +6,10 @@
 #' @import httr
 #' @export
 #' @examples 
+#' \dontrun{
 #' cat(find_google_map("nwis_01484680"))
 #' find_google_map(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
+#' }
 find_google_map <- function(site_names, browser=TRUE) {
   coords <- find_site_coords(site_names, format="normal", attach.units = FALSE)
   url <- setNames(
