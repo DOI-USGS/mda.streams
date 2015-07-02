@@ -4,19 +4,16 @@
 \alias{config_to_metab}
 \title{Actually run the model as specified by the configuration arguments}
 \usage{
-config_to_metab(..., config, row = 1)
+config_to_metab(config, rows)
 }
 \arguments{
-\item{...}{args passed to stage_metab_config to construct a config object, in
-lieu of actually supplying the config argument}
-
 \item{config}{data.frame, or file/filename to read a data.frame from. As an
 alternative to all preceding arguments, this single config argument may be
 passed in. The data.frame columns must correspond precisely to the list of
 preceding arguments.}
 
-\item{row}{integer. The row number of the config data.frame to use for this
-particular model run.}
+\item{rows}{missing, integer, or vector of integers. The row number[s] of the
+config data.frame to use for this particular model run.}
 }
 \description{
 Actually run the model as specified by the configuration arguments

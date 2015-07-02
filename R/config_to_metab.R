@@ -1,15 +1,13 @@
 #' Actually run the model as specified by the configuration arguments
 #' 
-#' @import streamMetabolizer
-#' @import dplyr
-#' @param ... args passed to stage_metab_config to construct a config object, in
-#'   lieu of actually supplying the config argument
 #' @param config data.frame, or file/filename to read a data.frame from. As an 
 #'   alternative to all preceding arguments, this single config argument may be 
 #'   passed in. The data.frame columns must correspond precisely to the list of 
 #'   preceding arguments.
-#' @param row integer. The row number of the config data.frame to use for this 
-#'   particular model run.
+#' @param rows missing, integer, or vector of integers. The row number[s] of the
+#'   config data.frame to use for this particular model run.
+#' @import streamMetabolizer
+#' @import dplyr
 #' @export
 #' @examples
 #' \dontrun{
@@ -17,77 +15,36 @@
 #'   tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL))
 #' }
-config_to_metab <- function(..., config, row=1) {
+config_to_metab <- function(config, rows) {
 
   # Check the input
-  cols_expected <- formals(config_to_metab) %>% replace(c("config", "row"), NULL) %>% names() # config values we expect
-  cols_given <- match.call() %>% as.list() %>% .[-1] %>% replace(c("config", "row"), NULL) %>% names() # config values specified independently in this call
-  cols_ok <- formals(stage_metab_config) %>% names() %>% .[1:3] # config cols that would be OK to see (b/c they're standard config file metadata)
-  # create the data.frame if appropriate
-  if(missing(config)) {
-    config <- as.data.frame(mget(cols_expected, inherits=FALSE), stringsAsFactors=FALSE)
-  } else if(any(cols_given %in% cols_expected)) {
-    stop("in config is specified, other arguments must not be")
-  }
-  # read the data.frame if appropriate
-  if(is.character(config) | is(config, "file")) {
-    config <- read.table(config, sep=pkg.env$ts_delim, stringsAsFactors=FALSE)
-  }
-  # check the data.frame, which really should exist by now
-  if(is.data.frame(config)) {
-    if(!isTRUE(all.equal(names(config), cols_expected))) {
-      true_extras <- setdiff(names(config), c(cols_ok, cols_expected)) # also permit tag, strategy, and model (first three config file columns)
-      if(length(true_extras)>0) warning("config has these unexpected columns: ", paste0(true_extras, collapse=", "))
-      missings <- setdiff(cols_expected, names(config))
-      if(length(missings)>0) stop("config is missing these columns: ", paste0(missings, collapse=", "))
-    }
-    for(col in 1:ncol(config)) {
-      if(is.factor(config[[col]])) config[,col] <- as.character(config[,col])
-    }
-  } else {
-    stop("couldn't find or make the config data.frame")
-  }
+  rows <- if(missing(rows)) 1:nrow(config) else rows
+  verify_config(config[rows,], on_fail="stop")
   
-  # Handle 
-  
-  # Locate the model  
-  metab_fun <- get(config$model, envir = environment(streamMetabolizer::metab_model))
-
-  # Prepare the data
-  warning("still need to actually download the data")
-  data_needs <- formals(metab_fun)$data %>% eval()
-  # confirm that non-needed variables are being specified as "none"-NA
-  data_type <- metab_var <- ".dplyr.var"
-  var_codes <- var_src_codes %>%
-    filter(data_type=="ts", metab_var %in% names(data_needs)) %>% 
-    do({
-      rownames(.) <- .$metab_name
-      .[,"var",drop=FALSE]})
-  #   ts_dfs <- lapply(rownames(var_codes), function(metab_name) {
-  #     var <- var_codes[metab_name,"shortname"]
-  #     type <- config[,paste0(var,".type")]
-  #     src <- config[,paste0(var,".src")]
-  #     site <- config[,"site"]
-  #     # Map inputs to SB query terms
-  #     ts_site <- switch(
-  #       type,
-  #       local=site,
-  #       proxy=src,
-  #       model=site)
-  #     ts_var <- switch(
-  #       type,
-  #       local=make_ts_name(var),
-  #       proxy=make_ts_name(var),
-  #       model=paste0(make_ts_name(var), ".", src))
-  #     #download_ts(var_src=ts_var, site_name=ts_site) %>% read_ts()
-  #   })
-  # now just need to combine the dfs
-  
-  # Run the model
-  warning("function under construction")
-  # for metab_mle, expected.colnames <- c("date.time","DO.obs","DO.sat","depth","temp.water","light")
-  #metab_fun(doobs, disch, wtr) # needs to match the requirements of that metab_fun
-  
+  fits <- lapply(rows, function(row) {
+    
+    # Locate the model function
+    tryCatch(
+      # Look first in streamMetabolizer
+      metab_fun <- get(config[row,'model'], envir = environment(streamMetabolizer::metab_model)),
+      error=function(e) {
+        # Look second in the current and inherited environments. If it's not
+        # there, either, we really do want to throw an error.
+        metab_fun <- get(config[row,'model'])
+      }
+    )
+    
+    # Prepare the model arguments
+    metab_args <- eval(parse(text=config[row,'model_args']))
+    
+    # Prepare the data
+    metab_data <- config_to_data(config[row,], row, metab_fun, metab_args)
+    
+    # Run the model
+    #metab_fun()
+  })    
+    
   # Return metabolism predictions
-  return("here are your predictions")
+  fits
 }
+
