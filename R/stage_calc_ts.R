@@ -41,7 +41,7 @@
 #' head(read_ts(file_depth))
 #' post_ts(file_depth, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 #' 
-#' file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGG", verbose=TRUE)
+#' file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 #' head(read_ts(file_dosat))
 #' post_ts(file_dosat, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 #' 
@@ -65,7 +65,7 @@
 #'   inputs=list(utctime=real_doobs$DateTime, disch=u(rep(2900, nrow(real_doobs)), "ft^3 s^-1")))
 #' head(read_ts(file_depth))
 #' 
-#' file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGG", verbose=TRUE,
+#' file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGGbconst", verbose=TRUE,
 #'   inputs=list(utctime=real_doobs$DateTime, wtr=u(rep(12, 192), "degC"), baro=u(90000, "Pa")))
 #' head(read_ts(file_dosat))
 #' 
@@ -149,18 +149,20 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'dosat_calcGGbts' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
           baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
+          combo <- combine_ts(wtr_nwis, baro_nldas, method='full_join')
           calc_ts_dosat_calcGG(
-            utctime = wtr_nwis$DateTime,
-            wtr = wtr_nwis$wtr,
-            baro = baro_nldas$baro)
+            utctime = combo$DateTime,
+            wtr = combo$wtr,
+            baro = combo$baro)
         },
         'dosat_calcGGbconst' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
-          baro_best <- calc_air_pressure(attach.units=TRUE)
+          baro_const <- u(data.frame(DateTime=NA, baro=calc_air_pressure(attach.units=TRUE)))
+          combo <- combine_ts(wtr_nwis, baro_const, method='full_join')
           calc_ts_dosat_calcGG(
-            utctime = wtr_nwis$DateTime,
-            wtr = wtr_nwis$wtr,
-            baro = baro_best)
+            utctime = combo$DateTime,
+            wtr = combo$wtr,
+            baro = combo$baro)
         },
         'dosat_simGGbts' = {
           if(!is.na(inputs$baro$DateTime)) stop("need non-NA baro$DateTime for dosat_simGGbts")
@@ -282,7 +284,6 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
 #' 
 #' @keywords internal
 calc_ts_dosat_calcGG <- function(utctime, wtr, baro) {
-  combo <- combine_ts(wtr, baro)
   data.frame(
     DateTime = utctime,
     dosat = calc_DO_at_sat(

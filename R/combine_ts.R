@@ -68,9 +68,14 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
   # do the join left to right using the specified combine_fun
   dots <- list(...)
   data <- dots[[1]]
+  if(isTRUE(is.na(data$DateTime))) {
+    stop("first ts in list really should be a ts, not a const")
+  }
   for(dot in dots[-1]) {
     data <- if(isTRUE(is.na(dot$DateTime))) {
-      data.frame(data, dot[2])
+      data.frame(data, rep(dot[,2],nrow(data))) %>%
+        setNames(c(names(data), names(dot[2]))) %>%
+        u()
     } else {
       combine_fun(data, dot)
     }

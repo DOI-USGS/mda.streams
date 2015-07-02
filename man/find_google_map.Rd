@@ -16,7 +16,9 @@ make_site_name()}
 Get a URL to the gage location on Google Maps
 }
 \examples{
+\dontrun{
 cat(find_google_map("nwis_01484680"))
 find_google_map(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
+}
 }
 

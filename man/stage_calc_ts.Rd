@@ -54,7 +54,7 @@ file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch",
 head(read_ts(file_depth))
 post_ts(file_depth, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
-file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGG", verbose=TRUE)
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 head(read_ts(file_dosat))
 post_ts(file_dosat, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
@@ -78,7 +78,7 @@ file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="simDisch", 
   inputs=list(utctime=real_doobs$DateTime, disch=u(rep(2900, nrow(real_doobs)), "ft^3 s^-1")))
 head(read_ts(file_depth))
 
-file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGG", verbose=TRUE,
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGGbconst", verbose=TRUE,
   inputs=list(utctime=real_doobs$DateTime, wtr=u(rep(12, 192), "degC"), baro=u(90000, "Pa")))
 head(read_ts(file_dosat))
 

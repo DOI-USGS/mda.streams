@@ -6,6 +6,24 @@ test_that("combine_ts works", {
   dim(same <- read_ts(xy[2]))
   dim(more <- read_ts(xy[3]))
   dim(offset <- read_ts(xy[4])[1:1234,])
+  library(dplyr); library(unitted)
+  datevec <- seq(Sys.time(), Sys.time()+as.difftime(1, units='hours'), by=as.difftime(1, units='mins'))
+  offline <- u(data.frame(DateTime=datevec, suntime=datevec-as.difftime(5.4, units='hours')))
+  const <- u(data.frame(DateTime=NA, baro=u(75000,'Pa')))
+  
+  # combine ts with const
+  ocf <- combine_ts(offline, const, method='full_join')
+  expect_equal(dim(ocf), c(dim(offline)[1], 3))
+  oci <- combine_ts(offline, const, method='inner_join')
+  expect_equal(dim(oci), c(dim(offline)[1], 3))
+  ocl <- combine_ts(offline, const, method='left_join')
+  expect_equal(dim(ocl), c(dim(offline)[1], 3))
+  oca <- combine_ts(offline, const, method='approx')
+  expect_equal(dim(oca), c(dim(offline)[1], 3))
+  expect_equal(ocf, oci)
+  expect_equal(ocf, ocl)
+  expect_equal(ocf, oca)
+  expect_error(combine_ts(const, offline, method='approx'))
   
   # two same-dated tses
   bsf <- combine_ts(base, same, method='full_join')

@@ -18,7 +18,8 @@ doobs	simErrARProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	14	NA	simula
 doobs	simErrObs	mg L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate depth by running the DO model forward and adding observation white noise	streamMetabolizer	NA	sim	NA
 doobs	simErrProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	13	NA	simulate depth by running the DO model forward and adding process white noise	streamMetabolizer	NA	sim	NA
 doobs	simModel	mg L^-1	dissolved oxygen concentration	ts	DO.obs	15	NA	simulate depth by running the DO model forward	streamMetabolizer	NA	sim	NA
-dosat	calcGG	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbts	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbconst	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
 dosat	simCopy	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
 dosat	simGG	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	sim	NA
 dosat	simNew	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
