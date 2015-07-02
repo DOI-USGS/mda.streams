@@ -34,10 +34,10 @@ par	simLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	11	NA	cal
 par	simNew	umol m^-2 s^-1	photosynthetically active radiation	ts	light	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
 shed	nhdplus	NA	watershed shapefile	watershed	NA	1	http://water.usgs.gov/GIS/metadata/usgswrd/XML/streamgagebasins.xml	USGS Streamgage NHDPlus Version 1 Basins 2011	NA	NA	data	NA
 stage	nwis	ft	gage height	ts	NA	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00065'
-suntime	calcLon	''	apparent solar time	ts	local.time	1	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
-suntime	simCopy	''	apparent solar time	ts	local.time	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
-suntime	simLon	''	apparent solar time	ts	local.time	11	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	NA
-suntime	simNew	''	apparent solar time	ts	local.time	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
+suntime	calcLon	''	apparent solar time	ts	date.time	1	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
+suntime	simCopy	''	apparent solar time	ts	date.time	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
+suntime	simLon	''	apparent solar time	ts	date.time	11	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	NA
+suntime	simNew	''	apparent solar time	ts	date.time	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
 sw	nldas	?	downwelling shortwave radiation	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	Land Data Assimilation Systems	geoknife	geoknife	data	dswrfsfc
 wtr	nwis	degC	water temperature	ts	temp.water	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00010'
 wtr	simCopy	degC	water temperature	ts	temp.water	11	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
