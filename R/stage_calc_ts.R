@@ -146,20 +146,28 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'depth_simNew' = {
           calc_ts_with_input_check(inputs=c(list(var='depth'), inputs), 'calc_ts_simNew')
         },
-        'dosat_calcGG' = {
+        'dosat_calcGGbts' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
-          # get baro in the best available form. we'll need to reconcile 
-          # mismatched wtr & baro tses for some sites - not yet implemented.
-          if(!is.na(locate_ts("baro_nldas", site))) 
-            baro_best <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))$baro
-          else 
-            baro_best <- calc_air_pressure(attach.units=TRUE)
+          baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
           calc_ts_dosat_calcGG(
-            utctime =wtr_nwis$DateTime,
+            utctime = wtr_nwis$DateTime,
+            wtr = wtr_nwis$wtr,
+            baro = baro_nldas$baro)
+        },
+        'dosat_calcGGbconst' = {
+          wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
+          baro_best <- calc_air_pressure(attach.units=TRUE)
+          calc_ts_dosat_calcGG(
+            utctime = wtr_nwis$DateTime,
             wtr = wtr_nwis$wtr,
             baro = baro_best)
         },
-        'dosat_simGG' = {
+        'dosat_simGGbts' = {
+          if(!is.na(inputs$baro$DateTime)) stop("need non-NA baro$DateTime for dosat_simGGbts")
+          calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
+        },
+        'dosat_simGGbconst' = {
+          if(nrow(inputs$baro) != 1) stop("need 1-row baro for dosat_simGGbconst")
           calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
         },
         'dosat_simNew' = {
@@ -274,6 +282,7 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
 #' 
 #' @keywords internal
 calc_ts_dosat_calcGG <- function(utctime, wtr, baro) {
+  combo <- combine_ts(wtr, baro)
   data.frame(
     DateTime = utctime,
     dosat = calc_DO_at_sat(
