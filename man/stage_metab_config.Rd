@@ -13,7 +13,7 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   doobs = choose_data_source("doobs", site),
   dosat = choose_data_source("dosat", site),
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
-  site), light = choose_data_source("light", site),
+  site), par = choose_data_source("par", site),
   filename = "./condor_config.tsv")
 }
 \arguments{
@@ -48,8 +48,8 @@ stream depth data should come from}
 \item{wtr}{2-column data.frame with names "type" and "src" describing where
 water temperature data should come from}
 
-\item{light}{2-column data.frame with names "type" and "src" describing where
-light (PAR) data should come from}
+\item{par}{2-column data.frame with names "type" and "src" describing where
+light (photosynthetically available radiation, PAR) data should come from}
 
 \item{filename}{character or NULL. If NULL, the function returns a
 data.frame, otherwise it writes that data.frame to the file specified by
@@ -66,9 +66,10 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 \dontrun{
-head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_04087142", filename=NULL)
+stage_metab_config(tag="0.0.1", strategy="test write_metab_config",
+  site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[1:10], filename=NULL)
 }
 }
 

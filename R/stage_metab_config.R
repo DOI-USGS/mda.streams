@@ -10,10 +10,10 @@
 #' @param date POSIXct indicating the date of config construction. It is 
 #'   strongly recommended to use the default.
 #' @param model character. the name of the metabolism model to construct
-#' @param model_args character, in R language, specifying any arguments to pass
+#' @param model_args character, in R language, specifying any arguments to pass 
 #'   to the model function
 #' @param site site names
-#' @param suntime 2-column data.frame with names "type" and "src" describing
+#' @param suntime 2-column data.frame with names "type" and "src" describing 
 #'   where apparent solar time data should come from
 #' @param doobs 2-column data.frame with names "type" and "src" describing where
 #'   DO data should come from
@@ -23,8 +23,8 @@
 #'   stream depth data should come from
 #' @param wtr 2-column data.frame with names "type" and "src" describing where 
 #'   water temperature data should come from
-#' @param light 2-column data.frame with names "type" and "src" describing where
-#'   light (PAR) data should come from
+#' @param par 2-column data.frame with names "type" and "src" describing where 
+#'   light (photosynthetically available radiation, PAR) data should come from
 #' @param filename character or NULL. If NULL, the function returns a 
 #'   data.frame, otherwise it writes that data.frame to the file specified by 
 #'   filename.
@@ -33,9 +33,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 #' stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL)
+#' stage_metab_config(tag="0.0.1", strategy="test write_metab_config", 
+#'   site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[1:10], filename=NULL)
 #' }
 stage_metab_config <- function(
   tag, strategy, date=Sys.time(), 
@@ -46,20 +47,22 @@ stage_metab_config <- function(
   dosat=choose_data_source("dosat", site),
   depth=choose_data_source("depth", site),
   wtr=choose_data_source("wtr", site),
-  light=choose_data_source("light", site),
+  par=choose_data_source("par", site),
   filename="./condor_config.tsv") {
   
   # Create the config table
   config <- data.frame(tag=tag, strategy=strategy, date=date, 
-                       model=model, site=site, 
+                       model=model, model_args=model_args,
+                       site=site, 
                        suntime=suntime, doobs=doobs, 
                        dosat=dosat, depth=depth,
-                       wtr=wtr, light=light,
+                       wtr=wtr, par=par,
                        stringsAsFactors=FALSE)
   
   # Write the table to file if requested
   if(!is.null(filename)) {
     write.table(config, file=filename, sep=pkg.env$ts_delim, row.names=FALSE)
+    return(filename)
   } else {
     return(config)
   }
