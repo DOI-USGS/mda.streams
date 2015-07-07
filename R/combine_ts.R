@@ -12,8 +12,6 @@
 #'   over which an approximation will be used to fill in data gaps in the 
 #'   2nd:nth data argument to combine_ts (relative to the first argument)
 #' @import dplyr
-#' @importFrom unitted full_join.unitted_data.frame left_join.unitted_data.frame
-#'   inner_join.unitted_data.frame
 #' @export
 #' @examples 
 #' \dontrun{

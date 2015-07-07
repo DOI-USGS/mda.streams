@@ -8,8 +8,9 @@ test_that("combine_ts works", {
   dim(offset <- read_ts(xy[4])[1:1234,])
   library(dplyr); library(unitted)
   datevec <- seq(Sys.time(), Sys.time()+as.difftime(1, units='hours'), by=as.difftime(1, units='mins'))
-  offline <- u(data.frame(DateTime=datevec, suntime=datevec-as.difftime(5.4, units='hours')))
-  const <- u(data.frame(DateTime=NA, baro=u(75000,'Pa')))
+  offline <- unitted::u(data.frame(DateTime=datevec, suntime=datevec-as.difftime(5.4, units='hours')))
+  offpar <- unitted::u(data.frame(DateTime=datevec, par=unitted::u(seq(101,161),'umol m^-2 s^-1')))
+  const <- unitted::u(data.frame(DateTime=NA, baro=unitted::u(75000,'Pa')))
   
   # combine ts with const
   ocf <- combine_ts(offline, const, method='full_join')
@@ -26,6 +27,8 @@ test_that("combine_ts works", {
   expect_error(combine_ts(const, offline, method='approx'))
   
   # two same-dated tses
+  oof <- combine_ts(offline, offpar, method='full_join')
+  expect_equal(dim(oof), c(dim(offline)[1], 3))
   bsf <- combine_ts(base, same, method='full_join')
   expect_equal(dim(bsf), c(dim(base)[1], 3))
   bsi <- combine_ts(base, same, method='inner_join')
