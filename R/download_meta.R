@@ -14,7 +14,7 @@
 #' @author Corinna Gries, Jordan S Read, Luke A Winslow, Alison P Appling
 #' @examples
 #' \dontrun{
-#' download_meta(type="basic")
+#' download_meta(type="basic", on_local_exists="replace")
 #' }
 #' @import sbtools
 #' @import tools

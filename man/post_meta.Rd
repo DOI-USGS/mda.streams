@@ -25,8 +25,9 @@ If a file with the same name already exists in Sites_meta, the
 \dontrun{
 sbtools::authenticate_sb()
 set_scheme("mda_streams_dev")
-metafile <- stage_meta(sites=list_sites()[1:7], folder="temp")
+metafile <- stage_meta(sites=list_sites(), folder="temp")
 post_meta(metafile, on_exists="stop", verbose=TRUE)
+set_scheme("mda_streams")
 }
 }
 \author{

@@ -14,8 +14,9 @@
 #' \dontrun{
 #' sbtools::authenticate_sb()
 #' set_scheme("mda_streams_dev")
-#' metafile <- stage_meta(sites=list_sites()[1:7], folder="temp")
+#' metafile <- stage_meta(sites=list_sites(), folder="temp")
 #' post_meta(metafile, on_exists="stop", verbose=TRUE)
+#' set_scheme("mda_streams")
 #' }
 post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE) {
   # handle inputs
@@ -44,6 +45,9 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
         "merge"={ 
           if(verbose) message("merging new metadata with old: ", meta_id)
           stop("merge not yet implemented")
+          #pre_merge_dir <- file.path(ts_path$dir_name, "pre_merge_temp")
+          #dir.create(pre_merge_dir, showWarnings=FALSE)
+          #meta_old <- read_meta(download_meta(var_src=ts_path$var_src, site_name=ts_path$site_name, folder=pre_merge_dir, on_local_exists="replace"))
           #meta_old <- read.table(download_meta(...))
           #meta_new <- read_meta(...)
           # join.

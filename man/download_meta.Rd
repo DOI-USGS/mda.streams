@@ -27,7 +27,7 @@ Download a timeseries file to a user-specified (or temp file)
 }
 \examples{
 \dontrun{
-download_meta(type="basic")
+download_meta(type="basic", on_local_exists="replace")
 }
 }
 \author{

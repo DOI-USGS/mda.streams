@@ -9,26 +9,17 @@
 #' file <- download_meta(type='basic')
 #' meta_basic <- read_meta(file)
 #' }
-#' @import tools
-#' @importFrom unitted read_unitted get_units
 #' @export
-read_ts = function(file){
+read_meta = function(file){
   if (length(file) != 1)
     stop('read_ts only supported for a single file')
   
-  df <- read_unitted(file, sep=pkg.env$ts_delim)
+  df <- read.table(file, sep=pkg.env$meta_delim, header=TRUE, stringsAsFactors=FALSE, colClasses="character")
   
-  # convert units to tz field for suntime before verify_ts
-  if(names(df)[2] == "suntime") {
-    df$suntime <- u(as.POSIXct(df$suntime, tz=get_units(df$suntime)), NA)
+  # convert numerics to numeric
+  for(col in c("lat","lon")) {
+    df[,col] <- u(as.numeric(df[,col]), NA)
   }
-  
-  # check the data for mda.streams validity
-  if (!verify_ts(df, parse_ts_path(file, 'var')))
-    stop('timeseries in file ', file, 'is not valid')
-  
-  # convert units to tz field for DateTime
-  df$DateTime <- u(as.POSIXct(df$DateTime, tz=get_units(df$DateTime)), NA)
   
   return(df)
 }

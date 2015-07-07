@@ -219,7 +219,9 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #'   input values?
 #' @return a character
 #' @export
-parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=length(out)>1) {
+parse_ts_path <- function(file_path, 
+                          out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
+                          use_names=length(out)>1) {
   
   out = match.arg(out, several.ok=TRUE)
   

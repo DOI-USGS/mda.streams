@@ -73,7 +73,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           ts_new <- read_ts(files[i])
           # join. these lines should be changed once unitted::full_join.unitted is implemented
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
-          ts_merged <- u(full_join(v(ts_old), v(ts_new), by=names(ts_old)), get_units(ts_old)) 
+          ts_merged <- u(unique(bind_rows(v(ts_old), v(ts_new))), get_units(ts_old))
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
           if(verbose) message("num rows before & after merge: old=", nrow(ts_old), ", new=", nrow(ts_new), ", merged=", nrow(ts_merged))
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
