@@ -15,5 +15,17 @@ opening lines of stage_meta}
 \description{
 Helper to stage_meta. Create dummy columns of metadata for Styx sites.
 }
+\examples{
+\dontrun{
+sites <- list_sites()[655:665]
+sites_meta <- data_frame(
+  site_name=sites,
+  site_database=parse_site_name(sites, out='database'),
+  site_num=parse_site_name(sites, out='sitenum')) \%>\%
+  as.data.frame() \%>\% # unitted_data.frames work better than unitted_tbl_dfs for now
+  u()
+str(mda.streams:::stage_meta_styx(sites_meta, verbose=TRUE))
+}
+}
 \keyword{internal}
 

@@ -16,4 +16,9 @@ stage_meta(sites = list_sites(), folder = tempdir(), verbose = FALSE)
 \description{
 Create/modify sites file
 }
+\examples{
+\dontrun{
+stage_meta(sites=list_sites()[655:665], verbose=TRUE, folder=NULL)
+}
+}
 

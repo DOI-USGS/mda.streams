@@ -14,11 +14,11 @@ read_meta = function(file){
   if (length(file) != 1)
     stop('read_ts only supported for a single file')
   
-  df <- read.table(file, sep=pkg.env$meta_delim, header=TRUE, stringsAsFactors=FALSE, colClasses="character")
+  df <- read_unitted(file, sep=pkg.env$meta_delim, header=TRUE, stringsAsFactors=FALSE, colClasses="character")
   
   # convert numerics to numeric
-  for(col in c("lat","lon")) {
-    df[,col] <- u(as.numeric(df[,col]), NA)
+  for(col in c("lat","lon","alt")) {
+    df[,col] <- u(as.numeric(df[,col]), get_units(df[,col]))
   }
   
   return(df)
