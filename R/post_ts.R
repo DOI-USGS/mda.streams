@@ -67,7 +67,9 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
-          ts_old <- read_ts(download_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, on_local_exists="replace"))
+          pre_merge_dir <- file.path(ts_path$dir_name, "pre_merge_temp")
+          dir.create(pre_merge_dir, showWarnings=FALSE)
+          ts_old <- read_ts(download_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, folder=pre_merge_dir, on_local_exists="replace"))
           ts_new <- read_ts(files[i])
           # join. these lines should be changed once unitted::full_join.unitted is implemented
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
@@ -75,9 +77,9 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
           if(verbose) message("num rows before & after merge: old=", nrow(ts_old), ", new=", nrow(ts_new), ", merged=", nrow(ts_merged))
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
-          merge_dir <- file.path(ts_path$dir_name, "post_merge_temp")
-          dir.create(merge_dir, showWarnings=FALSE)
-          files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=merge_dir)
+          post_merge_dir <- file.path(ts_path$dir_name, "post_merge_temp")
+          dir.create(post_merge_dir, showWarnings=FALSE)
+          files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
           delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
         })
