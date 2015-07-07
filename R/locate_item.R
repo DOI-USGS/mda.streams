@@ -70,10 +70,14 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
     for(i in needy_argnums) {
       query <- items[items$argnum == i, ]
       query_out <- query_item_in_folder(text=query$title[1], folder=query$parent[1], limit=limit)
-      query_match <- query_out[query_out$title == query$title[1],]
-      if(nrow(query_match) > 0) {
-      	items[items$argnum == i, "id"] <- query_match$id
-      	items[items$argnum == i, "title"] <- query_match$title
+      query_out <- query_out[tolower(query_out$title) == tolower(query$title[1]), ]
+      if(nrow(query_out) > 0) {
+        query_out$parentId <- sapply(query_out$id, function(id) {item_get_fields(id, "parentId")})
+        query_match <- query_out[query_out$parentId == query$parent[1], ]
+        if(nrow(query_match) > 0) {
+          items[items$argnum == i, "id"] <- query_match$id
+          items[items$argnum == i, "title"] <- query_match$title
+        }
       }
     }
   }
@@ -135,17 +139,38 @@ format_item <- function(item, format, browser) {
 #' locate_folder("publications", format="url")
 #' testthat::expect_error(locate_folder("cvs", format="url"))
 #' }
-locate_folder <- function(folder=c("project","presentations","proposals","publications","sites"), 
+locate_folder <- function(folder=c("project","presentations","proposals","publications","sites","sites_meta","ideas"), 
                           format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   folder <- tolower(folder)
   folder <- match.arg(folder)
-  if(folder != 'sites' && is.null(current_session())) 
+  if(!(folder %in% c('sites','sites_meta')) && is.null(current_session())) 
     stop("session is NULL, so only the sites folder is visible. see authenticate_sb()")
   if(folder == 'project' && by %in% c("dir", "either"))
     stop("'by' must be 'tag' when searching for the project folder")
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
   locate_item(key=folder, type="root", parent=locate_folder("project", by="tag"), title=folder, by=by, format=format, limit=limit, browser=browser)
+}
+
+#' Find a site folder on ScienceBase
+#' 
+#' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want
+#' @inheritParams locate_item
+#' @export
+#' @examples 
+#' \dontrun{
+#' locate_site("nwis_02322688", format="url")
+#' locate_site(c("nwis_02322688", "nwis_03259813", "nwis_04024000"))
+#' locate_site("nwis_notasite", format="url")
+#' testthat::expect_error(locate_site("notasite", format="url"))
+#' }
+locate_meta <- function(type, format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
+  by <- match.arg(by)
+  meta_type <- paste0("meta_",type)
+  meta_folder <- locate_folder("sites_meta", by="tag")
+  browser <- isTRUE(browser)
+  format <- switch(match.arg(format), id="id", url="item_url")
+  locate_item(key="sites_meta", type=meta_type, parent=meta_folder, title=meta_type, by=by, format=format, limit=limit, browser=browser)
 }
 
 #' Find a site folder on ScienceBase
@@ -265,6 +290,78 @@ repair_ts <- function(var_src, site_name, limit=5000) {
       if(wait==100) {
         warning("identifiers couldn't be restored; try again later with ",
                 "repair_ts('", var_src, "', '", site_name, ")")
+        return(FALSE)
+      }
+    }
+    return(TRUE)
+  })
+}
+
+#' Repair a meta item that is missing its identifier tags
+#' 
+#' Sometimes ts items/files get posted but the identifiers don't get updated, 
+#' making it harder to search for the item. This function gives ScienceBase 
+#' another chance to add tags.
+#' 
+#' @param type one or more meta types, e.g., "basic"
+#' @param limit the maximum number of items to return in the SB query to find 
+#'   all listed var_src:site_name combinations
+#'   
+#' @import sbtools
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#' repair_meta("basic")
+#' }
+repair_meta <- function(type, limit=5000) {
+  
+  # check the session; we'll need write access
+  if(is.null(current_session()))
+    stop("log in to repair data. see authenticate_sb()")
+  
+  # package the args together for arg replication & easier looping
+  query_args <- data.frame(
+    type=type, 
+    meta_type=paste0("meta_", type),
+    meta_id_tag=locate_meta(type=type, by='tag', limit=limit),
+    meta_id_dir=locate_meta(type=type, by='either', limit=limit),
+    stringsAsFactors=FALSE
+  )
+  
+  # if we can't find the item, throw an error
+  if(any(bad_rows <- is.na(query_args$meta_id_dir))) {
+    warning("couldn't find the metadata file for\n", 
+            paste(query_args[bad_rows,'meta_type'], collapse=" or\n"),
+            ", even searching by dir")
+    query_args <- query_args[!bad_rows,]
+  }
+  
+  sapply(setNames(seq_len(nrow(query_args)), query_args$meta_id_dir), function(arg) {
+    # unpackage the df row
+    type <- query_args[arg, "type"]
+    meta_type <- query_args[arg, "meta_type"]
+    meta_id_tag <- query_args[arg, "meta_id_tag"]
+    meta_id_dir <- query_args[arg, "meta_id_dir"]
+    
+    # if we found the metafile by tags, we're already good to return
+    if(!is.na(meta_id_tag)) return(NA)
+    
+    # redo the action that somehow failed before
+    idlist <- list(type=meta_type, scheme=get_scheme(), key="sites_meta")
+    tryCatch(
+      item_update_identifier(id=meta_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      warning=function(w) { message("warning in item_update_identifier: ", w) }
+    )
+    
+    # waiting and checking is required
+    for(wait in 1:100) {
+      Sys.sleep(0.2)
+      is_updated <- isTRUE(all.equal(item_get(meta_id_dir)$identifiers[[1]], idlist))
+      if(is_updated) break
+      if(wait==100) {
+        warning("identifiers couldn't be restored; try again later with ",
+                "repair_meta('", type, "')")
         return(FALSE)
       }
     }
