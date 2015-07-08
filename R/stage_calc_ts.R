@@ -33,6 +33,10 @@
 #' head(read_ts(file_suntime))
 #' post_ts(file_suntime, on_exists="skip", verbose=TRUE) # need this posted for next calcs
 #' 
+#' file_sitetime <- stage_calc_ts(sites="nwis_08062500", var="sitetime", src="calcLon", verbose=TRUE)
+#' head(read_ts(file_sitetime))
+#' post_ts(file_sitetime, on_exists="skip", verbose=TRUE)
+#' 
 #' file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 #' head(read_ts(file_par))
 #' post_ts(file_par, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
@@ -106,6 +110,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
     ts_calc <- tryCatch({
       switch(
         paste0(var, "_", src),
+        'sitetime_calcLon' = {
+          calc_ts_sitetime_calcLon(
+            utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
+            longitude = find_site_coords(site)$lon)
+        },
         'suntime_calcLon' = {
           calc_ts_suntime_calcLon(
             utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
@@ -149,7 +158,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'dosat_calcGGbts' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
           baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
-          combo <- combine_ts(wtr_nwis, baro_nldas, method='full_join')
+          combo <- combine_ts(wtr_nwis, baro_nldas, method='approx')
           calc_ts_dosat_calcGG(
             utctime = combo$DateTime,
             wtr = combo$wtr,
@@ -158,7 +167,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'dosat_calcGGbconst' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
           baro_const <- u(data.frame(DateTime=NA, baro=calc_air_pressure(attach.units=TRUE)))
-          combo <- combine_ts(wtr_nwis, baro_const, method='full_join')
+          combo <- combine_ts(wtr_nwis, baro_const, method='approx')
           calc_ts_dosat_calcGG(
             utctime = combo$DateTime,
             wtr = combo$wtr,
@@ -228,6 +237,22 @@ calc_ts_with_input_check <- function(inputs, calc_fun) {
     stop("found unnecessary inputs: ", paste0(excess, collapse=", "))
   }
   do.call(calc_fun, inputs)
+}
+
+#' Internal - calculate sitetime_calcLon from any data
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param longitude the site longitude in degrees E
+#' 
+#' @keywords internal
+calc_ts_sitetime_calcLon <- function(utctime, longitude) {
+  data.frame(
+    DateTime = utctime,
+    sitetime = convert_GMT_to_solartime(
+      date.time = utctime, 
+      longitude = longitude, 
+      time.type = "mean solar")) %>%
+    as.data.frame() %>% u()
 }
 
 #' Internal - calculate suntime_calcLon from any data

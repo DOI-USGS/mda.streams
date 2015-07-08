@@ -31,7 +31,7 @@
 #' 
 #' # as in default to stage_metab_config
 #' site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[40:49]
-#' suntime=choose_data_source("suntime", site)
+#' sitetime=choose_data_source("sitetime", site)
 #' doobs=choose_data_source("doobs", site)
 #' dosat=choose_data_source("dosat", site)
 #' depth=choose_data_source("depth", site)
