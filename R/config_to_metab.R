@@ -62,6 +62,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
     # Run the model
     fit <- 
       tryCatch({
+        if(isTRUE(is.na(metab_data))) stop("without data, won't try modeling metabolism")
         do.call(metab_fun, c(list(data=metab_data), metab_args))
       },
       error=function(e) {

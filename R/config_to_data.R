@@ -68,7 +68,10 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args) {
     switch(
       type,
       'ts'={
-        data <- read_ts(download_ts(make_var_src(var, src), site, on_local_exists="replace"))
+        data <- tryCatch(
+          read_ts(download_ts(make_var_src(var, src), site, on_local_exists="replace")),
+          error=function(e) { warn_strs <- c(warn_strs, e); NULL }
+        )
       },
       'meta'={
         warn_strs <- c(warn_strs, "meta type not currently implemented")
