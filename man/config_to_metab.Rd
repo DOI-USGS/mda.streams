@@ -4,7 +4,7 @@
 \alias{config_to_metab}
 \title{Actually run the model as specified by the configuration arguments}
 \usage{
-config_to_metab(config, rows)
+config_to_metab(config, rows, verbose = TRUE)
 }
 \arguments{
 \item{config}{data.frame, or file/filename to read a data.frame from. As an
@@ -14,6 +14,8 @@ preceding arguments.}
 
 \item{rows}{missing, integer, or vector of integers. The row number[s] of the
 config data.frame to use for this particular model run.}
+
+\item{verbose}{logical. Should status messages be given?}
 }
 \description{
 Actually run the model as specified by the configuration arguments

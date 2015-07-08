@@ -32,7 +32,8 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
     # use requested dplyr join method
     dplyr_join <- get(method, envir=environment(dplyr::full_join))
     combine_fun <- function(x, y) {
-      dplyr_join(x, y, by="DateTime")
+      df <- dplyr_join(x, y, by="DateTime")
+      df %>% v() %>% arrange(DateTime) %>% u(get_units(df))
     }
     
   } else if(method == 'approx') {
@@ -57,9 +58,10 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
       y_approx[min_gap > approx_toln] <-  NA
       
       # combine x and y_approx into a data.frame
-      data.frame(x, y=u(y_approx, get_units(y[,2]))) %>%
+      df <- data.frame(x, y=u(y_approx, get_units(y[,2]))) %>%
         setNames(c(names(x), names(y)[2])) %>%
         u()
+      df %>% v() %>% arrange(DateTime) %>% u(get_units(df))
     }
   }
   

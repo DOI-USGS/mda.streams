@@ -11,6 +11,7 @@
 #'   later be passed to the metab_fun
 #' @import dplyr
 #' @importFrom unitted u
+#' @import streamMetabolizer
 #' @examples 
 #' \dontrun{
 #' depth_file <- download_ts("depth_calcDisch", "nwis_04087142", 
@@ -20,7 +21,7 @@
 #'     logic="simple dosat", type="const", src="12,mg L^-1"), 
 #'   depth=choose_data_source("depth", "nwis_04087142", logic="local file", 
 #'     type="file", src=depth_file), filename=NULL)
-#' cdat <- config_to_data(config, row_num=1, metab_fun=metab_mle, metab_args=list())
+#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle, metab_args=list())
 #' head(cdat)
 #' }
 #' @export
