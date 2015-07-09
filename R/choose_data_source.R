@@ -91,7 +91,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
         all_ts <- list_datasets(site_name=config[row,'site'], data_type='ts')
         # look for the best of the available datasets
         for(p in 1:nrow(ranked_src)) {
-          if(make_ts_name(var, ranked_src[p,"src"]) %in% all_ts) {
+          if(make_var_src(var, ranked_src[p,"src"]) %in% all_ts) {
             config[row,'type'] <- 'ts'
             config[row,'src'] <- ranked_src[p,"src"]
             break

@@ -11,7 +11,7 @@
 #'   \code{\link[sbtools]{query_item_identifier}}, for example \code{limit}
 #'   
 #' @return an alphabetically sorted character vector of unique timeseries 
-#'   variable names for given sites
+#'   variable names (in var_src format)for given sites
 #' @examples
 #' \dontrun{
 #' list_datasets(site_name = 'nwis_01021050')
@@ -38,9 +38,13 @@ list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
     site_items <- site_items[site_items$title != site_name, ]
   }
   if(nrow(site_items) > 0) {
-    is_dataset <- sapply(str_match_patterns, function (x) str_detect(site_items$title, pattern = x)) %>%
-      rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
-    datasets <- site_items$title[is_dataset] %>%
+    prefix_matches <- lapply(setNames(str_match_patterns,str_match_patterns), 
+                             function (x) str_detect(site_items$title, pattern = x)) %>% as_data_frame()
+    is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
+    is_ts <- unlist(unname(prefix_matches[,1]))
+    datasets <- site_items$title %>%
+      ifelse(is_ts, parse_ts_name(.), .) %>%
+      .[is_dataset] %>%
       unique() %>%
       sort()
   } else {

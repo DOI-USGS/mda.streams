@@ -17,7 +17,7 @@ those returned from make_site_name()}
 }
 \value{
 an alphabetically sorted character vector of unique timeseries
-  variable names for given sites
+  variable names (in var_src format)for given sites
 }
 \description{
 list_datasets(site) returns the data available to a specific site. In
