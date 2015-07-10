@@ -189,10 +189,13 @@ delete_ts <- function(var_src, site_name, files_only=FALSE, verbose=TRUE) {
           # delete the item
           out <- item_rm(ts_id) 
           # sleep (again!) to give time for full deletion
-          for(wait in 1:50) {
-            Sys.sleep(0.2)
+          for(wait in 1:20) {
+            # longer wait between tries because this next call has been giving
+            # occasional errors on sapply(query_out$id, function(id)
+            # {item_get_fields(id, "parentId")})
+            Sys.sleep(1) 
             if(is.na(locate_ts(var_src=var, site_name=site, by="either"))) break
-            if(wait==50) stop("failed to delete item")
+            if(wait==20) stop("failed to delete item")
           }
           # if it worked, return the output
           return(out)

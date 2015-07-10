@@ -283,7 +283,7 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
     DateTime = utctime,
     par = convert_SW_to_PAR(
       calc_solar_insolation(
-        date.time = suntime,
+        solar.time = suntime,
         latitude = latitude))) %>% 
     u()
 }
