@@ -40,11 +40,13 @@ test_that("combine_ts works", {
   
   # 2nd ts has more points. base=suntime, more=wtr
   bmf <- combine_ts(base, more, method='full_join')
-  expect_equal(dim(bmf), c(dim(more)[1], 3))
+  expect_equal(dim(bmf)[2], 3)
+  expect_more_than(dim(bmf)[1], dim(base)[1])
+  expect_more_than(dim(bmf)[1], dim(more)[1])
   mbf <- combine_ts(more, base, method='full_join')
-  expect_equal(dim(mbf), c(dim(more)[1], 3))
+  expect_equal(dim(mbf), dim(bmf))
   bmi <- combine_ts(base, more, method='inner_join')
-  expect_equal(dim(bmi), c(dim(base)[1], 3))
+  expect_less_than(dim(bmi)[1], dim(base)[1])
   bml <- combine_ts(base, more, method='left_join')
   expect_equal(dim(bml), c(dim(base)[1], 3))
   # if we ever expected to merge suntime as a secondary variable, we'd probably
@@ -54,7 +56,7 @@ test_that("combine_ts works", {
   expect_equal(dim(bma), c(dim(base)[1], 3))
   mba <- combine_ts(more, base, method='approx', approx_tol=as.difftime(3, units="hours"))
   expect_equal(dim(mba), c(dim(more)[1], 3))
-  expect_equal(mba$suntime[1:5], base$suntime[1:5])
+  expect_equal(mba$suntime[mba$DateTime=="2015-03-09 23:00:00 UTC"], base$suntime[base$DateTime=="2015-03-09 23:00:00 UTC"])
   # dates should be added to mba only when they're close to pre-existing dates
   extras_from_more <- as.POSIXct(setdiff(more$DateTime, base$DateTime), origin="1970-01-01 00:00:00")
   added_dates <- mba[mba$DateTime %in% extras_from_more, "suntime"]

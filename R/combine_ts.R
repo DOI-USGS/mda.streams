@@ -12,6 +12,7 @@
 #'   over which an approximation will be used to fill in data gaps in the 
 #'   2nd:nth data argument to combine_ts (relative to the first argument)
 #' @import dplyr
+#' @importFrom unitted u v get_units
 #' @export
 #' @examples 
 #' \dontrun{
@@ -30,11 +31,7 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
   method <- match.arg(method)
   if(method %in% c('full_join', 'left_join', 'inner_join')) {
     # use requested dplyr join method
-    dplyr_join <- get(method, envir=environment(dplyr::full_join))
-    combine_fun <- function(x, y) {
-      df <- dplyr_join(x, y, by="DateTime")
-      df %>% v() %>% arrange(DateTime) %>% u(get_units(df))
-    }
+    combine_fun <- combine_dplyr(method, by='DateTime')
     
   } else if(method == 'approx') {
     # define function to approximate y for the dates in x
@@ -66,19 +63,5 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
   }
   
   # do the join left to right using the specified combine_fun
-  dots <- list(...)
-  data <- dots[[1]]
-  if(isTRUE(is.na(data$DateTime))) {
-    stop("first ts in list really should be a ts, not a const")
-  }
-  for(dot in dots[-1]) {
-    data <- if(isTRUE(is.na(dot$DateTime))) {
-      data.frame(data, rep(dot[,2],nrow(data))) %>%
-        setNames(c(names(data), names(dot[2]))) %>%
-        u()
-    } else {
-      combine_fun(data, dot)
-    }
-  }
-  data
+  combine_tables(..., by='DateTime', fun=combine_fun, allow_constants=TRUE)
 }
