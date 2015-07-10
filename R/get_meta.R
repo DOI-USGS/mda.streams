@@ -36,7 +36,7 @@ get_meta <- function(types=c('basic'), out='all') {
     
     # download and cache if needed
     if(needs_download) {
-      new_meta <- read_meta(download_meta(type))
+      new_meta <- read_meta(download_meta(type, on_local_exists = 'replace'))
       new_timestamp <- with_tz(Sys.time(), 'UTC')
       assign(x=meta_type, value=new_meta, envir=pkg.env)
       assign(x=meta_type_timestamp, value=new_timestamp, envir=pkg.env)
@@ -46,8 +46,15 @@ get_meta <- function(types=c('basic'), out='all') {
     meta <- get(meta_type, envir=pkg.env)
   })
   
-  # combine the metadata tables into a single table for return
-  do.call(
+  # combine the metadata tables into a single table
+  data <- do.call(
     combine_tables, 
-    c(meta, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
+    c(metas, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
+  
+  # subset by columns if requested
+  if(length(out) != 1 && out!='all') {
+    data <- data[,out]
+  }
+  
+  data
 }
