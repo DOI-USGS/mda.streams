@@ -46,8 +46,15 @@ get_meta <- function(types=c('basic'), out='all') {
     meta <- get(meta_type, envir=pkg.env)
   })
   
-  # combine the metadata tables into a single table for return
-  do.call(
+  # combine the metadata tables into a single table
+  data <- do.call(
     combine_tables, 
     c(meta, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
+  
+  # subset by columns if requested
+  if(length(out) != 1 && out!='all') {
+    data <- data[,out]
+  }
+  
+  data
 }
