@@ -29,7 +29,7 @@ download_ts <- function(var_src, site_name, folder = tempdir(),
   folder <- gsub("\\", "/", folder, fixed=TRUE)
 
   # find item IDs for download
-  items <- locate_ts(var_src=var_src, site_name=site_name, by = 'either')
+  items <- locate_ts(var_src=var_src, site_name=site_name)
   
   # loop through items, downloading each file and returning a file path or NA
   # for each. collect the outputs in a character vector.
