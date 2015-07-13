@@ -54,8 +54,10 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
         select(-variable)
       
       units <- as.character(site_data$units) %>% unique()
+      
       if(get_units(unitbundle(units)) != expected_units) 
         warning("expected units of ", expected_units, " but found units of ", units)
+    
       
       site_data <- select(site_data, -units) %>%
         setNames(c('DateTime',var)) %>%
