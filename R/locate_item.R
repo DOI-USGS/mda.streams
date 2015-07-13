@@ -152,9 +152,9 @@ locate_folder <- function(folder=c("project","presentations","proposals","public
   locate_item(key=folder, type="root", parent=locate_folder("project", by="tag"), title=folder, by=by, format=format, limit=limit, browser=browser)
 }
 
-#' Find a site folder on ScienceBase
+#' Find a metadata object on ScienceBase
 #' 
-#' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want
+#' @param type the type of metadata you want
 #' @inheritParams locate_item
 #' @export
 #' @examples 

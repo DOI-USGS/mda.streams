@@ -253,7 +253,7 @@ parse_ts_path <- function(file_path,
 
 #' Create a standardized file name for specific file contents
 #' 
-#' @param type
+#' @param type the type of metadata the file will include
 #' @param folder the folder to write the file in, or missing
 #' @return a full file path
 #' @export
@@ -274,6 +274,8 @@ make_meta_path <- function(type="basic", folder) {
 #' 
 #' @param file_path the path[s] to split
 #' @param out the columns to return
+#' @param use_names logical. Should names be attached to the data.frame rows or
+#'   list elements?
 #' @return a data.frame, one row per path
 #' @export
 parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(out)>1) {

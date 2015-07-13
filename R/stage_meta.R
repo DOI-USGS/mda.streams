@@ -74,6 +74,7 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
   if(verbose) message("acquiring NWIS metadata")
   
   # get NWIS site metadata from NWIS in chunks
+  site_database <- site_name <- group <- . <- '.dplyr.var'
   group_size <- 10
   sites_meta <- sites_meta %>%
     v() %>% # unitted can't handle all that's to come here
@@ -89,6 +90,9 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
     sec <- coords-deg*10000-min*100
     return(deg + (min/60) + (sec/3600))
   }
+  dec_lat_va <- dec_long_va <- lat_va <- long_va <- dec_coord_datum_cd <- 
+    coord_datum_cd <- alt_va <- alt_datum_cd <- site_name <- site_no <- 
+    lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
   sites_meta %>% 
     mutate(
       lat=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_lat_va, parse_nwis_coords(lat_va)),
@@ -131,6 +135,7 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
 #' str(mda.streams:::stage_meta_styx(sites_meta, verbose=TRUE))
 #' }
 stage_meta_styx <- function(sites_meta, verbose=FALSE) {
+  site_name <- '.dplyr.var'
   sites_meta %>%
     select(site_name) %>%
     mutate(lat=NA, lon=NA, coord_datum=NA, alt=NA, alt_datum=NA) %>%

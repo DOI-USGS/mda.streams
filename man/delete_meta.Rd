@@ -6,7 +6,15 @@
 \usage{
 delete_meta(types, files_only = FALSE, verbose = TRUE)
 }
-\description{
-Delete a metadata item-file combination
+\arguments{
+\item{types}{character. One or more types of meta file}
+
+\item{files_only}{logical. Should only the files, not the item, be delted?}
+
+\item{verbose}{logical. Should status messages be given?}
 }
+\description{
+Deletes a metadata object
+}
+\keyword{internal}
 

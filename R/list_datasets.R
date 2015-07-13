@@ -31,6 +31,7 @@ list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
   }
   
   # get list of site items, then filter to those of the proper data_type
+  . <- '.dplyr.var'
   site_items <- query_item_identifier(scheme = get_scheme(), key = site_name, limit = 10000)
   if (nrow(site_items) == 0){ 
     stop('site ', site_name, ' does not exist')

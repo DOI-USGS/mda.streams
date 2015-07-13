@@ -58,6 +58,7 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
       df <- data.frame(x, y=u(y_approx, get_units(y[,2]))) %>%
         setNames(c(names(x), names(y)[2])) %>%
         u()
+      DateTime <- '.dplyr.var'
       df %>% v() %>% arrange(DateTime) %>% u(get_units(df))
     }
   }

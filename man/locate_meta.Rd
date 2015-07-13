@@ -2,14 +2,13 @@
 % Please edit documentation in R/locate_item.R
 \name{locate_meta}
 \alias{locate_meta}
-\title{Find a site folder on ScienceBase}
+\title{Find a metadata object on ScienceBase}
 \usage{
 locate_meta(type, format = c("id", "url"), by = c("tag", "dir", "either"),
   limit = 5000, browser = (format == "url"))
 }
 \arguments{
-\item{type}{the item type, probably either root or site_root. Examples are
-c("site_root","root")}
+\item{type}{the type of metadata you want}
 
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}
@@ -23,11 +22,9 @@ the desired title ("dir"), or both in combination ("either")?}
 \code{\link[sbtools]{item_list_children}}}
 
 \item{browser}{logical. Should the URL be opened in a browser?}
-
-\item{site_name}{the site ID, e.g. "nwis_02322688", whose folder you want}
 }
 \description{
-Find a site folder on ScienceBase
+Find a metadata object on ScienceBase
 }
 \examples{
 \dontrun{

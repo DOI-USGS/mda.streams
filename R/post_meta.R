@@ -84,7 +84,7 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
       meta_id <- meta_ids[i]
     
     # parse (again) the file name to determine where to post the file
-    metapath <- parse_meta_path(metafile)
+    metapath <- parse_meta_path(files[i])
     
     # tag item with our special identifiers. if the item already existed,
     # identifiers should be wiped out by a known SB quirk, so sleep to give time
@@ -105,6 +105,13 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
 }
 
 #' Delete a metadata item-file combination
+#' 
+#' Deletes a metadata object
+#' 
+#' @param types character. One or more types of meta file
+#' @param files_only logical. Should only the files, not the item, be delted?
+#' @param verbose logical. Should status messages be given?
+#' @keywords internal
 delete_meta <- function(types, files_only=FALSE, verbose=TRUE) {
   if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
   

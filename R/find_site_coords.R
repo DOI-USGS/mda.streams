@@ -11,16 +11,17 @@
 #' @return a data.frame of
 #' @export
 #' @examples 
-#' # middle site has missing coords:
-#' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501")) 
+#' find_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501")) 
 #' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
-#'     "styx_000107"), format="geoknife")
+#'     "styx_0001001"), format="geoknife")
 find_site_coords <- function(site_names, format=c("normal","geoknife"), attach.units=(format=="normal")) {
 
   format <- match.arg(format)
     
   # retrieve the coordinates from meta_basic
-  lon_lat <- get_meta('basic', out=c('site_name','lat','lon')) %>% .[.$site_name==site_names,]
+  . <- '.dplyr.var'
+  lon_lat <- get_meta('basic', out=c('site_name','lat','lon')) %>% 
+    .[match(site_names, .$site_name),] %>% mutate(site_name=site_names)
   
   if(format=="geoknife") {
     lon_lat <- v(lon_lat)[c("lon","lat")] %>%

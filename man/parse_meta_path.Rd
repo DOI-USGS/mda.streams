@@ -11,6 +11,9 @@ parse_meta_path(file_path, out = c("dir_name", "file_name", "type",
 \item{file_path}{the path[s] to split}
 
 \item{out}{the columns to return}
+
+\item{use_names}{logical. Should names be attached to the data.frame rows or
+list elements?}
 }
 \value{
 a data.frame, one row per path

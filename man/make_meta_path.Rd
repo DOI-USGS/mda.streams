@@ -7,7 +7,7 @@
 make_meta_path(type = "basic", folder)
 }
 \arguments{
-\item{type}{}
+\item{type}{the type of metadata the file will include}
 
 \item{folder}{the folder to write the file in, or missing}
 }
