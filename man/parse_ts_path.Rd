@@ -4,7 +4,8 @@
 \alias{parse_ts_path}
 \title{Split file path into contents}
 \usage{
-parse_ts_path(file_path, out = c("site_name", "ts_name"),
+parse_ts_path(file_path, out = c("dir_name", "file_name", "site_name",
+  "ts_name", "var_src", "var", "src", "database", "sitenum"),
   use_names = length(out) > 1)
 }
 \arguments{

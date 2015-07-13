@@ -22,14 +22,26 @@
 #' @import dplyr
 #' @export
 #' @examples
-#' choose_data_source(var="baro", site="nwis_03067510", logic='priority local')
 #' \dontrun{
+#' choose_data_source(var="baro", site="nwis_03067510", logic='priority local')
 #' # expect warnings:
 #' choose_data_source(var="baro", site=c("nwis_08062500","nwis_03067510"), 
 #'   logic='my made-up data', type="file", src=c("myfile1.txt","myfile2.txt"))
 #' choose_data_source(var="dosat", site="nwis_03067510", logic='priority local')
+#' 
+#' # as in default to stage_metab_config
+#' site=list_sites(c("doobs_nwis","disch_nwis","wtr_nwis"))[40:49]
+#' sitetime=choose_data_source("sitetime", site)
+#' doobs=choose_data_source("doobs", site)
+#' dosat=choose_data_source("dosat", site)
+#' depth=choose_data_source("depth", site)
+#' wtr=choose_data_source("wtr", site)
+#' par=choose_data_source("par", site)
+#' 
+#' # as in verify_config
+#' choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
 #' }
-choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"ts","meta","file","const"), src) {
+choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,"ts","meta","file","const"), src) {
 
   # check args
   if(length(var) != 1) stop("exactly 1 var required")
@@ -50,7 +62,7 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
     stringsAsFactors=FALSE)
   
   # setup operations & checks as needed
-  if('priority local' %in% logic) {
+  if('priority local' %in% logic || 'ts' %in% type) {
     priority <- '.dplyr.var'
     myvar <- var # need a name that differs from the var_src_codes col name
     ranked_src <- get_var_src_codes(var==myvar, out=c("src","priority")) %>% arrange(priority)
@@ -60,7 +72,14 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
       stop("when logic includes one or more unrecognized (manual) values, type and src are required")
     }
   }
-  
+  for(row in 1:length(logic)) {
+    if(logic[row] %in% logic_options) {
+      # require initial NAs in type and src
+      if(!is.na(config[row,'type'])) stop("expected type=NA for automatic data choice in row ", row)
+      if(!is.na(config[row,'src'])) stop("expected src=NA for automatic data choice in row ", row)
+    }
+  }
+      
   # determine each config row separately, according to the logic in that row
   for(row in 1:nrow(config)) {
     switch(
@@ -68,15 +87,11 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
       
       # automatic specification of all fields
       'priority local'={ 
-        # require initial NAs in type and src
-        if(!is.na(config[row,'type'])) stop("expected type=NA for automatic data choice in row ", row)
-        if(!is.na(config[row,'src'])) stop("expected src=NA for automatic data choice in row ", row)
-
         # find all available data options for this site & var
         all_ts <- list_datasets(site_name=config[row,'site'], data_type='ts')
         # look for the best of the available datasets
         for(p in 1:nrow(ranked_src)) {
-          if(make_ts_name(var, ranked_src[p,"src"]) %in% all_ts) {
+          if(make_var_src(var, ranked_src[p,"src"]) %in% all_ts) {
             config[row,'type'] <- 'ts'
             config[row,'src'] <- ranked_src[p,"src"]
             break
@@ -85,6 +100,13 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
         
         # if there wasn't a good data option, tell the user
         if(is.na(config[row,'type'])) warning("could not locate an appropriate ts for site ", site, ", row ", row)
+      },
+      
+      # automatic specification that this var will not be used
+      'unused var'={
+        config[row,'type'] <- 'none'
+        config[row,'site'] <- NA
+        config[row,'src'] <- NA
       },
       
       # if logic is an unknown term, use manual specification of all fields.
@@ -108,7 +130,10 @@ choose_data_source <- function(var, site, logic=c('priority local'), type=c(NA,"
               warning("file in row ", row, " doesn't exist on this machine")
           },
           const={
-            warning("const not currently implemented")
+          },
+          none={
+            if(!is.na(config[row,'site'])) stop('when type=none need site=NA')
+            if(!is.na(config[row,'src'])) stop('when type=none need src=NA')
           },
           stop("type in row ", row, " is invalid: ", config[row,'type'])
         )

@@ -2,18 +2,15 @@
 % Please edit documentation in R/stage_metab_config.R
 \name{stage_metab_config}
 \alias{stage_metab_config}
-\title{Write a table (tsv) of configuration information for individual metabolism
-modeling jobs (one row/job per site-strategy combination). This tsv should
-reflect the full information needed to re-run a set of jobs. The jobs will
-probably, but not necessarily, be run on a Condor cluster.}
+\title{Write a metabolism modeling configuration file}
 \usage{
 stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   model_args = "list()", site = list_sites(c("doobs_nwis", "disch_nwis",
-  "wtr_nwis")), suntime = choose_data_source("suntime", site),
+  "wtr_nwis")), sitetime = choose_data_source("sitetime", site),
   doobs = choose_data_source("doobs", site),
   dosat = choose_data_source("dosat", site),
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
-  site), light = choose_data_source("light", site),
+  site), par = choose_data_source("par", site), omit_incomplete = TRUE,
   filename = "./condor_config.tsv")
 }
 \arguments{
@@ -33,7 +30,7 @@ to the model function}
 
 \item{site}{site names}
 
-\item{suntime}{2-column data.frame with names "type" and "src" describing
+\item{sitetime}{2-column data.frame with names "type" and "src" describing
 where apparent solar time data should come from}
 
 \item{doobs}{2-column data.frame with names "type" and "src" describing where
@@ -48,8 +45,11 @@ stream depth data should come from}
 \item{wtr}{2-column data.frame with names "type" and "src" describing where
 water temperature data should come from}
 
-\item{light}{2-column data.frame with names "type" and "src" describing where
-light (PAR) data should come from}
+\item{par}{2-column data.frame with names "type" and "src" describing where
+light (photosynthetically available radiation, PAR) data should come from}
+
+\item{omit_incomplete}{logical. If one or more datasets required for the
+specified config row is unavailable, should that row be omitted?}
 
 \item{filename}{character or NULL. If NULL, the function returns a
 data.frame, otherwise it writes that data.frame to the file specified by
@@ -66,9 +66,13 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 \dontrun{
-head(stage_metab_config(tag="0.0.1", strategy="test write_metab_config", filename=NULL))
 stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
-  site="nwis_04087142", filename=NULL)
+  site="nwis_01646000", filename=NULL)
+stage_metab_config(tag="0.0.1", strategy="test write_metab_config",
+  site=list_sites()[24:33], filename=NULL,
+  omit_incomplete=FALSE)
+stage_metab_config(tag="0.0.1", strategy="test write_metab_config",
+  site=list_sites()[24:33], filename=NULL)
 }
 }
 

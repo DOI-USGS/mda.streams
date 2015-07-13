@@ -1,4 +1,5 @@
 var	src	units	var_descrip	data_type	metab_var	priority	url	src_descrip	r_package	r_function	src_type	p_code
+airtemp	nwis	C	air temperature	ts	NA	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00020'
 baro	calcElev	Pa	barometric pressure	ts	NA	2	NA	"calculate baro assuming constant pressure, later to be corrected for elevation"	streamMetabolizer	NA	calc	NA
 baro	nldas	Pa	barometric pressure	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
 baro	simCopy	Pa	barometric pressure	ts	NA	11	NA	"simulate depth by copying from another site"	streamMetabolizer	NA	sim	NA
@@ -18,7 +19,8 @@ doobs	simErrARProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	14	NA	simula
 doobs	simErrObs	mg L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate depth by running the DO model forward and adding observation white noise	streamMetabolizer	NA	sim	NA
 doobs	simErrProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	13	NA	simulate depth by running the DO model forward and adding process white noise	streamMetabolizer	NA	sim	NA
 doobs	simModel	mg L^-1	dissolved oxygen concentration	ts	DO.obs	15	NA	simulate depth by running the DO model forward	streamMetabolizer	NA	sim	NA
-dosat	calcGG	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbts	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbconst	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
 dosat	simCopy	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
 dosat	simGG	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	sim	NA
 dosat	simNew	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
@@ -34,10 +36,11 @@ par	simLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	11	NA	cal
 par	simNew	umol m^-2 s^-1	photosynthetically active radiation	ts	light	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
 shed	nhdplus	NA	watershed shapefile	watershed	NA	1	http://water.usgs.gov/GIS/metadata/usgswrd/XML/streamgagebasins.xml	USGS Streamgage NHDPlus Version 1 Basins 2011	NA	NA	data	NA
 stage	nwis	ft	gage height	ts	NA	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00065'
-suntime	calcLon	''	apparent solar time	ts	local.time	1	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
-suntime	simCopy	''	apparent solar time	ts	local.time	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
-suntime	simLon	''	apparent solar time	ts	local.time	11	NA	calculate suntime from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	NA
-suntime	simNew	''	apparent solar time	ts	local.time	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
+sitetime	calcLon	''	local solar mean time, nominally UTC	ts	local.time	1	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
+suntime	calcLon	''	apparent solar time	ts	sun.time	1	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
+suntime	simCopy	''	apparent solar time	ts	sun.time	12	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA
+suntime	simLon	''	apparent solar time	ts	sun.time	11	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	NA
+suntime	simNew	''	apparent solar time	ts	sun.time	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
 sw	nldas	W m^-2	downwelling shortwave radiation	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	Land Data Assimilation Systems	geoknife	geoknife	data	dswrfsfc
 wtr	nwis	degC	water temperature	ts	temp.water	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00010'
 wtr	simCopy	degC	water temperature	ts	temp.water	11	NA	simulate depth by copying from another site	streamMetabolizer	NA	sim	NA

@@ -13,7 +13,7 @@
 #' summarize_ts(rep(c("doobs_nwis", "wtr_nwis"), each=4), 
 #'   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 #' }
-summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_rows","num_complete")) {
+summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_dates","num_rows","num_complete")) {
   
   # check inputs & session
   out <- match.arg(out, several.ok=TRUE)
@@ -40,6 +40,7 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
   summary_funs <- list(
     start_date = function(ts) min(ts$DateTime),
     end_date = function(ts) max(ts$DateTime),
+    num_dates = function(ts) length(unique(as.Date(ts$DateTime))),
     num_rows = function(ts) nrow(ts),
     num_complete = function(ts) length(which(!is.na(ts[,2])))
   )

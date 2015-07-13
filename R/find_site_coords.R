@@ -11,52 +11,26 @@
 #' @return a data.frame of
 #' @export
 #' @examples 
-#' # middle site has missing coords:
-#' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501")) 
+#' find_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501")) 
 #' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
-#'     "styx_000107"), format="geoknife")
+#'     "styx_0001001"), format="geoknife")
 find_site_coords <- function(site_names, format=c("normal","geoknife"), attach.units=(format=="normal")) {
 
   format <- match.arg(format)
     
-  sites <- parse_site_name(site_names, out = c('database','sitenum'))
-  lon_lat <- c()
-  for (database in unique(sites$database)){
-    lon_lat <- rbind(lon_lat, do.call(paste0('find_site_coords_',database),
-                       args = list(site_numbers=sites[sites$database==database,]$sitenum, 
-                                   format=format, attach.units=attach.units)))
-  }
+  # retrieve the coordinates from meta_basic
+  . <- '.dplyr.var'
+  lon_lat <- get_meta('basic', out=c('site_name','lat','lon')) %>% 
+    .[match(site_names, .$site_name),] %>% mutate(site_name=site_names)
   
   if(format=="geoknife") {
-    lon_lat <- lon_lat[c("lon","lat")] %>%
+    lon_lat <- v(lon_lat)[c("lon","lat")] %>%
       t() %>% as.data.frame() %>% setNames(lon_lat$site_name)
     if(attach.units) stop("sorry - can't attach units to geoknife format")
   }
   
-  if(attach.units) {
-    units <- c(site_name=NA, lat="degN", lon="degE")
-    lon_lat <- u(lon_lat, units[match(names(lon_lat), names(units))])
+  if(!attach.units) {
+    lon_lat <- v(lon_lat)
   }
-  return(lon_lat)
-}
-
-find_site_coords_nwis <- function(site_numbers, format=c("normal","geoknife"), attach.units=(format=="normal")){
-  site_data <- readNWISsite(site_numbers)
-  
-  # data.frame of longitude and latitude for each site, averaged if there's more than one record for a site
-  . <- site_no <- dec_lat_va <- dec_long_va <- lat <- lon <- ".dplyr.var"
-  lon_lat <- site_data %>% group_by(site_no) %>%
-    summarize(lon = mean(dec_long_va, na.rm = T), lat = mean(dec_lat_va, na.rm = T)) %>%
-    transmute(site_name=make_site_name(site_no), lat, lon) %>%
-    as.data.frame() # see unitted issue #14 - data.frame will be better than tbl_df for units for now
-  
-  return(lon_lat)
-}
-
-find_site_coords_styx <- function(site_numbers, format=c("normal","geoknife"), attach.units=(format=="normal")){
-  warning('method not implemented for styx database, returning NAs')
-  
-  lon_lat <- data.frame(site_name=make_site_name(site_numbers,'styx'),lat=NA,lon=NA) 
-  
   return(lon_lat)
 }

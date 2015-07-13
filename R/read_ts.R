@@ -18,8 +18,8 @@ read_ts = function(file){
   df <- read_unitted(file, sep=pkg.env$ts_delim)
   
   # convert units to tz field for suntime before verify_ts
-  if(names(df)[2] == "suntime") {
-    df$suntime <- u(as.POSIXct(df$suntime, tz=get_units(df$suntime)), NA)
+  if(names(df)[2] %in% c("sitetime", "suntime")) {
+    df[,2] <- u(as.POSIXct(df[,2], tz=get_units(df[,2])), NA)
   }
   
   # check the data for mda.streams validity

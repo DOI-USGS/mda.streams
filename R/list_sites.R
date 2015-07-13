@@ -25,7 +25,7 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   if(is.null(with_var_src)){
     # if no criteria are specified, return all sites
     sites <- get_sites()
-    return(sites)
+    return(sort(sites))
     
   } else if(is.list(with_var_src)) {
     if(length(with_var_src) == 0) stop("empty list not allowed in with_var_src")
@@ -64,5 +64,5 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
       "any" = TRUE # if any, just need them to show up once
     )])
   
-  return(sites)
+  return(sort(sites))
 }

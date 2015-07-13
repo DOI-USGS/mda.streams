@@ -46,6 +46,10 @@ file_suntime <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="calcLon
 head(read_ts(file_suntime))
 post_ts(file_suntime, on_exists="skip", verbose=TRUE) # need this posted for next calcs
 
+file_sitetime <- stage_calc_ts(sites="nwis_08062500", var="sitetime", src="calcLon", verbose=TRUE)
+head(read_ts(file_sitetime))
+post_ts(file_sitetime, on_exists="skip", verbose=TRUE)
+
 file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 head(read_ts(file_par))
 post_ts(file_par, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
@@ -54,7 +58,7 @@ file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch",
 head(read_ts(file_depth))
 post_ts(file_depth, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
-file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGG", verbose=TRUE)
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 head(read_ts(file_dosat))
 post_ts(file_dosat, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
@@ -78,7 +82,7 @@ file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="simDisch", 
   inputs=list(utctime=real_doobs$DateTime, disch=u(rep(2900, nrow(real_doobs)), "ft^3 s^-1")))
 head(read_ts(file_depth))
 
-file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGG", verbose=TRUE,
+file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="simGGbconst", verbose=TRUE,
   inputs=list(utctime=real_doobs$DateTime, wtr=u(rep(12, 192), "degC"), baro=u(90000, "Pa")))
 head(read_ts(file_dosat))
 

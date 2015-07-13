@@ -53,6 +53,7 @@ parse_var_src <- function(var_src, out=c("var","src"), use_names=FALSE) {
 #' @param src a data source; optional if var_var_src is specified with both
 #'   variable and source
 #' @return timseries name[s] in ScienceBase lingo (e.g., "\code{ts_wtr})
+#' @export
 make_ts_name <- function(var_var_src, src) {
   # combine var & src
   var_src <- if(!missing(src)) paste0(var_var_src, "_", src) else var_var_src
@@ -86,6 +87,7 @@ make_ts_name <- function(var_var_src, src) {
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
 #' mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
+#' @export
 parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   # error checking
   splitcols <- c("var_src", "var", "src")
@@ -129,6 +131,7 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 #'   site ID is derived, probably \code{"nwis"} (from the USGS NWIS database) or
 #'   \code{"styx"} (made-up data).
 #' @return site ID in ScienceBase and mda.streams lingo
+#' @export
 make_site_name <- function(sitenum, database=c("nwis", "styx")) {
   # error checking
   if(missing(database)) database <- "nwis"
@@ -155,6 +158,7 @@ make_site_name <- function(sitenum, database=c("nwis", "styx")) {
 #' @return the database, sitenum, or both. If both, the return value is a 
 #'   data.frame; otherwise it's a vector.
 #' @import dplyr
+#' @export
 parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
   # split first
   splitcols <- c("database","sitenum")
@@ -190,6 +194,7 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
 #' @param folder the folder to write the file in, or missing
 #' @return a full file path
+#' @export
 make_ts_path <- function(site_name, ts_name, folder) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
@@ -213,7 +218,12 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' @param use_names logical. Should the return vector be named according to the 
 #'   input values?
 #' @return a character
-parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=length(out)>1) {
+#' @export
+parse_ts_path <- function(file_path, 
+                          out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
+                          use_names=length(out)>1) {
+  
+  out = match.arg(out, several.ok=TRUE)
   
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
@@ -228,6 +238,58 @@ parse_ts_path <- function(file_path, out=c("site_name","ts_name"), use_names=len
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
     bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE)) %>%
     as.data.frame()
+  
+  parsed <- parsed[,out]
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- file_name; .}) 
+      } else {
+        parsed %>% setNames(file_name)
+      }
+  }
+  parsed
+}
+
+#' Create a standardized file name for specific file contents
+#' 
+#' @param type the type of metadata the file will include
+#' @param folder the folder to write the file in, or missing
+#' @return a full file path
+#' @export
+make_meta_path <- function(type="basic", folder) {
+  # input checking
+  type <- match.arg(type)
+  
+  # create path
+  file_name <- sprintf('meta_%s.%s.%s', type, pkg.env$meta_extension, (gz_extension="gz"))
+  if(missing(folder)) {
+    file.path(file_name) # pretty sure this does absolutely nothing (besides not break)
+  } else {
+    file.path(folder, file_name)
+  }
+}
+
+#' Split a metadata file path into contents
+#' 
+#' @param file_path the path[s] to split
+#' @param out the columns to return
+#' @param use_names logical. Should names be attached to the data.frame rows or
+#'   list elements?
+#' @return a data.frame, one row per path
+#' @export
+parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(out)>1) {
+  out = match.arg(out, several.ok=TRUE)
+  
+  dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
+  file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
+  splits <- strsplit(file_name, '[_.]')
+  parsed <- data.frame(
+    dir_name = dir_name,
+    file_name = file_name, 
+    type = sapply(splits, "[", 2),
+    meta_type = paste0("meta_", sapply(splits, "[", 2)),
+    stringsAsFactors=FALSE)
   
   parsed <- parsed[,out]
   if(use_names) {
