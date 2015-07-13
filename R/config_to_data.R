@@ -68,10 +68,14 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args) {
     switch(
       type,
       'ts'={
-        data <- tryCatch(
-          read_ts(download_ts(make_var_src(var, src), site, on_local_exists="replace")),
-          error=function(e) { warn_strs <- c(warn_strs, e); NULL }
-        )
+        data <- NULL
+        num_tries <- 3
+        for(i in 1:num_tries) {
+          data <- tryCatch(
+            read_ts(download_ts(make_var_src(var, src), site, on_local_exists="replace", on_remote_missing="stop")),
+            error=function(e) { warn_strs <<- c(warn_strs, e); NULL })
+          if(!is.null(data)) break else Sys.sleep(1)
+        }
       },
       'meta'={
         warn_strs <- c(warn_strs, "meta type not currently implemented")
@@ -101,6 +105,9 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args) {
     )
     data
   })
+  # remove any elements that came back NULL - this may avert a segfault in the
+  # combine_ts stage below.
+  data_list[sapply(data_list, is.null)] <- NULL
   
   # if something didn't work, announce it usefully now
   if(length(warn_strs) > 0) {
@@ -109,7 +116,15 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args) {
   }
   
   # combine the data into a single data.frame
-  combo <- do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(3, units="hours"))))
-  combo <- combo %>% select_(.dots=var_needs) %>% setNames(data_needs)
+  if(length(data_list) == 0) {
+    # it seems unlikely that data_list should ever be empty without 
+    # length(warn_strs)>0, but let's not throw an error before we know why it 
+    # would occur - maybe some special model won't need data from the config.
+    combo <- NULL
+    #stop("produced an empty data.frame in config row ", row_num)
+  } else {
+    combo <- do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(3, units="hours"))))
+    combo <- combo %>% select_(.dots=var_needs) %>% setNames(data_needs)
+  }
   combo
 }

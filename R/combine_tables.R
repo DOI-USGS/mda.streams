@@ -13,6 +13,7 @@
 #' @keywords internal
 combine_tables <- function(..., by, fun=combine_dplyr('full_join', by=by), allow_constants=FALSE) {
   dots <- list(...)
+  if(length(dots) == 0) return(NULL)
   data <- dots[[1]]
   if(is.na(data[1,by]) && nrow(data)==1) {
     stop("first table in list should always be a full table, not a const")
