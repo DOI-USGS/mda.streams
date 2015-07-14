@@ -59,7 +59,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
     importRDB1(url, asDateTime = TRUE),
     error=function(e) {
       if(isTRUE(verbose)) {
-        message("data are unavailable for ", p_code, "-", site,". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
+        message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
       }
       data.frame()
     })

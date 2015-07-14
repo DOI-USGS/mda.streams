@@ -20,7 +20,8 @@ build_sysdata <- function() {
   # Read in the raw, hand-editable tsv file
   var_src_codes <- 
     read.table(file="inst/extdata/var_src_codes.tsv", header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
-    mutate(var_src=paste0(var, "_", src))
+    mutate(var_src=paste0(var, "_", src),
+           priority=as.numeric(priority))
   
   # Consistency checking
   var_descrip <- metab_var <- priority <- src_descrip <- '.dplyr.var'
