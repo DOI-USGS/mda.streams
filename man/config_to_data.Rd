@@ -4,7 +4,8 @@
 \alias{config_to_data}
 \title{COnvert config specifications into a data input table}
 \usage{
-config_to_data(config_row, row_num, metab_fun, metab_args)
+config_to_data(config_row, row_num, metab_fun, metab_args,
+  on_error = c("stop", "warn", "quiet"))
 }
 \arguments{
 \item{config_row}{a 1-row config data.frame}
@@ -16,6 +17,15 @@ config}
 
 \item{metab_args}{a list of arguments (possibly just \code{list()}) that will
 later be passed to the metab_fun}
+
+\item{on_error}{character. What to do if data cannot be acquired or merged?
+If 'stop' or 'warn', the appropriate condition is thrown. If 'warn' or
+'quiet', the function [also] returns a character of errors and/or a
+character of warnings, attached as attributes of the output object}
+}
+\value{
+NA or a unitted data.frame, possibly with attributes "errors" and/or
+  "warnings" attached (see on_error)
 }
 \description{
 Turns a single config row into a data.frame of input data for the specified
