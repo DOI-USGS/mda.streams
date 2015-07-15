@@ -16,5 +16,5 @@ locate_meta <- function(type, format=c("id","url"), by=c("tag","dir","either"), 
   meta_folder <- locate_folder("sites_meta", by="tag")
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="item_url")
-  locate_item(key="sites_meta", type=meta_type, parent=meta_folder, title=meta_type, by=by, format=format, limit=limit, browser=browser)
+  locate_item(key=meta_type, type="sites_meta", parent=meta_folder, title=meta_type, by=by, format=format, limit=limit, browser=browser)
 }

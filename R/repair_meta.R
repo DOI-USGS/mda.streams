@@ -49,7 +49,7 @@ repair_meta <- function(type, limit=5000) {
     if(!is.na(meta_id_tag)) return(NA)
     
     # redo the action that somehow failed before
-    idlist <- list(type=meta_type, scheme=get_scheme(), key="sites_meta")
+    idlist <- list(type="sites_meta", scheme=get_scheme(), key=meta_type)
     tryCatch(
       item_update_identifier(id=meta_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }

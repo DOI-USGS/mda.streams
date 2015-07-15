@@ -95,7 +95,7 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
       if(wait==100) stop("identifiers didn't disappear and so can't be replaced")
     }
     if(verbose) message("adding/replacing identifiers for item ", meta_id, ": ",
-                        "scheme=", get_scheme(), ", type=", metapath$meta_type, ", key=", "sites_meta")
+                        "scheme=", get_scheme(), ", type=", "sites_meta", ", key=", metapath$meta_type)
     repair_meta(metapath$type, limit=5000)
     
     meta_id
