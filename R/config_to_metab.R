@@ -48,10 +48,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
   # Run metabolism for each selected config row
   fits <- lapply(rows, function(row) {
     
-    if(verbose) {
-      message("modeling metab for config row ", row, ":")
-      print(config[row,])
-    }
+    if(verbose) message("row ", row, ": initiating metab modeling for this config row")
     
     # Locate the model function. Look first in streamMetabolizer, then in the
     # current and inherited environments.
@@ -77,6 +74,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
     }
     
     # Prepare the data, passing along any errors from config_to_data
+    if(verbose) message("row ", row, ": preparing metab_data...")
     metab_data <- config_to_data(config[row,], row, metab_fun, metab_args, on_error='quiet')
     metab_data_ok <- is.null(attr(metab_data, "errors"))
     if(!metab_data_ok) {
@@ -85,19 +83,21 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       attr(out, "warnings") <- attr(metab_data, "warnings")
       return(out)
     } else {
-      # if the data are valid, also remove units and rows with NAs. eventually
-      # want to be able to pass units to metab_fun
-      metab_data <- v(metab_data)
+      # if the data are valid, also remove units and rows with NAs. eventually 
+      # want to be able to pass units to metab_fun. Wondering if converting to
+      # data.frame will help with seg faults...worth a shot.
+      metab_data <- as.data.frame(v(metab_data))
       metab_data[complete.cases(metab_data),]
     }
     
     # Run the model
+    if(verbose) message("row ", row, ": running metab_fun...")
     fit <- tryCatch({
       do.call(metab_fun, c(list(data=metab_data), metab_args))
     },
     error=function(e) {
-      out <- NA
-      attr(out, "errors") <- as.character(e)
+      out <- "error in model run"
+      attr(out, "errors") <- as.character(e$message)
       out
     })
     
