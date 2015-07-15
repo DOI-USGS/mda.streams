@@ -4,10 +4,10 @@
 \alias{locate_folder}
 \title{Find a high-level folder on ScienceBase}
 \usage{
-locate_folder(folder = c("project", "presentations", "proposals",
-  "publications", "sites", "sites_meta", "ideas"), format = c("id", "url"),
-  by = c("tag", "dir", "either"), limit = 5000, browser = (format ==
-  "url"))
+locate_folder(folder = c("project", "metab_runs", "sites", "sites_meta",
+  "ideas", "presentations", "proposals", "publications"), format = c("id",
+  "url"), by = c("tag", "dir", "either"), limit = 5000, browser = (format
+  == "url"))
 }
 \arguments{
 \item{folder}{the folder to locate}
