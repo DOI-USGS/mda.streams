@@ -99,7 +99,8 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
         }
         
         # if there wasn't a good data option, tell the user
-        if(is.na(config[row,'type'])) warning("could not locate an appropriate ts for site ", site, ", row ", row)
+        if(is.na(config[row,'type'])) 
+          warning("could not locate an appropriate ts for site ", config[row,'site'], ", row ", row)
       },
       
       # automatic specification that this var will not be used

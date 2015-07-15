@@ -96,7 +96,7 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
   sites_meta %>% 
     mutate(
       lat=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_lat_va, parse_nwis_coords(lat_va)),
-      lon=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_long_va, parse_nwis_coords(long_va)),
+      lon=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_long_va, -parse_nwis_coords(long_va)),
       coord_datum=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_coord_datum_cd, coord_datum_cd),
       alt=alt_va,
       alt_datum=alt_datum_cd) %>%
