@@ -109,7 +109,7 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
     mutate(site_name=make_site_name(unique(site_no), database="nwis"))
   
   # load NHDPlus ComIDs from file and attach to sites_meta
-  comids <- read.table("inst/extdata/NHDPlus ComIDs.tsv", header=TRUE, sep="\t", colClasses="character")
+  comids <- read.table("inst/extdata/NHDPlus_ComIDs.tsv", header=TRUE, sep="\t", colClasses="character")
   comids[comids$comid_best==0,'comid_best'] <- NA
   matched_comids <- comids[match(sites_meta$site_no, comids$nwis_id),c("comid_best","comid_confidence")]
   sites_meta$nhdplus_id <- matched_comids$comid_best
