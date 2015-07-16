@@ -12,7 +12,7 @@ if(!is.null(sbtools::current_session())) {
   test_that("post_ts works with all on_exists options", {
     # save whatever is currently in ScienceBase for the sites we're going to test with
     sites <- c("nwis_040871488","nwis_05406457")
-    if(manual) cat(locate_site(sites, "url"), sep="\n")
+    if(manual) cat(locate_site(sites, "url", br=F), sep="\n")
     var <- "doobs"
     var_src <- make_var_src(var, "nwis")
     if(!file.exists("tests/temp")) dir.create("tests/temp")

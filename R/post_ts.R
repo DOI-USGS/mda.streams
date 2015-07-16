@@ -36,6 +36,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
   if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
   
   # loop through files, posting each and recording whether we'll need to add tags
+  expect_id_loss <- TRUE
   ts_ids <- sapply(1:length(files), function(i) {
     if(verbose) message('preparing to post file ', files[i])
     
@@ -64,6 +65,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         "replace"={ 
           if(verbose) message("deleting timeseries data before replacement: ", ts_id)
           delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
+          expect_id_loss <<- FALSE
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
@@ -73,7 +75,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           ts_new <- read_ts(files[i])
           # join. these lines should be changed once unitted::full_join.unitted is implemented
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
-          ts_merged <- u(unique(bind_rows(v(ts_old), v(ts_new))), get_units(ts_old))
+          ts_merged <- u(unique(rbind(v(ts_old), v(ts_new))), get_units(ts_old))
           if(!all.equal(unique(v(ts_merged$DateTime)), v(ts_merged$DateTime))) stop("merge failed. try on_exists='replace'")
           if(verbose) message("num rows before & after merge: old=", nrow(ts_old), ", new=", nrow(ts_new), ", merged=", nrow(ts_merged))
           # replace the input file, but write to a nearby directory so we don't overwrite the user's file
@@ -82,6 +84,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
           delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
+          expect_id_loss <<- FALSE
         })
     }
     
@@ -109,16 +112,18 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     # tag item with our special identifiers. if the item already existed,
     # identifiers should be wiped out by a known SB quirk, so sleep to give time
     # for the files to be added and the identifiers to disappear so we can replace them
-    for(wait in 1:100) {
-      Sys.sleep(0.2)
-      if(nrow(sbtools::item_list_files(ts_id)) > 0 && is.null(item_get(ts_id)$identifiers)) break
-      if(wait==100) stop("identifiers didn't disappear and so can't be replaced; try again later with ",
-                        "repair_ts('", ts_path$var_src, "', '", ts_path$site_name, "')")
+    if(expect_id_loss) {
+      for(wait in 1:100) {
+        Sys.sleep(0.2)
+        if(nrow(item_list_files(ts_id)) > 0 && is.null(item_get(ts_id)$identifiers)) break
+        if(wait==100) stop("identifiers didn't disappear and so can't be replaced; try again later with ",
+                           "repair_ts('", ts_path$var_src, "', '", ts_path$site_name, "')")
+      }
+      if(verbose) message("adding/replacing identifiers for item ", ts_id, ": ",
+                          "scheme=", get_scheme(), ", type=", ts_path$ts_name, ", key=", ts_path$site_name)
+      repair_ts(ts_path$var_src, ts_path$site_name, limit=5000)
     }
-    if(verbose) message("adding/replacing identifiers for item ", ts_id, ": ",
-                        "scheme=", get_scheme(), ", type=", ts_path$ts_name, ", key=", ts_path$site_name)
-    repair_ts(ts_path$var_src, ts_path$site_name, limit=5000)
-      
+    
     ts_id
   })
   

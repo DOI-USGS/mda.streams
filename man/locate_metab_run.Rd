@@ -4,20 +4,12 @@
 \alias{locate_metab_run}
 \title{Find a metab_run item on ScienceBase}
 \usage{
-locate_metab_run(date, tag, strategy, title = paste0(date, " ", tag, " ",
-  strategy), format = c("id", "url"), by = c("tag", "dir", "either"),
-  limit = 5000, browser = (format == "url"))
+locate_metab_run(title, format = c("id", "url"), by = c("tag", "dir",
+  "either"), limit = 5000, browser = (format == "url"))
 }
 \arguments{
-\item{date}{the date as a character string in \%Y\%m\%d format}
-
-\item{tag}{the tag as a character string}
-
-\item{strategy}{the run strategy as a character string}
-
-\item{title}{the title of the metabolism modeling run you want. this will be
-automatically constructed if date, tag, and strategy are available; if any
-of those is missing, title should be supplied.}
+\item{title}{the title of the metabolism modeling run you want. this is the
+date, tag, and run strategy separated by spaces.}
 
 \item{format}{character indicating whether the folder should be returned as
 an ID or as a full URL}

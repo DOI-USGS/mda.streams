@@ -16,4 +16,12 @@ delete_metab_run(title, files_only = FALSE, verbose = TRUE)
 \description{
 Delete the run item, and/or its files, from SB
 }
+\examples{
+\dontrun{
+set_scheme('mda_streams_dev')
+authenticate_sb()
+
+set_scheme('mda_streams')
+}
+}
 
