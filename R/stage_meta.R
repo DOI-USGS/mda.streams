@@ -25,7 +25,7 @@ stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) 
   # filter.unitted is implemented.
   meta_nwis <- sites_meta[sites_meta$site_database=="nwis",] %>% stage_meta_nwis(verbose=verbose)
   meta_styx <- sites_meta[sites_meta$site_database=="styx",] %>% stage_meta_styx(verbose=verbose)
-  
+
   # merge the datasets
   if(!all.equal(get_units(meta_nwis), get_units(meta_styx))) stop("units mismatch in binding meta_xxxxes")
   meta_merged <- bind_rows(v(meta_nwis), v(meta_styx)) %>% as.data.frame() %>% 
@@ -93,8 +93,9 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
   dec_lat_va <- dec_long_va <- lat_va <- long_va <- dec_coord_datum_cd <- 
     coord_datum_cd <- alt_va <- alt_datum_cd <- site_name <- site_no <- 
     lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
-  sites_meta %>% 
+  sites_meta <- sites_meta %>% 
     mutate(
+      long_name=station_nm,
       lat=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_lat_va, parse_nwis_coords(lat_va)),
       lon=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_long_va, -parse_nwis_coords(long_va)),
       coord_datum=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_coord_datum_cd, coord_datum_cd),
@@ -102,15 +103,25 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
       alt_datum=alt_datum_cd) %>%
     # eliminate duplicates
     group_by(site_no) %>%
-    summarize(lat=mean(lat, na.rm=TRUE), lon=mean(lon, na.rm=TRUE), coord_datum=unique(coord_datum),
+    summarize(long_name=long_name[1], lat=mean(lat, na.rm=TRUE), lon=mean(lon, na.rm=TRUE), coord_datum=unique(coord_datum),
               alt=mean(alt_va), alt_datum=unique(alt_datum_cd)) %>%
+    # turn site_no into site_name
+    mutate(site_name=make_site_name(unique(site_no), database="nwis"))
+  
+  # load NHDPlus ComIDs from file and attach to sites_meta
+  comids <- read.table("inst/extdata/NHDPlus ComIDs.tsv", header=TRUE, sep="\t", colClasses="character")
+  comids[comids$comid_best==0,'comid_best'] <- NA
+  matched_comids <- comids[match(sites_meta$site_no, comids$nwis_id),c("comid_best","comid_confidence")]
+  sites_meta$nhdplus_id <- matched_comids$comid_best
+  sites_meta$nhdplus_id_confidence <- matched_comids$comid_confidence
+
+  # format
+  sites_meta  %>%
+    # put columns in proper order
+    select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, nhdplus_id, nhdplus_id_confidence) %>%
     # add units
     as.data.frame() %>%
-    u(c(site_no=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA)) %>%
-    # turn site_no into site_name
-    mutate(site_name=make_site_name(unique(site_no), database="nwis")) %>%
-    # put columns in proper order
-    select(site_name, lat, lon, coord_datum, alt, alt_datum)
+    u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
 }
 
 #' Get data for Styx (simulated data) sites
@@ -138,7 +149,7 @@ stage_meta_styx <- function(sites_meta, verbose=FALSE) {
   site_name <- '.dplyr.var'
   sites_meta %>%
     select(site_name) %>%
-    mutate(lat=NA, lon=NA, coord_datum=NA, alt=NA, alt_datum=NA) %>%
+    mutate(long_name=site_name, lat=NA, lon=NA, coord_datum=NA, alt=NA, alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA) %>%
     as.data.frame() %>%
-    u(c(site_name=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA))
+    u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
 }
