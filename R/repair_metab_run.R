@@ -60,7 +60,7 @@ repair_metab_run <- function(title, limit=5000) {
       if(is_updated) break
       if(wait==100) {
         warning("identifiers couldn't be restored; try again later with ",
-                "repair_metab_run('", type, "')")
+                "repair_metab_run('", title, "')")
         return(FALSE)
       }
     }

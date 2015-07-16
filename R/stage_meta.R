@@ -90,9 +90,9 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
     sec <- coords-deg*10000-min*100
     return(deg + (min/60) + (sec/3600))
   }
-  dec_lat_va <- dec_long_va <- lat_va <- long_va <- dec_coord_datum_cd <- 
+  station_nm <- dec_lat_va <- dec_long_va <- lat_va <- long_va <- dec_coord_datum_cd <- 
     coord_datum_cd <- alt_va <- alt_datum_cd <- site_name <- site_no <- 
-    lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
+    long_name <- lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
   sites_meta <- sites_meta %>% 
     mutate(
       long_name=station_nm,
@@ -116,6 +116,7 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
   sites_meta$nhdplus_id_confidence <- matched_comids$comid_confidence
 
   # format
+  nhdplus_id <- nhdplus_id_confidence <- '.dplyr.var'
   sites_meta  %>%
     # put columns in proper order
     select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, nhdplus_id, nhdplus_id_confidence) %>%
