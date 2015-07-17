@@ -7,13 +7,13 @@
 stage_metab_ts(metab_outs, folder = tempdir(), verbose = FALSE)
 }
 \arguments{
+\item{metab_outs}{a single metab_model or a list of metab_models from which to
+extract GPP, ER, and K600}
+
 \item{folder}{a folder to place the file outputs in (defaults to temp
 directory)}
 
 \item{verbose}{provide verbose output (currently not implemented)}
-
-\item{metab_out}{a single metab_model or a list of metab_models from which to
-extract GPP, ER, and K600}
 }
 \value{
 a character vector of file handles

@@ -2,7 +2,7 @@
 #' 
 #' Parse metabolism model outputs into gpp, er, and K600
 #' 
-#' @param metab_out a single metab_model or a list of metab_models from which to
+#' @param metab_outs a single metab_model or a list of metab_models from which to
 #'   extract GPP, ER, and K600
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
