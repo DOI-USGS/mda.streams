@@ -4,7 +4,7 @@
 \alias{stage_nwis_ts}
 \title{stage nwis data into a file}
 \usage{
-stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
+stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -18,8 +18,6 @@ stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
 directory)}
 
 \item{verbose}{provide verbose output (currently not implemented)}
-
-\item{...}{additional arguments passed to \code{\link{readNWISuv}}}
 }
 \value{
 a character vector of file handles

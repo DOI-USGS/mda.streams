@@ -8,12 +8,11 @@
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param verbose logical. provide verbose output?
-#' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
-#'   and \code{\link[unitted]{write_unitted}}
+#' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #' @return a file handle for time series file created
 #' @importFrom geoknife simplegeom webdata geoknife loadOutput webprocess
 #' @importFrom dataRetrieval readNWISsite
-#' @importFrom unitted u write_unitted get_units unitbundle
+#' @importFrom unitted u get_units unitbundle
 #'   
 #' @examples
 #' \dontrun{

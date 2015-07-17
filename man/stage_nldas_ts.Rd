@@ -19,8 +19,7 @@ directory)}
 
 \item{verbose}{logical. provide verbose output?}
 
-\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}
-and \code{\link[unitted]{write_unitted}}}
+\item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}}
 }
 \value{
 a file handle for time series file created

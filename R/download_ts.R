@@ -17,7 +17,6 @@
 #' download_ts(var_src = 'doobs_nwis', site_name = 'nwis_06893300')
 #' }
 #' @import sbtools
-#' @import tools
 #' @export
 download_ts <- function(var_src, site_name, folder = tempdir(), 
                         on_remote_missing=c("stop","return_NA"), 
