@@ -23,12 +23,27 @@
 #' @export
 verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'names'), on_fail=warning){
   
-  tests <- list('ncol' = function(x,...) ncol(x) == 2,
-                'unitted' = function(x,...) is.unitted(x),
-                'tz' = function(x,...) get_units(x[,1]) == 'UTC',
-                'units' = function(x,v,...) get_units(x[,2]) == unique(get_var_src_codes(var==v, out='units')),
-                'names' = function(x,v,...) names(x)[2] == v)
-  
+  tests <- list(
+    'ncol' = function(x,v) {
+      if(v %in% c("gpp","er","K600"))
+        ncol(x) %in% c(2,4)
+      else
+        ncol(x) == 2
+    },
+    'unitted' = function(x,...) {
+      is.unitted(x)
+    },
+    'tz' = function(x,...) {
+      get_units(x[,1]) == 'UTC'
+    },
+    'units' = function(x,v) {
+      (get_units(x[,2]) == get_units(unitbundle(get_var_src_codes(var==v, out='units')[1]))) &&
+        (if(ncol(x)==4) length(unique(get_units(x[,2:4]))) == 1 else TRUE)
+    },
+    'names' = function(x,v) {
+      names(x)[2] == v
+    })
+    
   pass <- TRUE
   for (check in checks){
     if (!tests[[check]](x = data, v = var)) {
