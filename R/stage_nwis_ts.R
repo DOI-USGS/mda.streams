@@ -8,10 +8,9 @@
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param verbose provide verbose output (currently not implemented)
-#' @param ... additional arguments passed to \code{\link{readNWISuv}}
 #' @return a character vector of file handles
 #' @importFrom dataRetrieval constructNWISURL importRDB1
-#' @importFrom unitted u write_unitted
+#' @importFrom unitted u
 #'   
 #' @examples
 #' 
@@ -25,7 +24,7 @@
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
-stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
+stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE){
 
   # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
   # all_sites <- get_sites()
@@ -53,7 +52,6 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   # it's much faster. the drawback is that if the file is incomplete, we won't
   # be told. that's life.
   if(isTRUE(verbose)) message("requesting data from NWIS for p_code ", p_code)
-  #nwis_data <- readNWISuv(siteNumbers = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], ...)
   url <- constructNWISURL(siteNumber = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], service="uv", format="tsv")
   nwis_data <- tryCatch(
     importRDB1(url, asDateTime = TRUE),
