@@ -13,6 +13,7 @@ depth	simCopy	m	stream depth	ts	depth	12	NA	"simulate by copying from another si
 depth	simDisch	m	stream depth	ts	depth	11	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	sim	NA
 depth	simNew	m	stream depth	ts	depth	13	NA	"arbitrarily make up numbers for model testing"	streamMetabolizer	NA	sim	NA
 disch	nwis	ft^3 s^-1	discharge	ts	NA	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
+dischdaily	calcDMean	ft^3 s^-1	daily mean discharge	ts	NA	1	NA	daily mean discharge, midnight to midnight sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
 doobs	nwis	mg L^-1	dissolved oxygen concentration	ts	DO.obs	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00300'
 doobs	simErrARObs	mg L^-1	dissolved oxygen concentration	ts	DO.obs	12	NA	simulate DO by running the DO model forward and adding autocorrelated observation noise	streamMetabolizer	NA	sim	NA
 doobs	simErrARProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	14	NA	simulate DO by running the DO model forward and adding autocorrelated process noise	streamMetabolizer	NA	sim	NA
