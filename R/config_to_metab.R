@@ -86,6 +86,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       # if the data are valid, also remove units and rows with NAs. eventually 
       # want to be able to pass units to metab_fun. Wondering if converting to
       # data.frame will help with seg faults...worth a shot.
+      metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
       metab_data <- as.data.frame(v(metab_data))
       metab_data[complete.cases(metab_data),]
     }
