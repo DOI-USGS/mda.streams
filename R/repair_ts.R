@@ -17,6 +17,9 @@
 #' repair_ts("wtr_nwis", "nwis_01374019")
 #' }
 repair_ts <- function(var_src, site_name, limit=5000) {
+
+  # warn if the var_src shouldn't be there
+  verify_var_src(var_src, on_fail=warning)
   
   # check the session; we'll need write access
   if(is.null(current_session()))

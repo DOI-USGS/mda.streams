@@ -22,8 +22,8 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     mod_model <- config_row[[1,"model"]]
     src <- switch(
       mod_model,
-      metab_mle="estDOMLEPRK",
-      stop("what kind of metab_model is that??")
+      metab_night="estNight",
+      "estBest"
     )
     preds <- predict_metab(metab_mod)
     site <- config_row[[1,"site"]]
@@ -37,14 +37,20 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     
     # extract specific columns into ts files. this section will need rewriting
     # as the range of model options expands.
-    sapply(c("gpp","er","K600"), function(pvar) {
+    file_paths <- sapply(c("gpp","er","K600"), function(pvar) {
       metab_var <- get_var_src_codes(var==pvar, out="metab_var")[1]
       var_units <- get_var_src_codes(var==pvar, out="units")[1]
       data <- preds[c("DateTime", metab_var)] %>%
         setNames(c("DateTime",pvar)) %>%
         u(c(NA, var_units))
-      write_ts(data=data, site=site, var=pvar, src=src, folder=folder)
+      if(length(data[,2]) > 0 && length(which(!is.na(data[,2]))) > 0) {
+        verify_var_src(pvar, src, on_fail=warning)
+        write_ts(data=data, site=site, var=pvar, src=src, folder=folder)
+      } else {
+        NA
+      }
     })
+    file_paths[!is.na(file_paths)]
   })))
   
   staged

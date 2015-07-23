@@ -24,6 +24,7 @@
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
+  verify_var_src(var, "nldas", on_fail=warning)
   vars <- var # need a renamed version for get_var_src_codes filter on var
   p_code <- '.dplyr_var'
   p_code <- get_var_src_codes(src=="nldas",var%in%vars,!is.na(p_code),out="p_code")

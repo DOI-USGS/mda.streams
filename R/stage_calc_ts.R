@@ -96,8 +96,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
   
   if(length(var) > 1) stop("one var at a time, please")
   if(length(src) > 1) stop("one src at a time, please")
-  vars <- var # need renamed var for filtering in get_var_src_codes
-  if(!(src %in% get_var_src_codes(var==vars, out="src"))) stop("couldn't find src in get_var_src_codes(var==vars, out='src')")
+  verify_var_src(var, src, on_fail=warning)
   
   # loop through sites, adding to file_paths for any successfully computed & written ts files
   file_paths <- c()
@@ -393,6 +392,7 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
 #'   
 #' @keywords internal
 calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
+  onedate <- DateTime <- dischdaily <- '.dplyr.var'
   data.frame(
     date = as.Date(v(sitetime)),
     disch = v(disch)
