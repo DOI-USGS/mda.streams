@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage_calc_ts.R
 \name{calc_ts_dosat_calcGG}
 \alias{calc_ts_dosat_calcGG}
-\title{Internal - calculate depth_calcDisch from any data}
+\title{Internal - calculate dosat_calcGG from any data}
 \usage{
 calc_ts_dosat_calcGG(utctime, wtr, baro)
 }
@@ -14,7 +14,7 @@ calc_ts_dosat_calcGG(utctime, wtr, baro)
 \item{baro}{the barometric pressure}
 }
 \description{
-Internal - calculate depth_calcDisch from any data
+Internal - calculate dosat_calcGG from any data
 }
 \keyword{internal}
 

@@ -39,10 +39,9 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
     }
     
   } else {
-    # check for valid var_src values
-    if(any(bad_var_src <- !(with_var_src %in% get_var_src_codes(out="var_src"))))
-      stop("with_var_src=",paste0(with_var_src[bad_var_src],collapse=",")," not in get_var_src_codes(out='var_src')")
-
+    # check for valid var_src values; the next lines will break if with_var_src isn't valid
+    verify_var_src(with_var_src, on_fail=stop)
+    
     # convert with_var_src to a vector of dataset names
     data_codes <- get_var_src_codes(out = c('data_type','var_src'))
     data_types <- data_codes[match(with_var_src, data_codes$var_src),'data_type']

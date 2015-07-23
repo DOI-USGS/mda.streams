@@ -10,6 +10,8 @@
 #' @export
 write_ts <- function(data, site, var, src, folder){
   
+  verify_var_src(var, src, on_fail=warning)
+  
   if (!verify_ts(data, var, checks=c('ncol','names')))
     stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
   

@@ -42,7 +42,10 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     
     # parse the file name to determine where to post the file
     ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
-    
+
+    # don't even try if the var_src shouldn't be there
+    verify_var_src(ts_path$var_src, on_fail=stop)
+        
     # find the site root
     site_root = locate_site(ts_path$site_name)
     if(is.na(site_root)){

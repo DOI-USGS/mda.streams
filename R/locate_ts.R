@@ -15,7 +15,7 @@
 #' }
 locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
-  var_src <- make_ts_name(var_src) # check that the variable name is valid and add prefix
+  var_src <- make_ts_name(var_src) # check that the variable name is in a valid format and add prefix
   site_name <- do.call(make_site_name, parse_site_name(site_name, out=c("sitenum","database"), use_names=FALSE)) # check the site name
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="item_url")

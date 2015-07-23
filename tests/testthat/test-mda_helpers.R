@@ -1,10 +1,10 @@
 context("mda_helpers")
 
 test_that("var_src can be made and parsed", {
-  expect_equal(mda.streams:::make_var_src("baro","nldas"), "baro_nldas")
-  expect_equal(mda.streams:::parse_var_src("baro_nldas"), data.frame(var="baro", src="nldas", stringsAsFactors=FALSE))
-  expect_equal(mda.streams:::parse_var_src("baro_nldas", "var"), "baro")
-  expect_equal(mda.streams:::parse_var_src("baro_nldas", "src"), "nldas")
+  expect_equal(make_var_src("baro","nldas"), "baro_nldas")
+  expect_equal(parse_var_src("baro_nldas"), data.frame(var="baro", src="nldas", stringsAsFactors=FALSE))
+  expect_equal(parse_var_src("baro_nldas", "var"), "baro")
+  expect_equal(parse_var_src("baro_nldas", "src"), "nldas")
 })
 
 test_that("ts variable names can be made and parsed", {
@@ -30,7 +30,6 @@ test_that("ts variable names can be made and parsed", {
   expect_equal(parse_ts_name("ts_disch_nwis", out=c("var","src"), use_names=FALSE),
                data.frame(var="disch", src="nwis", stringsAsFactors=FALSE), info="1 row, several columns")
   expect_error(parse_ts_name(c("doobs","ts_doobs")), "unexpected ts variable prefix")
-  expect_error(parse_ts_name(c("ts_doobs_nwis","ts_dobby_shhh")), "var_src isn't listed in get_var_src_codes")
   
   # back and forth
   expect_equal(parse_ts_name(make_ts_name("wtr","nwis")), "wtr_nwis")

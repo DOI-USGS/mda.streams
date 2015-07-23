@@ -6,18 +6,54 @@
 #'   see \code{get_var_src_codes(var=='doobs', out='src')}
 #' @export
 make_var_src <- function(var, src) {
+  paste0(var, "_", src)
+}
+
+#' Check whether a var_src is listed in var_src_codes
+#' 
+#' @param var_var_src may be either a variable, e.g. "doobs", or a var_src, e.g.
+#'   "doobs_nwis".
+#' @param src a data source; optional if var_var_src is specified with both 
+#'   variable and source
+#' @param on_fail the function to apply to an information message (character) if
+#'   the var_src is not valid
+#' @return a single TRUE if successful, else on_fail(msg) followed by a vector
+#'   of T/F values with F for invalid var_srces
+#' @export
+verify_var_src <- function(var_var_src, src, on_fail=warning) {
+  # combine var & src
+  var_src <- if(!missing(src)) paste0(var_var_src, "_", src) else var_var_src
+  var_src_p <- parse_var_src(var_src)
   
-  # error checking - make sure the specified src is an option for the specified 
-  # var. don't use get_var_src_codes because that function calls this one.
-  if(any(missing_src <- mapply(function(var1,src1) {
-    !(src1 %in% var_src_codes[var_src_codes$var==var1, 'src'])
-  }, var, src))) {
-    stop("var-src mismatch[es] for ", paste0(var[missing_src], "-" ,src[missing_src], collapse=", "))
+  # prepare to collect info
+  valid <- rep(TRUE, nrow(var_src_p))
+
+  # check that the var_src combo is known
+  if(any(missing_var_src <- !(var_src %in% var_src_codes$var_src))) {
+    msg <- paste0("unrecognized var_src",if(length(which(missing_var_src))>1) "es" else "",": ", paste0(var_src[missing_var_src], collapse=", "))
+    on_fail(msg)
+    valid <- valid & !missing_var_src
   }
   
-  # name creation
-  paste0(var, "_", src)
+  # check that the var is known
+  if(any(missing_var <- !(var_src_p$var %in% var_src_codes$var))) {
+    msg <- paste0("unrecognized var",if(length(which(missing_var))>1) "s" else "",": ", paste0(var_src_p$var[missing_var], collapse=", "))
+    on_fail(msg)
+    valid <- valid & !missing_var
+  }
+
+  # check that the var is known
+  if(any(missing_src <- !(var_src_p$src %in% var_src_codes$src))) {
+    msg <- paste0("unrecognized src",if(length(which(missing_src))>1) "s" else "",": ", paste0(var_src_p$src[missing_src], collapse=", "))
+    on_fail(msg)
+    valid <- valid & !missing_src
+  }
   
+  if(all(valid)) {
+    TRUE 
+  } else {
+    setNames(valid, var_src)
+  } 
 }
 
 #' Translate a var_src into a variable and a source
@@ -63,8 +99,6 @@ make_ts_name <- function(var_var_src, src) {
     stop("variable is in ScienceBase format already: ", paste0("[", which(ts_names), "] ", var_src[ts_names], collapse=", "))
   if(any(not_two <- sapply(strsplit(var_src, "_"), function(split) length(split)!=2)))
     stop("improper var_src format: ", paste0("[", which(not_two), "] ", var_src[not_two], collapse=", "))
-  if(any(non_var <- !(var_src %in% get_var_src_codes(out="var_src")))) 
-    stop("var_src is not listed in get_var_src_codes(out='var_src': ", paste0("[", which(non_var), "] ", non_var[non_var], collapse=", "))
   
   # renaming
   paste0(pkg.env$ts_prefix, var_src)
@@ -96,8 +130,6 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   if(any(non_out <- !(out %in% splitcols)))
     stop("unexpected output requested: ", paste0(out[non_out]))
   var_src <- substring(ts_name, 4)
-  if(any(non_var <- !(var_src %in% get_var_src_codes(out='var_src'))))
-    stop("var_src isn't listed in get_var_src_codes(out='var_src'): ", paste0("[", which(non_var), "] ", var_src[non_var], collapse=", "))
   splits <- strsplit(ts_name, '_')
   if(any(not_three <- sapply(splits, function(split) length(split) != 3)))
     stop("ts_name doesn't have three parts split on '_': ", paste0("[", which(not_three), "] ", ts_name[not_three], collapse=", "))
