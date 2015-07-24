@@ -8,11 +8,11 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' stage_meta(sites=list_sites()[655:665], verbose=TRUE, folder=NULL)
+#' stage_meta_basic(sites=list_sites()[655:665], verbose=TRUE, folder=NULL)
 #' }
-stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) {
+stage_meta_basic <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) {
   
-  # Extablish the basic site information
+  # Establish the basic site information
   sites_meta <- 
     data_frame(
       site_name=sites, 
@@ -23,21 +23,24 @@ stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) 
   
   # get metadata from each site database in turn. can't use filter() until
   # filter.unitted is implemented.
-  meta_nwis <- sites_meta[sites_meta$site_database=="nwis",] %>% stage_meta_nwis(verbose=verbose)
-  meta_styx <- sites_meta[sites_meta$site_database=="styx",] %>% stage_meta_styx(verbose=verbose)
+  meta_nwis <- sites_meta[sites_meta$site_database=="nwis",] %>% stage_meta_basic_nwis(verbose=verbose)
+  meta_styx <- sites_meta[sites_meta$site_database=="styx",] %>% stage_meta_basic_styx(verbose=verbose)
 
   # merge the datasets
   if(!all.equal(get_units(meta_nwis), get_units(meta_styx))) stop("units mismatch in binding meta_xxxxes")
   meta_merged <- bind_rows(v(meta_nwis), v(meta_styx)) %>% as.data.frame() %>% 
     u(get_units(meta_nwis))
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
+ 
+  # add a quick-access column of sciencebase site item IDs
+  sites_meta$sciencebase_id <- locate_site(sites_meta$site_name, format="id", browser=FALSE)
   
   # either return the data.frame, or save data to local file and return the
   # filename.
   if(is.null(folder)) {
     return(sites_meta)
   } else {
-    fpath <- make_meta_path(folder=folder)
+    fpath <- make_meta_path(type='basic', folder=folder)
     gz_con <- gzfile(fpath, "w")
     meta_file <- write_unitted(sites_meta, file=gz_con, sep="\t", row.names=FALSE, quote=TRUE)
     close(gz_con)
@@ -48,11 +51,11 @@ stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) 
 
 #' Get data for NWIS sites
 #' 
-#' Helper to stage_meta. Download/clean up columns of useful data for NWIS
+#' Helper to stage_meta_basic. Download/clean up columns of useful data for NWIS
 #' sites
 #' 
 #' @param sites_meta a data.frame of site_names and parse site_names, as in the
-#'   opening lines of stage_meta
+#'   opening lines of stage_meta_basic
 #' @param verbose logical. give status messages?
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u v
@@ -67,9 +70,9 @@ stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) 
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%
 #'   as.data.frame() %>% # unitted_data.frames work better than unitted_tbl_dfs for now
 #'   u()
-#' str(mda.streams:::stage_meta_nwis(sites_meta, verbose=TRUE))
+#' str(mda.streams:::stage_meta_basic_nwis(sites_meta, verbose=TRUE))
 #' }
-stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
+stage_meta_basic_nwis <- function(sites_meta, verbose=FALSE) {
   
   if(verbose) message("acquiring NWIS metadata")
   
@@ -127,10 +130,10 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
 
 #' Get data for Styx (simulated data) sites
 #' 
-#' Helper to stage_meta. Create dummy columns of metadata for Styx sites.
+#' Helper to stage_meta_basic. Create dummy columns of metadata for Styx sites.
 #' 
 #' @param sites_meta a data.frame of site_names and parsed site_names, as in the
-#'   opening lines of stage_meta
+#'   opening lines of stage_meta_basic
 #' @param verbose logical. give status messages?
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u v
@@ -144,9 +147,9 @@ stage_meta_nwis <- function(sites_meta, verbose=FALSE) {
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%
 #'   as.data.frame() %>% # unitted_data.frames work better than unitted_tbl_dfs for now
 #'   u()
-#' str(mda.streams:::stage_meta_styx(sites_meta, verbose=TRUE))
+#' str(mda.streams:::stage_meta_basic_styx(sites_meta, verbose=TRUE))
 #' }
-stage_meta_styx <- function(sites_meta, verbose=FALSE) {
+stage_meta_basic_styx <- function(sites_meta, verbose=FALSE) {
   site_name <- '.dplyr.var'
   sites_meta %>%
     select(site_name) %>%

@@ -13,7 +13,7 @@
 #' @import dplyr
 #' @importFrom lubridate with_tz
 #' @export
-get_meta <- function(types=c('basic'), out='all') {
+get_meta <- function(types=c('basic','metabinput'), out='all') {
   
   # check and collect each of the requested tables
   metas <- lapply(types, function(type) {
@@ -42,8 +42,16 @@ get_meta <- function(types=c('basic'), out='all') {
       assign(x=meta_type_timestamp, value=new_timestamp, envir=pkg.env)
     }
     
-    # always return the [updated] cached value
+    # always use the [updated] cached value
     meta <- get(meta_type, envir=pkg.env)
+    
+    # if there's more than one type, add the type to the column names
+    if(type != 'basic') {
+      names(meta)[names(meta) != 'site_name'] <- paste0(type, ".", names(meta)[names(meta) != 'site_name'])
+    }
+    
+    # return
+    meta
   })
   
   # combine the metadata tables into a single table
@@ -52,7 +60,7 @@ get_meta <- function(types=c('basic'), out='all') {
     c(metas, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
   
   # subset by columns if requested
-  if(length(out) != 1 && out!='all') {
+  if(length(out) != 1 || out[1] != 'all') {
     data <- data[,out]
   }
   

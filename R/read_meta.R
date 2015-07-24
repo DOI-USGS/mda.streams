@@ -17,7 +17,14 @@ read_meta = function(file){
   df <- read_unitted(file, sep=pkg.env$meta_delim, header=TRUE, stringsAsFactors=FALSE, colClasses="character")
   
   # convert numerics to numeric
-  for(col in c("lat","lon","alt")) {
+  type <- parse_meta_path(file)$type
+  numcols <- switch(
+    type,
+    'basic'=c("lat","lon","alt"),
+    'metabinput'=c("num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"),
+    c() # default for unknown metadata table is not to convert anything
+  )
+  for(col in numcols) {
     df[,col] <- u(as.numeric(df[,col]), get_units(df[,col]))
   }
   

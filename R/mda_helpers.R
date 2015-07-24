@@ -289,7 +289,7 @@ parse_ts_path <- function(file_path,
 #' @param folder the folder to write the file in, or missing
 #' @return a full file path
 #' @export
-make_meta_path <- function(type="basic", folder) {
+make_meta_path <- function(type=c("basic","metabinput"), folder) {
   # input checking
   type <- match.arg(type)
   

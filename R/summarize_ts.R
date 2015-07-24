@@ -13,14 +13,15 @@
 #' summarize_ts(rep(c("doobs_nwis", "wtr_nwis"), each=4), 
 #'   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 #' }
-summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_dates","num_rows","num_complete")) {
+summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date","end_date","num_dates",
+                                                   "num_rows","num_complete","modal_timestep","num_modal_timesteps")) {
   
   # check inputs & session
   out <- match.arg(out, several.ok=TRUE)
   
   # collect the vector inputs. as a side benefit, this will throw an error if
   # var_src and site_name have incompatible dimensions
-  ts_summary <- data.frame(var_src=var_src, site=site_name, stringsAsFactors=FALSE)
+  ts_summary <- data.frame(site=site_name, var_src=var_src, stringsAsFactors=FALSE)
   
   # locate the items
   ts_items <- locate_ts(var_src, site_name)
@@ -31,6 +32,7 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
     date_updated = function(item) item$provenance$lastUpdated
   )
   item_funs <- item_funs[out[out %in% names(item_funs)]]
+  item_units <- c(date_updated=NA)[out[out %in% names(item_funs)]]
   
   # download the files all at once, slightly reducing the number of requests to SB
   ts_files <- download_ts(var_src, site_name, on_remote_missing="return_NA", on_local_exists="replace")
@@ -42,9 +44,20 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
     end_date = function(ts) max(ts$DateTime),
     num_dates = function(ts) length(unique(as.Date(ts$DateTime))),
     num_rows = function(ts) nrow(ts),
-    num_complete = function(ts) length(which(!is.na(ts[,2])))
+    num_complete = function(ts) length(which(!is.na(ts[,2]))),
+    modal_timestep = function(ts) {
+      table_tsteps <- suppressWarnings(table(as.numeric(diff(v(ts$DateTime)), units="mins")))
+      as.numeric(names(which.max(table_tsteps)))
+    },
+    num_modal_timesteps = function(ts) {
+      table_tsteps <- suppressWarnings(table(diff(v(ts$DateTime))))
+      table_tsteps[[which.max(table_tsteps)]]
+    }
   )
   summary_funs <- summary_funs[out[out %in% names(summary_funs)]]
+  summary_units <- c(start_date=NA, end_date=NA, num_dates="dates", 
+                     num_rows="rows", num_complete="rows", 
+                     modal_timestep="mins", num_modal_timesteps="steps")[out[out %in% names(summary_funs)]]
   
   # create a data.frame of summary metrics, one ts per row. in each row only 
   # compute the selected summary metrics, and only compute them if the file is
@@ -66,7 +79,8 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
         lapply(summary_funs, function(fun) { NA })
       ), stringsAsFactors=FALSE)
     }
-  }))
+  })) %>% as.data.frame() %>%
+    u(c(site=NA, var_src=NA, item_units, summary_units))
   
   # return
   ts_summary
