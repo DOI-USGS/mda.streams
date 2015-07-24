@@ -38,7 +38,7 @@ stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
   }
   
   # clean up jud's table, keeping just the columns we want, adding units, etc.
-  site_num <- jud_c <- jud_f <- '.dplyr.var'
+  site_name <- jud_c <- jud_f <- '.dplyr.var'
   jud_coefs <- jud_coefs %>%
     inner_join(v(meta_basic[,c('site_name','site_num')]), by='site_num') %>%
     select(site_name, c=jud_c, f=jud_f) %>%
