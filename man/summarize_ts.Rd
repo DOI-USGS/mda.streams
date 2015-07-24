@@ -5,7 +5,8 @@
 \title{Summarize a timeseries}
 \usage{
 summarize_ts(var_src, site_name, out = c("date_updated", "start_date",
-  "end_date", "num_dates", "num_rows", "num_complete"))
+  "end_date", "num_dates", "num_rows", "num_complete", "modal_timestep",
+  "num_modal_timesteps"))
 }
 \arguments{
 \item{var_src}{character vector of dataset types to summarize.}

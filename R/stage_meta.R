@@ -12,7 +12,7 @@
 #' }
 stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) {
   
-  # Extablish the basic site information
+  # Establish the basic site information
   sites_meta <- 
     data_frame(
       site_name=sites, 
@@ -31,6 +31,9 @@ stage_meta <- function(sites=list_sites(), folder = tempdir(), verbose = FALSE) 
   meta_merged <- bind_rows(v(meta_nwis), v(meta_styx)) %>% as.data.frame() %>% 
     u(get_units(meta_nwis))
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
+ 
+  # add a quick-access column of sciencebase site item IDs
+  sites_meta$sciencebase_id <- locate_site(sites_meta$site_name, format="id", browser=FALSE)
   
   # either return the data.frame, or save data to local file and return the
   # filename.

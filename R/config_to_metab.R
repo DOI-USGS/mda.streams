@@ -67,10 +67,16 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
     # Prepare the model arguments
     metab_args <- NA
     try(metab_args <- eval(parse(text=config[[row,'model_args']])), silent=TRUE)
-    if(isTRUE(is.na(metab_args))) {
+    if(isTRUE(is.na(metab_args)) || !is.list(metab_args)) {
       out <- "error in evaluating metab_args"
       attr(out, "errors") <- "could not parse or evaluate args"
       return(out)
+    }
+    # add the config row to the info arg
+    if('info' %in% names(metab_args)) {
+      metab_args[['info']] <- list(userinfo=metab_args[['info']], config=config[row,])
+    } else {
+      metab_args <- c(metab_args, list(info=config[row,]))
     }
     
     # Prepare the data, passing along any errors from config_to_data
