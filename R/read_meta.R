@@ -22,6 +22,7 @@ read_meta = function(file){
     type,
     'basic'=c("lat","lon","alt"),
     'metabinput'=c("num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"),
+    'dvqcoefs'=c("c","f"),
     c() # default for unknown metadata table is not to convert anything
   )
   for(col in numcols) {
