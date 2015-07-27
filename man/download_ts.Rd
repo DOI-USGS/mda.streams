@@ -10,13 +10,15 @@ download_ts(var_src, site_name, folder = tempdir(),
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see
-\code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), var_src)})}
+\code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'),
+var_src)})}
 
 \item{site_name}{a valid mda.streams site (see \link{get_sites})}
 
 \item{folder}{string for a folder location}
 
-\item{on_remote_missing}{character indicating what to do if the}
+\item{on_remote_missing}{character indicating what to do if the remote file
+is missing}
 
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
