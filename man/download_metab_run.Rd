@@ -4,12 +4,15 @@
 \alias{download_metab_run}
 \title{Download metabolism run data data to local file destination}
 \usage{
-download_metab_run(title, folder = tempdir(), on_remote_missing = c("stop",
-  "return_NA"), on_local_exists = c("stop", "skip", "replace"))
+download_metab_run(title, files = NA, folder = tempdir(),
+  on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
+  "skip", "replace"))
 }
 \arguments{
 \item{title}{the title of the metabolism run (date, tag, and strategy
 separated by spaces)}
+
+\item{files}{NA for all files, or a vector of specific filenames (character) to download}
 
 \item{folder}{string for a folder location where files should be saved}
 

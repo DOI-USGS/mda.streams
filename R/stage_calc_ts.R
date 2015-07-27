@@ -148,6 +148,17 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             utctime = disch_nwis$DateTime,
             disch = disch_nwis$disch)
         },
+        'depth_calcDischHarvey' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          dvqcoefs <- get_meta('dvqcoefs')
+          dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+          if(nrow(dvqcoef) == 0) dvqcoef[1,2] <- u(NA,'m')
+          calc_ts_depth_calcDischHarvey(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch,
+            c = dvqcoef[[1,'dvqcoefs.c']],
+            f = dvqcoef[[1,'dvqcoefs.f']])
+        },
         'depth_simDisch' = {
           calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDisch')
         },
@@ -316,6 +327,26 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
     depth = calc_depth(
       Q=disch * u(0.0283168466,"m^3 ft^-3"))) %>% u()
 }
+
+#' Internal - calculate depth_calcDisch from discharge and depth-vs-discharge
+#' coefficients from Jud Harvey
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @param c the multiplier in d = c * Q^f
+#' @param f the exponent in d = c * Q^f
+#' @importFrom unitted u verify_units v
+#'   
+#' @keywords internal
+calc_ts_depth_calcDischHarvey <- function(utctime, disch, c, f) {
+  Q <- v(verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1'))
+  data.frame(
+    DateTime = utctime, 
+    depth = calc_depth(
+      Q=disch * u(0.0283168466,"m^3 ft^-3"),
+      c=c, f=f)) %>% u()
+}
+
 
 #' Internal - calculate dosat_calcGG from any data
 #' 
