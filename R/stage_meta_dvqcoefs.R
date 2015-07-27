@@ -43,7 +43,7 @@ stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
     inner_join(v(meta_basic[,c('site_name','site_num')]), by='site_num') %>%
     select(site_name, c=jud_c, f=jud_f) %>%
     as.data.frame() %>%
-    u(c(NA, NA, NA))
+    u(c(NA, 'm', NA))
 
   # either return the data.frame, or save data to local file and return the
   # filename.
