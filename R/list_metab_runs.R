@@ -16,3 +16,20 @@ list_metab_runs = function(){
     return(character())
   }
 }
+
+#' List the files stored in a metabolism runs
+#' 
+#' @param title a metab_run title
+#' @param out the columns to return
+#' @return dataframe of file names and sizes within a metab_run
+#' @import sbtools
+#' @export
+list_metab_run_files <- function(title, out=c("filename","size_bytes","url")) {
+  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before querying metab_runs")
+  out <- lapply(title, function(t) {
+    run_id <- locate_metab_run(t)
+    filedf <- setNames(item_list_files(run_id),c("filename","size_bytes","url"))
+    filedf[,out]
+  })
+  if(length(out)==1) return(out[[1]]) else return(out)
+}
