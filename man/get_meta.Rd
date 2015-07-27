@@ -4,7 +4,7 @@
 \alias{get_meta}
 \title{Get metadata from one or more meta_xxx files}
 \usage{
-get_meta(types = c("basic", "metabinput"), out = "all")
+get_meta(types = c("basic", "metabinput", "dvqcoefs"), out = "all")
 }
 \arguments{
 \item{types}{one or more metadata types to select and merge into a single

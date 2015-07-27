@@ -13,7 +13,7 @@
 #' @import dplyr
 #' @importFrom lubridate with_tz
 #' @export
-get_meta <- function(types=c('basic','metabinput'), out='all') {
+get_meta <- function(types=c('basic','metabinput','dvqcoefs'), out='all') {
   
   # check and collect each of the requested tables
   metas <- lapply(types, function(type) {
