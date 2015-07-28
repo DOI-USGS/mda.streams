@@ -4,7 +4,7 @@
 \alias{make_meta_path}
 \title{Create a standardized file name for specific file contents}
 \usage{
-make_meta_path(type = c("basic", "metabinput", "dvqcoefs"), folder)
+make_meta_path(type, folder)
 }
 \arguments{
 \item{type}{the type of metadata the file will include}

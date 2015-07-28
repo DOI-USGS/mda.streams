@@ -33,7 +33,7 @@ download_item_files <- function(
   folder <- gsub("\\", "/", folder, fixed=TRUE)
   if(!is.list(files)) files <- rep(list(files),length(item_ids))
   if(length(unique(c(length(item_ids), length(item_names), length(files)))) != 1)
-    stop("item_ids, item_names, files/list(files), and num_expected must all have the same length")
+    stop("item_ids, item_names, and files must all have the same length")
   
   # loop through items, downloading each file and returning a file path or NA
   # for each. collect the outputs in a character vector.
@@ -72,12 +72,12 @@ download_item_files <- function(
     # do the downloading
     destination  = file.path(folder, file_vec)
     out_destination <- 
-      if(file.exists(destination) && on_local_exists %in% c("stop","skip")) {
+      if(any(file.exists(destination)) && on_local_exists %in% c("stop","skip")) {
         switch(
           on_local_exists,
           "stop"=stop("for ", item_name, ", download destination already has a file and on_local_exists=='stop'"),
           "skip"=NA )
-      } else if(!file.exists(destination) || on_local_exists=="replace") {
+      } else if(!any(file.exists(destination)) || on_local_exists=="replace") {
         item_file_download(id=item_id, names=file_vec, destinations=destination, overwrite_file=TRUE)
       } else {
         stop("unexpected destination file condition or on_local_exists value")

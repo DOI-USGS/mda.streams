@@ -16,17 +16,25 @@ read_meta = function(file){
   
   df <- read_unitted(file, sep=pkg.env$meta_delim, header=TRUE, stringsAsFactors=FALSE, colClasses="character")
   
-  # convert numerics to numeric
+  # convert to numeric almost anything that can be numeric, excluding only those
+  # columns we know we want to keep as character
   type <- parse_meta_path(file)$type
-  numcols <- switch(
+  non_numeric <- switch(
     type,
-    'basic'=c("lat","lon","alt"),
-    'metabinput'=c("num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"),
-    'dvqcoefs'=c("c","f"),
-    c() # default for unknown metadata table is not to convert anything
+    'basic'=c('site_num', 'nhdplus_id'),
+    'dvqcoefs'=c(),
+    'metabinput'=c('config_row','data_errors','data_warnings'),
+    'nawqahst'=c('nhdplus_id'),
+    c() # default for unknown metadata table is to convert anything we can
   )
-  for(col in numcols) {
-    df[,col] <- u(as.numeric(df[,col]), get_units(df[,col]))
+  for(col in names(df)[!(names(df) %in% non_numeric)]) {
+    numercol <- tryCatch(
+      {as.numeric(df[[col]])},
+      error=function(e) NULL,
+      warning=function(w) NULL)
+    if(!is.null(numercol)) {
+      df[,col] <- u(numercol, get_units(df[,col]))
+    }
   }
   
   return(df)

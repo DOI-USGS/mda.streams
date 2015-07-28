@@ -3,8 +3,8 @@
 #' Keeps a locally cached copy to reduce the size and number of requests to SB. 
 #' If
 #' 
-#' @param types one or more metadata types to select and merge into a single
-#'   table.
+#' @param types one or more metadata types to select and merge into a single 
+#'   table. see the options with list_metas(); all are returned by default.
 #' @param out character vector or 'all'. if 'all', all columns from the selected
 #'   types will be returned. if anything else, the selected columns will be 
 #'   returned.
@@ -13,7 +13,7 @@
 #' @import dplyr
 #' @importFrom lubridate with_tz
 #' @export
-get_meta <- function(types=c('basic','metabinput','dvqcoefs'), out='all') {
+get_meta <- function(types=list_metas(), out='all') {
   
   # check and collect each of the requested tables
   metas <- lapply(types, function(type) {
