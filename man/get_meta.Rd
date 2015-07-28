@@ -4,11 +4,11 @@
 \alias{get_meta}
 \title{Get metadata from one or more meta_xxx files}
 \usage{
-get_meta(types = c("basic", "metabinput", "dvqcoefs"), out = "all")
+get_meta(types = list_metas(), out = "all")
 }
 \arguments{
 \item{types}{one or more metadata types to select and merge into a single
-table.}
+table. see the options with list_metas(); all are returned by default.}
 
 \item{out}{character vector or 'all'. if 'all', all columns from the selected
 types will be returned. if anything else, the selected columns will be

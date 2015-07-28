@@ -289,9 +289,9 @@ parse_ts_path <- function(file_path,
 #' @param folder the folder to write the file in, or missing
 #' @return a full file path
 #' @export
-make_meta_path <- function(type=c("basic","metabinput","dvqcoefs"), folder) {
-  # input checking
-  type <- match.arg(type)
+make_meta_path <- function(type, folder) {
+  # don't check the input. we can have any old meta type we want.
+  # type <- match.arg(type)
   
   # create path
   file_name <- sprintf('meta_%s.%s.%s', type, pkg.env$meta_extension, (gz_extension="gz"))
