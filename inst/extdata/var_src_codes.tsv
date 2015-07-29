@@ -4,8 +4,11 @@ baro	calcElev	Pa	barometric pressure	ts	NA	2	NA	"calculate baro assuming constan
 baro	nldas	Pa	barometric pressure	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
 baro	simCopy	Pa	barometric pressure	ts	NA	11	NA	"simulate by copying from another site"	streamMetabolizer	NA	sim	NA
 baro	simNew	Pa	barometric pressure	ts	NA	12	NA	"arbitrarily make up numbers for model testing"	streamMetabolizer	NA	sim	NA
-depth	calcDisch	m	stream depth	ts	depth	6	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
-depth	calcDischHarvey	m	stream depth	ts	depth	5	NA	"calculate depth from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDisch	m	stream depth	ts	depth	7	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDischRaymond	m	stream depth	ts	depth	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDischHarvey	m	stream depth	ts	depth	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_depth	calc	NA
+veloc	calcDischRaymond	m s^-1	flow velocity	ts	depth	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_velocity	calc	NA
+veloc	calcDischHarvey	m s^-1	flow velocity	ts	depth	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_velocity	calc	NA
 depth	calcManning	m	stream depth	ts	depth	3	NA	"calculate depth using Manning's equation"	streamMetabolizer	NA	calc	NA
 depth	calcStage	m	stream depth	ts	depth	4	NA	"calculate depth using stage"	streamMetabolizer	NA	calc	NA
 depth	gagesii	m	stream depth	ts	depth	1	http://water.usgs.gov/GIS/metadata/usgswrd/XML/gagesII_Sept2011.xml	GAGES-II: Geospatial Attributes of Gages for Evaluating Streamflow	NA	NA	data	NA

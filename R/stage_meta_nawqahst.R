@@ -14,7 +14,7 @@
 #' @param folder the folder in which to store both the full table from Mike 
 #'   Wieczorek's site and the formatted, subsetted table destined for our SB 
 #'   directory
-#' @importFrom foreign read.dbf
+#' @importFrom foreign read.dbf write.dbf
 #' @import dplyr
 #' @importFrom unitted v u
 #' @export
@@ -62,7 +62,9 @@ stage_meta_nawqahst <- function(types=c('AC_RUNOFF', 'Ac_popd10', 'AC_NLCD11'), 
     meta_mtype <- bigdata[match(site_ids$nhdplus_id, bigdata$COMID),]
     rownames(meta_mtype) <- NULL
     
-    # clear the big table from memory
+    # write the subsetted table to .dbf to speed future staging, then clear the
+    # big table from memory
+    write.dbf(meta_mtype, file=paste0(filename,".dbf"))
     rm(bigdata)
 
     # remove comid because it's redundant

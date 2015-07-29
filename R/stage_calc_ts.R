@@ -148,16 +148,39 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             utctime = disch_nwis$DateTime,
             disch = disch_nwis$disch)
         },
+        'depth_calcDischRaymond' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          calc_ts_depth_calcDischRaymond(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch)
+        },
         'depth_calcDischHarvey' = {
           disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
           dvqcoefs <- get_meta('dvqcoefs')
           dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-          if(nrow(dvqcoef) == 0) dvqcoef[1,2] <- u(NA,'m')
+          if(nrow(dvqcoef) == 0) dvqcoef[1,'c'] <- u(NA,'m')
           calc_ts_depth_calcDischHarvey(
             utctime = disch_nwis$DateTime,
             disch = disch_nwis$disch,
             c = dvqcoef[[1,'dvqcoefs.c']],
             f = dvqcoef[[1,'dvqcoefs.f']])
+        },
+        'veloc_calcDischRaymond' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          calc_ts_veloc_calcDischRaymond(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch)
+        },
+        'veloc_calcDischHarvey' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          dvqcoefs <- get_meta('dvqcoefs')
+          dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+          if(nrow(dvqcoef) == 0) dvqcoef[1,'k'] <- u(NA,'m s^-1')
+          calc_ts_veloc_calcDischHarvey(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch,
+            k = dvqcoef[[1,'dvqcoefs.k']],
+            m = dvqcoef[[1,'dvqcoefs.m']])
         },
         'depth_simDisch' = {
           calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDisch')
@@ -314,18 +337,36 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
     u()
 }
 
-#' Internal - calculate depth_calcDisch from any data
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
 #' 
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param disch the discharge in ft^3 s^-1
 #' @importFrom unitted u
-#' 
+#' @import streamMetabolizer
+#'   
 #' @keywords internal
 calc_ts_depth_calcDisch <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
   data.frame(
     DateTime = utctime,
-    depth = calc_depth(
-      Q=disch * u(0.0283168466,"m^3 ft^-3"))) %>% u()
+    depth = calc_depth(Q=Q)) %>% u()
+}
+
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @importFrom unitted u
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_depth_calcDischRaymond <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime,
+    depth = calc_depth(Q=Q)) %>% u()
 }
 
 #' Internal - calculate depth_calcDisch from discharge and depth-vs-discharge
@@ -336,17 +377,50 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
 #' @param c the multiplier in d = c * Q^f
 #' @param f the exponent in d = c * Q^f
 #' @importFrom unitted u verify_units v
-#'   
+#' @import streamMetabolizer
+#'    
 #' @keywords internal
 calc_ts_depth_calcDischHarvey <- function(utctime, disch, c, f) {
-  Q <- v(verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1'))
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
   data.frame(
     DateTime = utctime, 
-    depth = calc_depth(
-      Q=disch * u(0.0283168466,"m^3 ft^-3"),
-      c=c, f=f)) %>% u()
+    depth = calc_depth(Q=Q, c=c, f=f)) %>% u()
 }
 
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @importFrom unitted u
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_veloc_calcDischRaymond <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime,
+    veloc = calc_velocity(Q=Q)) %>% u()
+}
+
+
+#' Internal - calculate velocity from discharge and velocity-vs-discharge 
+#' coefficients from Jud Harvey
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @param k the multiplier in U = k * Q^m
+#' @param m the exponent in U = k * Q^m
+#' @importFrom unitted u verify_units v
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_veloc_calcDischHarvey <- function(utctime, disch, k, m) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime, 
+    veloc = calc_velocity(Q=Q, k=k, m=m)) %>% u()
+}
 
 #' Internal - calculate dosat_calcGG from any data
 #' 
