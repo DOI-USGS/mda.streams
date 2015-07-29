@@ -128,13 +128,18 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'suntime_simCopy' = {
           calc_ts_with_input_check(inputs=c(list(var='suntime'), inputs), 'calc_ts_simCopy')
         },
-        
         'par_calcLat' = {
           suntime_calcLon <- read_ts(download_ts('suntime_calcLon', site, on_local_exists="replace"))
           calc_ts_par_calcLat(
             utctime = suntime_calcLon$DateTime,
             suntime = suntime_calcLon$suntime,
             latitude = find_site_coords(site)$lat)
+        },
+        'par_calcSw' = {
+          sw_nldas <- read_ts(download_ts('sw_nldas', site, on_local_exists="replace"))
+          calc_ts_par_calcSw(
+            utctime = sw_nldas$DateTime,
+            sw = sw_nldas$sw)
         },
         'par_simLat' = {
           calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
@@ -324,6 +329,7 @@ calc_ts_suntime_calcLon <- function(utctime, longitude) {
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param suntime the apparent solar time at the site
 #' @param latitude the site latitude in degrees N
+#' @import streamMetabolizer
 #' @importFrom unitted u
 #' 
 #' @keywords internal
@@ -336,6 +342,22 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
         latitude = latitude))) %>% 
     u()
 }
+
+#' Internal - calculate par from SW data
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param sw shortwave radiation in W m^-2
+#' @import streamMetabolizer
+#' @importFrom unitted u
+#' 
+#' @keywords internal
+calc_ts_par_calcSw <- function(utctime, sw) {
+  data.frame(
+    DateTime = utctime,
+    par = convert_SW_to_PAR(sw)) %>% 
+    u()
+}
+
 
 #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' coefficients
