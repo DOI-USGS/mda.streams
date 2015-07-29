@@ -243,6 +243,18 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             longitude = find_site_coords(site)$lon,
             disch = combo$disch)
         },
+        'velocdaily_calcDMean' = {
+          best_veloc <- paste0("veloc_", choose_data_source("veloc", site, logic="priority local")$src)
+          if(best_veloc == "veloc_NA") stop("could not locate an appropriate dosat ts for site ", site)
+          veloc_best <- read_ts(download_ts(best_veloc, site, on_local_exists="replace"))
+          sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+          combo <- combine_ts(sitetime_calcLon, veloc_best, method='approx')
+          combo <- combo[complete.cases(combo),]
+          calc_ts_velocdaily_calcDMean(
+            sitetime = combo$sitetime,
+            longitude = find_site_coords(site)$lon,
+            veloc = combo$veloc)
+        },
         {
           stop("the calculation for var_src ", paste0(var, "_", src), " isn't implemented yet")
         }
@@ -505,6 +517,7 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
     site_name=from_site, on_local_exists="replace"))
   if(!is.null(filter_fun)) filter_fun(from_data) else from_data
 }
+
 #' Internal - calculate daily mean discharge from instantaneous discharge
 #' 
 #' Daily means are computed for the 24 hour periods from midnight to midnight in
@@ -535,4 +548,36 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
     u(c(NA, get_units(disch)))
+}
+
+#' Internal - calculate daily mean velocity from instantaneous
+#' 
+#' Daily means are computed for the 24 hour periods from midnight to midnight in
+#' sitetime. Their DateTime values are noon in sitetime, converted back to UTC. 
+#' These centers approximately correspond to the daily centers for the
+#' metabolism estimation data.
+#' 
+#' @param sitetime the local time, e.g. from sitetime_calcLon
+#' @import streamMetabolizer
+#' @import dplyr
+#' @importFrom unitted v u get_units
+#'   
+#' @keywords internal
+calc_ts_velocdaily_calcDMean <- function(sitetime, longitude, veloc) {
+  onedate <- DateTime <- velocdaily <- '.dplyr.var'
+  data.frame(
+    date = as.Date(v(sitetime)),
+    veloc = v(veloc)
+  ) %>% 
+    group_by(date) %>%
+    summarize(
+      onedate = date[1],
+      velocdaily = mean(veloc)) %>%
+    mutate(
+      DateTime = convert_solartime_to_GMT(
+        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude, time.type="mean solar")) %>%
+    select(DateTime, velocdaily) %>%
+    as.data.frame() %>%
+    u(c(NA, get_units(veloc)))
 }
