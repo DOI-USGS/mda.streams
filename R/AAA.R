@@ -12,6 +12,8 @@ define_pkg_env <- function() {
   pkg.env$ts_delim <- "\t"
   pkg.env$meta_extension <- "tsv"
   pkg.env$meta_delim <- "\t"
+  pkg.env$metab_model_prefix <- "mm_"
+  pkg.env$metab_model_extension <- "RData"
   return(pkg.env)
 }
 pkg.env <- define_pkg_env()

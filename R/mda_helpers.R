@@ -157,6 +157,7 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 
 #' Translate a site name from database and site number to a 
 #' ScienceBase+mda.streams site ID
+#' 
 #' @param sitenum integer or character, coercible to character, representing the
 #'   site code as used by the database.
 #' @param database a character or character vector of databases from which the 
@@ -253,7 +254,7 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' @export
 parse_ts_path <- function(file_path, 
                           out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
-                          use_names=length(out)>1) {
+                          use_names=length(file_path)>1) {
   
   out = match.arg(out, several.ok=TRUE)
   
@@ -310,7 +311,7 @@ make_meta_path <- function(type, folder) {
 #'   list elements?
 #' @return a data.frame, one row per path
 #' @export
-parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(out)>1) {
+parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)
   
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
@@ -322,6 +323,157 @@ parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta
     type = sapply(splits, "[", 2),
     meta_type = paste0("meta_", sapply(splits, "[", 2)),
     stringsAsFactors=FALSE)
+  
+  parsed <- parsed[,out]
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- file_name; .}) 
+      } else {
+        parsed %>% setNames(file_name)
+      }
+  }
+  parsed
+}
+
+#' Combine the date, tag, and strategy of a model_run into a title
+#' 
+#' @param date text date, e.g. 070802
+#' @param tag text tag, e.g., 0.0.3
+#' @param strategy text strategy, e.g., nighttime_k
+#' @export
+make_metab_run_title <- function(date, tag, strategy) {
+  paste(date, tag, strategy, sep=" ")
+}
+
+#' Parse the title of a metab_model run
+#' 
+#' @param title the model run title
+#' @param out the columns to return
+#' @param use_names logical. Should names be attached to the data.frame rows or
+#'   list elements?
+#' @return a data.frame, one row per path
+#' @import dplyr
+#' @export
+parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_names=length(title)>1) {
+  
+  out = match.arg(out, several.ok=TRUE)
+  
+  split_spaces <- gregexpr(' ', title, fixed=TRUE)
+  split_1 <- split_2 <- '.dplyr.var'
+  parsed <- 
+    data.frame(
+      title = title,
+      split_1 = sapply(split_spaces, '[', 1),
+      split_2 = sapply(split_spaces, '[', 2),
+      stringsAsFactors=FALSE) %>%
+    mutate(
+      date = substr(title, 1, split_1-1),
+      tag = substr(title, split_1+1, split_2-1),
+      strategy = substr(title, split_2+1, nchar(title)))
+  
+  parsed <- parsed[,out]
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- title; .}) 
+      } else {
+        parsed %>% setNames(title)
+      }
+  }
+  parsed
+}
+
+#' Produce a name unique to a single metab_model
+#' 
+#' @param title metab_run title
+#' @param row the config row number == metab_all.RData element number
+#' @param site the site name
+#' @export
+make_metab_model_name <- function(title, row, site) {
+  tryCatch(as.numeric(row), warning=function(w) warning("can't convert row to numeric"))
+  sprintf('%s-%s-%s', site, as.character(row), title)
+}
+
+#' Parse a metab_model name
+#' 
+#' @param model_name the unique name of the metab_model as produced by 
+#'   make_metab_model_name
+#' @param out the columns to return
+#' @param use_names logical. Should names be attached to the data.frame rows or 
+#'   list elements?
+#' @import dplyr
+#' @export
+parse_metab_model_name <- function(model_name, out=c('title','row','site','date','tag','strategy'), use_names=length(model_name)>1) {
+  
+  out = match.arg(out, several.ok=TRUE)
+  
+  split_scores <- gregexpr('-', model_name, fixed=TRUE)
+  split_1 <- split_2 <- '.dplyr.var'
+  parsed <- 
+    data.frame(
+      model_name = model_name,
+      split_1 = sapply(split_scores, '[', 1),
+      split_2 = sapply(split_scores, '[', 2),
+      stringsAsFactors=FALSE) %>%
+    mutate(
+      site = substr(model_name, 1, split_1-1),
+      row = as.numeric(substr(model_name, split_1+1, split_2-1)),
+      title = substr(model_name, split_2+1, nchar(model_name))) %>%
+    bind_cols(parse_metab_run_title(.$title, out=c('date','tag','strategy'), use_names=FALSE)) %>%
+    as.data.frame()
+  
+  parsed <- parsed[,out]
+  if(use_names) {
+    parsed <- 
+      if(is.data.frame(parsed)) {
+        parsed %>% do({rownames(.) <- model_name; .}) 
+      } else {
+        parsed %>% setNames(model_name)
+      }
+  }
+  parsed
+}
+
+#' Combine the model_name and folder into a file path for a metab_model
+#' 
+#' @param model_name the name of the model as from make_metab_model_name()
+#' @param folder the folder of the model file
+#' @export
+make_metab_model_path <- function(model_name, folder) {
+  # don't check; permit new items
+  
+  # create path
+  file_name <- sprintf('%s%s.%s', pkg.env$metab_model_prefix, model_name, pkg.env$metab_model_extension)
+  if(missing(folder)) {
+    file.path(file_name) # pretty sure this does absolutely nothing (besides not break)
+  } else {
+    file.path(folder, file_name)
+  }
+  
+}
+
+#' Parse a file path into metab_model information
+#' 
+#' @param file_path the file path
+#' @param out character. which columns to return
+#' @param use_names attach row/vector names?
+#' @import dplyr
+#' @export
+parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy'), use_names=length(file_path)>1) {
+  out = match.arg(out, several.ok=TRUE)
+  
+  dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
+  file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
+  
+  parsed <- data.frame(
+    dir_name = dir_name,
+    file_name = file_name, 
+    model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+1, nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
+    stringsAsFactors=FALSE)
+  parsed <- parsed %>%
+    bind_cols(parse_metab_model_name(parsed$model_name, out=c("title","row","site",'date','tag','strategy'), use_names=FALSE)) %>%
+    as.data.frame()
   
   parsed <- parsed[,out]
   if(use_names) {
