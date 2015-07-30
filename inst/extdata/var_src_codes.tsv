@@ -4,8 +4,11 @@ baro	calcElev	Pa	barometric pressure	ts	NA	2	NA	"calculate baro assuming constan
 baro	nldas	Pa	barometric pressure	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
 baro	simCopy	Pa	barometric pressure	ts	NA	11	NA	"simulate by copying from another site"	streamMetabolizer	NA	sim	NA
 baro	simNew	Pa	barometric pressure	ts	NA	12	NA	"arbitrarily make up numbers for model testing"	streamMetabolizer	NA	sim	NA
-depth	calcDisch	m	stream depth	ts	depth	6	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
-depth	calcDischHarvey	m	stream depth	ts	depth	5	NA	"calculate depth from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDisch	m	stream depth	ts	depth	7	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDischRaymond	m	stream depth	ts	depth	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	calc	NA
+depth	calcDischHarvey	m	stream depth	ts	depth	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_depth	calc	NA
+veloc	calcDischRaymond	m s^-1	flow velocity	ts	depth	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_velocity	calc	NA
+veloc	calcDischHarvey	m s^-1	flow velocity	ts	depth	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_velocity	calc	NA
 depth	calcManning	m	stream depth	ts	depth	3	NA	"calculate depth using Manning's equation"	streamMetabolizer	NA	calc	NA
 depth	calcStage	m	stream depth	ts	depth	4	NA	"calculate depth using stage"	streamMetabolizer	NA	calc	NA
 depth	gagesii	m	stream depth	ts	depth	1	http://water.usgs.gov/GIS/metadata/usgswrd/XML/gagesII_Sept2011.xml	GAGES-II: Geospatial Attributes of Gages for Evaluating Streamflow	NA	NA	data	NA
@@ -14,7 +17,8 @@ depth	simCopy	m	stream depth	ts	depth	12	NA	"simulate by copying from another si
 depth	simDisch	m	stream depth	ts	depth	11	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	sim	NA
 depth	simNew	m	stream depth	ts	depth	13	NA	"arbitrarily make up numbers for model testing"	streamMetabolizer	NA	sim	NA
 disch	nwis	ft^3 s^-1	discharge	ts	NA	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
-dischdaily	calcDMean	ft^3 s^-1	daily mean discharge	ts	NA	1	NA	daily mean discharge, midnight to midnight sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
+dischdaily	calcDMean	ft^3 s^-1	daily mean discharge	ts	NA	1	NA	daily mean values, midnight to midnight sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
+velocdaily	calcDMean	m s^-1	daily mean flow velocity	ts	NA	1	NA	daily mean values, midnight to midnight sitetime, stamped noon sitetime	mda.streams	calc_ts_velocdaily_calcDMean	calc	NA
 doobs	nwis	mg L^-1	dissolved oxygen concentration	ts	DO.obs	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00300'
 doobs	simErrARObs	mg L^-1	dissolved oxygen concentration	ts	DO.obs	12	NA	simulate DO by running the DO model forward and adding autocorrelated observation noise	streamMetabolizer	NA	sim	NA
 doobs	simErrARProc	mg L^-1	dissolved oxygen concentration	ts	DO.obs	14	NA	simulate DO by running the DO model forward and adding autocorrelated process noise	streamMetabolizer	NA	sim	NA
@@ -40,7 +44,8 @@ K600	estDOMLEPRK	d^-1	gas exchange rate	ts	K600	4	NA	estimate by Daily Observati
 K600	estBest	d^-1	gas exchange rate	ts	K600	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
 K600	estNight	d^-1	gas exchange rate	ts	K600	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
 K600	estNightInterp	d^-1	gas exchange rate	ts	K600	2	NA	interpolate K600_estNight using a smoothing/regression function	streamMetabolizer	NA	calc	NA
-par	calcLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	2	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	calc	NA
+par	calcLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	3	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	calc	NA
+par	calcSw	umol m^-2 s^-1	photosynthetically active radiation	ts	light	2	NA	convert shortwave radiation to PAR using coefs from Britton & Dodd (1976)	streamMetabolizer	convert_SW_to_PAR	calc	NA
 par	nwis	umol m^-2 s^-1	photosynthetically active radiation	ts	light	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'99988'
 par	simCopy	umol m^-2 s^-1	photosynthetically active radiation	ts	light	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 par	simLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	11	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	sim	NA

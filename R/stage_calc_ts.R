@@ -128,13 +128,18 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'suntime_simCopy' = {
           calc_ts_with_input_check(inputs=c(list(var='suntime'), inputs), 'calc_ts_simCopy')
         },
-        
         'par_calcLat' = {
           suntime_calcLon <- read_ts(download_ts('suntime_calcLon', site, on_local_exists="replace"))
           calc_ts_par_calcLat(
             utctime = suntime_calcLon$DateTime,
             suntime = suntime_calcLon$suntime,
             latitude = find_site_coords(site)$lat)
+        },
+        'par_calcSw' = {
+          sw_nldas <- read_ts(download_ts('sw_nldas', site, on_local_exists="replace"))
+          calc_ts_par_calcSw(
+            utctime = sw_nldas$DateTime,
+            sw = sw_nldas$sw)
         },
         'par_simLat' = {
           calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
@@ -148,16 +153,39 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             utctime = disch_nwis$DateTime,
             disch = disch_nwis$disch)
         },
+        'depth_calcDischRaymond' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          calc_ts_depth_calcDischRaymond(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch)
+        },
         'depth_calcDischHarvey' = {
           disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
           dvqcoefs <- get_meta('dvqcoefs')
           dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-          if(nrow(dvqcoef) == 0) dvqcoef[1,2] <- u(NA,'m')
+          if(nrow(dvqcoef) == 0) dvqcoef[1,'c'] <- u(NA,'m')
           calc_ts_depth_calcDischHarvey(
             utctime = disch_nwis$DateTime,
             disch = disch_nwis$disch,
             c = dvqcoef[[1,'dvqcoefs.c']],
             f = dvqcoef[[1,'dvqcoefs.f']])
+        },
+        'veloc_calcDischRaymond' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          calc_ts_veloc_calcDischRaymond(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch)
+        },
+        'veloc_calcDischHarvey' = {
+          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+          dvqcoefs <- get_meta('dvqcoefs')
+          dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+          if(nrow(dvqcoef) == 0) dvqcoef[1,'k'] <- u(NA,'m s^-1')
+          calc_ts_veloc_calcDischHarvey(
+            utctime = disch_nwis$DateTime,
+            disch = disch_nwis$disch,
+            k = dvqcoef[[1,'dvqcoefs.k']],
+            m = dvqcoef[[1,'dvqcoefs.m']])
         },
         'depth_simDisch' = {
           calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDisch')
@@ -214,6 +242,18 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             sitetime = combo$sitetime,
             longitude = find_site_coords(site)$lon,
             disch = combo$disch)
+        },
+        'velocdaily_calcDMean' = {
+          best_veloc <- paste0("veloc_", choose_data_source("veloc", site, logic="priority local")$src)
+          if(best_veloc == "veloc_NA") stop("could not locate an appropriate dosat ts for site ", site)
+          veloc_best <- read_ts(download_ts(best_veloc, site, on_local_exists="replace"))
+          sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+          combo <- combine_ts(sitetime_calcLon, veloc_best, method='approx')
+          combo <- combo[complete.cases(combo),]
+          calc_ts_velocdaily_calcDMean(
+            sitetime = combo$sitetime,
+            longitude = find_site_coords(site)$lon,
+            veloc = combo$veloc)
         },
         {
           stop("the calculation for var_src ", paste0(var, "_", src), " isn't implemented yet")
@@ -301,6 +341,7 @@ calc_ts_suntime_calcLon <- function(utctime, longitude) {
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param suntime the apparent solar time at the site
 #' @param latitude the site latitude in degrees N
+#' @import streamMetabolizer
 #' @importFrom unitted u
 #' 
 #' @keywords internal
@@ -314,18 +355,52 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
     u()
 }
 
-#' Internal - calculate depth_calcDisch from any data
+#' Internal - calculate par from SW data
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param sw shortwave radiation in W m^-2
+#' @import streamMetabolizer
+#' @importFrom unitted u
+#' 
+#' @keywords internal
+calc_ts_par_calcSw <- function(utctime, sw) {
+  data.frame(
+    DateTime = utctime,
+    par = convert_SW_to_PAR(sw)) %>% 
+    u()
+}
+
+
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
 #' 
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param disch the discharge in ft^3 s^-1
 #' @importFrom unitted u
-#' 
+#' @import streamMetabolizer
+#'   
 #' @keywords internal
 calc_ts_depth_calcDisch <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
   data.frame(
     DateTime = utctime,
-    depth = calc_depth(
-      Q=disch * u(0.0283168466,"m^3 ft^-3"))) %>% u()
+    depth = calc_depth(Q=Q)) %>% u()
+}
+
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @importFrom unitted u
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_depth_calcDischRaymond <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime,
+    depth = calc_depth(Q=Q)) %>% u()
 }
 
 #' Internal - calculate depth_calcDisch from discharge and depth-vs-discharge
@@ -336,17 +411,50 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
 #' @param c the multiplier in d = c * Q^f
 #' @param f the exponent in d = c * Q^f
 #' @importFrom unitted u verify_units v
-#'   
+#' @import streamMetabolizer
+#'    
 #' @keywords internal
 calc_ts_depth_calcDischHarvey <- function(utctime, disch, c, f) {
-  Q <- v(verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1'))
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
   data.frame(
     DateTime = utctime, 
-    depth = calc_depth(
-      Q=disch * u(0.0283168466,"m^3 ft^-3"),
-      c=c, f=f)) %>% u()
+    depth = calc_depth(Q=Q, c=c, f=f)) %>% u()
 }
 
+#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
+#' coefficients
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @importFrom unitted u
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_veloc_calcDischRaymond <- function(utctime, disch) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime,
+    veloc = calc_velocity(Q=Q)) %>% u()
+}
+
+
+#' Internal - calculate velocity from discharge and velocity-vs-discharge 
+#' coefficients from Jud Harvey
+#' 
+#' @param utctime the DateTime with tz of UTC/GMT
+#' @param disch the discharge in ft^3 s^-1
+#' @param k the multiplier in U = k * Q^m
+#' @param m the exponent in U = k * Q^m
+#' @importFrom unitted u verify_units v
+#' @import streamMetabolizer
+#'   
+#' @keywords internal
+calc_ts_veloc_calcDischHarvey <- function(utctime, disch, k, m) {
+  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
+  data.frame(
+    DateTime = utctime, 
+    veloc = calc_velocity(Q=Q, k=k, m=m)) %>% u()
+}
 
 #' Internal - calculate dosat_calcGG from any data
 #' 
@@ -409,6 +517,7 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
     site_name=from_site, on_local_exists="replace"))
   if(!is.null(filter_fun)) filter_fun(from_data) else from_data
 }
+
 #' Internal - calculate daily mean discharge from instantaneous discharge
 #' 
 #' Daily means are computed for the 24 hour periods from midnight to midnight in
@@ -439,4 +548,36 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
     u(c(NA, get_units(disch)))
+}
+
+#' Internal - calculate daily mean velocity from instantaneous
+#' 
+#' Daily means are computed for the 24 hour periods from midnight to midnight in
+#' sitetime. Their DateTime values are noon in sitetime, converted back to UTC. 
+#' These centers approximately correspond to the daily centers for the
+#' metabolism estimation data.
+#' 
+#' @param sitetime the local time, e.g. from sitetime_calcLon
+#' @import streamMetabolizer
+#' @import dplyr
+#' @importFrom unitted v u get_units
+#'   
+#' @keywords internal
+calc_ts_velocdaily_calcDMean <- function(sitetime, longitude, veloc) {
+  onedate <- DateTime <- velocdaily <- '.dplyr.var'
+  data.frame(
+    date = as.Date(v(sitetime)),
+    veloc = v(veloc)
+  ) %>% 
+    group_by(date) %>%
+    summarize(
+      onedate = date[1],
+      velocdaily = mean(veloc)) %>%
+    mutate(
+      DateTime = convert_solartime_to_GMT(
+        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude, time.type="mean solar")) %>%
+    select(DateTime, velocdaily) %>%
+    as.data.frame() %>%
+    u(c(NA, get_units(veloc)))
 }

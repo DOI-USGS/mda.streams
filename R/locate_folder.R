@@ -9,7 +9,7 @@
 #' locate_folder("publications", format="url")
 #' testthat::expect_error(locate_folder("cvs", format="url"))
 #' }
-locate_folder <- function(folder=c("project","metab_runs","sites","sites_meta","ideas","presentations","proposals","publications"), 
+locate_folder <- function(folder=c("project","metab_runs","metab_models","sites","sites_meta","ideas","presentations","proposals","publications"), 
                           format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   folder <- tolower(folder)
   folder <- match.arg(folder)

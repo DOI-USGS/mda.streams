@@ -38,12 +38,13 @@ stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
   }
   
   # clean up jud's table, keeping just the columns we want, adding units, etc.
-  site_name <- jud_c <- jud_f <- '.dplyr.var'
+  site_name <- jud_c <- jud_f <- jud_a <- jud_b <- k <- m <- '.dplyr.var'
   jud_coefs <- jud_coefs %>%
     inner_join(v(meta_basic[,c('site_name','site_num')]), by='site_num') %>%
-    select(site_name, c=jud_c, f=jud_f) %>%
+    mutate(k=1/(jud_a*jud_c), m=1-jud_b-jud_f) %>%
+    select(site_name, c=jud_c, f=jud_f, a=jud_a, b=jud_b, k, m) %>%
     as.data.frame() %>%
-    u(c(NA, 'm', NA))
+    u(c(NA, 'm', NA, 'm', NA, 'm s^-1', NA))
 
   # either return the data.frame, or save data to local file and return the
   # filename.
