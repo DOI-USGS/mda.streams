@@ -31,7 +31,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   expected_units <- get_var_src_codes(var==vars, src=='nldas', out='units')
   
   # get site coordinates and format for geoknife
-  lon_lat <- find_site_coords(sites, format="geoknife")
+  lon_lat <- get_site_coords(sites, format="geoknife")
   lon_lat_df <- lon_lat[complete.cases(t(lon_lat))]
   
   stencil <- simplegeom(lon_lat_df)

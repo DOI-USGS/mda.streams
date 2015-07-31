@@ -5,7 +5,7 @@
 \title{Import data that Ted has acquired from the Accumulated and Reach Catchment
 Land Variables dataset}
 \usage{
-stage_meta_nawqahst_temp(types = c("climate", "hydrol", "soil"),
+stage_meta_nawqahst_temp(types = c("climate", "hydrol", "soil", "landcover"),
   folder = tempdir())
 }
 \arguments{
