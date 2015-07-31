@@ -1,4 +1,4 @@
-#' Get a URL to the gage location on Google Maps
+#' Get, and by default browse to, a URL to the site location on Google Maps
 #' 
 #' @param site_names a list of site names such as those returned from 
 #'   make_site_name()

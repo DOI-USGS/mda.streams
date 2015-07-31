@@ -3,7 +3,7 @@ context("post_metab_run and delete_metab_run")
 test_that("metab runs can be posted & deleted", {
   dontrun <- function() {
     set_scheme('mda_streams_dev')
-    sbtools::authenticate_sb()
+    login_sb()
     
     proj_dir <- if(file.exists('test-post_metab_run.R')) "../.." else "."
     metab_dir <- file.path(proj_dir, "tests/temp/150713 0.0.1 test_run")

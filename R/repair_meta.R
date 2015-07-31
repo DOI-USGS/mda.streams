@@ -18,8 +18,7 @@
 repair_meta <- function(type, limit=5000) {
   
   # check the session; we'll need write access
-  if(is.null(current_session()))
-    stop("log in to repair data. see authenticate_sb()")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   # package the args together for arg replication & easier looping
   query_args <- data.frame(

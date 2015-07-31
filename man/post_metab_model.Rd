@@ -21,7 +21,7 @@ Post individual metab_model object[s] to SB
 }
 \examples{
 \dontrun{
-sbtools::authenticate_sb()
+login_sb()
 set_scheme("mda_streams_dev")
 # stage_metab_model...
 # post_metab_model...

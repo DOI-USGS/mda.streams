@@ -22,7 +22,7 @@ Create new site in SB
 }
 \examples{
 \dontrun{
-sbtools::authenticate_sb()
+login_sb()
 set_scheme("mda_streams_dev")
 
 sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")

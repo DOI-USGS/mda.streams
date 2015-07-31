@@ -10,7 +10,7 @@
 #' @keywords internal
 #' @examples
 #' \dontrun{
-#' sbtools::authenticate_sb()
+#' login_sb()
 #' set_scheme("mda_streams_dev")
 #' 
 #' sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
@@ -21,7 +21,7 @@
 #' }
 delete_site <- function(sites, children_only=FALSE, verbose=TRUE) {
   
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   deletion_msgs <- lapply(sites, function(site) {
     # find the item id by hook or by crook (aka tag or dir)

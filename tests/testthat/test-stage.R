@@ -1,7 +1,7 @@
 context("bulk staging & posting")
 
 if(!is.null(sbtools::current_session())) {
-  sbtools::authenticate_sb()
+  login_sb()
   set_scheme("mda_streams_dev")
  
   test_that("can stage sitelist and post sites", {

@@ -12,7 +12,7 @@
 #' @importFrom unitted u v get_units
 #' @examples
 #' \dontrun{
-#' sbtools::authenticate_sb()
+#' login_sb()
 #' set_scheme("mda_streams_dev")
 #' 
 #' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
@@ -33,7 +33,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
   # check inputs & session
   if(is.null(files)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   # loop through files, posting each and recording whether we'll need to add tags
   expect_id_loss <- TRUE

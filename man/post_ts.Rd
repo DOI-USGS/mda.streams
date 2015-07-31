@@ -20,7 +20,7 @@ Post a staged file from the local computer to ScienceBase
 }
 \examples{
 \dontrun{
-sbtools::authenticate_sb()
+login_sb()
 set_scheme("mda_streams_dev")
 
 sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")

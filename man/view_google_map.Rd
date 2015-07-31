@@ -2,7 +2,7 @@
 % Please edit documentation in R/view_google_map.R
 \name{view_google_map}
 \alias{view_google_map}
-\title{Get a URL to the gage location on Google Maps}
+\title{Get, and by default browse to, a URL to the site location on Google Maps}
 \usage{
 view_google_map(site_names, browser = TRUE)
 }
@@ -13,7 +13,7 @@ make_site_name()}
 \item{browser}{logical. Should the URL be opened in a browser?}
 }
 \description{
-Get a URL to the gage location on Google Maps
+Get, and by default browse to, a URL to the site location on Google Maps
 }
 \examples{
 \dontrun{

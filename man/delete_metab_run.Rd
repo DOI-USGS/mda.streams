@@ -19,7 +19,7 @@ Delete the run item, and/or its files, from SB
 \examples{
 \dontrun{
 set_scheme('mda_streams_dev')
-authenticate_sb()
+login_sb()
 
 set_scheme('mda_streams')
 }
