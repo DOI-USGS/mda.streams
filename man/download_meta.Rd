@@ -22,7 +22,7 @@ file handle (character path) for the downloaded file, or NA if the
   timeseries is unavailable on ScienceBase
 }
 \description{
-Download a timeseries file to a user-specified (or temp file)
+Download a metadata file to a user-specified (or temp file)
   location
 }
 \examples{

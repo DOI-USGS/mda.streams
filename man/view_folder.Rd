@@ -10,6 +10,7 @@ view_folder(path)
 \item{path}{a file path}
 }
 \description{
-Opens the specified folder or the containing folder of the specified file
+Opens the specified folder, or the containing folder of the specified file,
+in the file explorer
 }
 

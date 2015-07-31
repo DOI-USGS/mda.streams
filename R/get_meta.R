@@ -1,7 +1,6 @@
-#' Get metadata from one or more meta_xxx files
+#' Get metadata (site data) from ScienceBase
 #' 
 #' Keeps a locally cached copy to reduce the size and number of requests to SB. 
-#' If
 #' 
 #' @param types one or more metadata types to select and merge into a single 
 #'   table. see the options with list_metas(); all are returned by default.
