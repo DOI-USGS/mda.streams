@@ -15,8 +15,8 @@
 #' @export
 get_meta <- function(types=list_metas(), out='all') {
   
-  # check and collect each of the requested tables
-  metas <- lapply(types, function(type) {
+  # check and re-download each of the requested tables as needed
+  updated_data <- sapply(types, function(type) {
     
     # define pkg.env variable names
     meta_type <- paste0('meta_', type)
@@ -42,27 +42,43 @@ get_meta <- function(types=list_metas(), out='all') {
       assign(x=meta_type_timestamp, value=new_timestamp, envir=pkg.env)
     }
     
-    # always use the [updated] cached value
-    meta <- get(meta_type, envir=pkg.env)
-    
-    # if there's more than one type, add the type to the column names
-    if(type != 'basic') {
-      names(meta)[names(meta) != 'site_name'] <- paste0(type, ".", names(meta)[names(meta) != 'site_name'])
-    }
-    
-    # return
-    meta
+    needs_download
   })
   
-  # combine the metadata tables into a single table
-  data <- do.call(
-    combine_tables, 
-    c(metas, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
+  # either create+save or get the full metadata table
+  if(any(updated_data)) {
+    # load the individual metadata tables
+    metas <- lapply(types, function(type) {
+      # always use the [updated] cached value here - quicker
+      meta_type <- paste0('meta_', type)
+      meta <- get(meta_type, envir=pkg.env)
+      # add the type to the column names
+      if(type != 'basic') {
+        names(meta)[names(meta) != 'site_name'] <- paste0(type, ".", names(meta)[names(meta) != 'site_name'])
+      }
+      meta
+    })
+    # combine the metadata tables into a single table
+    data <- do.call(
+      combine_tables, 
+      c(metas, list(by='site_name', fun=combine_dplyr('full_join', by='site_name'), allow_constants=FALSE)))
+    assign(x='meta_all', value=data, envir=pkg.env)
+  } else {
+    data <- get('meta_all', envir=pkg.env)
+  } 
   
   # subset by columns if requested
-  if(length(out) != 1 || out[1] != 'all') {
-    data <- data[,out]
+  if(length(out) == 1 && out == 'all') {
+    # basic columns are those without '.', but if we're not returning basic, just include site_name
+    basic_cols <- if('basic' %in% type) which(!grepl('.', names(data), fixed=TRUE)) else grep('site_name', names(data))
+    # cols from other tables start with the corresponding 'type.'
+    other_cols <- unlist(lapply(types[types!='basic'], function(type) {
+      which(grepl(paste0('^',type,'\\.'), names(data)))
+    }))
+    # 
+    out <- c(basic_cols, other_cols)
   }
+  data <- unique(data[,out])
   
   data
 }
