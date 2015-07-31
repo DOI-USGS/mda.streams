@@ -112,12 +112,12 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'sitetime_calcLon' = {
           calc_ts_sitetime_calcLon(
             utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
-            longitude = find_site_coords(site)$lon)
+            longitude = get_site_coords(site)$lon)
         },
         'suntime_calcLon' = {
           calc_ts_suntime_calcLon(
             utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
-            longitude = find_site_coords(site)$lon)
+            longitude = get_site_coords(site)$lon)
         },
         'suntime_simLon' = {
           calc_ts_with_input_check(inputs, 'calc_ts_suntime_calcLon')
@@ -133,7 +133,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           calc_ts_par_calcLat(
             utctime = suntime_calcLon$DateTime,
             suntime = suntime_calcLon$suntime,
-            latitude = find_site_coords(site)$lat)
+            latitude = get_site_coords(site)$lat)
         },
         'par_calcSw' = {
           sw_nldas <- read_ts(download_ts('sw_nldas', site, on_local_exists="replace"))
@@ -240,7 +240,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           combo <- combo[complete.cases(combo),]
           calc_ts_dischdaily_calcDMean(
             sitetime = combo$sitetime,
-            longitude = find_site_coords(site)$lon,
+            longitude = get_site_coords(site)$lon,
             disch = combo$disch)
         },
         'velocdaily_calcDMean' = {
@@ -252,7 +252,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           combo <- combo[complete.cases(combo),]
           calc_ts_velocdaily_calcDMean(
             sitetime = combo$sitetime,
-            longitude = find_site_coords(site)$lon,
+            longitude = get_site_coords(site)$lon,
             veloc = combo$veloc)
         },
         {

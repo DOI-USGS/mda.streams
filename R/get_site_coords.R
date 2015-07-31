@@ -11,10 +11,10 @@
 #' @return a data.frame of
 #' @export
 #' @examples 
-#' find_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501")) 
-#' find_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
+#' get_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501")) 
+#' get_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
 #'     "styx_0001001"), format="geoknife")
-find_site_coords <- function(site_names, format=c("normal","geoknife"), attach.units=(format=="normal")) {
+get_site_coords <- function(site_names, format=c("normal","geoknife"), attach.units=(format=="normal")) {
 
   format <- match.arg(format)
     
