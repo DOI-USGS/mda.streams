@@ -28,10 +28,7 @@ Find a metadata object on ScienceBase
 }
 \examples{
 \dontrun{
-locate_site("nwis_02322688", format="url")
-locate_site(c("nwis_02322688", "nwis_03259813", "nwis_04024000"))
-locate_site("nwis_notasite", format="url")
-testthat::expect_error(locate_site("notasite", format="url"))
+locate_meta('basic')
 }
 }
 

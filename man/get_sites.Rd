@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_sites.R
 \name{get_sites}
 \alias{get_sites}
-\title{A helper to find_sites. Gets site IDS from sciencebase w/ simple data query}
+\title{A helper to list_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
 get_sites(with_dataset_name = NULL, limit = 10000, ...)
 }

@@ -11,6 +11,9 @@ get_config(title, config_file = "config.tsv", on_local_exists = "skip")
 
 \item{config_file}{the name of the config file. It's usually but not always
 'config.tsv'; use \code{list_metab_run_files(title)} to check}
+
+\item{on_local_exists}{character indicating what to do if the folder already
+contains a file with the intended download name}
 }
 \description{
 Download and read a config file from a metab run on SB
