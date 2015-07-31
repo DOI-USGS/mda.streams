@@ -70,7 +70,7 @@ get_meta <- function(types=list_metas(), out='all') {
   # subset by columns if requested
   if(length(out) == 1 && out == 'all') {
     # basic columns are those without '.', but if we're not returning basic, just include site_name
-    basic_cols <- if('basic' %in% type) which(!grepl('.', names(data), fixed=TRUE)) else grep('site_name', names(data))
+    basic_cols <- if('basic' %in% types) which(!grepl('.', names(data), fixed=TRUE)) else grep('site_name', names(data))
     # cols from other tables start with the corresponding 'type.'
     other_cols <- unlist(lapply(types[types!='basic'], function(type) {
       which(grepl(paste0('^',type,'\\.'), names(data)))
