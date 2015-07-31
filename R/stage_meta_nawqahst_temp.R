@@ -11,7 +11,6 @@
 #'   our SB directory
 #' @import dplyr
 #' @importFrom unitted v u
-#' @export
 stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil'), folder=tempdir()) {
   
   # authenticate SB - access is needed to download the data
