@@ -1,5 +1,8 @@
-#' Higher-level site querying function
+#' Get a list of the sites on ScienceBase
 #' 
+#' The with_var_src argument optionally limits the list to those sites that
+#' contain specific timeseries variables.
+#'  
 #' @param with_var_src character vector of data variables (i.e., 1+ of those
 #'   listed in get_var_src_codes(out='var_src'))
 #' @param logic how to join the constraints in with_var_src, ...: is any of the
