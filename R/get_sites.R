@@ -1,4 +1,4 @@
-#' A helper to find_sites. Gets site IDS from sciencebase w/ simple data query
+#' A helper to list_sites. Gets site IDS from sciencebase w/ simple data query
 #' 
 #' Collects from sciencebase all site names ("site_root" titles, e.g., 
 #' "nwis_02948375") or the names of sites containing a particular var_src 
