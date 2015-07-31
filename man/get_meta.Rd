@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_meta.R
 \name{get_meta}
 \alias{get_meta}
-\title{Get metadata from one or more meta_xxx files}
+\title{Get metadata (site data) from ScienceBase}
 \usage{
 get_meta(types = list_metas(), out = "all")
 }
@@ -19,6 +19,5 @@ a metadata table
 }
 \description{
 Keeps a locally cached copy to reduce the size and number of requests to SB.
-If
 }
 

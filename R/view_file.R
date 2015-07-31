@@ -1,7 +1,7 @@
 #' Open a file
 #' 
-#' Opens the specified file
-#' 
+#' Opens the specified file using the default program for that file type
+#'  
 #' @param path a file path
 #' @export
 view_file <- function(path) {
@@ -18,7 +18,8 @@ view_file <- function(path) {
 
 #' Open a folder or a file's folder
 #' 
-#' Opens the specified folder or the containing folder of the specified file
+#' Opens the specified folder, or the containing folder of the specified file,
+#' in the file explorer
 #' 
 #' @param path a file path
 #' @export

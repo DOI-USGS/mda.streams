@@ -1,6 +1,6 @@
 #' Download metadata data to local file destination
 #' 
-#' Download a timeseries file to a user-specified (or temp file) 
+#' Download a metadata file to a user-specified (or temp file) 
 #'   location
 #' 
 #' @param type the metadata type
