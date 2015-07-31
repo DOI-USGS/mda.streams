@@ -9,7 +9,7 @@
 #' @keywords internal
 #' @examples 
 #' \dontrun{
-#' sbtools::authenticate_sb()
+#' login_sb()
 #' set_scheme("mda_streams_dev")
 #' 
 #' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
@@ -24,7 +24,7 @@
 #' }
 delete_ts <- function(var_src, site_name, files_only=FALSE, verbose=TRUE) {
   
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   # find the item id by hook or by crook (aka tag or dir)
   query_args <- data.frame(var_src=var_src, site_name=site_name, 

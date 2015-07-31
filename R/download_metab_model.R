@@ -16,7 +16,7 @@ download_metab_model <- function(model_name, folder = tempdir(),
                                on_remote_missing=c("stop","return_NA"), 
                                on_local_exists=c("stop","skip","replace")) {
   
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before downloading a metab_model")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   on_remote_missing <- match.arg(on_remote_missing)
   on_local_exists <- match.arg(on_local_exists)

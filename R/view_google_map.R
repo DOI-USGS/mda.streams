@@ -1,4 +1,4 @@
-#' Get a URL to the gage location on Google Maps
+#' Get, and by default browse to, a URL to the site location on Google Maps
 #' 
 #' @param site_names a list of site names such as those returned from 
 #'   make_site_name()
@@ -7,10 +7,10 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' cat(find_google_map("nwis_01484680"))
-#' find_google_map(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
+#' cat(view_google_map("nwis_01484680"))
+#' view_google_map(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
 #' }
-find_google_map <- function(site_names, browser=TRUE) {
+view_google_map <- function(site_names, browser=TRUE) {
   coords <- find_site_coords(site_names, format="normal", attach.units = FALSE)
   url <- setNames(
     ifelse(complete.cases(coords),

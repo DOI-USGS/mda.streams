@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_ts.R
 \name{download_ts}
 \alias{download_ts}
-\title{download timeseries data to local file destination}
+\title{Download timeseries data to local file destination}
 \usage{
 download_ts(var_src, site_name, folder = tempdir(),
   on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
@@ -28,8 +28,7 @@ file handle (character path) for the downloaded file, or NA if the
   timeseries is unavailable on ScienceBase
 }
 \description{
-download a timeseries file to a user-specified (or temp file)
-  location
+Download a timeseries file to a user-specified (or temp file) location
 }
 \examples{
 \dontrun{
@@ -37,6 +36,6 @@ download_ts(var_src = 'doobs_nwis', site_name = 'nwis_06893300')
 }
 }
 \author{
-Corinna Gries, Jordan S Read, Luke A Winslow, Alison P Appling
+Alison P Appling, Corinna Gries, Jordan S Read, Luke A Winslow
 }
 

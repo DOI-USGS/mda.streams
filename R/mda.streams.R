@@ -9,8 +9,8 @@
 #' 
 #' @section Logging in:
 #'   
-#'   Use the \code{\link[sbtools]{authenticate_sb}} command from \pkg{sbtools} 
-#'   to establish session credentials for working with ScienceBase.
+#'   Use the \code{\link{login_sb}} command to establish session credentials for
+#'   working with ScienceBase.
 #'   
 #'   Use \code{\link{get_scheme}} and \code{\link{set_scheme}} to see/specify 
 #'   the ScienceBase scheme to use. The default is "mda_streams", but another 
@@ -48,7 +48,7 @@
 #'   
 #'   \itemize{
 #'   
-#'   \item \code{\link{stage_nwis_sitelist}} - generate a list of site IDs that
+#'   \item \code{\link{stage_nwis_sitelist}} - generate a list of site IDs that 
 #'   meet data availability criteria
 #'   
 #'   }
@@ -58,8 +58,8 @@
 #'   
 #'   \itemize{
 #'   
-#'   \item \code{\link{post_site}} - given a site ID, create an SB node for 
-#'   the site
+#'   \item \code{\link{post_site}} - given a site ID, create an SB node for the
+#'   site
 #'   
 #'   \item \code{\link{post_ts}} - given a data.frame with data, do a little 
 #'   format checking and post those data to SB. Where would such data come from?

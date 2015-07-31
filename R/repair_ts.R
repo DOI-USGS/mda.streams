@@ -22,8 +22,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
   verify_var_src(var_src, on_fail=warning)
   
   # check the session; we'll need write access
-  if(is.null(current_session()))
-    stop("log in to repair data. see authenticate_sb()")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   # package the args together for arg replication & easier looping
   query_args <- data.frame(

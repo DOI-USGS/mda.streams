@@ -12,7 +12,7 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' sbtools::authenticate_sb()
+#' login_sb()
 #' set_scheme("mda_streams_dev")
 #' metafile <- stage_meta(sites=list_sites(), folder="temp")
 #' post_meta(metafile, on_exists="stop", verbose=TRUE)
@@ -21,7 +21,7 @@
 post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE) {
   # handle inputs
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   meta_ids <- sapply(setNames(files, files), function(metafile) {
     

@@ -23,7 +23,7 @@ Deletes timeseries objects specified by all combinations of variable and site
 }
 \examples{
 \dontrun{
-sbtools::authenticate_sb()
+login_sb()
 set_scheme("mda_streams_dev")
 
 sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")

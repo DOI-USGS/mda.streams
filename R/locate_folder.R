@@ -13,8 +13,8 @@ locate_folder <- function(folder=c("project","metab_runs","metab_models","sites"
                           format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   folder <- tolower(folder)
   folder <- match.arg(folder)
-  if(!(folder %in% c('sites','sites_meta','metab_run')) && is.null(current_session())) 
-    stop("session is NULL, so only the sites, sites_meta, and metab_runs folders are visible. see authenticate_sb()")
+  if(!(folder %in% c('sites','sites_meta')) && is.null(current_session())) 
+    stop("only the sites and sites_meta folders are publicly visible. call login_sb() first to see more")
   if(folder == 'project' && by %in% c("dir", "either"))
     stop("'by' must be 'tag' when searching for the project folder")
   browser <- isTRUE(browser)

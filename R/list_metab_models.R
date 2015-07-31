@@ -5,7 +5,7 @@
 #' @export
 list_metab_models = function(){
   
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before querying metab_models")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   # get list of site items, then filter to those of the proper data_type
   model_items <- query_item_identifier(scheme = get_scheme(), type = 'metab_model', limit = 10000)

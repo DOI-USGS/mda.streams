@@ -7,7 +7,7 @@
 #' @param verbose logical. Should status messages be given?
 #' @keywords internal
 delete_meta <- function(types, files_only=FALSE, verbose=TRUE) {
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before deleting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   deletion_msgs <- lapply(types, function(type) {
     # find the item id by hook or by crook (aka tag or dir)

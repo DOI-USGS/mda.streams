@@ -9,7 +9,7 @@
 #' @export
 #' @examples 
 #' \dontrun{
-#' sbtools::authenticate_sb()
+#' login_sb()
 #' set_scheme("mda_streams_dev")
 #' 
 #' sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
@@ -26,7 +26,7 @@ post_site <- function(sites, on_exists=c("stop", "skip", "clear", "replace"), ve
   # check inputs & session
   if(missing(sites) || is.null(sites)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("session is NULL. call sbtools::authenticate_sb() before posting")
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
   
   posted_items <- sapply(setNames(sites, sites), function(site) {
     
