@@ -1,0 +1,375 @@
+site	reviewer	Name of Site	dopsat amplitude	diel signal (y/n)	accept/reject/examine	Reasoning (ocean / estuary / spring / dam / other)	NOTES
+nwis_01400500 	Jim	Raritan River at Manville NJ	60	Y	accept		Remarkable flood recovery sequences - may have non-resetting floods
+nwis_01454700 	Jim	Lehigh River at Glendon, PA	40	y	accept		short DO record
+nwis_01463500 	Jim	Delaware River at Trenton NJ	50	y	accept		disturbance at very low discharge variability, 
+nwis_01465798 	Jim	Poquessing Creek at Grant Ave. at Philadelphia	80	y	accept		flashy urban
+nwis_01467042 	Jim	Pennypack Creek at Pine Road, at Philadelphia, PA	120	y	accept		flashy urban
+nwis_01467048 	Jim	Pennypack Cr at Lower Rhawn St Bdg, Phila., PA	120	y	accept		check about distance with other pennypack cr site
+nwis_01467086 	Jim	Tacony Creek ab Adams Avenue, Philadelphia, PA	120	y	accept		
+nwis_01467087 	Jim	Frankford Creek at Castor Ave, Philadelphia, PA	120	y	accept		
+nwis_01473500 	Jim	Schuylkill River at Norristown, PA	50	y	accept		Mostly good but VERY large excursions in recent record.  Maybe be regulated flow.
+nwis_01474000 	Jim	Wissahickon Creek at Mouth, Philadelphia, PA	90	y	accept		large diel fluctuations in flow under baseflow , but 26 ft ASL, so not tidal.
+nwis_01475530 	Jim	Cobbs Cr at U.S. Hghwy No. 1 at Philadelphia, PA	50	y	accept		
+nwis_01475548 	Jim	Cobbs Creek at Mt. Moriah Cemetery, Philadelphia	100	y	accept		
+nwis_01480617 	Jim	West Branch Brandywine Creek at Modena, PA	70	y	accept		
+nwis_01480870 	Jim	East Branch Brandywine Creek below Downingtown, PA	90	y	accept		
+nwis_01481000 	Jim	Brandywine Creek at Chadds Ford, PA	85	y	accept		
+nwis_01481500 	Jim	BRANDYWINE CREEK AT WILMINGTON, DE	30	y	accept		
+nwis_01493112 	Jim	CHESTERVILLE BRANCH NEAR CRUMPTON, MD	50	y	accept		
+nwis_01540500 	Jim	Susquehanna River at Danville, PA	250	y	accept		250 is correct.  Susq has high DO and high pH TMDL
+nwis_01542500 	Jim	WB Susquehanna River at Karthaus, PA	40	y	accept		
+nwis_01544500 	Jim	Kettle Creek at Cross Fork, PA	45	y	accept		
+nwis_01548303 	Jim	Straight Run, Site 1, at Marsh Creek, PA	10	y	accept		
+nwis_01549700 	Jim	Pine Creek bl L Pine Creek near Waterville, PA	30	y	accept		
+nwis_01570500 	Jim	Susquehanna River at Harrisburg, PA	50	y	accept		
+nwis_01608500 	Jim	SOUTH BRANCH POTOMAC RIVER NEAR SPRINGFIELD, WV	80	y	accept		
+nwis_01611500 	Jim	CACAPON RIVER NEAR GREAT CACAPON, WV	70	y	accept		
+nwis_01632900 	Jim	SMITH CREEK NEAR NEW MARKET, VA	45	y	accept		
+nwis_01645704 	Jim	DIFFICULT RUN ABOVE FOX LAKE NEAR FAIRFAX, VA	30	y	accept		
+nwis_01645762 	Jim	S F LITTLE DIFFICULT RUN ABOVE MOUTH NR VIENNA, VA	40	y	accept		
+nwis_01646000 	Jim	DIFFICULT RUN NEAR GREAT FALLS, VA	20	y	accept		
+nwis_01646305 	Jim	DEAD RUN AT WHANN AVENUE NEAR MCLEAN, VA	80	y	accept		
+nwis_01646500 	Jim	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	25	y	accept		weird patterns of post-flood productivity after large floods.
+nwis_01648010 	Jim	ROCK CREEK AT JOYCE RD WASHINGTON, DC	70	y	accept		
+nwis_01649190 	Jim	PAINT BRANCH NEAR COLLEGE PARK, MD	20	y	accept		
+nwis_01649500 	Jim	NORTHEAST BRANCH ANACOSTIA RIVER AT RIVERDALE, MD	90	y	accept		
+nwis_01650800 	Jim	SLIGO CREEK NEAR TAKOMA PARK, MD	60	y	accept		
+nwis_01654000 	Jim	ACCOTINK CREEK NEAR ANNANDALE, VA	60	y	accept		
+nwis_01654500 	Jim	LONG BRANCH NEAR ANNANDALE, VA	55	y	accept		
+nwis_01656903 	Jim	FLATLICK BRANCH ABOVE FROG BRANCH AT CHANTILLY, VA	110	y	accept		
+nwis_01658000 	Jim	MATTAWOMAN CREEK NEAR POMONKEY, MD	20	y	accept		
+nwis_0166818623 	Jim	MILL CREEK ABV PEUMANSEND CREEK NR PORT ROYAL, VA	20	y	accept		
+nwis_0166818985 	Jim	MILL CREEK BLW PEUMANSEND CREEK NR PORT ROYAL, VA	10	y	accept		
+nwis_01673000 	Jim	PAMUNKEY RIVER NEAR HANOVER, VA	30	y	accept		
+nwis_02035000 	Emily B	JAMES RIVER AT CARTERSVILLE, VA	25	yes	accept		great storm recovery data
+nwis_02101726 	Emily B	Rocky River at US 64	30	yes	accept		flashy Piedmont urban hydrograph
+nwis_02110400 	Emily B	Buck Creek near Longs, SC	60	yes	accept		great storm recovery data
+nwis_02156500 	Emily B	BROAD RIVER NEAR CARLISLE, SC	40	yes	accept		VERY INTERESTING - early record has regulated hydrograph later years look like natural flow regime
+nwis_02160105 	Emily B	TYGER RIVER NEAR DELTA, SC	30	yes	accept		periods of low amplitude have clear problems with resolution
+nwis_02160700 	Emily B	ENOREE RIVER AT WHITMIRE, SC	5	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02162035 	Emily B	BROAD RIVER NEAR COLUMBIA, SC	10	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02169000 	Emily B	SALUDA RIVER NEAR COLUMBIA, SC	25	yes	accept		well below Lake Murray Dam - regulated flow
+nwis_02203655 	Emily B	SOUTH RIVER AT FORREST PARK ROAD, AT ATLANTA, GA	5	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02203700 	Emily B	INTRENCHMENT CR AT CONSTITUTION RD, NR ATLANTA, GA	80	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02203863 	Emily B	SHOAL CREEK AT COLUMBIA DRIVE NEAR ATLANTA, GA	5	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02203900 	Emily B	SOUTH RIVER AT FLAKES MILL ROAD NR ATLANTA, GA	20	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02203950 	Emily B	SNAPFINGER CREEK NEAR DECATUR, GA	20	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02203960 	Emily B	SNAPFINGER CR AT THOMPSON MILL RD NR LITHONIA, GA	30	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02208450 	Emily B	ALCOVY RIVER ABOVE COVINGTON, GA	10	yes	accept		regulated hydrograph - perhaps recreational flows???
+nwis_02208493 	Emily B	CORNISH CREEK AT HAZELBRAND RD NR COVINGTON, GA	10	yes	accept		
+nwis_02234000 	Emily B	ST. JOHNS RIVER ABOVE LAKE HARNEY NEAR GENEVA, FL	15	yes	accept		very strong seasonal signal
+nwis_02264000 	Emily B	CYPRESS CREEK AT VINELAND, FL	15	yes	accept		
+nwis_02264100 	Emily B	BONNET CREEK NEAR VINELAND, FL	120	yes	accept		
+nwis_02266300 	Emily B	REEDY CREEK NEAR VINELAND, FL	5	yes	accept		suspect this is blackwater
+nwis_02336120 	Emily B	N.F. PEACHTREE CREEK, BUFORD HWY, NEAR ATLANTA, GA	5	yes	accept		very flashy urban hydrograph with limited impact of storms on diel O2
+nwis_02336152 	Emily B	SOUTH FORK PEACHTREE AT CASA RD, NR CLARKSTON, GA	40	yes	accept		very flashy urban hydrograph 
+nwis_023362095 	Emily B	BURNT FORK CR AT MILLWOOD WAY NEAR CLARKSTON, GA	20	yes	accept		very flashy urban hydrograph 
+nwis_02336240 	Emily B	S.F. PEACHTREE CREEK JOHNSON RD, NEAR ATLANTA, GA	25	yes	accept		very flashy urban hydrograph 
+nwis_02336300 	Emily B	PEACHTREE CREEK AT ATLANTA, GA	50	yes	accept		very flashy urban hydrograph 
+nwis_02336313 	Emily B	WOODALL CREEK AT DEFOORS FERRY RD, AT ATLANTA, GA	20	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02336360 	Emily B	NANCY CREEK AT RICKENBACKER DRIVE, AT ATLANTA, GA	40	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02336410 	Emily B	NANCY CREEK AT WEST WESLEY ROAD, AT ATLANTA, GA	15	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02336526 	Emily B	PROCTOR CREEK AT JACKSON PARKWAY, AT ATLANTA, GA	12	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02336728 	Emily B	UTOY CREEK AT GREAT SOUTHWEST PKWY NR ATLANTA, GA	50	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02337170 	Emily B	CHATTAHOOCHEE RIVER NEAR FAIRBURN, GA	10	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02423130 	Emily B	CAHABA RIVER AT TRUSSVILLE, AL	60	yes	accept		
+nwis_02423160 	Emily B	CAHABA RIVER NEAR WHITES CHAPEL AL	55	yes	accept		very flashy urban hydrograph, great storm recovery patterns
+nwis_02423397 	Emily B	LITTLE CAHABA RIVER BELOW LEEDS, AL	20	yes	accept		very flashy urban hydrograph, little impact of storms
+nwis_02423496 	Emily B	CAHABA RIVER NEAR HOOVER, AL	50	yes	accept		
+nwis_02455980 	Emily B	TURKEY CREEK AT SEWAGE PLANT NEAR PINSON AL	25	yes	accept		
+nwis_02457595 	Emily B	FIVEMILE CREEK NEAR REPUBLIC, AL	70	yes	accept		
+nwis_02458450 	Emily B	VILLAGE CREEK AT AVENUE W AT ENSLEY, AL	130	yes	accept		
+nwis_03007800 	Ted	Allegheny River at Port Allegheny	60	y	accept		
+nwis_03025500 	Ted	Allegheny River at Franklin	100	y	accept		
+nwis_03034000 	Ted	Mahoning Creek at Punxatawny	35	y	accept		
+nwis_03061000 	Ted	West Fork River at Enterprise, WV	60	y	accept		
+nwis_03067510 	Ted	Shavers Fork near Cheat Bridge, WV	60	y	accept		
+nwis_03072655 	Ted	Monongahela River near Masontown, PA	30	y	accept		
+nwis_03073000 	Ted	South Fork Tenmile Creek at Jefferson, PA	60	y	accept		
+nwis_03098600 	Ted	Mahoning River below West Ave at Youngstown, OH	15	y	accept		
+nwis_03105500 	Ted	Beaver River at Wampum, PA	50	y	accept		
+nwis_03106000 	Ted	Connoquenessing Creek near Zelienople, PA	70	y	accept		
+nwis_03121850 	Ted	Huff Run at Mineral City, OH	10	y	accept		
+nwis_03183500 	Ted	GREENBRIER RIVER AT ALDERSON, WV	40	y	accept		
+nwis_03219500 	Ted	Scioto River near Prospect, OH	100	y	accept		
+nwis_03228300 	Ted	Big Walnut Creek at Sunbury, OH	60	y	accept		
+nwis_03259757 	Ted	W Fk Mill Creek at West Fork Road at Cincinnati OH	100	y	accept		spotty data but otherwise good
+nwis_03259813 	Ted	W Fk Mill Creek at Hille Park at Cincinnati OH	50	y	accept		spotty data but otherwise good
+nwis_03277075 	Ted	GUNPOWDER CR AT CAMP ERNST RD NR UNION, KY	80	y	accept		
+nwis_03277130 	Ted	MUD LICK CR AT HWY 42 NR BEAVERLICK, KY	100	y	accept		small flashy stream; not urban?
+nwis_03292470 	Ted	HARRODS CREEK AT HIGHWAY 329 NR GOSHEN, KY.	40	y	accept		super flashy hydrograph; not urban; Upstream part of Louisville sensor network.
+nwis_03292474 	Ted	GOOSE CREEK AT OLD WESTPORT RD NR ST MATTHEWS, KY	60	y	accept		urban; small impoundment upstream; hydrograph okay; Part of Louisville sensor network.
+nwis_03292475 	Ted	GOOSE CREEK AT US HWY 42 NEAR GLENVIEW ACRES, KY	30	y	accept		flashy urban; Part of Louisville sensor network.
+nwis_03292480 	Ted	LITTLE GOOSE CREEK NEAR HARRODS CREEK, KY	20	y	accept		Part of Louisville sensor network.
+nwis_03292500 	Ted	SOUTH FORK BEARGRASS CREEK AT LOUISVILLE, KY	60	y	accept		Part of Louisville sensor network.
+nwis_03293000 	Ted	M FK BEARGRASS CR AT OLD CANNONS LN AT LOUISVILLE,KY	30	y	accept		Part of Louisville sensor network.
+nwis_03293530 	Ted	MUDDY FK AT MOCKINGBIRD VALLEY RD AT LOUISVILLE,KY	30	y	accept		Part of Louisville sensor network.
+nwis_03297800 	Ted	CEDAR CREEK AT HWY 1442 NEAR SHEPHERDSVILLE, KY	50	y	accept		
+nwis_03298000 	Ted	FLOYDS FORK AT FISHERVILLE, KY	20	y	accept		low O2 periods
+nwis_03298135 	Ted	CHENOWETH RUN AT RUCKRIEGAL PARKWAY, KY	60	y	accept		low O2 periods
+nwis_03298150 	Ted	CHENOWETH RUN AT GELHAUS LANE NEAR FERN CREEK, KY	50	y	accept		
+nwis_03298250 	Ted	CEDAR CREEK AT THIXTON ROAD NEAR LOUISVILLE, KY	40	y	accept		low O2 periods
+nwis_03301900 	Emily B	FERN CREEK AT OLD BARDSTOWN RD AT LOUISVILLE, KY	140	y	accept		
+nwis_03301940 	Emily B	NORTHERN DITCH AT OKOLONA, KY	130	y	accept		
+nwis_03302030 	Emily B	POND CREEK AT PENDLETON ROAD NEAR LOUISVILLE, KY	50	y	accept		
+nwis_03302050 	Emily S	BRIER CREEK AT PENDELTON ROAD NEAR LOUISVILLE, KY	120	y	accept		
+nwis_03353200 	Emily S	EAGLE CREEK AT ZIONSVILLE, IN	60-160	Y	accept		
+nwis_03374100 	Emily S	WHITE RIVER AT HAZLETON, IN	100-160	Y	accept		
+nwis_03408500 	Emily S	NEW RIVER AT NEW RIVER, TN	80-95	Y	accept		
+nwis_03409500 	Emily S	CLEAR FORK NEAR ROBBINS, TN	75-110	Y	accept		flood controlled DO 
+nwis_03538830 	Emily S	OBED RIVER AT ADAMS BRIDGE NEAR CROSSVILLE, TN	80-110	Y	accept		
+nwis_03539600 	Emily S	DADDYS CREEK NEAR HEBBERTSBURG, TN	85-115	Y	accept		flood controlled DO
+nwis_03539778 	Emily S	CLEAR CREEK AT LILLY BRIDGE NEAR LANCING, TN	75-110	Y	accept		flood controlled DO
+nwis_04027000 	Emily S	BAD RIVER NEAR ODANAH, WI	80-120	Y	accept	 	freezes in winter
+nwis_04040000 	Emily S	ONTONAGON RIVER NEAR ROCKLAND, MI	80-120	Y	accept		freezes in winter (or- gaps in winter Q data); good flood recovery data
+nwis_04059500 	Emily S	FORD RIVER NEAR HYDE, MI	80-120	Y	accept		freezes in winter and one winter with DO data (under ice?)-!
+nwis_04067500 	Emily S	MENOMINEE RIVER NEAR MC ALLISTER, WI	60-150	Y	accept		freezes in winter, but winter DO data present- great data
+nwis_04085108 	Emily S	EAST RIVER @ CNTY TRUNK HIGHWAY ZZ NR GREENLEAF,WI	50-80	Y	accept		wandering baseline of saturation; interesting 
+nwis_040851385 	Emily S	FOX RIVER AT OIL TANK DEPOT AT GREEN BAY, WI	60-140	Y	accept		beautiful seasonal DO signature- textbook
+nwis_04087030 	Emily S	MENOMONEE RIVER AT MENOMONEE FALLS, WI	95-140	Y	accept		
+nwis_04087050 	Emily S	LITTLE MENOMONEE RIVER NEAR FREISTADT, WI	70-160	Y	accept		good flood recovery site 
+nwis_04087088 	Emily S	UNDERWOOD CREEK AT WAUWATOSA, WI	50-250	Y	accept		really small events reset DO 
+nwis_04087119 	Emily S	HONEY CREEK AT WAUWATOSA, WI	85-160	Y	accept		interesting flood recovery- Snow likes it 
+nwis_04087120 	Emily S	MENOMONEE RIVER AT WAUWATOSA, WI	60-150	Y	accept		another good flood recovery site
+nwis_04087142 	Emily S	MENOMONEE RIVER AT 16TH STREET AT MILWAUKEE, WI	80-120	Y	accept		errratic urban site
+nwis_04101500 	Emily S	ST. JOSEPH RIVER AT NILES, MI	75-110	Y	accept		good seasonal signal 
+nwis_04108660 	Emily S	KALAMAZOO RIVER AT NEW RICHMOND, MI	80-130	Y	accept		
+nwis_04119400 	Emily S	GRAND RIVER NEAR EASTMANVILLE, MI	120-200	Y	accept		spikey, seasonal 
+nwis_04121944 	Emily S	LITTLE MUSKEGON RIVER NEAR OAK GROVE, MI	90-140	Y	accept		nice seasonal system
+nwis_04124000 	Emily S	MANISTEE RIVER NEAR SHERMAN, MI	90-110	Y	accept		
+nwis_04125460 	Emily S	PINE RIVER AT HIGH SCHOOL BRIDGE NR HOXEYVILLE, MI	80-110	Y	accept		nice seasonality
+nwis_04136900 	Emily S	AU SABLE RIVER NEAR MC KINLEY, MI	80-115	Y	accept		
+nwis_04142000 	Emily S	RIFLE RIVER NEAR STERLING, MI	95-115	Y	accept		
+nwis_041482663 	Emily S	ALGER CREEK AT HILL ROAD NEAR SWARTZ CREEK, MI	60-160	Y	accept		gap in Q record
+nwis_04166500 	Emily S	RIVER ROUGE AT DETROIT, MI	90-130	Y	accept		urban- very erratic site; might have some challenges 
+nwis_04176500 	Emily S	RIVER RAISIN NEAR MONROE, MI	80-150	Y	accept		
+nwis_04195500 	Emily S	Portage River at Woodville OH	75-200	Y	accept		
+nwis_04199500 	Emily S	Vermilion River near Vermilion OH	85-150	Y	accept		flashy farm stream; some data gaps for DO
+nwis_04200500 	Emily S	Black River at Elyria OH	70-160	Y	accept		good flood response signal
+nwis_04208000 	Emily S	Cuyahoga River at Independence OH	90-130	Y	accept		flashy urban
+nwis_04213500 	Emily S	CATTARAUGUS CREEK AT GOWANDA NY	95-120	Y	accept		strong seasonality
+nwis_05054000 	Dave	RED RIVER OF THE NORTH AT FARGO, ND	10	y	accept		
+nwis_05057000 	Dave	SHEYENNE RIVER NR COOPERSTOWN, ND	7	y	accept		
+nwis_05057200 	Dave	BALDHILL CREEK NR DAZEY, ND	40	y	accept		
+nwis_05406457 	Dave	BLACK EARTH CREEK NR BREWERY RD AT CROSS PLAINS,WI	65	y	accept		
+nwis_05406469 	Dave	BREWERY CREEK-UPSTREAM SITE-AT CROSS PLAINS, WI	90	y	accept		
+nwis_05406479 	Dave	BLACK EARTH CK NR TREATMENT PLNT @ CROSS PLAINS,WI	35	y	accept		
+nwis_05418400 	Dave	North Fork Maquoketa River near Fulton, IA	10	y	accept		
+nwis_05435943 	Dave	BADGER MILL CREEK AT VERONA, WI	20-65	y	accept		
+nwis_05435950 	Dave	SUGAR RIVER NEAR VERONA, WI	45	y	accept		
+nwis_05451080 	Dave	South Fork Iowa River near Blairsburg, IA	5	y	accept		
+nwis_05451210 	Dave	South Fork Iowa River NE of New Providence, IA	20-60	y	accept		
+nwis_05515500 	Dave	KANKAKEE RIVER AT DAVIS, IN	8	y	accept		
+nwis_05579630 	Dave	KICKAPOO CREEK NEAR BLOOMINGTON, IL	100	y	accept		
+nwis_06336000 	Dave	LITTLE MISSOURI RIVER AT MEDORA, ND	15	y	accept		
+nwis_06436760 	Dave	HORSE CR ABOVE VALE,SD	30	y	accept		
+nwis_06461500 	Dave	Niobrara River near Sparks, Nebr.	25	y	accept		
+nwis_06465500 	Dave	Niobrara River near Verdel, Nebr.	25	y	accept		
+nwis_06601200 	Dave	Missouri River at Decatur, NE	8	y	accept		Only about 2 months of record in late 2007
+nwis_06711565 	Dave	SOUTH PLATTE RIVER AT ENGLEWOOD, CO.	70	y	accept		
+nwis_06795500 	Dave	Shell Creek near Columbus, Nebr.	4-40	y	accept		
+nwis_06800500 	Dave	Elkhorn River at Waterloo, Nebr.	30	y	accept		
+nwis_06892513 	Dave	MILL C AT JOHNSON DRIVE, SHAWNEE, KS	5	y	accept		
+nwis_06893300 	Dave	INDIAN C AT OVERLAND PARK, KS	30	y	accept		
+nwis_06893350 	Dave	TOMAHAWK C NR OVERLAND PARK, KS	40	y	accept		
+nwis_06893620 	Dave	Rock Creek at Kentucky Road in Independence, MO	20	y	accept		
+nwis_06893820 	Dave	Little Blue R. at Lees Summit Rd in Independence	50	y	accept		
+nwis_06893970 	Dave	Spring Branch Ck at Holke Rd in Independence, MO	20-80	y	accept		
+nwis_06894000 	Dave	Little Blue River near Lake City, MO	10-60	y	accept		
+nwis_06934500 	Dave	Missouri River at Hermann, MO	10	y	accept		
+nwis_07048600 	Natalie	White River near Fayetteville, AR	25	Y	accept		recovery response to storms
+nwis_07056515 	Natalie	Bear Creek near Silver Hill, AR	50	Y	accept		recovery response to storms
+nwis_07061270 	Natalie	East Fork Black River near Lesterville, MO	100	Y	accept		
+nwis_07075250 	Natalie	S Fk Lit Red Riv us of Gulf Mt WMA nr Scotland, AR	70	Y	accept		
+nwis_07106000 	Natalie	FOUNTAIN CREEK NEAR FOUNTAIN, CO.	30	Y	accept		diel signal in discharge (irrigation during summer?)
+nwis_07109500 	Natalie	ARKANSAS RIVER NEAR AVONDALE, CO.	70	Y	accept		
+nwis_07143672 	Natalie	L ARKANSAS R AT HWY 50 NR HALSTEAD, KS	100	Y	accept		
+nwis_07144780 	Natalie	NF NINNESCAH R AB CHENEY RE, KS	110	Y	accept		recovery response to storms
+nwis_07177500 	Natalie	Bird Creek near Sperry, OK	40	Y	accept		
+nwis_07178200 	Natalie	Bird Ck at State Highway 266 near Catoosa, OK	40	Y	accept		
+nwis_071912213 	Natalie	Spavinaw Creek near Colcord, OK	80	Y	accept		recovery response to storms
+nwis_07191222 	Natalie	Beaty Creek near Jay, OK	80	Y	accept		upstream of dam
+nwis_07332620 	Natalie	Bois D'Arc Ck at FM 1396 nr Honey Grove, TX	60	Y	accept		
+nwis_08049500 	Natalie	W Fk Trinity Rv at Grand Prairie, TX	70	Y	accept		
+nwis_08052700 	Natalie	Little Elm Ck nr Aubrey, TX	100	Y	accept		
+nwis_08052745 	Natalie	Doe Br at US Hwy 380 nr Prosper, TX	45	Y	accept		diel DO signal but messy
+nwis_08057000 	Natalie	Trinity Rv at Dallas, TX	15	Y	accept		diel DO signal but messy
+nwis_08057410 	Natalie	Trinity Rv bl Dallas, TX	15	Y	accept		diel DO signal but messy
+nwis_08062500 	Natalie	Trinity Rv nr Rosser, TX	40	Y	accept		
+nwis_08065350 	Natalie	Trinity Rv nr Crockett, TX	50	Y	accept		
+nwis_08068000 	Natalie	W Fk San Jacinto Rv nr Conroe, TX	130	Y	accept		
+nwis_08068275 	Natalie	Spring Ck nr Tomball, TX	70	Y	accept		
+nwis_08068400 	Natalie	Panther Br at Gosling Rd, The Woodlands, TX	90	Y	accept		
+nwis_08068500 	Natalie	Spring Ck nr Spring, TX	180	Y	accept		
+nwis_08070200 	Natalie	E Fk San Jacinto Rv nr New Caney, TX	80	Y	accept		
+nwis_08171290 	Natalie	Blanco Rv at Halifax Rch nr Kyle, TX	70	Y	accept		
+nwis_08180700 	Natalie	Medina Rv nr Macdona, TX	120	Y	accept		
+nwis_08181500 	Natalie	Medina Rv at San Antonio, TX	60	Y	accept		
+nwis_08181800 	Natalie	San Antonio Rv nr Elmendorf, TX	140	Y	accept		
+nwis_08188060 	Emily S	San Antonio Rv at SH 72 nr Runge, TX	80-150	Yes 	accept		really nice flashy system record
+nwis_08211200 	Emily S	Nueces Rv at Bluntzer, TX	70-110	Yes 	accept		note that there is an upstream dam, but some distance
+nwis_08374550 	Emily S	Rio Grande nr Castolon, TX	90-110	Yes	accept		note gaps during flood/high flow periods
+nwis_08375300 	Emily S	Rio Grande at Rio Grande Village, Big Bnd NP, TX	80-120	Yes	accept		some big floods
+nwis_08437710 	Emily S	Pecos Rv at RR 1776 nr Grandfalls, TX	40-180	Yes	accept		
+nwis_08446500 	Emily S	Pecos Rv nr Girvin, TX	0-300	Yes	accept		
+nwis_08447300 	Emily S	Pecos Rv at Brotherton Rh nr Pandale, TX	80-125	Yes	accept		note increasing Q over time
+nwis_09258980 	Emily S	MUDDY CREEK BELOW YOUNG DRAW, NEAR BAGGS, WY	50-200	Yes	accept		a lot of data gaps in DO record
+nwis_09406000 	Emily S	VIRGIN RIVER AT VIRGIN, UT	90-115	Yes	accept		flashy
+nwis_10129900 	Emily B	SILVER CREEK NEAR SILVER CREEK JUNCTION, UT	100	yes	accept		
+nwis_10133650 	Emily B	E CANYON CR BL I-80 REST STOP NR PARK CITY, UT	70	yes	accept		
+nwis_10133800 	Emily B	EAST CANYON CREEK NEAR JEREMY RANCH, UT	70	yes	accept		
+nwis_10133980 	Emily B	EAST CANYON CREEK AB EAST CYN RES NR MORGAN, UTAH	60	yes	accept		
+nwis_11044000 	Emily B	SANTA MARGARITA R NR TEMECULA CA	45	yes	accept		
+nwis_11273400 	Emily B	SAN JOAQUIN R AB MERCED R NR NEWMAN CA	190	yes	accept		
+nwis_11462500 	Emily B	RUSSIAN R NR HOPLAND CA	50	y	accept		
+nwis_11463980 	Emily B	RUSSIAN R A DIGGER BEND NR HEALDSBURG CA	60	y	accept		
+nwis_11467000 	Emily B	RUSSIAN R NR GUERNEVILLE CA	40	y	accept		
+nwis_12100490 	Emily B	WHITE RIVER AT R STREET NEAR AUBURN, WA	15	y	accept		
+nwis_13013650 	Emily B	SNAKE RIVER AT MOOSE, WY	25	y	accept		
+nwis_13173600 	Emily B	SNAKE RIVER NR ADRIAN OR	80	y	accept		only 1 year of data
+nwis_13206400 	Emily B	EAGLE DRAIN AT EAGLE, ID	90	y	accept		only 1 year of data
+nwis_13213000 	Emily B	BOISE RIVER NR PARMA ID	60		accept		~ 2 years of data with 2 year gap in between - looks like change in flows in between
+nwis_13213100 	Emily B	SNAKE RIVER AT NYSSA OR	60	y	accept		only 1 year of data
+nwis_14151000 	Emily B	INDIAN C AT 119TH ST, OVERLAND PARK, KS	190	y 	accept		
+nwis_14206950 	Emily B	FANNO CREEK AT DURHAM, OR	40	y	accept		
+nwis_14210000 	Emily B	CLACKAMAS RIVER AT ESTACADA, OR	5	y	accept		lots of periods without a diel signal
+nwis_14211010 	Emily B	CLACKAMAS RIVER NEAR OREGON CITY, OR	15	y	accept		
+nwis_14301500 	Natalie	WILSON RIVER NEAR TILLAMOOK, OR	45	Y	accept		
+nwis_14302480 	Natalie	TRASK RIVER ABOVE CEDAR CREEK, NEAR TILLAMOOK, OR	25	Y	accept		
+nwis_385446094430700 	Natalie	INDIAN C AT 119TH ST, OVERLAND PARK, KS	80	Y	accept		
+nwis_385520094420000 	Natalie	INDIAN C AT COLLEGE BLVD, JOHNSON CO, KS	80	Y	accept		
+nwis_385608094380300 	Natalie	INDIAN C AT INDIAN C PKWY, OVERLAND PARK, KS	90	Y	accept		
+nwis_01408500 	Jim	Toms River near Toms River NJ	10	Y	examine	odd structure to discharge, weird gaps in metab	
+nwis_01473900 	Jim	Wissahickon Creek at Fort Washington, PA	80	y	examine		large diel fluctuations in flow under baseflow , but 140 ft ASL, so not tidal.
+nwis_01474500 	Jim	Schuylkill River at Philadelphia, PA	100	y	examine		several periods when DO minima are >100%.  Diel structure is odd during those periods.
+nwis_01484525 	Jim	MILLSBORO POND OUTLET AT MILLSBORO, DE			examine	lake outlet	
+nwis_01567000 	Jim	Juniata River at Newport, PA	20		examine		very short and bad looking record
+nwis_02110500 	Emily B	Waccamaw River near Longs, SC	80	yes	examine	other	this stream is usually wonky except at very low flows - think we're seeing some tidal influence
+nwis_02148315 	Emily B	WATEREE R. BL EASTOVER, SC		no	examine	other	hydrograph is very odd, NWIS info shows site in a wetland - site deactivated
+nwis_02171645 	Emily B	REDIV CANAL AT SANTEE RIVER NR ST STEPHEN, SC	10	yes	examine	other	this is a diversion canal with crazy within day variations in flow - decent data for some periods
+nwis_02266200 	Emily B	WHITTENHORSE CREEK NEAR VINELAND, FL	10	yes	examine	other	strange hydrograph
+nwis_02344630 	Emily B	LINE CREEK BLW LAKE MCINTOSH, NR PEACHTREE CITY,GA			examine	dam	not clear if this is an inlet or outlet
+nwis_03075070 	Ted	Monongahela River at Elizabeth, PA	30	y	examine	flow regulation?	
+nwis_03081000 	Ted	Youghiogeny River below Confluence, PA	20	y	examine	flow regulation?	
+nwis_03083500 	Ted	Youghiogeny River at Sutersville, PA	25	y	examine	flow regulation?	
+nwis_03254520 	Ted	LICKING RIVER AT HWY 536 NEAR ALEXANDRIA, KY	5	y	examine	low-resolution O2 data; strange hydrograph	
+nwis_03289193 	Ted	WOLF RUN AT OLD FRANKFORT PIKE AT LEXINGTON, KY	100	y	examine	600% O2 saturation?	short record; overall strange O2; urban
+nwis_03293500 	Ted	M FK BEARGRASS CR AT LEXINGTON RD AT LOUISVILLE,KY	20	y	examine		low oxygen periods; Part of Louisville sensor network.
+nwis_03293510 	Ted	BEARGRASS CREEK AT RIVER ROAD AT LOUISVILLE, KY	30	y	examine		low oxygen periods; Part of Louisville sensor network.
+nwis_03294570 	Ted	MILL CREEK AT ORELL ROAD NEAR LOUISVILLE, KY	20	y	examine		low oxygen periods; Part of Louisville sensor network.
+nwis_03297900 	Ted	FLOYDS FORK NEAR PEWEE VALLEY, KY	30	y	examine		bad parts to the record; some believable low O2, some not believable.
+nwis_03298200 	Ted	FLOYDS FORK NEAR MT WASHINGTON, KY			examine		sensor problems?
+nwis_03298300 	Ted	PENNSLYVANIA RUN AT MT WASHINGTON RD NR LOUISVILLE			examine		Dam upstream; low O2 during low flow
+nwis_03302000 	Ted	POND CREEK NEAR LOUISVILLE, KY	30	y	examine		low O2 periods
+nwis_03339000 	Natalie	VERMILION RIVER NEAR DANVILLE, IL	20	Y	examine		<1 yr of data
+nwis_03512000 	Emily S	OCONALUFTEE RIVER AT BIRDTOWN, NC			examine	there's doobs, but not dopsat_calc- and there is DO data	
+nwis_04125550 	Emily S	MANISTEE RIVER NEAR WELLSTON, MI		Maybe	examine		DO seems very erratic 
+nwis_04136000 	Emily S	AU SABLE RIVER NEAR RED OAK, MI	80-110	Y	examine	 	looks good, but right below a dam
+nwis_04137500 	Emily S	AU SABLE RIVER NEAR AU SABLE, MI			examine	right below dam; erratic DO	sometime diel signal is present, but may be related to dam?
+nwis_04167150 	Emily S	MIDDLE RIVER ROUGE AT DEARBORN HEIGHTS, MI	80-105	Y	examine	short record - might not be enough data	
+nwis_04174500 	Emily S	HURON RIVER AT ANN ARBOR, MI	90-120	Y	examine		d/s of a dam- influencing Q and DO can be erratic 
+nwis_04188496 	Emily S	Eagle Creek above Findlay OH	90-120	Y	examine	some periods with diel signal but alot of messy days in btwn	
+nwis_05082500 	Dave	RED RIVER OF THE NORTH AT GRAND FORKS, ND	5 - 15	maybe	examine	random checks of 3 summer periods indicated one good signal, but the otehr 2 had poor diel signal	
+nwis_05420500 	Dave	Mississippi River at Clinton, IA	7	y	examine		about 3 miles downstream of L&D 13 and record started in 2015.
+nwis_06805500 	Dave	Platte River at Louisville, Nebr.	130	y	examine	daily fluctuations inf flow can exceed 20% on a large stream	
+nwis_06818000 	Dave	Missouri River at St. Joseph, MO	4	y	examine	2  month record april and may 2015	
+nwis_06893890 	Dave	East Fork Little Blue River near Blue Springs, MO	20	y	examine	Immediately downstream from reservoir (Blue Sporings lake)	
+nwis_07075270 	Natalie	South Fork of Little Red River near Scotland, AR	10	Y	examine	other	diel signal not present during low/zero flow periods
+nwis_07239450 	Natalie	North Canadian River near Calumet, OK	200	Y	examine		discharge shows prolonged peaks unexplained by surrounding landuse
+nwis_07241000 	Natalie	North Canadian River blw Lk Overholser nr OKC, OK	120	Y	examine	dam	downstream of dam but not evidence by discharge. Periods where DO goes to zero
+nwis_07241520 	Natalie	North Canadian River at Britton Rd at OKC, OK	150	Y	examine		diel signal in discharge and low flow periods. gaps in DO dataset
+nwis_07241550 	Natalie	North Canadian River near Harrah, OK	225	Y	examine		diel signal in discharge and low flow periods. gaps in DO dataset
+nwis_07257500 	Natalie	Illinois Bayou near Scottsville, AR	30	Y	examine		diel signal in DO less clear during low flow
+nwis_07261090 	Natalie	Cypress Creek nr Birdtown, AR	140	Y	examine		diel signal in DO when zero flow (wetland?)
+nwis_07263296 	Natalie	Maumelle River near Wye, AR	70	Y	examine		diel signal in DO when zero flow (wetland?)
+nwis_07332622 	Natalie	Bois D'Arc Ck at FM 409 nr Honey Grove, TX	60	Y	examine		diel signal in DO when zero flow (wetland?)
+nwis_07381600 	Natalie	Lower Atchafalaya River at Morgan City, LA	5	Y	examine		periods with diel DO signals
+nwis_08048000 	Natalie	W Fk Trinity Rv at Ft Worth, TX	120	Y	examine		diel signal not always clear
+nwis_08420500 	Emily S	Pecos Rv at Pecos, TX	80-130	Yes	examine	very short record with Q and DO	intermittent; often Q=0
+nwis_08447000 	Emily S	Pecos Rv nr Sheffield, TX	90-120	Yes	examine		DO tends to be erratic 
+nwis_11463000 	Emily B	RUSSIAN R NR CLOVERDALE CA	50	y	examine	other	large data gaps no full years
+nwis_11463682 	Emily B	RUSSIAN R A JIMTOWN CA	100	y	examine	other	odd DO - large annual gaps for no obvious reason
+nwis_11465240 	Emily B	DRY C BLW LAMBERT BR NR GEYSERVILLE CA	20	y	examine	other	odd DO - large annual gaps for no obvious reason
+nwis_14182500 	Emily B	LITTLE NORTH SANTIAM RIVER NEAR MEHAMA, OR	18	y	examine	other	<1 year of data
+nwis_01193050 	Jim	CONNECTICUT RIVER AT MIDDLE HADDAM, CT		Y	reject	estuary	
+nwis_01382210 	Jim	Pequannock River at Oak Ridge NJ	20	Y	reject	dam	
+nwis_01388000 	Jim	Ramapo River at Pompton Lakes NJ		Y	reject	dam	
+nwis_01408167 	Jim	Barnegat Bay at Route 528 bridge at Mantoloking NJ			reject	estuary	
+nwis_01433500 	Jim	MONGAUP RIVER NEAR MONGAUP NY	10	y	reject	intense hydropeaking, 12-24 DO peaks	
+nwis_01484080 	Jim	MURDERKILL RIVER AT FREDERICA, DE			reject	estuary	very tidal
+nwis_01484085 	Jim	MURDERKILL RIVER AT BOWERS, DE			reject	estuary	very tidal
+nwis_02042222 	Emily B	JAMES RIVER ABV WEYANOKE POINT NR CHARLES CITY, VA			reject	estuary	
+nwis_0209303205 	Emily B	NEW RIVER BELOW HWY17 BRIDGE AT JACKSONVILLE, NC			reject	estuary	
+nwis_02110550 	Emily B	Waccamaw River above Conway, SC			reject	estuary	
+nwis_02110701 	Emily B	Crabtree Swamp at Conway, SC			reject	estuary	
+nwis_02110704 	Emily B	Waccamaw River at the Conway marina			reject	estuary	
+nwis_0212378405 	Emily B	Tillery Dam on the PeeDee River			reject	dam	hydropeaking drives diel O2 change
+nwis_02135000 	Emily B	LITTLE PEE DEE R. AT GALIVANTS FERRY, SC			reject	dam	
+nwis_02168504 	Emily B	SALUDA RIVER BELOW LK MURRAY DAM NR COLUMBIA, SC			reject	dam	
+nwis_02198920 	Emily B	SAVANNAH RIVER AT GA 25, AT PORT WENTWORTH, GA			reject	estuary	
+nwis_02198950 	Emily B	MIDDLE RIVER AT GA 25 AT PORT WENTWORTH, GA			reject	estuary	
+nwis_021989773 	Emily B	SAVANNAH RIVER AT USACE DOCK, AT SAVANNAH, GA			reject	estuary	
+nwis_021989792 	Emily B	LITTLE BACK RIVER AT GA 25 AT PORT WENTWORTH, GA			reject	estuary	
+nwis_02231254 	Emily B	ST MARY'S RIVER AT I-95, NEAR KINGSLAND, GA			reject	estuary	
+nwis_02231291 	Emily B	NASSAU RIVER NEAR TISONIA, FL			reject	estuary	
+nwis_02234500 	Emily B	ST. JOHNS RIVER NEAR SANFORD, FL			reject	other	just above a coastal lake - bidirectional flow
+nwis_02235500 	Emily B	BLUE SPRINGS NEAR ORANGE CITY, FL			reject	other	not flowing
+nwis_02236000 	Emily B	ST. JOHNS RIVER NEAR DE LAND, FL			reject	other	not flowing
+nwis_02236125 	Emily B	ST. JOHNS RIVER AT ASTOR, FL			reject	estuary	
+nwis_02244040 	Emily B	ST. JOHNS R AT BUFFALO BLUFF NEAR SATSUMA, FL			reject	estuary	
+nwis_02245260 	Emily B	DEEP CREEK AT SPUDS, FL			reject	estuary	
+nwis_02293249 	Emily B	McIntyre Creek at Sanibel Island			reject	ocean	
+nwis_02319302 	Emily B	MADISON BLUE SPRING NR BLUE SPRINGS, FL			reject	other	wonky DO data
+nwis_02322688 	Emily B	BLUE HOLE SPRING NR HILDRETH, FL			reject	spring	spring
+nwis_02323502 	Emily B	FANNING SPRINGS NR WILCOX FLA			reject	estuary	
+nwis_023432415 	Emily B	CHATTAHOOCHEE R .36 MI DS WFG DAM NR FT GAINES, GA			reject	dam	
+nwis_02397530 	Emily B	COOSA RIVER AT STATE LINE, AL/GA			reject	other	lake
+nwis_03027500 	Ted	East Branch Clarion River at Dam	6	y	reject	Dam	
+nwis_03036000 	Ted	Mahoning Creek at Mahoning Creek Dam	15	y	reject	Dam	
+nwis_03058000 	Ted	West Fork River below Stonewall Jackson Dam	15	y	reject	Dam	
+nwis_03321500 	Emily S	GREEN RIVER AT LOCK 1 AT SPOTTSVILLE, KY			reject	dam	name says it all
+nwis_03430200 	Emily S	STONES RIVER AT US HWY 70 NEAR DONELSON, TN			reject	dam	
+nwis_03432350 	Emily S 	HARPETH RIVER AT FRANKLIN, TN			reject	less than 1 year of data	
+nwis_03432400 	Emily S	HARPETH RIVER BELOW FRANKLIN, TN			reject	less than 1 year of data	
+nwis_03460795 	Emily S	PIGEON R BL POWER PLANT NR WATERVILLE, NC			reject	dam	
+nwis_03612600 	Emily S	OHIO RIVER AT OLMSTED			reject	erratic and record <5 months	
+nwis_04024000 	Emily S	St Louis River at Cloquet		N	reject	dam influenced	erratic record; DO sat higher at night
+nwis_04087170 	Emily S	MILWAUKEE RIVER AT MOUTH AT MILWAUKEE, WI			reject	freshwater estuary	
+nwis_04092750 	Emily S	INDIANA HARBOR CANAL AT EAST CHICAGO, IN			reject	freshwater estuary	
+nwis_04095090 	Emily S	PORTAGE-BURNS WATERWAY AT PORTAGE, IN			reject	freshwater estuary	
+nwis_04124200 	Emily S	MANISTEE RIVER NEAR MESICK, MI		N	reject	right below dam; erratic DO	
+nwis_04136500 	Emily S	AU SABLE RIVER AT MIO, MI		N	reject	right below dam; erratic DO	
+nwis_04137005 	Emily S	AU SABLE RIVER NEAR CURTISVILLE, MI		N	reject	right below dam; erratic DO	site looks like its below a dam (mis-sited on a cul de sac)
+nwis_04157005 	Emily S	SAGINAW RIVER AT HOLLAND AVENUE AT SAGINAW, MI		sometimes	reject	some negative Q days- freshwater estuary and erratic DO patterns 	
+nwis_04249000 	Emily S	OSWEGO RIVER AT LOCK 7, OSWEGO NY		Y	reject	lock & dam; flat nighttime DO	
+nwis_05524500 	Dave	IROQUOIS RIVER NEAR FORESMAN, IN	1	n	reject		record started in 2015
+nwis_06807000 	Dave	Missouri River at Nebraska City, NE	3	n	reject		
+nwis_07061290 	Natalie	E. Fk. Black R. bl Lower Taum Sauk Reservoir	30	Y	reject	dam	
+nwis_07164500 	Natalie	Arkansas River at Tulsa, OK	120	Y	reject	dam	
+nwis_07198000 	Natalie	Illinois River near Gore, OK	110	Y	reject	dam	
+nwis_072632966 	Natalie	Lake Maumelle at State Hwy 10 near Wye, AR			reject	dam	
+nwis_07374000 	Natalie	Mississippi River at Baton Rouge, LA		N 	reject		
+nwis_08155500 	Natalie	Barton Spgs at Austin, TX		N 	reject	other	no diel pattern
+nwis_08317400 	Emily S	RIO GRANDE BELOW COCHITI DAM, NM			reject	dam	
+nwis_11126000 	Emily B	SANTA YNEZ R NR SANTA YNEZ CA	80	yes	reject	other	less than 12 mos overlap between DO and Q
+nwis_11285500 	Emily B	TUOLUMNE R A WARDS FERRY BR NR GROVELAND CA			reject	other	in arm of reservoir, lots of data gaps and regulated flow causing diel hydro change
+nwis_11313433 	Emily B	DUTCH SLOUGH BL JERSEY ISLAND RD A JERSEY ISLAND			reject	estuary	
+nwis_11337190 	Emily B	SAN JOAQUIN R A JERSEY POINT CA			reject	estuary	
+nwis_11447650 	Emily B	SACRAMENTO R A FREEPORT CA			reject	tidal	
+nwis_11447830 	Emily B	SUTTER SLOUGH A COURTLAND CA			reject	tidal	
+nwis_11447850 	Emily B	STEAMBOAT SLOUGH NR WALNUT GROVE CA			reject	tidal	
+nwis_11447890 	Emily B	SACRAMENTO R AB DELTA CROSS CHANNEL CA			reject	tidal	
+nwis_11455315 	Emily B	CACHE SLOUGH A S LIBERTY ISLAND NR RIO VISTA CA			reject	tidal	
+nwis_11455350 	Emily B	CACHE SLOUGH A RYER ISLAND			reject	tidal	
+nwis_12101100 	Emily B	LAKE TAPPS DIVERSION AT DIERINGER, WA			reject	other	see title
+nwis_13207500 	Emily B	DRY CREEK NEAR EAGLE ID			reject	other	less than 1 year and data look sketchy
+nwis_14152000 	Emily B	MIDDLE FORK WILLAMETTE RIVER AT JASPER, OR			reject	other	only a few weeks of data
+nwis_14162500 	Emily B	MCKENZIE RIVER NEAR VIDA, OR			reject	other	only a few weeks of data
+nwis_14181500 	Emily B	NORTH SANTIAM RIVER AT NIAGARA, OR			reject	dam	
+nwis_14202650 	Emily B	WAPATO CREEK AT SW GASTON ROAD, AT GASTON, OR			reject	other	managed wetland, bidirectional flow
+nwis_14211720 	Natalie	WILLAMETTE RIVER AT PORTLAND, OR		N	reject	other	no diel signal
+nwis_411955088280601 	Natalie	HANSON GRAVEL PIT AT CULVERT NEAR MORRIS, IL	80	Y	reject	dam	downstream of lake
+nwis_04121970 	Emily S	MUSKEGON RIVER NEAR CROTON, MI			reject 		either lake outflow or regulated; erratic DO signal
+nwis_09041400 	Emily S	MUDDY CRK BLW WOLFORD MTN RESER. NR KREMMLING, CO		Yes	reject 	dam 	
+nwis_02323566 	Emily B	MANATEE SPRING NR CHIEFLAND FLA			reject 	spring	spring
+nwis_04231600 	Emily S	GENESEE RIVER AT FORD STREET BRIDGE, ROCHESTER NY		Y	reject 	highly erratic Q, often erratic DO, esp in winter	
