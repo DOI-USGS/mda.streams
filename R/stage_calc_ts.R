@@ -193,6 +193,16 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'depth_simNew' = {
           calc_ts_with_input_check(inputs=c(list(var='depth'), inputs), 'calc_ts_simNew')
         },
+        'doamp_calcDAmp' = {
+          dopsat_calcObsSat <- read_ts(download_ts("dopsat_calcObsSat", site, on_local_exists="replace"))
+          sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+          combo <- combine_ts(sitetime_calcLon, dopsat_calcObsSat, method='approx')
+          combo <- combo[complete.cases(combo),]
+          calc_ts_doamp_calcDAmp(
+            sitetime = combo$sitetime,
+            longitude = get_site_coords(site)$lon,
+            dopsat = combo$dopsat)
+        },
         'dosat_calcGGbts' = {
           wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
           baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
@@ -580,4 +590,32 @@ calc_ts_velocdaily_calcDMean <- function(sitetime, longitude, veloc) {
     select(DateTime, velocdaily) %>%
     as.data.frame() %>%
     u(c(NA, get_units(veloc)))
+}
+
+
+#' Internal - calculate the daily amplitude in DO
+#' 
+#' @param sitetime the local time, e.g. from sitetime_calcLon
+#' @param doobs the observed DO concentration
+#' @import streamMetabolizer
+#' @importFrom unitted u v
+#' 
+#' @keywords internal
+calc_ts_doamp_calcDAmp <- function(sitetime, longitude, dopsat) {
+  onedate <- DateTime <- doamp <- '.dplyr.var'
+  data.frame(
+    date = as.Date(v(sitetime)),
+    dopsat = v(dopsat)
+  ) %>% 
+    group_by(date) %>%
+    summarize(
+      onedate = date[1],
+      doamp = diff(range(dopsat))) %>%
+    mutate(
+      DateTime = convert_solartime_to_GMT(
+        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude, time.type="mean solar")) %>%
+    select(DateTime, doamp) %>%
+    as.data.frame() %>%
+    u(c(NA, get_units(dopsat)))
 }
