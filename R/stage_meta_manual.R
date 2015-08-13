@@ -39,6 +39,7 @@ stage_meta_manual <- function(folder = tempdir(), verbose = FALSE) {
   user_review <- u(user_review, c(NA,NA,NA,"%",NA,NA,NA,NA))
   
   # remove redundant columns
+  long_name <- '.dplyr_var'
   user_review <- select(user_review, -long_name)
   
   # either return the data.frame or save data to local file and return the fname
@@ -63,9 +64,9 @@ stage_meta_manual <- function(folder = tempdir(), verbose = FALSE) {
 #' @param header logical. Expect a header row?
 #' @keywords internal
 load_google_sheet <- function(sheets_key, na.string="", header=TRUE){
-  stopifnot(require(RCurl))
+  stopifnot(requireNamespace('RCurl'))
   url <- paste0('https://docs.google.com/spreadsheets/d/', sheets_key, '/export?format=tsv&id=', sheets_key)
-  myCsv <- getURL(url, .opts=list(ssl.verifypeer=FALSE))
+  myCsv <- RCurl::getURL(url, .opts=list(ssl.verifypeer=FALSE))
   ret <- read.table(textConnection(myCsv), sep="\t", header=header, stringsAsFactors=FALSE, fill=TRUE, quote="\"")
   as.data.frame(lapply(ret, function(x){ x[x == na.string] <- NA; x}), stringsAsFactors=FALSE)
 }

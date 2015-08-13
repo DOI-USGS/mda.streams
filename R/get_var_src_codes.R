@@ -11,7 +11,7 @@
 #' @importFrom lazyeval lazy_dots
 #' @examples 
 #' get_var_src_codes()
-#' get_var_src_codes(var=="baro", out='var')
+#' unique(get_var_src_codes(var=="baro", out='var'))
 #' get_var_src_codes(var=="baro", out='var', drop=FALSE)
 #' get_var_src_codes(var=="baro", out=c('var','var_descrip'))
 #' get_var_src_codes(var=="baro", out=c('var','var_descrip'), drop=FALSE)
@@ -25,7 +25,7 @@ get_var_src_codes <- function(..., out, drop=TRUE) {
     code_item <- locate_ts_meta('varsrccodes')
     code_file <- file.path(tempdir(), 'varsrccodes.tsv')
     sbtools::item_file_download(code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file)
-    var_src_codes <- read.table(code_file, header=TRUE, sep='\t', stringsAsFactors=FALSE)
+    var_src_codes <- read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
     assign(x='tsmeta_varsrccodes', value=var_src_codes, envir=pkg.env)
   }
   codes <- pkg.env$tsmeta_varsrccodes

@@ -20,7 +20,7 @@ Facilitates quick filtering and selecting
 }
 \examples{
 get_var_src_codes()
-get_var_src_codes(var=="baro", out='var')
+unique(get_var_src_codes(var=="baro", out='var'))
 get_var_src_codes(var=="baro", out='var', drop=FALSE)
 get_var_src_codes(var=="baro", out=c('var','var_descrip'))
 get_var_src_codes(var=="baro", out=c('var','var_descrip'), drop=FALSE)

@@ -43,11 +43,13 @@ build_sysdata <- function() {
   }
   
   # Post to ScienceBase
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  tempname <- file.path(tempdir(), 'tsmeta_varsrccodes.tsv')
+  write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
+  if(is.null(current_session())) login_sb()
   tsmeta_item <- locate_ts_meta('varsrccodes')
   # remove the old, add the new, fix, the identifiers
   rm_out <- item_rm_files(tsmeta_item)
-  add_out <- item_append_files(tsmeta_item, files="inst/extdata/tsmeta_varsrccodes.tsv")
+  add_out <- item_append_files(tsmeta_item, files=tempname)
   # it sure looks like identifiers get kept, so don't bother updating identifiers here:
   #   idlist <- list(type='ts_meta', scheme=get_scheme(), key='tsmeta_varsrccodes')
   #   tryCatch(

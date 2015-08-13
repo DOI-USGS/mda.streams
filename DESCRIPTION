@@ -28,6 +28,7 @@ Imports:
     geoknife (>= 0.11.2),
     unitted (>= 0.2.3)
 Suggests:
-    testthat
+    testthat,
+    RCurl
 LazyLoad: yes
 LazyData: yes

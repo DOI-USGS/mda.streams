@@ -4,6 +4,10 @@ library(dplyr)
 
 test_that("get_var_src_codes filters and selects as requested", {
   
+  # there used to be a data object named var_src_codes, but now we always,
+  # always have to get it with the function
+  var_src_codes <- get_var_src_codes()
+  
   # get_var_src_codes() with minimal arguments
   expect_equal(get_var_src_codes()$var %>% unique(), unique(var_src_codes$var))
   expect_equal(get_var_src_codes(out='units') %>% unique(), var_src_codes$units %>% unique())
