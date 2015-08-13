@@ -1,12 +1,3 @@
-#' Variable and source code data
-#'
-#' Variable and source code data
-#'
-#' @name var_src_codes
-#' @docType data
-#' @export
-NULL
-
 #' For use in package development only: build R/sysdata.rda
 #' 
 #' Moves/reformats the tables of variable and source metadata from inst/extdata 
@@ -14,12 +5,13 @@ NULL
 #' storage location for data used internally by mda.streams)
 #'
 #' @import dplyr 
+#' @import sbtools
 #' @keywords internal
 build_sysdata <- function() {
 
   # Read in the raw, hand-editable tsv file
   var_src_codes <- 
-    read.table(file="inst/extdata/var_src_codes.tsv", header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
+    read.table(file="inst/extdata/tsmeta_varsrccodes.tsv", header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
     mutate(var_src=paste0(var, "_", src),
            priority=as.numeric(priority))
   
@@ -50,8 +42,18 @@ build_sysdata <- function() {
     stop("p_code for non-data src: ", paste0(var_src_codes[odd_pcode,"var"], "_", var_src_codes[odd_pcode,"src"], collapse=", "))
   }
   
-  # Save
-  save(var_src_codes, file="R/sysdata.rda")
+  # Post to ScienceBase
+  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  tsmeta_item <- locate_ts_meta('varsrccodes')
+  # remove the old, add the new, fix, the identifiers
+  rm_out <- item_rm_files(tsmeta_item)
+  add_out <- item_append_files(tsmeta_item, files="inst/extdata/tsmeta_varsrccodes.tsv")
+  # it sure looks like identifiers get kept, so don't bother updating identifiers here:
+  #   idlist <- list(type='ts_meta', scheme=get_scheme(), key='tsmeta_varsrccodes')
+  #   tryCatch(
+  #     item_update_identifier(id=tsmeta_item, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+  #     warning=function(w) { message("warning in item_update_identifier: ", w) }
+  #   )
 }
 
 # NWIS data notes

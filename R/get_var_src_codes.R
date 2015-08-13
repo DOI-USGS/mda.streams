@@ -20,7 +20,17 @@
 #'   out=list('var','var_src','p_code', 'src_type'))
 #' @export
 get_var_src_codes <- function(..., out, drop=TRUE) {
-  codes <- var_src_codes
+  # get the codes
+  if(!exists('tsmeta_varsrccodes', envir=pkg.env)) {
+    code_item <- locate_ts_meta('varsrccodes')
+    code_file <- file.path(tempdir(), 'varsrccodes.tsv')
+    sbtools::item_file_download(code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file)
+    var_src_codes <- read.table(code_file, header=TRUE, sep='\t', stringsAsFactors=FALSE)
+    assign(x='tsmeta_varsrccodes', value=var_src_codes, envir=pkg.env)
+  }
+  codes <- pkg.env$tsmeta_varsrccodes
+  
+  # process filtering and column selection criteria
   dots=lazyeval::lazy_dots(...)
   if(length(dots) > 0)
     codes <- filter_(codes, .dots=dots)

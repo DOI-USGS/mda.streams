@@ -9,12 +9,12 @@
 #' locate_folder("publications", format="url")
 #' testthat::expect_error(locate_folder("cvs", format="url"))
 #' }
-locate_folder <- function(folder=c("project","metab_runs","metab_models","sites","sites_meta","ideas","presentations","proposals","publications"), 
+locate_folder <- function(folder=c("project","metab_runs","metab_models","sites","sites_meta","ts_meta","ideas","presentations","proposals","publications"), 
                           format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   folder <- tolower(folder)
   folder <- match.arg(folder)
-  if(!(folder %in% c('sites','sites_meta')) && is.null(current_session())) 
-    stop("only the sites and sites_meta folders are publicly visible. call login_sb() first to see more")
+  if(!(folder %in% c('sites','sites_meta','ts_meta')) && is.null(current_session())) 
+    stop("this folder is not publicly visible. call login_sb() first to see more")
   if(folder == 'project' && by %in% c("dir", "either"))
     stop("'by' must be 'tag' when searching for the project folder")
   browser <- isTRUE(browser)
