@@ -2,7 +2,7 @@
 % Please edit documentation in R/mda_helpers.R
 \name{verify_var_src}
 \alias{verify_var_src}
-\title{Check whether a var_src is listed in var_src_codes}
+\title{Check whether a var_src is listed in get_var_src_codes()}
 \usage{
 verify_var_src(var_var_src, src, on_fail = warning)
 }
@@ -21,6 +21,6 @@ a single TRUE if successful, else on_fail(msg) followed by a vector
   of T/F values with F for invalid var_srces
 }
 \description{
-Check whether a var_src is listed in var_src_codes
+Check whether a var_src is listed in get_var_src_codes()
 }
 

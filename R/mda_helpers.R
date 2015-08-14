@@ -9,7 +9,7 @@ make_var_src <- function(var, src) {
   paste0(var, "_", src)
 }
 
-#' Check whether a var_src is listed in var_src_codes
+#' Check whether a var_src is listed in get_var_src_codes()
 #' 
 #' @param var_var_src may be either a variable, e.g. "doobs", or a var_src, e.g.
 #'   "doobs_nwis".
@@ -29,21 +29,21 @@ verify_var_src <- function(var_var_src, src, on_fail=warning) {
   valid <- rep(TRUE, nrow(var_src_p))
 
   # check that the var_src combo is known
-  if(any(missing_var_src <- !(var_src %in% var_src_codes$var_src))) {
+  if(any(missing_var_src <- !(var_src %in% get_var_src_codes()$var_src))) {
     msg <- paste0("unrecognized var_src",if(length(which(missing_var_src))>1) "es" else "",": ", paste0(var_src[missing_var_src], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_var_src
   }
   
   # check that the var is known
-  if(any(missing_var <- !(var_src_p$var %in% var_src_codes$var))) {
+  if(any(missing_var <- !(var_src_p$var %in% get_var_src_codes()$var))) {
     msg <- paste0("unrecognized var",if(length(which(missing_var))>1) "s" else "",": ", paste0(var_src_p$var[missing_var], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_var
   }
 
   # check that the var is known
-  if(any(missing_src <- !(var_src_p$src %in% var_src_codes$src))) {
+  if(any(missing_src <- !(var_src_p$src %in% get_var_src_codes()$src))) {
     msg <- paste0("unrecognized src",if(length(which(missing_src))>1) "s" else "",": ", paste0(var_src_p$src[missing_src], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_src

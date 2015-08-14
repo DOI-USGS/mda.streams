@@ -24,7 +24,7 @@ read_ts = function(file){
   
   # check the data for mda.streams validity
   if (!verify_ts(df, parse_ts_path(file, 'var')))
-    stop('timeseries in file ', file, 'is not valid')
+    stop('timeseries in file ', file, ' is not valid')
   
   # convert units to tz field for DateTime
   df$DateTime <- u(as.POSIXct(df$DateTime, tz=get_units(df$DateTime)), NA)
