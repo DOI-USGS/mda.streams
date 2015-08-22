@@ -4,7 +4,7 @@
 \alias{build_sysdata}
 \title{For use in package development only: build R/sysdata.rda}
 \usage{
-build_sysdata()
+build_sysdata(post = TRUE)
 }
 \description{
 Moves/reformats the tables of variable and source metadata from inst/extdata

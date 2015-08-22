@@ -7,11 +7,14 @@
 #' @import dplyr 
 #' @import sbtools
 #' @keywords internal
-build_sysdata <- function() {
+build_sysdata <- function(post=TRUE) {
 
   # Read in the raw, hand-editable tsv file
+  tsvfile <- ifelse(
+    file.exists("inst/extdata/tsmeta_varsrccodes.tsv"), "inst/extdata/tsmeta_varsrccodes.tsv", 
+    system.file("extdata/tsmeta_varsrccodes.tsv", package="mda.streams"))
   var_src_codes <- 
-    read.table(file="inst/extdata/tsmeta_varsrccodes.tsv", header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
+    read.table(file=tsvfile, header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
     mutate(var_src=paste0(var, "_", src),
            priority=as.numeric(priority))
   
@@ -42,20 +45,24 @@ build_sysdata <- function() {
     stop("p_code for non-data src: ", paste0(var_src_codes[odd_pcode,"var"], "_", var_src_codes[odd_pcode,"src"], collapse=", "))
   }
   
-  # Post to ScienceBase
-  tempname <- file.path(tempdir(), 'tsmeta_varsrccodes.tsv')
-  write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
-  if(is.null(current_session())) login_sb()
-  tsmeta_item <- locate_ts_meta('varsrccodes')
-  # remove the old, add the new, fix, the identifiers
-  rm_out <- item_rm_files(tsmeta_item)
-  add_out <- item_append_files(tsmeta_item, files=tempname)
-  # it sure looks like identifiers get kept, so don't bother updating identifiers here:
-  #   idlist <- list(type='ts_meta', scheme=get_scheme(), key='tsmeta_varsrccodes')
-  #   tryCatch(
-  #     item_update_identifier(id=tsmeta_item, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
-  #     warning=function(w) { message("warning in item_update_identifier: ", w) }
-  #   )
+  # Post to ScienceBase or return as df
+  if(isTRUE(post)) {
+    tempname <- file.path(tempdir(), 'tsmeta_varsrccodes.tsv')
+    write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
+    if(is.null(current_session())) login_sb()
+    tsmeta_item <- locate_ts_meta('varsrccodes')
+    # remove the old, add the new, fix, the identifiers
+    rm_out <- item_rm_files(tsmeta_item)
+    add_out <- item_append_files(tsmeta_item, files=tempname)
+    # it sure looks like identifiers get kept, so don't bother updating identifiers here:
+    #   idlist <- list(type='ts_meta', scheme=get_scheme(), key='tsmeta_varsrccodes')
+    #   tryCatch(
+    #     item_update_identifier(id=tsmeta_item, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+    #     warning=function(w) { message("warning in item_update_identifier: ", w) }
+    #   )
+  } else {
+    return(var_src_codes)
+  }
 }
 
 # NWIS data notes
