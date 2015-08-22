@@ -54,6 +54,12 @@ par=choose_data_source("par", site)
 
 # as in verify_config
 choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
+
+# for K
+K600=choose_data_source("K600", "nwis_08062500")
+login_sb()
+K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", type="pred", src="0.0.6")
+K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
 }
 }
 

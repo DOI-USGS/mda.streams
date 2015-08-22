@@ -90,18 +90,17 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       return(out)
     } else {
       # if the data are valid, also remove units and rows with NAs. eventually 
-      # want to be able to pass units to metab_fun. Wondering if converting to
-      # data.frame will help with seg faults...worth a shot.
+      # want to be able to pass units to metab_fun.
       . <- '.dplyr.var'
       metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
-      metab_data <- as.data.frame(v(metab_data))
-      metab_data[complete.cases(metab_data),]
+      metab_data <- as.data.frame(v(metab_data)) # converting to df in hopes of reducing segfaults...may not be needed
+      metab_data <- metab_data[complete.cases(metab_data),]
     }
     
     # Run the model
     if(verbose) message("row ", row, ": running metab_fun...")
     fit <- tryCatch({
-      do.call(metab_fun, c(list(data=metab_data), metab_args))
+      do.call(metab_fun, c(metab_data, metab_args))
     },
     error=function(e) {
       out <- "error in model run"
