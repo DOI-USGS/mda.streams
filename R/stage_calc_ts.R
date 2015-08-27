@@ -89,6 +89,20 @@
 #' file_suntime2
 #' head(read_ts(file_suntime2))
 #' 
+#' # daily means
+#' 
+#' file_sitetimedaily <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="sitetimedaily", src="calcLon", verbose=TRUE)
+#' head(read_ts(file_sitetimedaily))
+#' 
+#' file_sitedate <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="sitedate", src="calcLon", verbose=TRUE)
+#' str(read_ts(file_sitedate))
+#' 
+#' file_dischdaily <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="dischdaily", src="calcDMean", verbose=TRUE)
+#' head(read_ts(file_dischdaily))
+#' 
 #' set_scheme("mda_streams")
 #' }
 #' @export
@@ -112,6 +126,18 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'sitetime_calcLon' = {
           calc_ts_sitetime_calcLon(
             utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
+            longitude = get_site_coords(site)$lon)
+        },
+        'sitetimedaily_calcLon' = {
+          sitetime <- read_ts(download_ts("sitetime_calcLon", site, on_local_exists="replace"))
+          calc_ts_sitetimedaily_calcLon(
+            sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
+            longitude = get_site_coords(site)$lon)
+        },
+        'sitedate_calcLon' = {
+          sitetime <- read_ts(download_ts("sitetime_calcLon", site, on_local_exists="replace"))
+          calc_ts_sitedate_calcLon(
+            sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
             longitude = get_site_coords(site)$lon)
         },
         'suntime_calcLon' = {
@@ -246,7 +272,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
         'dischdaily_calcDMean' = {
           disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
           sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
-          combo <- combine_ts(sitetime_calcLon, disch_nwis, method='approx')
+          combo <- combine_ts(sitetime_calcLon, disch_nwis, method='approx', approx_tol=as.difftime(3, units="hours"))
           combo <- combo[complete.cases(combo),]
           calc_ts_dischdaily_calcDMean(
             sitetime = combo$sitetime,
@@ -326,6 +352,40 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
       date.time = utctime, 
       longitude = longitude, 
       time.type = "mean solar")) %>%
+    as.data.frame() %>% u()
+}
+
+#' Internal - calculate sitetimedaily_calcLon from any data
+#' 
+#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param longitude the site longitude in degrees E
+#' @importFrom unitted u
+#'   
+#' @keywords internal
+calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
+  data.frame(
+    DateTime = convert_solartime_to_GMT(
+      solar.time = sitetime, 
+      longitude = longitude, 
+      time.type = "mean solar"),
+    sitetimedaily = sitetime) %>%
+    as.data.frame() %>% u()
+}
+
+#' Internal - calculate sitedate_calcLon from any data
+#' 
+#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param longitude the site longitude in degrees E
+#' @importFrom unitted u
+#'   
+#' @keywords internal
+calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
+  data.frame(
+    DateTime = convert_solartime_to_GMT(
+      solar.time = sitetime, 
+      longitude = longitude, 
+      time.type = "mean solar"),
+    sitedate = as.Date(format(sitetime, "%Y-%m-%d"))) %>%
     as.data.frame() %>% u()
 }
 
@@ -543,6 +603,7 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
 #' @keywords internal
 calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
   onedate <- DateTime <- dischdaily <- '.dplyr.var'
+  disch_units <- get_units(disch)
   data.frame(
     date = as.Date(v(sitetime)),
     disch = v(disch)
@@ -557,7 +618,8 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
         longitude=longitude, time.type="mean solar")) %>%
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
-    u(c(NA, get_units(disch)))
+    transform(dischdaily = verify_units(u(dischdaily, disch_units) * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')) %>%
+    u()
 }
 
 #' Internal - calculate daily mean velocity from instantaneous

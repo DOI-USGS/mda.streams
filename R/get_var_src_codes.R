@@ -22,10 +22,15 @@
 get_var_src_codes <- function(..., out, drop=TRUE) {
   # get the codes
   if(!exists('tsmeta_varsrccodes', envir=pkg.env)) {
-    code_item <- locate_ts_meta('varsrccodes')
-    code_file <- file.path(tempdir(), 'varsrccodes.tsv')
-    sbtools::item_file_download(code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file)
-    var_src_codes <- read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
+    var_src_codes <- tryCatch({
+      code_item <- locate_ts_meta('varsrccodes')
+      code_file <- file.path(tempdir(), 'varsrccodes.tsv')
+      sbtools::item_file_download(code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file, overwrite_file = TRUE)
+      read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
+    }, error=function(e) {
+      warning("had trouble downloading tsmeta_varsrccodes; using local copy")
+      build_sysdata(post=FALSE)
+    })
     assign(x='tsmeta_varsrccodes', value=var_src_codes, envir=pkg.env)
   }
   codes <- pkg.env$tsmeta_varsrccodes

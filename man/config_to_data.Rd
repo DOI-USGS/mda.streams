@@ -33,7 +33,7 @@ metabolism modeling function
 }
 \examples{
 \dontrun{
-depth_file <- download_ts("depth_calcDisch", "nwis_04087142",
+depth_file <- download_ts("depth_calcDischHarvey", "nwis_04087142",
   on_local_exists="replace")
 config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_04087142", dosat=choose_data_source("dosat", "nwis_04087142",
@@ -41,7 +41,26 @@ config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   depth=choose_data_source("depth", "nwis_04087142", logic="local file",
     type="file", src=depth_file), filename=NULL)
 cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle, metab_args=list())
-head(cdat)
+names(cdat)
+head(cdat[['data']])
+
+login_sb()
+site="nwis_01646000"
+config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
+  model="metab_Kvpred", site=site, filename=NULL,
+  sitetime=choose_data_source("sitetime", site, logic="unused var"),
+  doobs=choose_data_source("doobs", site, logic="unused var"),
+  dosat=choose_data_source("dosat", site, logic="unused var"),
+  depth=choose_data_source("depth", site, logic="unused var"),
+  wtr=choose_data_source("wtr", site, logic="unused var"),
+  par=choose_data_source("par", site, logic="unused var"),
+  sitedate=choose_data_source("sitedate", site, logic="priority local"),
+  K600=choose_data_source("K600", site, logic="nighttime", src="0.0.6", type="pred"),
+  dischdaily=choose_data_source("dischdaily", site, logic="priority local"),
+  velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
+  omit_incomplete=FALSE)
+cdat <- config_to_data(config[1,], row_num=1,
+  metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
 }
 }
 

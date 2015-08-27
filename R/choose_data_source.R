@@ -40,6 +40,14 @@
 #' 
 #' # as in verify_config
 #' choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
+#' 
+#' # for K
+#' K600=choose_data_source("K600", "nwis_08062500")
+#' login_sb()
+#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
+#'   type="pred", src="0.0.6")
+#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
+#'   type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
 #' }
 choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,"ts","meta","file","const"), src) {
 
@@ -62,10 +70,32 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
     stringsAsFactors=FALSE)
   
   # setup operations & checks as needed
+  if('pred' %in% config[,'type']) {
+    metab_model_list <- list_metab_models() # will break if needed but not logged into SB, so try it early
+  }
   if('priority local' %in% logic || 'ts' %in% type) {
     priority <- '.dplyr.var'
     myvar <- var # need a name that differs from the var_src_codes col name
     ranked_src <- get_var_src_codes(var==myvar, out=c("src","priority")) %>% arrange(priority)
+    
+    if('priority local' %in% logic) {
+      # the following should ~minimize the time*number of SB queries. it creates a
+      # table of T/F values where rows are sites, cols are srces, and a cell is T
+      # if the src exists for that site
+      site_has_ts <- data.frame(site=config[config$logic=='priority local','site'])
+      for(psrc in ranked_src$src) { site_has_ts[psrc] <- FALSE }
+      if(nrow(site_has_ts) > nrow(ranked_src)*2) { # loop by src if there are many sites
+        for(psrc in ranked_src$src) {
+          sitelist <- list_sites(make_var_src(var,psrc))
+          site_has_ts[site_has_ts$site %in% sitelist, psrc] <- TRUE
+        }
+      } else { # loop by site if there are few sites
+        for(s in site_has_ts$site) {
+          varsrclist <- grep(paste0("^", var, "_"), list_datasets(site_name=s, data_type='ts'), value=TRUE)
+          site_has_ts[site_has_ts$site==s, parse_var_src(varsrclist, out="src")] <- TRUE
+        }
+      }
+    }    
   }
   if(any(!(logic %in% logic_options))) {
     if(missing(type) || missing(src)) {
@@ -79,7 +109,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
       if(!is.na(config[row,'src'])) stop("expected src=NA for automatic data choice in row ", row)
     }
   }
-      
+  
   # determine each config row separately, according to the logic in that row
   for(row in 1:nrow(config)) {
     switch(
@@ -87,19 +117,17 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
       
       # automatic specification of all fields
       'priority local'={ 
-        # find all available data options for this site & var
-        all_ts <- list_datasets(site_name=config[row,'site'], data_type='ts')
-        # look for the best of the available datasets
-        for(p in 1:nrow(ranked_src)) {
-          if(make_var_src(var, ranked_src[p,"src"]) %in% all_ts) {
-            config[row,'type'] <- 'ts'
-            config[row,'src'] <- ranked_src[p,"src"]
-            break
-          }
+        # we've done most of the work above by creating a table of which srces
+        # are available for each site. use that now to pick the first (leftmost)
+        # available source for each site.
+        bestsrc <- names(which(unlist(site_has_ts[site_has_ts$site==config[row,'site'],-1,drop=FALSE]))[1])
+        if(length(bestsrc) == 1) {
+          config[row,'src'] <- bestsrc
+          config[row,'type'] <- 'ts'
         }
         
         # if there wasn't a good data option, tell the user
-        if(is.na(config[row,'type'])) 
+        if(is.na(config[row,'src'])) 
           warning("could not locate an appropriate ts for site ", config[row,'site'], ", row ", row)
       },
       
@@ -132,6 +160,25 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
           },
           const={
           },
+          pred={
+            # determine whether the metab model has been specified by its full
+            # title or just by its tag. if it's just the tag, try to find the
+            # specific model
+            parsed_mm_name <- parse_metab_model_name(config[row,'src'])
+            if(any(is.na(c(as.matrix(parsed_mm_name))))) {
+              mm_name <- grep(paste0("^",config[row,'site'],"-.*",config[row,'src']), metab_model_list, value=TRUE)
+              if(length(mm_name) != 1) {
+                warning("possible metab model names for site=",config[row,'site'],", src=",config[row,'src'],":\n",paste0(mm_name,collapse="\n"))
+                stop(paste0("couldn't find exactly 1 metab model name in row ",row))
+              } else {
+                config[row,'src'] <- mm_name
+              }
+            } else {
+              # if parsed_mm_name was complete, then we only need to confirm that config[row,'src'] refers to a real model
+              if(!(config[row,'src'] %in% metab_model_list))
+                warning("in row ", row, " found src that's not in list_metab_models()")
+            }
+          },
           none={
             if(!is.na(config[row,'site'])) stop('when type=none need site=NA')
             if(!is.na(config[row,'src'])) stop('when type=none need src=NA')
@@ -151,3 +198,4 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
 # ts       nwis_07    nwis          local best
 # ts       nwis_08    simModel      proxy best
 # meta     mwis_09    calcElev      proxy best
+# pred     nwis_10    0.0.6         nighttime reg

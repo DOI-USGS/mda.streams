@@ -10,8 +10,12 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   doobs = choose_data_source("doobs", site),
   dosat = choose_data_source("dosat", site),
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
-  site), par = choose_data_source("par", site), omit_incomplete = TRUE,
-  filename = "./condor_config.tsv")
+  site), par = choose_data_source("par", site),
+  sitedate = choose_data_source("sitedate", site, logic = "unused var"),
+  K600 = choose_data_source("K600", site, logic = "unused var"),
+  dischdaily = choose_data_source("dischdaily", site, logic = "unused var"),
+  velocdaily = choose_data_source("velocdaily", site, logic = "unused var"),
+  omit_incomplete = TRUE, filename = "./condor_config.tsv")
 }
 \arguments{
 \item{tag}{character of form "1.0.2" that uniquely identifies this set of
@@ -48,6 +52,14 @@ water temperature data should come from}
 \item{par}{2-column data.frame with names "type" and "src" describing where
 light (photosynthetically available radiation, PAR) data should come from}
 
+\item{sitedate}{see mm_data}
+
+\item{K600}{see mm_data}
+
+\item{dischdaily}{see mm_data}
+
+\item{velocdaily}{see mm_data}
+
 \item{omit_incomplete}{logical. If one or more datasets required for the
 specified config row is unavailable, should that row be omitted?}
 
@@ -66,6 +78,18 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 \dontrun{
+login_sb(); site="nwis_01646000"; stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
+  model="metab_Kvpred", site=site, filename=NULL,
+  sitetime=choose_data_source("sitetime", site, logic="manual", src="calcLon", type="ts"),
+  doobs=choose_data_source("doobs", site, logic="unused var"),
+  dosat=choose_data_source("dosat", site, logic="unused var"),
+  depth=choose_data_source("depth", site, logic="unused var"),
+  wtr=choose_data_source("wtr", site, logic="unused var"),
+  par=choose_data_source("par", site, logic="unused var"),
+  K600=choose_data_source("K600", site, logic="nighttime", src="0.0.6", type="pred"),
+  dischdaily=choose_data_source("dischdaily", site, logic="manual", src="calcDMean", type="ts"),
+  velocdaily=choose_data_source("velocdaily", site, logic="manual", src="calcDMean", type="ts"),
+  omit_incomplete=FALSE)
 stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   site="nwis_01646000", filename=NULL)
 stage_metab_config(tag="0.0.1", strategy="test write_metab_config",

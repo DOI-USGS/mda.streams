@@ -4,7 +4,7 @@
 \alias{config_to_data_column}
 \title{Read a single column worth of data}
 \usage{
-config_to_data_column(var, type, site, src)
+config_to_data_column(var, type, site, src, optional = FALSE)
 }
 \arguments{
 \item{var}{character. A single variable name as in
