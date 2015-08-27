@@ -46,7 +46,8 @@
 #'   dischdaily=choose_data_source("dischdaily", site, logic="priority local"),
 #'   velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
 #'   omit_incomplete=FALSE)
-#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
+#' cdat <- config_to_data(config[1,], row_num=1, 
+#'   metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
 #' }
 #' @export
 config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=c('stop','warn','quiet')) {
@@ -237,6 +238,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
         u()
     },
     'pred'={
+      local.time <- DO.mod <- K600 <- site_name <- . <- '.dplyr.var'
       mm <- get_metab_model(src)
       if(var == "doobs") {
         preds <- predict_DO(mm) %>%

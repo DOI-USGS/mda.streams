@@ -32,13 +32,13 @@ dosat	calcGGbconst	mg L^-1	hypothetical dissolved oxygen concentration at satura
 dosat	simCopy	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 dosat	simGG	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	sim	NA
 dosat	simNew	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
-er	estNight	g m^-2 d^-1	daily ecosystem respiration	ts	ER	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
-er	estBest	g m^-2 d^-1	daily ecosystem respiration	ts	ER	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
-er	simCopy	g m^-2 d^-1	daily ecosystem respiration	ts	ER	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
-er	simNew	g m^-2 d^-1	daily ecosystem respiration	ts	ER	12	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
-gpp	estBest	g m^-2 d^-1	daily gross primary productivity	ts	GPP	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
-gpp	simCopy	g m^-2 d^-1	daily gross primary productivity	ts	GPP	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
-gpp	simNew	g m^-2 d^-1	daily gross primary productivity	ts	GPP	12	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
+er	estNight	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
+er	estBest	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+er	simCopy	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+er	simNew	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	12	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
+gpp	estBest	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+gpp	simCopy	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+gpp	simNew	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	12	NA	arbitrarily make up numbers for model testing	streamMetabolizer	NA	sim	NA
 K600	estBest	d^-1	gas exchange rate	ts	K600	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
 K600	estNight	d^-1	gas exchange rate	ts	K600	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
 K600	estNightInterp	d^-1	gas exchange rate	ts	K600	2	NA	interpolate K600_estNight using a smoothing/regression function	streamMetabolizer	NA	calc	NA

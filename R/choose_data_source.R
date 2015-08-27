@@ -44,8 +44,10 @@
 #' # for K
 #' K600=choose_data_source("K600", "nwis_08062500")
 #' login_sb()
-#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", type="pred", src="0.0.6")
-#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
+#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
+#'   type="pred", src="0.0.6")
+#' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
+#'   type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
 #' }
 choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,"ts","meta","file","const"), src) {
 

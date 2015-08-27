@@ -52,6 +52,14 @@ water temperature data should come from}
 \item{par}{2-column data.frame with names "type" and "src" describing where
 light (photosynthetically available radiation, PAR) data should come from}
 
+\item{sitedate}{see mm_data}
+
+\item{K600}{see mm_data}
+
+\item{dischdaily}{see mm_data}
+
+\item{velocdaily}{see mm_data}
+
 \item{omit_incomplete}{logical. If one or more datasets required for the
 specified config row is unavailable, should that row be omitted?}
 

@@ -104,13 +104,16 @@ head(read_ts(file_suntime2))
 
 # daily means
 
-file_sitetimedaily <- stage_calc_ts(sites="nwis_08062500", var="sitetimedaily", src="calcLon", verbose=TRUE)
+file_sitetimedaily <- stage_calc_ts(sites="nwis_08062500",
+  var="sitetimedaily", src="calcLon", verbose=TRUE)
 head(read_ts(file_sitetimedaily))
 
-file_sitedate <- stage_calc_ts(sites="nwis_08062500", var="sitedate", src="calcLon", verbose=TRUE)
-head(read_ts(file_sitedate))
+file_sitedate <- stage_calc_ts(sites="nwis_08062500",
+  var="sitedate", src="calcLon", verbose=TRUE)
+str(read_ts(file_sitedate))
 
-file_dischdaily <- stage_calc_ts(sites="nwis_08062500", var="dischdaily", src="calcDMean", verbose=TRUE)
+file_dischdaily <- stage_calc_ts(sites="nwis_08062500",
+  var="dischdaily", src="calcDMean", verbose=TRUE)
 head(read_ts(file_dischdaily))
 
 set_scheme("mda_streams")

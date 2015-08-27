@@ -59,7 +59,8 @@ config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   dischdaily=choose_data_source("dischdaily", site, logic="priority local"),
   velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
   omit_incomplete=FALSE)
-cdat <- config_to_data(config[1,], row_num=1, metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
+cdat <- config_to_data(config[1,], row_num=1,
+  metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
 }
 }
 

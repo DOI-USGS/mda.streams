@@ -27,7 +27,11 @@
 #'   water temperature data should come from
 #' @param par 2-column data.frame with names "type" and "src" describing where 
 #'   light (photosynthetically available radiation, PAR) data should come from
-#' @param omit_incomplete logical. If one or more datasets required for the
+#' @param sitedate see mm_data
+#' @param K600 see mm_data
+#' @param dischdaily see mm_data
+#' @param velocdaily see mm_data
+#' @param omit_incomplete logical. If one or more datasets required for the 
 #'   specified config row is unavailable, should that row be omitted?
 #' @param filename character or NULL. If NULL, the function returns a 
 #'   data.frame, otherwise it writes that data.frame to the file specified by 
@@ -91,10 +95,10 @@ stage_metab_config <- function(
       metab_fun <- config[row, "model"]
       # get a list of vars for which we expect complete info
       arg_data <- eval(formals(metab_fun)$data)
-      arg_data.daily <- eval(formals(metab_fun)$data.daily)
+      arg_data_daily <- eval(formals(metab_fun)$data_daily)
       needs_data <- if(attr(arg_data,'optional')[1]=='all') NULL else colnames(arg_data)[!(colnames(arg_data) %in% attr(arg_data,'optional'))]
-      needs_data.daily <- if(attr(arg_data.daily,'optional')[1]=='all') NULL else colnames(arg_data.daily)[!(colnames(arg_data.daily) %in% attr(arg_data.daily,'optional'))]
-      data_needs <- c(needs_data, needs_data.daily)
+      needs_data_daily <- if(attr(arg_data_daily,'optional')[1]=='all') NULL else colnames(arg_data_daily)[!(colnames(arg_data_daily) %in% attr(arg_data_daily,'optional'))]
+      data_needs <- c(needs_data, needs_data_daily)
       var_lookup <- unique(get_var_src_codes(out=c("metab_var","var")))
       var_needs <- var_lookup[match(data_needs, var_lookup$metab_var),"var"]
       
