@@ -10,7 +10,7 @@
 #' @param verbose logical. provide verbose output?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #' @return a file handle for time series file created
-#' @importFrom geoknife simplegeom webdata geoknife loadOutput webprocess
+#' @importFrom geoknife simplegeom webdata geoknife result webprocess
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u get_units unitbundle
 #'   
@@ -40,7 +40,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
   if(isTRUE(verbose)) message("Starting remote processing and data download")
   
   data_out <- geoknife(stencil, fabric, REQUIRE_FULL_COVERAGE = 'false', wait = TRUE) %>%
-    loadOutput(with.units = TRUE)
+    result(with.units = TRUE)
   
   if(isTRUE(verbose)) message("Finished downloading data; now writing to file[s]")
   
