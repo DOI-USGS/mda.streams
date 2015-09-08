@@ -5,7 +5,7 @@
 \title{Pull the latitude and longitude of a site from ScienceBase}
 \usage{
 get_site_coords(site_names, format = c("normal", "geoknife"),
-  attach.units = (format == "normal"))
+  on_missing = c("NA", "omit"), attach.units = (format == "normal"))
 }
 \arguments{
 \item{site_names}{a list of site names such as those returned from
@@ -14,6 +14,10 @@ make_site_name()}
 \item{format}{character specifying the desired output format. normal is a
 human-readable, dplyr-friendly format. geoknife works well for geoknife and
 excludes sites with incomplete coordinate data.}
+
+\item{on_missing}{character specifying how to treat missing sites. Use "NA"
+to include missing sites in the output but with NA for both lon and lat.
+Use "omit" to omit those sites from the output.}
 
 \item{attach.units}{logical. Should units be attached?}
 }
