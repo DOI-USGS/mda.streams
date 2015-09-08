@@ -22,6 +22,7 @@
 #' @importFrom lubridate tz
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom stats complete.cases
 #'   
 #' @examples
 #' \dontrun{
@@ -563,6 +564,7 @@ calc_ts_dopsat_calcObsSat <- function(utctime, doobs, dosat) {
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param value unitted vector of ts values
 #' @importFrom unitted u
+#' @importFrom stats setNames
 #' 
 #' @keywords internal
 calc_ts_simNew <- function(var, utctime, value) {

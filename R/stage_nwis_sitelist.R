@@ -30,7 +30,7 @@
 stage_nwis_sitelist <- function(vars, state_codes, folder = NULL, verbose = TRUE, p_codes) {
   
   if(missing(p_codes)) {
-    p_code <- '.dplyr_var'
+    var <- p_code <- '.dplyr_var'
     p_codes <- get_var_src_codes(var%in%vars,!is.na(p_code),out="p_code")
   } else if(!missing(vars)) {
     stop("please provide vars or p_codes but not both")

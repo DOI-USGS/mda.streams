@@ -10,6 +10,7 @@
 #'   are 'DateTime' for timeseries data or 'site_name' for site metadata.
 #' @param allow_constants logical. if TRUE, tables with \code{NA} in their \code{by} column
 #' @return a joined function
+#' @importFrom stats setNames
 #' @keywords internal
 combine_tables <- function(..., by, fun=combine_dplyr('full_join', by=by), allow_constants=FALSE) {
   dots <- list(...)

@@ -9,6 +9,7 @@
 #'   all listed var_src:site_name combinations
 #'   
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 #' 
 #' @examples 

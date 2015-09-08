@@ -23,6 +23,7 @@
 #' @param browser logical. Should the URL be opened in a browser?
 #' @import dplyr
 #' @import sbtools
+#' @importFrom stats setNames
 #' @examples 
 #' \dontrun{
 #' mda.streams:::locate_item(key="sites", type="root")

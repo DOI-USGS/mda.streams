@@ -2,6 +2,7 @@
 #' 
 #' @import dplyr
 #' @importFrom dataRetrieval readNWISsite
+#' @importFrom stats setNames
 #' @param site_names a list of site names such as those returned from 
 #'   make_site_name()
 #' @param format character specifying the desired output format. normal is a 

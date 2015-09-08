@@ -13,6 +13,7 @@
 #' @importFrom geoknife simplegeom webdata geoknife result webprocess
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u get_units unitbundle
+#' @importFrom stats setNames
 #'   
 #' @examples
 #' \dontrun{

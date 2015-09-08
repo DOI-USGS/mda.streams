@@ -6,6 +6,7 @@
 #'
 #' @import dplyr 
 #' @import sbtools
+#' @importFrom utils read.table write.table
 #' @keywords internal
 build_sysdata <- function(post=TRUE) {
 
@@ -13,6 +14,7 @@ build_sysdata <- function(post=TRUE) {
   tsvfile <- ifelse(
     file.exists("inst/extdata/tsmeta_varsrccodes.tsv"), "inst/extdata/tsmeta_varsrccodes.tsv", 
     system.file("extdata/tsmeta_varsrccodes.tsv", package="mda.streams"))
+  var <- src <- ".dplyr.var"
   var_src_codes <- 
     read.table(file=tsvfile, header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
     mutate(var_src=paste0(var, "_", src),

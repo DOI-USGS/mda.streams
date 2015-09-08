@@ -6,6 +6,7 @@
 #' @return an item list
 #' @author Alison Appling
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 #' @examples 
 #' \dontrun{

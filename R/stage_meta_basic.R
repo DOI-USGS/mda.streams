@@ -60,6 +60,7 @@ stage_meta_basic <- function(sites=list_sites(), folder = tempdir(), verbose = F
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u v
 #' @import dplyr
+#' @importFrom utils read.table
 #' @keywords internal
 #' @examples
 #' \dontrun{

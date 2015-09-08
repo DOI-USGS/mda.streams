@@ -23,6 +23,7 @@ list_metab_runs = function(){
 #' @param out the columns to return
 #' @return dataframe of file names and sizes within a metab_run
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 list_metab_run_files <- function(title, out=c("filename","size_bytes","url")) {
   if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")

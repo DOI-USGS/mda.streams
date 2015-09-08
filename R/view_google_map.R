@@ -4,6 +4,7 @@
 #'   make_site_name()
 #' @param browser logical. Should the URL be opened in a browser?
 #' @import httr
+#' @importFrom stats setNames complete.cases
 #' @export
 #' @examples 
 #' \dontrun{

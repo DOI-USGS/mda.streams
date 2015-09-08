@@ -9,6 +9,7 @@
 #'   dimensions be dropped?
 #' @import dplyr
 #' @importFrom lazyeval lazy_dots
+#' @importFrom utils read.table
 #' @examples 
 #' get_var_src_codes()
 #' unique(get_var_src_codes(var=="baro", out='var'))

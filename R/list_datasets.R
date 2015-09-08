@@ -18,6 +18,7 @@
 #' }
 #' @import sbtools
 #' @importFrom stringr str_detect
+#' @importFrom stats setNames
 #' @export
 list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
   

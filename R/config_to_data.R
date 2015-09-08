@@ -17,6 +17,7 @@
 #'   "warnings" attached (see on_error)
 #' @import dplyr
 #' @importFrom unitted u
+#' @importFrom stats setNames
 #' @import streamMetabolizer
 #' @examples 
 #' \dontrun{
@@ -204,6 +205,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
 #' @import dplyr
 #' @import streamMetabolizer
 #' @importFrom unitted u v get_units
+#' @importFrom stats setNames
 #' @keywords internal
 config_to_data_column <- function(var, type, site, src, optional=FALSE) {
   data <- NA

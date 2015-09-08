@@ -17,6 +17,7 @@
 #' download_ts(var_src = 'doobs_nwis', site_name = 'nwis_06893300')
 #' }
 #' @import sbtools
+#' @importFrom stats na.omit
 #' @export
 download_metab_run <- function(title, files=NA, folder = tempdir(), 
                         on_remote_missing=c("stop","return_NA"), 

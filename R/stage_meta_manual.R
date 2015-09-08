@@ -62,6 +62,7 @@ stage_meta_manual <- function(folder = tempdir(), verbose = FALSE) {
 #' @param sheets_key the Google document key, a string of letters and numbers found in the browser URL after /d/
 #' @param na.string the string to convert to NA if it's all that's in a cell
 #' @param header logical. Expect a header row?
+#' @importFrom utils read.table
 #' @keywords internal
 load_google_sheet <- function(sheets_key, na.string="", header=TRUE){
   stopifnot(requireNamespace('RCurl'))
