@@ -34,6 +34,7 @@ stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil','landcove
     ted_df <- read.table(ted_file, header=TRUE, sep=",", stringsAsFactors=FALSE)
 
     # rename site_name column
+    site_no <- '.dplyr.var'
     ted_df <- rename(ted_df, site_name=site_no)
 
     # compare the site IDs against the ones on SB

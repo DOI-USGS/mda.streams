@@ -27,6 +27,7 @@ get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missin
   lon_lat <- get_meta('basic', out=c('site_name','lat','lon'))
   ll_row <- match(site_names, lon_lat$site_name)
   if(length(na_rows <- which(is.na(ll_row))) > 0) {
+    missing_site_info <- paste0(" unrecognized site_name[s]: ", paste0(site_names[na_rows], collapse=", "))
     if(on_missing == "omit") {
       ll_row <- ll_row[!is.na(ll_row)]
       site_names <- site_names[site_names %in% lon_lat$site_name]
@@ -35,7 +36,7 @@ get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missin
       # already does the right thing for on_missing="NA"
       on_missing_info <- "returning NAs for"
     }
-    warning(on_missing_info, " unrecognized site_name[s]: ", paste0(site_names[na_rows], collapse=", "))
+    warning(on_missing_info, missing_site_info)
   }
   lon_lat <- lon_lat[ll_row,]
   lon_lat$site_name <- site_names
