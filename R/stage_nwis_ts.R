@@ -11,6 +11,7 @@
 #' @return a character vector of file handles
 #' @importFrom dataRetrieval constructNWISURL importRDB1
 #' @importFrom unitted u
+#' @importFrom stats setNames
 #'   
 #' @examples
 #' 

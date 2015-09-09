@@ -13,6 +13,7 @@
 #'   2nd:nth data argument to combine_ts (relative to the first argument)
 #' @import dplyr
 #' @importFrom unitted u v get_units
+#' @importFrom stats setNames approx
 #' @export
 #' @examples 
 #' \dontrun{

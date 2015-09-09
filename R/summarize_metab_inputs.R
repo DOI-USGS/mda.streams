@@ -7,6 +7,8 @@
 #' @param out a list of one or more outputs to include in the summary dataframe
 #' @param verbose logical. supply status messages?
 #' @import dplyr
+#' @importFrom utils read.table
+#' @importFrom stats setNames complete.cases
 #' @export
 summarize_metab_inputs <- function(config, rows, out=c("site", "model", "tag", "strategy", "date", "start_date","end_date","num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"), verbose=TRUE) {
   

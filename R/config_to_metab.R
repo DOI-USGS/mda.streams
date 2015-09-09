@@ -9,6 +9,8 @@
 #' @param verbose logical. Should status messages be given?
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom utils read.table
+#' @importFrom stats complete.cases
 #' @export
 #' @examples
 #' \dontrun{

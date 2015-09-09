@@ -19,6 +19,7 @@ make_var_src <- function(var, src) {
 #'   the var_src is not valid
 #' @return a single TRUE if successful, else on_fail(msg) followed by a vector
 #'   of T/F values with F for invalid var_srces
+#' @importFrom stats setNames
 #' @export
 verify_var_src <- function(var_var_src, src, on_fail=warning) {
   # combine var & src
@@ -64,6 +65,7 @@ verify_var_src <- function(var_var_src, src, on_fail=warning) {
 #' @param use_names logical. Should names/rownames be attached to the
 #'   vector/data.frame?
 #' @return if length(out)==1 a vector, else a data.frame
+#' @importFrom stats setNames
 #' @export
 parse_var_src <- function(var_src, out=c("var","src"), use_names=FALSE) {
   splitcols <- c("var","src")
@@ -121,6 +123,7 @@ make_ts_name <- function(var_var_src, src) {
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
 #' mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
+#' @importFrom stats setNames
 #' @export
 parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   # error checking
@@ -191,6 +194,7 @@ make_site_name <- function(sitenum, database=c("nwis", "styx")) {
 #' @return the database, sitenum, or both. If both, the return value is a 
 #'   data.frame; otherwise it's a vector.
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
   # split first
@@ -251,6 +255,7 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' @param use_names logical. Should the return vector be named according to the 
 #'   input values?
 #' @return a character
+#' @importFrom stats setNames
 #' @export
 parse_ts_path <- function(file_path, 
                           out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
@@ -311,6 +316,7 @@ make_meta_path <- function(type, folder) {
 #'   list elements?
 #' @return a data.frame, one row per path
 #' @export
+#' @importFrom stats setNames
 parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)
   
@@ -354,6 +360,7 @@ make_metab_run_title <- function(date, tag, strategy) {
 #'   list elements?
 #' @return a data.frame, one row per path
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_names=length(title)>1) {
   
@@ -404,6 +411,7 @@ make_metab_model_name <- function(title, row, site) {
 #'   list elements?
 #' @import dplyr
 #' @export
+#' @importFrom stats setNames
 parse_metab_model_name <- function(model_name, out=c('title','row','site','date','tag','strategy'), use_names=length(model_name)>1) {
   
   out = match.arg(out, several.ok=TRUE)
@@ -459,6 +467,7 @@ make_metab_model_path <- function(model_name, folder) {
 #' @param out character. which columns to return
 #' @param use_names attach row/vector names?
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy'), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)

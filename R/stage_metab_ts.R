@@ -11,6 +11,7 @@
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
   # check inputs
@@ -37,6 +38,7 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     
     # extract specific columns into ts files. this section will need rewriting
     # as the range of model options expands.
+    var <- ".dplyr.var"
     file_paths <- sapply(c("gpp","er","K600"), function(pvar) {
       metab_var <- get_var_src_codes(var==pvar, out="metab_var")[1]
       var_units <- get_var_src_codes(var==pvar, out="units")[1]

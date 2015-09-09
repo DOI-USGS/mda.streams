@@ -39,6 +39,7 @@
 #' @return file name of the config file
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom utils write.table
 #' @export
 #' @examples
 #' \dontrun{

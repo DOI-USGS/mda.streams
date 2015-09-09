@@ -8,6 +8,7 @@
 #' @param limit the maximum number of items to return in the SB query
 #'   
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 repair_metab_model <- function(model_name, limit=5000) {
   

@@ -17,6 +17,8 @@
 #' @importFrom foreign read.dbf write.dbf
 #' @import dplyr
 #' @importFrom unitted v u
+#' @importFrom utils read.table unzip
+#' @importFrom stats setNames
 #' @export
 stage_meta_nawqahst <- function(types=c('AC_RUNOFF', 'Ac_popd10', 'AC_NLCD11'), folder='temp') {
   
