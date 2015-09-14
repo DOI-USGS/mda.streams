@@ -7,11 +7,13 @@
 #' @inheritParams download_item_files
 #' @export
 #' @importFrom stats setNames
+#' @import dplyr
 get_metab_model <- function(model_name, on_local_exists='skip') {
   mms <- lapply(setNames(model_name,model_name), function(mname) {
     file <- download_metab_model(mname, on_local_exists = on_local_exists)
     varname <- load(file)
-    get(varname)
+    get(varname) %>% 
+      modernize_metab_model()
   })
   if(length(mms) == 1) {
     return(mms[[1]])

@@ -69,6 +69,12 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
     logic=logic,
     stringsAsFactors=FALSE)
   
+  # special case: if site is NA, we're just looking for an empty data.frame
+  if(isTRUE(is.na(site))) {
+    config$logic <- 'site=NA'
+    return(config)
+  }
+  
   # setup operations & checks as needed
   if('pred' %in% config[,'type']) {
     metab_model_list <- list_metab_models() # will break if needed but not logged into SB, so try it early

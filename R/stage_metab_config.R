@@ -110,7 +110,7 @@ stage_metab_config <- function(
   
   # Create the config table
   config <- data.frame(
-    tag=tag, strategy=strategy, date=date, 
+    tag=tag, strategy=strategy, date=as.character(date, format="%Y-%m-%d %H:%M:%S %z"), 
     model=model, model_args=model_args,
     site=site, 
     sitetime=sitetime, 
