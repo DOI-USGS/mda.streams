@@ -23,7 +23,10 @@ file handle (character path) for the downloaded file, or NA if the
   timeseries is unavailable on ScienceBase
 }
 \description{
-Download metabolism model .RData to local file
+WARNING: older metab_models may not be compatible with contemporary
+streamMetabolizer or mda.streams functions. To investigate older models,
+either apply modernize_metab_model to your downloaded files or use
+get_metab_model, which does this for you.
 }
 \examples{
 \dontrun{

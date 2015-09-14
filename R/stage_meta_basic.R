@@ -154,7 +154,7 @@ stage_meta_basic_styx <- function(sites_meta, verbose=FALSE) {
   site_name <- '.dplyr.var'
   sites_meta %>%
     select(site_name) %>%
-    mutate(long_name=site_name, lat=NA, lon=NA, coord_datum=NA, alt=NA, alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA) %>%
+    mutate(long_name=paste0("Simulated data: ",site_name), lat=NA, lon=NA, coord_datum=NA, alt=NA, alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA) %>%
     as.data.frame() %>%
     u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
 }

@@ -12,6 +12,9 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
   site), par = choose_data_source("par", site),
   sitedate = choose_data_source("sitedate", site, logic = "unused var"),
+  doinit = choose_data_source("doobs1", site, logic = "unused var"),
+  gpp = choose_data_source("gpp", site, logic = "unused var"),
+  er = choose_data_source("er", site, logic = "unused var"),
   K600 = choose_data_source("K600", site, logic = "unused var"),
   dischdaily = choose_data_source("dischdaily", site, logic = "unused var"),
   velocdaily = choose_data_source("velocdaily", site, logic = "unused var"),
@@ -34,31 +37,44 @@ to the model function}
 
 \item{site}{site names}
 
-\item{sitetime}{2-column data.frame with names "type" and "src" describing
-where apparent solar time data should come from}
+\item{sitetime}{Data Source for mean solar time. See Data Source Format
+below.}
 
-\item{doobs}{2-column data.frame with names "type" and "src" describing where
-DO data should come from}
+\item{doobs}{Data Source for dissolved oxygen concentrations. See Data Source
+Format below.}
 
-\item{dosat}{2-column data.frame with names "type" and "src" describing where
-DO saturation data should come from}
+\item{dosat}{Data Source for dissolved oxygen saturation concentrations. See
+Data Source Format below.}
 
-\item{depth}{2-column data.frame with names "type" and "src" describing where
-stream depth data should come from}
+\item{depth}{Data Source for mean stream depth. See Data Source Format below.}
 
-\item{wtr}{2-column data.frame with names "type" and "src" describing where
-water temperature data should come from}
+\item{wtr}{Data Source for water temperature. See Data Source Format below.}
 
-\item{par}{2-column data.frame with names "type" and "src" describing where
-light (photosynthetically available radiation, PAR) data should come from}
+\item{par}{Data Source for light (photosynthetically available radiation,
+PAR). See Data Source Format below.}
 
-\item{sitedate}{see mm_data}
+\item{sitedate}{Data Source for the dates of interest. See Data Source Format
+below.}
 
-\item{K600}{see mm_data}
+\item{doinit}{Data Source for the first DO observation on each date to model,
+for use in data simulation. See Data Source Format below.}
 
-\item{dischdaily}{see mm_data}
+\item{gpp}{Data Source for daily gross primary productivity rates for use in
+data simulation. See Data Source Format below.}
 
-\item{velocdaily}{see mm_data}
+\item{er}{Data Source for ecosystem respiration rates for use in data
+simulation. See Data Source Format below.}
+
+\item{K600}{Data Source for reaeration rates for use in data simulation. See
+Data Source Format below.}
+
+\item{dischdaily}{Data Source for daily mean stream discharge, for use in
+identifying daily priors or fixed values for K600. See Data Source Format
+below.}
+
+\item{velocdaily}{Data Source for daily mean flow velocity, for use in
+identifying daily priors or fixed values for K600. See Data Source Format
+below.}
 
 \item{omit_incomplete}{logical. If one or more datasets required for the
 specified config row is unavailable, should that row be omitted?}
@@ -75,6 +91,18 @@ Write a table (tsv) of configuration information for individual metabolism
 modeling jobs (one row/job per site-strategy combination). This tsv should
 reflect the full information needed to re-run a set of jobs. The jobs will
 probably, but not necessarily, be run on a Condor cluster.
+}
+\section{Data Source Format}{
+
+
+  Every parameter whose definition begins with Data Source should be supplied
+  as a 4-column data.frame with column names c('type','site','src','logic').
+  These specify where to find the data for a given variable. The easiest way
+  to create such a data.frame is usually with
+  \code{\link{choose_data_source}}, though it may also be created manually.
+
+  The variables requiring Data Source specification, along with their
+  expected units, are defined in the help file for \code{\link{mm_data}}.
 }
 \examples{
 \dontrun{
@@ -97,6 +125,10 @@ stage_metab_config(tag="0.0.1", strategy="test write_metab_config",
   omit_incomplete=FALSE)
 stage_metab_config(tag="0.0.1", strategy="test write_metab_config",
   site=list_sites()[24:33], filename=NULL)
+styxsites <- c("styx_001001","styx_001002","styx_001003")
+mc <- stage_metab_config(tag="0.0.1", strategy="test styx config",
+  model="metab_sim", site=styxsites, filename=NULL,
+  doobs=choose_data_source("doobs", styxsites, logic="unused var"), omit_incomplete=FALSE)
 }
 }
 

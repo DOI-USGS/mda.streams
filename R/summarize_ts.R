@@ -46,12 +46,20 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
     num_rows = function(ts) nrow(ts),
     num_complete = function(ts) length(which(!is.na(ts[,2]))),
     modal_timestep = function(ts) {
-      table_tsteps <- suppressWarnings(table(as.numeric(diff(v(ts$DateTime)), units="mins")))
-      as.numeric(names(which.max(table_tsteps)))
+      if(nrow(ts)==1) {
+        NA 
+      } else {
+        table_tsteps <- suppressWarnings(table(as.numeric(diff(v(ts$DateTime)), units="mins")))
+        as.numeric(names(which.max(table_tsteps)))
+      }
     },
     num_modal_timesteps = function(ts) {
-      table_tsteps <- suppressWarnings(table(diff(v(ts$DateTime))))
-      table_tsteps[[which.max(table_tsteps)]]
+      if(nrow(ts)==1) {
+        NA 
+      } else {
+        table_tsteps <- suppressWarnings(table(diff(v(ts$DateTime))))
+        table_tsteps[[which.max(table_tsteps)]]
+      }
     }
   )
   summary_funs <- summary_funs[out[out %in% names(summary_funs)]]
