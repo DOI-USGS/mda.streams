@@ -6,6 +6,7 @@
 #' @param verbose logical. give status messages?
 #' @importFrom unitted u
 #' @import dplyr
+#' @export
 stage_meta_metabinput <- function(model='metab_mle', model_args='list()', folder = tempdir(), verbose = FALSE) {
   
   # get metadata for those sites that have enough data to try. don't bother 
