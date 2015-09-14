@@ -8,6 +8,7 @@
 #'   in addition to the model_name and parsed name columns.
 #' @import dplyr
 #' @import streamMetabolizer
+#' @importFrom stats quantile cor
 #' @export
 summarize_metab_model <- function(
   model_name, on_local_exists='replace',
@@ -80,6 +81,7 @@ summarize_metab_model <- function(
   # select only those functions that have been requested; get units
   out_summary <- out[out %in% names(summary_funs)]
   summary_funs <- summary_funs[out_summary]
+  metab_var <- '.dplyr.var'
   units_gpp <- units_er <- unique(get_var_src_codes(metab_var=='GPP', out='units'))
   units_K600 <- unique(get_var_src_codes(metab_var=='K600', out='units'))
   units_DO <- unique(get_var_src_codes(metab_var=='DO.obs', out='units'))
@@ -97,6 +99,7 @@ summarize_metab_model <- function(
     mm <- mms[[model_row]]
     metab <- predict_metab(mm)
     dopreds <- predict_DO(mm)
+    local.date <- DO.obs <- DO.mod <- '.dplyr.var'
     doRMSEdaily <- dopreds %>% group_by(local.date) %>% summarize(RMSE=sqrt(mean((DO.obs-DO.mod)^2))) %>% as.data.frame
     as.data.frame(c(
       as.list(model_info[model_row,]),

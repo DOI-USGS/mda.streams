@@ -20,9 +20,9 @@
 #'   values
 #' @param day_end the time (as numeric hours, possibly >24) relative to each
 #'   date from which to collect dates
-#' @param gpp
-#' @param er
-#' @param K600
+#' @param gpp a vector of daily GPPs to store with this site
+#' @param er a vector of daily ERs to store with this site
+#' @param K600 a vector of daily K600s to store with this site
 #' @param info length-1 character string description of the site, how it differs
 #'   from other Styx sites, etc., to be included in the styx metadata
 #' @examples
@@ -55,26 +55,30 @@ stage_styx_site <- function(
                 filter_fun=filter_by_date))
   wtr_ts <- read_ts(wtr)
   
-  # need to download doobs somewhere in here
-  
-  # locate the values of doinit. do this even if they were supplied, because
-  # this is also how we'll get dates. if they weren't supplied, also use the
-  # calculated values to create the ts file
-  find_doinit_fun <- function(data_ply, data_daily_ply, ..., day_start, day_end, local_date) {
-    data.frame(doinit=data_ply$DO.obs[1])
-  }
-  doinit_ts <- streamMetabolizer:::mm_model_by_ply(
-    find_doinit_fun, data=data.frame(local.time=doobs_ts$DateTime, DO.obs=doobs_ts$doobs), data_daily_ply=NULL, 
-    day_start=day_start, day_end=day_end)
-  dates <- doinit_ts$DateTime
-  if(is.missing(doinit) || is.null(doinit)) {
-    stage_calc_ts(sites=site, var="doinit", src="simNew", inputs=list(figureoutwhatgoeshere))
-  }
-  
-  # at this point we've detemrined how many complete dates there are and check
-  # the lengths of doinit, gpp, er, and K600
-  dates <- unique()
-  
+#   # DO observed concentration
+#   doobs <- stage_calc_ts(
+#     sites=site, var="doobs", src="simCopy", verbose=TRUE, 
+#     inputs=list(from_src="nwis", from_site=basedon, 
+#                 filter_fun=filter_by_date))
+#   doobs_ts <- read_ts(doobs)
+# 
+#   # locate the values of doinit. do this even if they were supplied, because
+#   # this is also how we'll get dates. if they weren't supplied, also use the
+#   # calculated values to create the ts file
+#   find_doinit_fun <- function(data_ply, data_daily_ply, ..., day_start, day_end, local_date) {
+#     data.frame(doinit=data_ply$DO.obs[1])
+#   }
+#   doinit_ts <- streamMetabolizer:::mm_model_by_ply(
+#     find_doinit_fun, data=data.frame(local.time=doobs_ts$DateTime, DO.obs=doobs_ts$doobs), data_daily_ply=NULL, 
+#     day_start=day_start, day_end=day_end)
+#   dates <- doinit_ts$DateTime
+#   if(missing(doinit) || is.null(doinit)) {
+#     stage_calc_ts(sites=site, var="doinit", src="simNew", inputs=list(figureoutwhatgoeshere))
+#   }
+#   
+#   # at this point we've detemrined how many complete dates there are and check
+#   # the lengths of doinit, gpp, er, and K600
+#   dates <- unique()
   
   # sitetime
   sitetime <- stage_calc_ts(

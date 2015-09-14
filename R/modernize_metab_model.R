@@ -23,7 +23,7 @@ modernize_metab_model <- function(metab_model) {
     # config. if the config isn't complete, add the needed columns as NAs.
     old_info <- get_info(old_mm)
     old_config <- if(is.data.frame(old_info)) old_info else old_info$config
-    empty_config <- suppressWarnings(stage_metab_config(tag='0.0.0', strategy='updating SB metab model', site=NA, file=NULL))
+    empty_config <- suppressWarnings(stage_metab_config(tag='0.0.0', strategy='updating SB metab model', site=NA, filename=NULL))
     new_config <- bind_rows(empty_config, old_config) %>% as.data.frame
     new_info <- list(config=new_config)
  

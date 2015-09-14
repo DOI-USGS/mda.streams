@@ -32,11 +32,11 @@ numeric vector of doinit values (values of DO.obs on whcih to start each
 day's simulated DO data, asusming these values are passed to a metab_sim
 model).}
 
-\item{gpp}{}
+\item{gpp}{a vector of daily GPPs to store with this site}
 
-\item{er}{}
+\item{er}{a vector of daily ERs to store with this site}
 
-\item{K600}{}
+\item{K600}{a vector of daily K600s to store with this site}
 
 \item{info}{length-1 character string description of the site, how it differs
 from other Styx sites, etc., to be included in the styx metadata}
