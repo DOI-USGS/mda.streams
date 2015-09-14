@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/USGS-R/mda.streams.png?label=ready&title=Ready)](https://waffle.io/USGS-R/mda.streams)
 mda.streams
 ===========
 
