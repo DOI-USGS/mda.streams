@@ -151,6 +151,9 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
               sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
               longitude = get_site_coords(site)$lon)
           },
+          'sitedate_simLon' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_sitedate_calcLon')
+          },
           'suntime_calcLon' = {
             calc_ts_suntime_calcLon(
               utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 

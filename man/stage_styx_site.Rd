@@ -5,10 +5,11 @@
 \title{Generate a list of files to post as a styx site}
 \usage{
 stage_styx_site(site = "styx_000000", basedon = "nwis_07239450",
-  times = c("2012-05-14 21:00:00", "2012-05-16 07:00:00"), day_start = -1.5,
-  day_end = 30, dates = c("2012-05-14", "2012-05-16"), doinit,
-  gpp = u(as.numeric(NA), "gO2 m^-2 d^-1"), er = u(as.numeric(NA),
-  "gO2 m^-2 d^-1"), K600 = u(as.numeric(NA), "d^-1"), info, verbose = TRUE)
+  times = c("2012-05-14 21:00:00", "2012-05-16 07:00:00"), depth = u(0.2,
+  "m"), day_start = -1.5, day_end = 30, dates = c("2012-05-14",
+  "2012-05-16"), doinit, gpp = u(as.numeric(NA), "gO2 m^-2 d^-1"),
+  er = u(as.numeric(NA), "gO2 m^-2 d^-1"), K600 = u(as.numeric(NA), "d^-1"),
+  info = NA, verbose = TRUE)
 }
 \arguments{
 \item{site}{a single styx site ID for which to generate data}
@@ -19,6 +20,8 @@ coordinates, elevation, and water temperature data}
 \item{times}{the starting and ending date-times by which to bound the STYX
 data. Give these as character strings in the Y-m-d H:M:S format (or just
 Y-m-d) in local solar mean time.}
+
+\item{depth}{unitted numeric mean stream depth in m}
 
 \item{day_start}{the time (as numeric hours, possibly negative) relative to
 each date from which to collect dates and possibly daily doinit (DO.mod.1)
@@ -55,13 +58,9 @@ A styx site, named after the famous lotic barrier between life and non-life,
 Earth and the Underworld, is a repository for simulated metabolism data.
 }
 \examples{
-x <- stage_styx_site()
+x <- stage_styx_site(dates=NA, gpp=unitted::u(c(4,3,6), "gO2 m^-2 d^-1"),
+  er=unitted::u(-10, "gO2 m^-2 d^-1"), K600=unitted::u(15, "d^-1"))
 head(read_ts(x$wtr))
 read_ts(x$K600)
-\dontrun{
-library(unitted)
-x <- stage_styx_site(dates=NA, gpp=u(4, "gO2 m^-2 d^-1"), er=u(-10, "gO2 m^-2 d^-1"),
-  K600=u(15, "d^-1"))
-}
 }
 

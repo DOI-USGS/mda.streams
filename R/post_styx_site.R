@@ -7,7 +7,7 @@
 #'   will be determined from the first item (a metadata vector) in this list.
 #' @examples 
 #' \dontrun{
-#' staged <- stage_styx_site()
+#' staged <- stage_styx_site(info="help file example for post_styx_site")
 #' login_sb()
 #' post_styx_site(staged)
 #' }
@@ -25,6 +25,7 @@ post_styx_site <- function(file_list) {
   # figure out which Styx site this is
   site <- file_list$metadata["site_name"]
   basedon <- file_list$metadata["basedon"]
+  info <- file_list$metadata["info"]
   
   # site item
   post_site(site, on_exists="clear", verbose=TRUE)
@@ -34,7 +35,7 @@ post_styx_site <- function(file_list) {
   lapply(file_list[-1], post_ts)
   
   # update the styx metadata
-  meta_styx_file <- stage_meta_styx(rows=u(data.frame(site_name=site, basedon=basedon, stringsAsFactors=FALSE)), on_exists="replace")
+  meta_styx_file <- stage_meta_styx(rows=u(data.frame(site_name=site, basedon=basedon, info=info, stringsAsFactors=FALSE)), on_exists="replace")
   post_meta(meta_styx_file, on_exists="replace")
   
   # report on what we've created

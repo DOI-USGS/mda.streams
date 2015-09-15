@@ -53,6 +53,7 @@ sitetime	calcLon	''	local solar mean time, nominally UTC	ts	local.time	1	NA	calc
 sitetime	simLon	''	local solar mean time, nominally UTC	ts	local.time	11	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
 sitetimedaily	calcLon	''	local solar mean time of noons, nominally UTC	ts	local.noon	1	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
 sitedate	calcLon	''	dates matched to local noons as UTC	ts	local.date	1	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
+sitedate	simLon	''	dates matched to local noons as UTC	ts	local.date	11	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
 suntime	calcLon	''	apparent solar time	ts	sun.time	1	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	calc	NA
 suntime	simLon	''	apparent solar time	ts	sun.time	11	NA	calculate solar time from UTC and site longitude	streamMetabolizer	convert_GMT_to_solartime	sim	NA
 suntime	simCopy	''	apparent solar time	ts	sun.time	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA

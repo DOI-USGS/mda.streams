@@ -16,7 +16,7 @@ This function is easiest to use when applied to the output of
 }
 \examples{
 \dontrun{
-staged <- stage_styx_site()
+staged <- stage_styx_site(info="help file example for post_styx_site")
 login_sb()
 post_styx_site(staged)
 }
