@@ -13,7 +13,7 @@
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
 #'   function. These inputs are downloaded from standard locations for the 
 #'   calcXxxx variants.
-#' @param verbose provide verbose output (currently not implemented)
+#' @param verbose logical. provide status messages?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
 #' @return a file handle for time series file created

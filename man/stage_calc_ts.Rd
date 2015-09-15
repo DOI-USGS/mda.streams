@@ -24,7 +24,7 @@ inputs (data.frames, constants, etc.) to pass to the specified calculation
 function. These inputs are downloaded from standard locations for the
 calcXxxx variants.}
 
-\item{verbose}{provide verbose output (currently not implemented)}
+\item{verbose}{logical. provide status messages?}
 
 \item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}
 and \code{\link[unitted]{write_unitted}}}

@@ -5,8 +5,10 @@
 \title{Generate a list of files to post as a styx site}
 \usage{
 stage_styx_site(site = "styx_000000", basedon = "nwis_07239450",
-  times = c("2012-05-14 21:00:00", "2012-05-16 07:00:00"), day_start, day_end,
-  doinit, gpp, er, K600, info)
+  times = c("2012-05-14 21:00:00", "2012-05-16 07:00:00"), day_start = -1.5,
+  day_end = 30, dates = c("2012-05-14", "2012-05-16"), doinit,
+  gpp = u(as.numeric(NA), "gO2 m^-2 d^-1"), er = u(as.numeric(NA),
+  "gO2 m^-2 d^-1"), K600 = u(as.numeric(NA), "d^-1"), info, verbose = TRUE)
 }
 \arguments{
 \item{site}{a single styx site ID for which to generate data}
@@ -25,21 +27,28 @@ values}
 \item{day_end}{the time (as numeric hours, possibly >24) relative to each
 date from which to collect dates}
 
+\item{dates}{either a vector of Dates, to be used as-is, or a vector of
+character strings in Y-m-d form to be interpreted as dates. If supplied as
+character AND length 2, will be converted to Date and turned into a
+sequence of consecutive Dates}
+
 \item{doinit}{optional. If missing or NULL, and if day_start is specified,
 doinit values will be pulled from the doobs data of the \code{basedon} site
 at the time specified by day_start. If doinit is specified, it should be a
-numeric vector of doinit values (values of DO.obs on whcih to start each
-day's simulated DO data, asusming these values are passed to a metab_sim
-model).}
+unitted numeric vector of doinit values (values of DO.obs on whcih to start
+each day's simulated DO data, asusming these values are passed to a
+metab_sim model).}
 
-\item{gpp}{a vector of daily GPPs to store with this site}
+\item{gpp}{a unitted vector of daily GPPs to store with this site}
 
-\item{er}{a vector of daily ERs to store with this site}
+\item{er}{a unittedvector of daily ERs to store with this site}
 
-\item{K600}{a vector of daily K600s to store with this site}
+\item{K600}{a unitted vector of daily K600s to store with this site}
 
 \item{info}{length-1 character string description of the site, how it differs
 from other Styx sites, etc., to be included in the styx metadata}
+
+\item{verbose}{logical. provide status messages?}
 }
 \description{
 A styx site, named after the famous lotic barrier between life and non-life,
@@ -47,5 +56,12 @@ Earth and the Underworld, is a repository for simulated metabolism data.
 }
 \examples{
 x <- stage_styx_site()
+head(read_ts(x$wtr))
+read_ts(x$K600)
+\dontrun{
+library(unitted)
+x <- stage_styx_site(dates=NA, gpp=u(4, "gO2 m^-2 d^-1"), er=u(-10, "gO2 m^-2 d^-1"),
+  K600=u(15, "d^-1"))
+}
 }
 
