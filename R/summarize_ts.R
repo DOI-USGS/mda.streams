@@ -21,7 +21,7 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
   
   # collect the vector inputs. as a side benefit, this will throw an error if
   # var_src and site_name have incompatible dimensions
-  ts_summary <- data.frame(site=site_name, var_src=var_src, stringsAsFactors=FALSE)
+  ts_summary <- data.frame(site=unname(site_name), var_src=unname(var_src), stringsAsFactors=FALSE)
   
   # locate the items
   ts_items <- locate_ts(var_src, site_name)

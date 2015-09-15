@@ -75,32 +75,7 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
     return(meta_id)  
   })
   
-  # separate loop to increase probability of success in re-tagging files when length(files) >> 1
-  posted_items <- sapply(1:length(meta_ids), function(i) {
-    
-    # if we skipped it once, skip it again
-    if(is.na(meta_ids[i])) 
-      return(NA)
-    else
-      meta_id <- meta_ids[i]
-    
-    # parse (again) the file name to determine where to post the file
-    metapath <- parse_meta_path(files[i])
-    
-    # tag item with our special identifiers. if the item already existed,
-    # identifiers should be wiped out by a known SB quirk, so sleep to give time
-    # for the files to be added and the identifiers to disappear so we can replace them
-    for(wait in 1:100) {
-      Sys.sleep(0.2)
-      if(nrow(sbtools::item_list_files(meta_id)) > 0 && is.null(item_get(meta_id)$identifiers)) break
-      if(wait==100) stop("identifiers didn't disappear and so can't be replaced")
-    }
-    if(verbose) message("adding/replacing identifiers for item ", meta_id, ": ",
-                        "scheme=", get_scheme(), ", type=", "sites_meta", ", key=", metapath$meta_type)
-    repair_meta(metapath$type, limit=5000)
-    
-    meta_id
-  })
+  # re-tagging files seems to be unnecessary for the current options, but keep an eye on this.
   
-  invisible(posted_items)
+  invisible(meta_ids)
 }
