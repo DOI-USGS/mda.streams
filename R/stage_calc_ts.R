@@ -13,7 +13,7 @@
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
 #'   function. These inputs are downloaded from standard locations for the 
 #'   calcXxxx variants.
-#' @param verbose provide verbose output (currently not implemented)
+#' @param verbose logical. provide status messages?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
 #' @return a file handle for time series file created
@@ -150,6 +150,9 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             calc_ts_sitedate_calcLon(
               sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
               longitude = get_site_coords(site)$lon)
+          },
+          'sitedate_simLon' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_sitedate_calcLon')
           },
           'suntime_calcLon' = {
             calc_ts_suntime_calcLon(
