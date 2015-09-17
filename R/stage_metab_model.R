@@ -24,7 +24,7 @@ stage_metab_model <- function(title, metab_outs, folder = tempdir(), verbose = F
     mm <- metab_outs[[out_num]]
     
     # pull info from the model
-    config_row <- get_info(mm)
+    config_row <- get_info(mm)$config
     site <- config_row[[1,"site"]]
     
     # check that info and element number match
