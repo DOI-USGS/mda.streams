@@ -13,7 +13,7 @@
 #' @author Alison P Appling
 #' @examples
 #' \dontrun{
-#' download_ts(var_src = 'doobs_nwis', site_name = 'nwis_06893300')
+#' download_metab_model("nwis_04087088-200-150730 0.0.7 MLE_for_PRK_wHarvey_and_sw")
 #' }
 #' @import sbtools
 #' @export
