@@ -229,7 +229,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
     'meta'={
       warning("meta type not currently implemented")
     },
-    'file'={
+    'ts_file'={
       data <- read_ts(src)
     },
     'const'={
@@ -244,23 +244,10 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
         u()
     },
     'pred'={
-      local.time <- DO.mod <- K600 <- site_name <- . <- '.dplyr.var'
-      mm <- get_metab_model(src)
-      if(var == "doobs") {
-        preds <- predict_DO(mm) %>%
-          select(local.time, doobs=DO.mod)
-      } else if(var == "K600") {
-        preds <- predict_metab(mm) %>%
-          mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
-          select(local.time, K600)
-      }
-      lon <- get_meta('basic',out=c('site_name','lon')) %>% v() %>% dplyr::filter(site_name==site) %>% .$lon
-      myvar <- var # need just for following line in get_var_src_codes
-      varunits <- unique(get_var_src_codes(var==myvar, out='units'))
-      data <- preds %>%
-        mutate(DateTime=convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")) %>%
-        select_("DateTime", var) %>%
-        u(c(NA, varunits))
+      data <- config_preds_to_data_column(var=var, model_src=src, src_type="SB")
+    },
+    'pred_file'={
+      data <- config_preds_to_data_column(var=var, model_src=src, src_type="file")
     },
     'none'={
       if(!isTRUE(optional)) {
@@ -271,3 +258,48 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
   )
   data
 }
+
+#' Get predictions of metabolism or DO from a model
+#' 
+#' Most of this code is the same whether it's a pred (the name of a model on 
+#' sciencebase) or a pred_file (the name of a local file name)
+#' 
+#' @param var the variable name to retrieve
+#' @param model_src the model_name or model file name
+#' @param src_type character in c("SB","file") indicating whether model_src is a
+#'   model on sciencebase or a local file name
+#' @importFrom unitted u v
+#' @import streamMetabolizer
+#' @import dplyr
+#' @keywords internal
+config_preds_to_data_column <- function(var, model_src=src, src_type="SB") {
+  mm <- if(src_type=="SB") {
+    get_metab_model(src) 
+  } else if(src_type=="file") {
+    varname <- load(model_src)
+    get(varname) %>% 
+      modernize_metab_model()
+  }
+  local.time <- DO.mod <- K600 <- site_name <- . <- '.dplyr.var'
+  if(var == "doobs") {
+    preds <- predict_DO(sim_mm) %>% 
+      select(local.time, doobs=DO.mod) %>% 
+      dplyr::filter(!is.na(doobs))
+    # make sure we only get one obs per local.time, even if the time ranges
+    # overlap. pick the first (using match)
+    unique_pred_times <- unique(preds$local.time)
+    preds <- preds[match(unique_pred_times, preds$local.time),]
+  } else if(var %in% c("gpp","er","K600")) {
+    preds <- predict_metab(mm) %>%
+      mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
+      select_('local.time', toupper(var))
+  }
+  lon <- get_meta('basic',out=c('site_name','lon')) %>% v() %>% dplyr::filter(site_name==site) %>% .$lon
+  myvar <- var # need just for following line in get_var_src_codes
+  varunits <- unique(get_var_src_codes(var==myvar, out='units'))
+  data <- preds %>%
+    mutate(DateTime=convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")) %>%
+    select_("DateTime", var) %>%
+    u(c(NA, varunits))  
+}
+
