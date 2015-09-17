@@ -69,7 +69,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
   
   # look to formals(metab_fun) for a list of vars for which we expect complete info
   data_needs_list <- var_needs_list <- optional_list <- list() 
-  data_args <- intersect(c('data','data.daily'), names(formals(metab_fun)))
+  data_args <- intersect(c('data','data_daily'), names(formals(metab_fun)))
   for(possible_arg in data_args) {
     arg_default <- eval(formals(metab_fun)[[possible_arg]])
     data_needs_list[[possible_arg]] <- colnames(arg_default)
@@ -81,7 +81,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
   err_strs <- warn_strs <- character()
 
   # check the vars for which we expect the specs to be NAs
-  data_ignored <- which(names(data_specs) %in% setdiff(names(data_specs), c(data_needs_list[['data']],data_needs_list[['data.daily']])))
+  data_ignored <- which(names(data_specs) %in% setdiff(names(data_specs), c(data_needs_list[['data']],data_needs_list[['data_daily']])))
   for(ignored in data_ignored) {
     type <- config_row[[1,data_specs[[ignored]][['type']]]]
     site <- config_row[[1,data_specs[[ignored]][['site']]]]
@@ -155,7 +155,11 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
     # combine the data into a single data.frame
     data_df <- withCallingHandlers(
       tryCatch({
-        combo <- do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(3, units="hours"))))
+        combo <- if(any(sapply(data_list, nrow) <= 1)) {
+          do.call(combine_ts, c(data_list, list(method='full_join')))
+        } else {
+          do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours"))))
+        }
         combo %>% select_(.dots=var_needs) %>% setNames(data_needs)
       },
       error=function(e) { 
@@ -189,7 +193,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
       })
   }
   
-  # remove data or data.daily if they were empty and optional (and hence NULL
+  # remove data or data_daily if they were empty and optional (and hence NULL
   # within final_data_list)
   final_data_list[sapply(final_data_list, function(d) isTRUE(is.null(d)))] <- NULL
   final_data_list
