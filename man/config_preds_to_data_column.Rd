@@ -4,7 +4,7 @@
 \alias{config_preds_to_data_column}
 \title{Get predictions of metabolism or DO from a model}
 \usage{
-config_preds_to_data_column(var, model_src = src, src_type = "SB")
+config_preds_to_data_column(var, site, model_src = src, src_type = "SB")
 }
 \arguments{
 \item{var}{the variable name to retrieve}

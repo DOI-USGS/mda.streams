@@ -219,7 +219,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
       num_tries <- 3
       for(i in 1:num_tries) {
         dfile <- tryCatch(
-          download_ts(make_var_src(var, src), site, on_local_exists="replace", on_remote_missing="stop"),
+          download_ts(make_var_src(var, src), site, on_local_exists="locate", on_remote_missing="stop"),
           error=function(e) { warning(paste0("download try ",i,": ",e$message)); NULL })
         if(!is.null(dfile)) break else Sys.sleep(1)
       }
@@ -244,10 +244,10 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
         u()
     },
     'pred'={
-      data <- config_preds_to_data_column(var=var, model_src=src, src_type="SB")
+      data <- config_preds_to_data_column(var=var, site=site, model_src=src, src_type="SB")
     },
     'pred_file'={
-      data <- config_preds_to_data_column(var=var, model_src=src, src_type="file")
+      data <- config_preds_to_data_column(var=var, site=site, model_src=src, src_type="file")
     },
     'none'={
       if(!isTRUE(optional)) {
@@ -272,7 +272,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' @import streamMetabolizer
 #' @import dplyr
 #' @keywords internal
-config_preds_to_data_column <- function(var, model_src=src, src_type="SB") {
+config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB") {
   mm <- if(src_type=="SB") {
     get_metab_model(src) 
   } else if(src_type=="file") {
@@ -280,9 +280,9 @@ config_preds_to_data_column <- function(var, model_src=src, src_type="SB") {
     get(varname) %>% 
       modernize_metab_model()
   }
-  local.time <- DO.mod <- K600 <- site_name <- . <- '.dplyr.var'
+  local.time <- DO.mod <- doobs <- site_name <- . <- '.dplyr.var'
   if(var == "doobs") {
-    preds <- predict_DO(sim_mm) %>% 
+    preds <- predict_DO(mm) %>% 
       select(local.time, doobs=DO.mod) %>% 
       dplyr::filter(!is.na(doobs))
     # make sure we only get one obs per local.time, even if the time ranges
