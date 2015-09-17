@@ -9,6 +9,14 @@
 #' @import dplyr
 #' @import streamMetabolizer
 #' @importFrom stats quantile cor
+#' @examples
+#' \dontrun{
+#' login_sb()
+#' mymms <- c("nwis_11462500-4-150729 0.0.5 bob_sites_test_mle",
+#'   "nwis_11462500-349-150730 0.0.6 nighttime_k_plus_data",
+#'   "nwis_11462500-349-150730 0.0.7 MLE_for_PRK_wHarvey_and_sw")
+#' summarize_metab_model(mymms) # be patient
+#' }
 #' @export
 summarize_metab_model <- function(
   model_name, on_local_exists='replace',
