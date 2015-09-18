@@ -8,14 +8,15 @@
 #' 
 #' @inheritParams download_ts
 #' @inheritParams combine_ts
+#' @inheritParams read_ts
 #' @export
-get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3, units="hours"), on_local_exists='skip') {
+get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3, units="hours"), on_local_exists='skip', on_invalid='stop') {
   
   if(length(site_name) > 1) stop("only one site_name is allowed")
   
   data_list <- lapply(var_src, function(vs) {
     file <- download_ts(var_src=vs, site_name=site_name, on_local_exists=on_local_exists)
-    read_ts(file)
+    read_ts(file, on_invalid=on_invalid)
   })
   
   if(length(var_src) > 1) {

@@ -88,7 +88,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
       # the following should ~minimize the time*number of SB queries. it creates a
       # table of T/F values where rows are sites, cols are srces, and a cell is T
       # if the src exists for that site
-      site_has_ts <- data.frame(site=config[config$logic=='priority local','site'])
+      site_has_ts <- data.frame(site=unique(config[config$logic=='priority local','site']))
       for(psrc in ranked_src$src) { site_has_ts[psrc] <- FALSE }
       if(nrow(site_has_ts) > nrow(ranked_src)*2) { # loop by src if there are many sites
         for(psrc in ranked_src$src) {
@@ -117,7 +117,11 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
   }
   
   # determine each config row separately, according to the logic in that row
-  for(row in 1:nrow(config)) {
+  config <- config %>% mutate(key=paste(type, site, src, logic, sep=";"))
+  for(key in unique(config$key)) {
+    print(key)
+    rows <- which(config$key == key)
+    row <- rows[1]
     switch(
       config[row,'logic'],
       
@@ -128,8 +132,8 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
         # available source for each site.
         bestsrc <- names(which(unlist(site_has_ts[site_has_ts$site==config[row,'site'],-1,drop=FALSE]))[1])
         if(length(bestsrc) == 1) {
-          config[row,'src'] <- bestsrc
-          config[row,'type'] <- 'ts'
+          config[rows,'src'] <- bestsrc
+          config[rows,'type'] <- 'ts'
         }
         
         # if there wasn't a good data option, tell the user
@@ -139,9 +143,9 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
       
       # automatic specification that this var will not be used
       'unused var'={
-        config[row,'type'] <- 'none'
-        config[row,'site'] <- NA
-        config[row,'src'] <- NA
+        config[rows,'type'] <- 'none'
+        config[rows,'site'] <- NA
+        config[rows,'src'] <- NA
       },
       
       # if logic is an unknown term, use manual specification of all fields.
@@ -160,7 +164,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
           meta={
             warning("meta not currently implemented")
           },
-          file={
+          ts_file={
             if(!file.exists(config[row,'src']))
               warning("file in row ", row, " doesn't exist on this machine")
           },
@@ -177,13 +181,17 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
                 warning("possible metab model names for site=",config[row,'site'],", src=",config[row,'src'],":\n",paste0(mm_name,collapse="\n"))
                 stop(paste0("couldn't find exactly 1 metab model name in row ",row))
               } else {
-                config[row,'src'] <- mm_name
+                config[rows,'src'] <- mm_name
               }
             } else {
               # if parsed_mm_name was complete, then we only need to confirm that config[row,'src'] refers to a real model
               if(!(config[row,'src'] %in% metab_model_list))
                 warning("in row ", row, " found src that's not in list_metab_models()")
             }
+          },
+          pred_file={
+            if(!file.exists(config[row,'src']))
+              warning("file in row ", row, " doesn't exist on this machine")
           },
           none={
             if(!is.na(config[row,'site'])) stop('when type=none need site=NA')
@@ -195,6 +203,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
     )
   }
   
+  config$key <- NULL
   config
 }
 

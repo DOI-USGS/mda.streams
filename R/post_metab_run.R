@@ -12,6 +12,12 @@
 #'   to the new SB item
 #' @param on_exists character. what should be done when an item already exists?
 #' @param verbose logical. Should status messages be given?
+#' @examples
+#' \dontrun{
+#' post_metab_run(
+#'   folder=make_metab_run_title(config$date[1], config$tag[1], "styx_001_experiment_sim_models"),
+#'   files=c("config.tsv", "condor_notes.txt"))
+#' }
 #' @export
 post_metab_run <- function(folder, files, on_exists=c("stop", "skip", "addfiles"), verbose=TRUE) {
 

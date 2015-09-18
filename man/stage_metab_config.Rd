@@ -18,7 +18,7 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   K600 = choose_data_source("K600", site, logic = "unused var"),
   dischdaily = choose_data_source("dischdaily", site, logic = "unused var"),
   velocdaily = choose_data_source("velocdaily", site, logic = "unused var"),
-  omit_incomplete = TRUE, filename = "./condor_config.tsv")
+  omit_incomplete = TRUE, filename = "./config.tsv")
 }
 \arguments{
 \item{tag}{character of form "1.0.2" that uniquely identifies this set of

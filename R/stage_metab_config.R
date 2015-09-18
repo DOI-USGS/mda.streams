@@ -106,7 +106,7 @@ stage_metab_config <- function(
   dischdaily=choose_data_source("dischdaily", site, logic="unused var"),
   velocdaily=choose_data_source("velocdaily", site, logic="unused var"),
   omit_incomplete=TRUE,
-  filename="./condor_config.tsv") {
+  filename="./config.tsv") {
   
   # Create the config table
   config <- data.frame(

@@ -4,10 +4,13 @@
 \alias{read_ts}
 \title{read ts format (timeseries) for mda.streams into data.frame}
 \usage{
-read_ts(file)
+read_ts(file, on_invalid = c("stop", "warn"))
 }
 \arguments{
 \item{file}{a valid ts file path}
+
+\item{on_invalid}{character in \code{c("stop","warn")} indicating how to
+handle invalid timeseries}
 }
 \value{
 a timeseries unitted data.frame
@@ -22,7 +25,7 @@ baro_pressure <- read_ts(file)
 }
 }
 \author{
-Jordan S. Read
+Jordan S. Read, Alison Appling
 }
 \seealso{
 \code{\link{download_ts}}

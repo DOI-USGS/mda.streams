@@ -25,4 +25,11 @@ model run. These files will probably include a .tsv config file, an .RData
 file containing a list of model fit objects, and an .Rout file containing the
 log information from the run.
 }
+\examples{
+\dontrun{
+post_metab_run(
+  folder=make_metab_run_title(config$date[1], config$tag[1], "styx_001_experiment_sim_models"),
+  files=c("config.tsv", "condor_notes.txt"))
+}
+}
 

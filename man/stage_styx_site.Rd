@@ -58,9 +58,11 @@ A styx site, named after the famous lotic barrier between life and non-life,
 Earth and the Underworld, is a repository for simulated metabolism data.
 }
 \examples{
-x <- stage_styx_site(dates=NA, gpp=unitted::u(c(4,3,6), "gO2 m^-2 d^-1"),
-  er=unitted::u(-10, "gO2 m^-2 d^-1"), K600=unitted::u(15, "d^-1"))
+\dontrun{
+x <- stage_styx_site(dates=NA, gpp=unitted::u(c(4,3,6), "g m^-2 d^-1"),
+  er=unitted::u(-10, "g m^-2 d^-1"), K600=unitted::u(15, "d^-1"), verbose=FALSE)
 head(read_ts(x$wtr))
 read_ts(x$K600)
+}
 }
 

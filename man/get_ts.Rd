@@ -5,7 +5,7 @@
 \title{Bring one or more timeseries into R and merge them}
 \usage{
 get_ts(var_src, site_name, method = "approx", approx_tol = as.difftime(3,
-  units = "hours"), on_local_exists = "skip")
+  units = "hours"), on_local_exists = "skip", on_invalid = "stop")
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see
@@ -22,6 +22,9 @@ over which an approximation will be used to fill in data gaps in the
 
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
+
+\item{on_invalid}{character in \code{c("stop","warn")} indicating how to
+handle invalid timeseries}
 }
 \description{
 Downloads the file from SB if either (1) the file has not yet been downloaded
