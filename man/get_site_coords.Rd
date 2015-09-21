@@ -5,7 +5,8 @@
 \title{Pull the latitude and longitude of a site from ScienceBase}
 \usage{
 get_site_coords(site_names, format = c("normal", "geoknife"),
-  on_missing = c("NA", "omit"), attach.units = (format == "normal"))
+  on_missing = c("NA", "omit"), use_basedon = FALSE,
+  attach.units = (format == "normal"))
 }
 \arguments{
 \item{site_names}{a list of site names such as those returned from
@@ -19,17 +20,26 @@ excludes sites with incomplete coordinate data.}
 to include missing sites in the output but with NA for both lon and lat.
 Use "omit" to omit those sites from the output.}
 
+\item{use_basedon}{logical. If TRUE, and if there are sites among site_names
+that have NA in their lat or lon fields but also have a character value in
+their styx.basedon metadata field, then lat and lon will be pulled from the
+site named in styx.basedon. use_basedon=TRUE is appropriate primarily for
+styx sites (those with simulated data, whose initial data are based on some
+real site) and so use_basedon=FALSE by default.}
+
 \item{attach.units}{logical. Should units be attached?}
 }
 \value{
-a data.frame of
+a data.frame of site names and coordinates, with units if
+  attach.units=TRUE, or a matrix if format='geoknife'
 }
 \description{
 Pull the latitude and longitude of a site from ScienceBase
 }
 \examples{
-get_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501"))
+get_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501","nwis_07239450"))
+get_site_coords(c("nwis_01467200","styx_001001","nwis_07239450"), use_basedon=TRUE)
 get_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
-    "styx_0001001"), format="geoknife")
+    "styx_000001001"), format="geoknife")
 }
 
