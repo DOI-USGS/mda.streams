@@ -282,7 +282,6 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
-#' @importFrom lubridate round_date
 #' @keywords internal
 config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB") {
   mm <- if(src_type=="SB") {
@@ -308,7 +307,7 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
   }
   rownames(preds) <- NULL
   # get location for datetime conversion
-  lon <- get_meta('basic',out=c('site_name','lon')) %>% v() %>% dplyr::filter(site_name==site) %>% .$lon
+  lon <- get_site_coords(site, use_basedon=TRUE) %>% .$lon
   # get units
   myvar <- var # need just for following line in get_var_src_codes
   varunits <- unique(get_var_src_codes(var==myvar, out='units'))
@@ -317,8 +316,41 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
     # convert back to UTC. round to nearest second after conversion because
     # POSIXct values are only stored to the nearest second in our .tsv files,
     # and hence in the model data, and hence in predictions.
-    mutate(DateTime=round_date(convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar"), "second")) %>%
+    mutate(DateTime=dev_lubridate_round_date(v(convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")), "second")) %>%
     select_("DateTime", var) %>%
     u(c(NA, varunits))  
+  data
 }
 
+#' Round, flour and ceiling methods for date-time objects.
+#' 
+#' Copied from https://github.com/hadley/lubridate/blob/master/R/round.r; this 
+#' version differs from the CRAN version, which produces NAs on some rounding 
+#' tasks. Will be replaced by official lubridate version when the changes are
+#' pushed to CRAN.
+#' 
+#' @param x a vector of date-time objects
+#' @param unit a character string specifying the time unit to be rounded to. 
+#'   Should be one of "second", "minute", "hour", "day", "week", "month", 
+#'   "quarter", or "year."
+#' @return x with the appropriate units floored
+#' @keywords internal
+#' @importFrom lubridate ceiling_date floor_date reclass_date
+dev_lubridate_round_date <- function(x, unit = c("second", "minute", "hour", "day", "week", "month", "year", "quarter")) {
+  
+  if(!length(x)) return(x)
+  
+  unit <- match.arg(unit)
+  
+  above <- unclass(as.POSIXct(ceiling_date(x, unit)))
+  mid <- unclass(as.POSIXct(x))
+  below <- unclass(as.POSIXct(floor_date(x, unit)))
+  
+  wabove <- (above - mid) <= (mid - below)
+  wabove <- !is.na(wabove) & wabove
+  new <- below
+  new[wabove] <- above[wabove]
+  new <- .POSIXct(new, tz = tz(x))
+  
+  reclass_date(new, x)
+}
