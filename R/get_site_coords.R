@@ -23,7 +23,7 @@
 #' @export
 #' @examples 
 #' get_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501","nwis_07239450")) 
-#' get_site_coords(c("nwis_01467200","styx_001001","nwis_07239450"), use_basedon=TRUE) 
+#' get_site_coords(c("styx_001001","nwis_07239450"), use_basedon=TRUE) 
 #' get_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
 #'     "styx_000001001"), format="geoknife")
 get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missing=c("NA","omit"), use_basedon=FALSE, attach.units=(format=="normal")) {
@@ -52,12 +52,13 @@ get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missin
   # patch NAs for sites with proxies (basedons) where we can
   if(use_basedon) {
     na_lat_lons <- with(lon_lat, which(is.na(lat) | is.na(lon)))
-    styx_meta <- get_meta("styx")
-    sites_w_proxies <- match(lon_lat$site_name[na_lat_lons], styx_meta$site_name)
-    proxies <- styx_meta[sites_w_proxies, 'styx.basedon']
-    lon_lat[sites_w_proxies, c('lat','lon')] <- basic_meta[match(proxies, basic_meta$site_name),c('lat','lon')]
+    if(length(na_lat_lons) > 0) {
+      styx_meta <- get_meta("styx")
+      sites_w_proxies <- match(lon_lat$site_name[na_lat_lons], styx_meta$site_name)
+      proxies <- styx_meta[sites_w_proxies, 'styx.basedon']
+      lon_lat[na_lat_lons, c('lat','lon')] <- basic_meta[match(proxies, basic_meta$site_name),c('lat','lon')]
+    }
   }
-  
   
   if(format=="geoknife") {
     lon_lat <- v(lon_lat)[c("lon","lat")] %>%
