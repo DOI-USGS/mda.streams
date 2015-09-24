@@ -282,6 +282,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom lubridate round_date
 #' @keywords internal
 config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB") {
   mm <- if(src_type=="SB") {
@@ -305,11 +306,18 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
       mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
       select_('local.time', toupper(var))
   }
+  rownames(preds) <- NULL
+  # get location for datetime conversion
   lon <- get_meta('basic',out=c('site_name','lon')) %>% v() %>% dplyr::filter(site_name==site) %>% .$lon
+  # get units
   myvar <- var # need just for following line in get_var_src_codes
   varunits <- unique(get_var_src_codes(var==myvar, out='units'))
+  # format predictions as time series
   data <- preds %>%
-    mutate(DateTime=convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")) %>%
+    # convert back to UTC. round to nearest second after conversion because
+    # POSIXct values are only stored to the nearest second in our .tsv files,
+    # and hence in the model data, and hence in predictions.
+    mutate(DateTime=round_date(convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar"), "second")) %>%
     select_("DateTime", var) %>%
     u(c(NA, varunits))  
 }
