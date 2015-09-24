@@ -160,6 +160,16 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
         } else {
           do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours"))))
         }
+        
+        # restrict dates of data if requested
+        if(!is.na(start_date <- as.POSIXct(config_row[[1, "start_date"]], tz="UTC"))) {
+          combo <- combo[combo$DateTime >= start_date, ]
+        }
+        if(!is.na(end_date <- as.POSIXct(config_row[[1, "end_date"]], tz="UTC"))) {
+          combo <- combo[combo$DateTime <= end_date, ]
+        }
+        
+        # rename
         combo %>% select_(.dots=var_needs) %>% setNames(data_needs)
       },
       error=function(e) { 
