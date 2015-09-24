@@ -1,4 +1,4 @@
-#' COnvert config specifications into a data input table
+#' Convert config specifications into a data input table
 #' 
 #' Turns a single config row into a data.frame of input data for the specified 
 #' metabolism modeling function
@@ -170,6 +170,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
         warn_strs <<- c(warn_strs, paste0("combine: ",w$message))
         invokeRestart("muffleWarning")
       })
+    
     data_df
   }) %>% setNames(data_args)
   
@@ -219,7 +220,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
       num_tries <- 3
       for(i in 1:num_tries) {
         dfile <- tryCatch(
-          download_ts(make_var_src(var, src), site, on_local_exists="locate", on_remote_missing="stop"),
+          download_ts(make_var_src(var, src), site, on_local_exists="skip", on_remote_missing="stop"),
           error=function(e) { warning(paste0("download try ",i,": ",e$message)); NULL })
         if(!is.null(dfile)) break else Sys.sleep(1)
       }

@@ -26,7 +26,7 @@
 #' @param model_args character, in R language, specifying any arguments to pass 
 #'   to the model function
 #' @param site site names
-#' @param sitetime Data Source for mean solar time. See Data Source Format
+#' @param sitetime Data Source for mean solar time. See Data Source Format 
 #'   below.
 #' @param doobs Data Source for dissolved oxygen concentrations. See Data Source
 #'   Format below.

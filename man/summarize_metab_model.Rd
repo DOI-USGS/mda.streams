@@ -23,4 +23,13 @@ in addition to the model_name and parsed name columns.}
 \description{
 Returns a data.frame of metrics, one row per model_name
 }
+\examples{
+\dontrun{
+login_sb()
+mymms <- c("nwis_11462500-4-150729 0.0.5 bob_sites_test_mle",
+  "nwis_11462500-349-150730 0.0.6 nighttime_k_plus_data",
+  "nwis_11462500-349-150730 0.0.7 MLE_for_PRK_wHarvey_and_sw")
+summarize_metab_model(mymms) # be patient
+}
+}
 

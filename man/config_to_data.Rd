@@ -2,7 +2,7 @@
 % Please edit documentation in R/config_to_data.R
 \name{config_to_data}
 \alias{config_to_data}
-\title{COnvert config specifications into a data input table}
+\title{Convert config specifications into a data input table}
 \usage{
 config_to_data(config_row, row_num, metab_fun, metab_args,
   on_error = c("stop", "warn", "quiet"))
