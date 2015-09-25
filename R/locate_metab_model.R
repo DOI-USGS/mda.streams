@@ -11,5 +11,6 @@ locate_metab_model <- function(model_name, format=c("id","url"), by=c("tag","dir
   by <- match.arg(by)
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=model_name, type="metab_model", parent=locate_folder("metab_models", by="tag"), title=model_name, by=by, format=format, limit=limit, browser=browser)
+  folder <- locate_folder("metab_models", by="tag") # do this before the locate_item to force eval & a check for auth status
+  locate_item(key=model_name, type="metab_model", parent=folder, title=model_name, by=by, format=format, limit=limit, browser=browser)
 }

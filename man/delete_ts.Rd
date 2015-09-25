@@ -29,10 +29,19 @@ set_scheme("mda_streams_dev")
 sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
 files <- stage_nwis_ts(sites = sites, var = "doobs",
   times = c('2014-01-01 00:00','2014-01-01 05:00'))
-post_ts(files)
+post_ts(files, on_exists='skip')
 locate_ts("doobs_nwis", sites) # find the newly posted data online
+sapply(locate_ts("doobs_nwis", sites), function(tsid) sbtools::item_list_files(tsid)$fname)
+
+# items should all still be there, but with no files
+mda.streams:::delete_ts("doobs_nwis", sites, files_only=TRUE)
+locate_ts("doobs_nwis", sites, by="either")
+sapply(locate_ts("doobs_nwis", sites), function(tsid) sbtools::item_list_files(tsid)$fname)
+
+# everything should disappear
+post_ts(files, on_exists='replace')
 mda.streams:::delete_ts("doobs_nwis", sites)
-locate_ts("doobs_nwis", sites, by="either") # confirm it's all gone
+locate_ts("doobs_nwis", sites, by="either")
 
 set_scheme("mda_streams")
 }

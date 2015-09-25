@@ -29,7 +29,15 @@ set_scheme("mda_streams_dev")
 
 sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
 post_site(sites)
+file_par2 <- stage_calc_ts(sites="nwis_00000000", var="par", src="simNew", verbose=TRUE,
+  inputs=list(utctime=NA, value=unitted::u(rnorm(1, 10, 2), "umol m^-2 s^-1")))
+post_ts(file_par2)
+list_tses("nwis_00000000")
+mda.streams:::delete_site(sites, children_only=TRUE)
+locate_site(sites)
+list_tses("nwis_00000000")
 mda.streams:::delete_site(sites)
+locate_site(sites)
 
 set_scheme("mda_streams")
 }
