@@ -26,7 +26,7 @@
 #' @param model_args character, in R language, specifying any arguments to pass 
 #'   to the model function
 #' @param site site names
-#' @param sitetime Data Source for mean solar time. See Data Source Format
+#' @param sitetime Data Source for mean solar time. See Data Source Format 
 #'   below.
 #' @param doobs Data Source for dissolved oxygen concentrations. See Data Source
 #'   Format below.
@@ -52,6 +52,11 @@
 #' @param velocdaily Data Source for daily mean flow velocity, for use in 
 #'   identifying daily priors or fixed values for K600. See Data Source Format 
 #'   below.
+#' @param start_date NA or datetime, to be coerced with 
+#'   \code{as.POSIXct(start_date, tz="UTC")}, at which to start the data passed 
+#'   to the metab model
+#' @param end_date NA or datetime, to be coerced with \code{as.POSIXct(end_date,
+#'   tz="UTC")}, at which to end the data passed to the metab model
 #' @param omit_incomplete logical. If one or more datasets required for the 
 #'   specified config row is unavailable, should that row be omitted?
 #' @param filename character or NULL. If NULL, the function returns a 
@@ -105,6 +110,7 @@ stage_metab_config <- function(
   K600=choose_data_source("K600", site, logic="unused var"),
   dischdaily=choose_data_source("dischdaily", site, logic="unused var"),
   velocdaily=choose_data_source("velocdaily", site, logic="unused var"),
+  start_date=NA, end_date=NA,
   omit_incomplete=TRUE,
   filename="./config.tsv") {
   
@@ -116,6 +122,7 @@ stage_metab_config <- function(
     sitetime=sitetime, 
     doobs=doobs, dosat=dosat, depth=depth, wtr=wtr, par=par,
     sitedate=sitedate, doinit=doinit, gpp=gpp, er=er, K600=K600, dischdaily=dischdaily, velocdaily=velocdaily,
+    start_date=as.POSIXct(start_date, tz="UTC"), end_date=as.POSIXct(end_date, tz="UTC"),
     stringsAsFactors=FALSE)
   
   # Filter to only those rows that might work

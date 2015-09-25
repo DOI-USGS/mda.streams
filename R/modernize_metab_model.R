@@ -8,6 +8,7 @@
 #' 
 #' @param metab_model a model or list of models
 #' @import dplyr
+#' @import streamMetabolizer
 #' @export
 modernize_metab_model <- function(metab_model) {
   # if metab_model isn't already a list, make it one

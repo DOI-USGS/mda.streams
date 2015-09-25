@@ -119,7 +119,6 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
   # determine each config row separately, according to the logic in that row
   config <- config %>% mutate(key=paste(type, site, src, logic, sep=";"))
   for(key in unique(config$key)) {
-    print(key)
     rows <- which(config$key == key)
     row <- rows[1]
     switch(

@@ -47,6 +47,11 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
       min_gap <- pmin(abs(prev_y$y-prev_y$x), abs(next_y$y-next_y$x))
       
       # approximate y
+      if(length(y_date_num) == 1) {
+        #  expand 1-row, non-const y dfs (e.g., just one date of daily data) to 2 rows so approx will work
+        y_date_num <- y_date_num + c(0,0.01)
+        y <- rbind(y,y)
+      }
       y_approx <- approx(x=y_date_num, y=as.numeric(y[,2]), xout=x_date_num, rule=2)$y
       if(names(y)[2] == 'suntime') {
         posix_origin <- as.POSIXct("1970-01-01 00:00:00", tz="UTC") # in ?as.POSIXct | Note

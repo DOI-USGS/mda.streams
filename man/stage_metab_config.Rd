@@ -18,7 +18,8 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   K600 = choose_data_source("K600", site, logic = "unused var"),
   dischdaily = choose_data_source("dischdaily", site, logic = "unused var"),
   velocdaily = choose_data_source("velocdaily", site, logic = "unused var"),
-  omit_incomplete = TRUE, filename = "./config.tsv")
+  start_date = NA, end_date = NA, omit_incomplete = TRUE,
+  filename = "./config.tsv")
 }
 \arguments{
 \item{tag}{character of form "1.0.2" that uniquely identifies this set of
@@ -75,6 +76,13 @@ below.}
 \item{velocdaily}{Data Source for daily mean flow velocity, for use in
 identifying daily priors or fixed values for K600. See Data Source Format
 below.}
+
+\item{start_date}{NA or datetime, to be coerced with
+\code{as.POSIXct(start_date, tz="UTC")}, at which to start the data passed
+to the metab model}
+
+\item{end_date}{NA or datetime, to be coerced with \code{as.POSIXct(end_date,
+tz="UTC")}, at which to end the data passed to the metab model}
 
 \item{omit_incomplete}{logical. If one or more datasets required for the
 specified config row is unavailable, should that row be omitted?}

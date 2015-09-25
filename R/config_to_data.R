@@ -1,4 +1,4 @@
-#' COnvert config specifications into a data input table
+#' Convert config specifications into a data input table
 #' 
 #' Turns a single config row into a data.frame of input data for the specified 
 #' metabolism modeling function
@@ -155,11 +155,19 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
     # combine the data into a single data.frame
     data_df <- withCallingHandlers(
       tryCatch({
-        combo <- if(any(sapply(data_list, nrow) <= 1)) {
-          do.call(combine_ts, c(data_list, list(method='full_join')))
-        } else {
-          do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours"))))
+        combo <- do.call(combine_ts, c(data_list, list(
+          method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours")
+        )))
+        
+        # restrict dates of data if requested
+        if(!is.na(start_date <- as.POSIXct(config_row[[1, "start_date"]], tz="UTC"))) {
+          combo <- combo[combo$DateTime >= start_date, ]
         }
+        if(!is.na(end_date <- as.POSIXct(config_row[[1, "end_date"]], tz="UTC"))) {
+          combo <- combo[combo$DateTime <= end_date, ]
+        }
+        
+        # rename
         combo %>% select_(.dots=var_needs) %>% setNames(data_needs)
       },
       error=function(e) { 
@@ -170,6 +178,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
         warn_strs <<- c(warn_strs, paste0("combine: ",w$message))
         invokeRestart("muffleWarning")
       })
+    
     data_df
   }) %>% setNames(data_args)
   
@@ -219,7 +228,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
       num_tries <- 3
       for(i in 1:num_tries) {
         dfile <- tryCatch(
-          download_ts(make_var_src(var, src), site, on_local_exists="locate", on_remote_missing="stop"),
+          download_ts(make_var_src(var, src), site, on_local_exists="skip", on_remote_missing="stop"),
           error=function(e) { warning(paste0("download try ",i,": ",e$message)); NULL })
         if(!is.null(dfile)) break else Sys.sleep(1)
       }
@@ -280,26 +289,33 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
     get(varname) %>% 
       modernize_metab_model()
   }
-  local.time <- DO.mod <- doobs <- site_name <- . <- '.dplyr.var'
+  local.time <- local.date <- DateTime <- DO.obs <- '.dplyr.var'
   if(var == "doobs") {
+    # get key for sitetime
+    sitetime_choice <- choose_data_source("sitetime", site, "priority local")
+    datetime_key <- config_to_data_column(var="sitetime", type="ts", site, sitetime_choice$src)
+    # get predictions
     preds <- predict_DO(mm) %>% 
-      select(local.time, doobs=DO.mod) %>% 
-      dplyr::filter(!is.na(doobs))
+      mutate(DateTime=datetime_key[match(local.time, datetime_key$sitetime), "DateTime"]) %>%
+      select(DateTime, doobs=DO.obs)
     # make sure we only get one obs per local.time, even if the time ranges
     # overlap. pick the first (using match)
-    unique_pred_times <- unique(preds$local.time)
-    preds <- preds[match(unique_pred_times, preds$local.time),]
+    preds <- preds[!is.na(preds$doobs), ]
+    unique_pred_times <- unique(preds$DateTime)
+    preds <- preds[match(unique_pred_times, preds$DateTime),]
   } else if(var %in% c("gpp","er","K600")) {
+    # get key for sitedate
+    sitedate_choice <- choose_data_source("sitedate", site, "priority local")
+    datetime_key <- config_to_data_column(var="sitedate", type="ts", site, sitedate_choice$src)
+    # get predictions
     preds <- predict_metab(mm) %>%
-      mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
-      select_('local.time', toupper(var))
+      #mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
+      mutate(DateTime=datetime_key[match(local.date, datetime_key$sitedate), "DateTime"]) %>%
+      select_('DateTime', toupper(var))
   }
-  lon <- get_meta('basic',out=c('site_name','lon')) %>% v() %>% dplyr::filter(site_name==site) %>% .$lon
+  # add units and return
   myvar <- var # need just for following line in get_var_src_codes
   varunits <- unique(get_var_src_codes(var==myvar, out='units'))
-  data <- preds %>%
-    mutate(DateTime=convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")) %>%
-    select_("DateTime", var) %>%
-    u(c(NA, varunits))  
+  data <- preds %>% u(c(NA, varunits))  
+  data
 }
-

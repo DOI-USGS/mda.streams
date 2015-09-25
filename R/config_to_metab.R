@@ -97,11 +97,13 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       . <- '.dplyr.var'
       metab_data <- metab_data_list$data
       metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
-      metab_data <- as.data.frame(v(metab_data)) # converting to df in hopes of reducing segfaults...may not be needed
+      metab_data <- v(metab_data)
       metab_data <- metab_data[complete.cases(metab_data),]
       metab_data_daily <- metab_data_list$data_daily
-      metab_data_daily <- as.data.frame(v(metab_data_daily)) # converting to df in hopes of reducing segfaults...may not be needed
-      metab_data_daily <- metab_data_daily[complete.cases(metab_data_daily),]
+      if(!is.null(metab_data_daily)) {
+        metab_data_daily <- v(metab_data_daily)
+        metab_data_daily <- metab_data_daily[complete.cases(metab_data_daily),]
+      }
     }
     
     # Run the model
