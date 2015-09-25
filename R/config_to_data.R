@@ -293,64 +293,31 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
   }
   local.time <- DO.mod <- doobs <- site_name <- . <- '.dplyr.var'
   if(var == "doobs") {
+    # get key for sitetime
+    sitetime_choice <- choose_data_source("sitetime", site, "priority local")
+    datetime_key <- config_to_data_column(var="sitetime", type="ts", site, sitetime_choice$src)
+    # get predictions
     preds <- predict_DO(mm) %>% 
-      select(local.time, doobs=DO.mod) %>% 
-      dplyr::filter(!is.na(doobs))
+      mutate(DateTime=datetime_key[match(local.time, datetime_key$sitetime), "DateTime"]) %>%
+      select(DateTime, doobs=DO.obs)
     # make sure we only get one obs per local.time, even if the time ranges
     # overlap. pick the first (using match)
-    unique_pred_times <- unique(preds$local.time)
-    preds <- preds[match(unique_pred_times, preds$local.time),]
+    preds <- preds[!is.na(preds$doobs), ]
+    unique_pred_times <- unique(preds$DateTime)
+    preds <- preds[match(unique_pred_times, preds$DateTime),]
   } else if(var %in% c("gpp","er","K600")) {
+    # get key for sitedate
+    sitedate_choice <- choose_data_source("sitedate", site, "priority local")
+    datetime_key <- config_to_data_column(var="sitedate", type="ts", site, sitedate_choice$src)
+    # get predictions
     preds <- predict_metab(mm) %>%
-      mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
-      select_('local.time', toupper(var))
+      #mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
+      mutate(DateTime=datetime_key[match(local.date, datetime_key$sitedate), "DateTime"]) %>%
+      select_('DateTime', toupper(var))
   }
-  rownames(preds) <- NULL
-  # get location for datetime conversion
-  lon <- get_site_coords(site, use_basedon=TRUE) %>% .$lon
-  # get units
+  # add units and return
   myvar <- var # need just for following line in get_var_src_codes
   varunits <- unique(get_var_src_codes(var==myvar, out='units'))
-  # format predictions as time series
-  data <- preds %>%
-    # convert back to UTC. round to nearest second after conversion because
-    # POSIXct values are only stored to the nearest second in our .tsv files,
-    # and hence in the model data, and hence in predictions.
-    mutate(DateTime=dev_lubridate_round_date(v(convert_solartime_to_GMT(solar.time=local.time, longitude=lon, time.type="mean solar")), "second")) %>%
-    select_("DateTime", var) %>%
-    u(c(NA, varunits))  
+  data <- preds %>% u(c(NA, varunits))  
   data
-}
-
-#' Round, flour and ceiling methods for date-time objects.
-#' 
-#' Copied from https://github.com/hadley/lubridate/blob/master/R/round.r; this 
-#' version differs from the CRAN version, which produces NAs on some rounding 
-#' tasks. Will be replaced by official lubridate version when the changes are
-#' pushed to CRAN.
-#' 
-#' @param x a vector of date-time objects
-#' @param unit a character string specifying the time unit to be rounded to. 
-#'   Should be one of "second", "minute", "hour", "day", "week", "month", 
-#'   "quarter", or "year."
-#' @return x with the appropriate units floored
-#' @keywords internal
-#' @importFrom lubridate ceiling_date floor_date reclass_date
-dev_lubridate_round_date <- function(x, unit = c("second", "minute", "hour", "day", "week", "month", "year", "quarter")) {
-  
-  if(!length(x)) return(x)
-  
-  unit <- match.arg(unit)
-  
-  above <- unclass(as.POSIXct(ceiling_date(x, unit)))
-  mid <- unclass(as.POSIXct(x))
-  below <- unclass(as.POSIXct(floor_date(x, unit)))
-  
-  wabove <- (above - mid) <= (mid - below)
-  wabove <- !is.na(wabove) & wabove
-  new <- below
-  new[wabove] <- above[wabove]
-  new <- .POSIXct(new, tz = tz(x))
-  
-  reclass_date(new, x)
 }
