@@ -155,11 +155,9 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
     # combine the data into a single data.frame
     data_df <- withCallingHandlers(
       tryCatch({
-        combo <- if(any(sapply(data_list, nrow) <= 1)) {
-          do.call(combine_ts, c(data_list, list(method='full_join')))
-        } else {
-          do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours"))))
-        }
+        combo <- do.call(combine_ts, c(data_list, list(
+          method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours")
+        )))
         
         # restrict dates of data if requested
         if(!is.na(start_date <- as.POSIXct(config_row[[1, "start_date"]], tz="UTC"))) {
