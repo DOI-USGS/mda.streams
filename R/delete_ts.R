@@ -15,66 +15,30 @@
 #' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
 #' files <- stage_nwis_ts(sites = sites, var = "doobs", 
 #'   times = c('2014-01-01 00:00','2014-01-01 05:00'))
-#' post_ts(files)
+#' post_ts(files, on_exists='skip')
 #' locate_ts("doobs_nwis", sites) # find the newly posted data online
+#' sapply(locate_ts("doobs_nwis", sites), function(tsid) sbtools::item_list_files(tsid)$fname)
+#' 
+#' # items should all still be there, but with no files
+#' mda.streams:::delete_ts("doobs_nwis", sites, files_only=TRUE)
+#' locate_ts("doobs_nwis", sites, by="either") 
+#' sapply(locate_ts("doobs_nwis", sites), function(tsid) sbtools::item_list_files(tsid)$fname)
+#' 
+#' # everything should disappear
+#' post_ts(files, on_exists='replace')
 #' mda.streams:::delete_ts("doobs_nwis", sites)
-#' locate_ts("doobs_nwis", sites, by="either") # confirm it's all gone
+#' locate_ts("doobs_nwis", sites, by="either")
 #'  
 #' set_scheme("mda_streams")
 #' }
 delete_ts <- function(var_src, site_name, files_only=FALSE, verbose=TRUE) {
   
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  # combine var_src and site_name data.frame style, then find item ids
+  query_args <- data.frame(
+    var_src=var_src, site_name=site_name, ts_name=paste(var_src, site_name, sep="-"),
+    ts_id=locate_ts(var_src=var_src, site_name=site_name, by="either"), 
+    stringsAsFactors=FALSE)
   
-  # find the item id by hook or by crook (aka tag or dir)
-  query_args <- data.frame(var_src=var_src, site_name=site_name, 
-                           ts_id=locate_ts(var_src=var_src, site_name=site_name, by="either"), 
-                           stringsAsFactors=FALSE)
-  
-  deletion_msgs <- 
-    lapply(1:nrow(query_args), function(arg) {
-      var <- query_args[arg, "var_src"]
-      site <- query_args[arg, "site_name"]
-      ts_id <- query_args[arg, "ts_id"]
-      
-      # if the item exists, delete it and its children
-      if(is.na(ts_id)) {
-        if(verbose) message("skipping deletion of missing ", var, " timeseries for site ", site)
-        return(NA) # do nothing if it's already not there
-      } else {
-        if(verbose) message("deleting ", var, " timeseries for site ", site)
-        
-        # delete any data files from the item
-        item_status <- item_rm_files(ts_id)
-        if(!is.list(item_status)) stop("couldn't delete item because couldn't find files")
-        
-        # sleep to give time for full deletion
-        for(wait in 1:50) {
-          Sys.sleep(0.2)
-          if(nrow(item_list_files(ts_id)) == 0) break
-          if(wait==50) stop("failed to delete files & therefore item")
-        }
-        
-        # delete the ts item itself or return its ID
-        if(files_only) {
-          return(ts_id) 
-        } else {
-          # delete the item
-          out <- item_rm(ts_id) 
-          # sleep (again!) to give time for full deletion
-          for(wait in 1:20) {
-            # longer wait between tries because this next call has been giving
-            # occasional errors on sapply(query_out$id, function(id)
-            # {item_get_fields(id, "parentId")})
-            Sys.sleep(1) 
-            if(is.na(locate_ts(var_src=var, site_name=site, by="either"))) break
-            if(wait==20) stop("failed to delete item")
-          }
-          # if it worked, return the output
-          return(out)
-        }
-      }
-    })
-  
-  invisible(deletion_msgs)
+  delete_item(item_ids=query_args$ts_id, item_names=query_args$ts_name, 
+              delete_files=files_only, delete_children=FALSE, delete_item=!files_only, verbose=verbose)
 }

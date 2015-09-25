@@ -10,12 +10,20 @@
 #' \dontrun{
 #' set_scheme('mda_streams_dev')
 #' login_sb()
-#' 
+#' mm <- streamMetabolizer::metab_mle(info=list(config=data.frame(site="dummy")))
+#' staged <- stage_metab_model("150415 0.0.0 dummy_model", mm)
+#' mname <- parse_metab_model_path(staged)$model_name
+#' post_metab_model(staged)
+#' list_metab_models()
+#' sbtools::item_list_files(locate_metab_model(list_metab_models()))$fname
+#' mda.streams:::delete_metab_model(mname, files_only=TRUE)
+#' sbtools::item_list_files(locate_metab_model(list_metab_models()))$fname
+#' mda.streams:::delete_metab_model(mname)
+#' list_metab_models()
 #' set_scheme('mda_streams')
 #' }
 delete_metab_model <- function(model_name, files_only=FALSE, verbose=TRUE) {
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
-  
   item_ids <- locate_metab_model(model_name=model_name, by="either")
-  delete_item(item_ids, item_names=model_name, delete_files=TRUE, delete_children=FALSE, delete_item=!files_only, verbose=verbose)
+  delete_item(item_ids, item_names=model_name, 
+              delete_files=files_only, delete_children=FALSE, delete_item=!files_only, verbose=verbose)
 }

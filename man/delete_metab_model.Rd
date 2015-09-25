@@ -20,7 +20,16 @@ Delete the metab_model item and its files from SB
 \dontrun{
 set_scheme('mda_streams_dev')
 login_sb()
-
+mm <- streamMetabolizer::metab_mle(info=list(config=data.frame(site="dummy")))
+staged <- stage_metab_model("150415 0.0.0 dummy_model", mm)
+mname <- parse_metab_model_path(staged)$model_name
+post_metab_model(staged)
+list_metab_models()
+sbtools::item_list_files(locate_metab_model(list_metab_models()))$fname
+mda.streams:::delete_metab_model(mname, files_only=TRUE)
+sbtools::item_list_files(locate_metab_model(list_metab_models()))$fname
+mda.streams:::delete_metab_model(mname)
+list_metab_models()
 set_scheme('mda_streams')
 }
 }
