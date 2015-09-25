@@ -289,7 +289,7 @@ config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB")
     get(varname) %>% 
       modernize_metab_model()
   }
-  local.time <- DO.mod <- doobs <- site_name <- . <- '.dplyr.var'
+  local.time <- local.date <- DateTime <- DO.obs <- '.dplyr.var'
   if(var == "doobs") {
     # get key for sitetime
     sitetime_choice <- choose_data_source("sitetime", site, "priority local")
