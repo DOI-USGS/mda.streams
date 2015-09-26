@@ -4,14 +4,14 @@
 \alias{config_preds_to_data_column}
 \title{Get predictions of metabolism or DO from a model}
 \usage{
-config_preds_to_data_column(var, site, model_src = src, src_type = "SB")
+config_preds_to_data_column(var, site, src, type)
 }
 \arguments{
 \item{var}{the variable name to retrieve}
 
-\item{model_src}{the model_name or model file name}
+\item{src}{the model_name or model file name}
 
-\item{src_type}{character in c("SB","file") indicating whether model_src is a
+\item{type}{character in c("SB","file") indicating whether src is a
 model on sciencebase or a local file name}
 }
 \description{
