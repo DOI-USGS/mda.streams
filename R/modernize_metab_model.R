@@ -26,11 +26,17 @@ modernize_metab_model <- function(metab_model) {
     old_config <- if(is.data.frame(old_info)) old_info else old_info$config
     empty_config <- suppressWarnings(stage_metab_config(tag='0.0.0', strategy='updating SB metab model', site=NA, filename=NULL))
     new_config <- bind_rows(empty_config, old_config) %>% as.data.frame
-    new_info <- list(config=new_config)
+    new_info <- if(is.list(old_info)) old_info else list()
+    new_info$config <- new_config
  
     # fit: rename 'date' to 'local.date'
     new_fit <- get_fit(old_mm)
     if('date' %in% names(new_fit)) names(new_fit)[which(names(new_fit) == 'date')] <- 'local.date'
+    
+    # fitting_time: add dummy if it wasn't there before
+    new_fitting_time <- tryCatch(
+      suppressWarnings(get_fitting_time(old_mm)),
+      error=function(e) system.time({}))
 
     # args: args list may have changed, but until this is a problem for another 
     # function, leave it untouched
@@ -55,6 +61,7 @@ modernize_metab_model <- function(metab_model) {
         model_class=new_model_class,
         info=new_info,
         fit=new_fit,
+        fitting_time=new_fitting_time,
         args=new_args,
         data=new_data,
         data_daily=new_data_daily,
