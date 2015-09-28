@@ -253,10 +253,10 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
         u()
     },
     'pred'={
-      data <- config_preds_to_data_column(var=var, site=site, model_src=src, src_type="SB")
+      data <- config_preds_to_data_column(var=var, site=site, src=src, type=type)
     },
     'pred_file'={
-      data <- config_preds_to_data_column(var=var, site=site, model_src=src, src_type="file")
+      data <- config_preds_to_data_column(var=var, site=site, src=src, type=type)
     },
     'none'={
       if(!isTRUE(optional)) {
@@ -274,18 +274,18 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' sciencebase) or a pred_file (the name of a local file name)
 #' 
 #' @param var the variable name to retrieve
-#' @param model_src the model_name or model file name
-#' @param src_type character in c("SB","file") indicating whether model_src is a
+#' @param src the model_name or model file name
+#' @param type character in c("SB","file") indicating whether src is a
 #'   model on sciencebase or a local file name
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
 #' @keywords internal
-config_preds_to_data_column <- function(var, site, model_src=src, src_type="SB") {
-  mm <- if(src_type=="SB") {
+config_preds_to_data_column <- function(var, site, src, type) {
+  mm <- if(type=="pred") {
     get_metab_model(src) 
-  } else if(src_type=="file") {
-    varname <- load(model_src)
+  } else if(type=="pred_file") {
+    varname <- load(src)
     get(varname) %>% 
       modernize_metab_model()
   }
