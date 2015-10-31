@@ -106,7 +106,7 @@ config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=
     }
     
     # check and acquire the vars we need to return
-    data_list <- lapply(1:length(data_needs), function(needed) {
+    data_list <- lapply(seq_along(data_needs), function(needed) {
       # don't waste time if we've already hit errors
       if(length(err_strs) > 0) return(NA)
       
