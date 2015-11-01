@@ -71,6 +71,9 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
     # identifiers, or identifiers will be lost
     if(verbose) message("posting metadata file ", metapath$file_name)
     item_append_files(meta_id, files = metafile)
+    
+    # check/repair identifiers
+    repair_meta(metapath$type)
 
     return(meta_id)  
   })

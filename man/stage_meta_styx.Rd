@@ -9,11 +9,11 @@ stage_meta_styx(rows, on_exists = c("stop", "replace"), folder = tempdir(),
 }
 \arguments{
 \item{rows}{a data frame with one or more rows, having the same columns as
-the existing meta_styx (if there is one). These rows will be inserted
+the existing meta_ file (if there is one). These rows will be inserted
 according to their site_name values.}
 
 \item{on_exists}{character indicating how to handle new rows whose site_name
-is already present in the current meta_styx. If 'stop', an error will be
+is already present in the current meta_ file If 'stop', an error will be
 thrown if even one value is duplicated. If 'replace', a message will be
 given and existing rows with site_name in rows$site_name will be replaced
 by the new rows.}

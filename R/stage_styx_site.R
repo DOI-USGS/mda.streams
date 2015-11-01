@@ -97,7 +97,7 @@ stage_styx_site <- function(
     sites=site, var="baro", src="simNew", verbose=verbose,
     inputs=list(
       utctime=NA,
-      value=calc_air_pressure(elevation=coords$alt*u(0.3048,"m ft^-1"), attach.units=TRUE)))
+      value=calc_air_pressure(elevation=coords$alt*u(0.3048,"m ft^-1"), attach.units=TRUE)*u(100,"Pa mb^-1")))
   
   # dosat
   dosat <- stage_calc_ts(

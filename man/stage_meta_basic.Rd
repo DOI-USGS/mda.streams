@@ -4,8 +4,8 @@
 \alias{stage_meta_basic}
 \title{Create/modify sites file}
 \usage{
-stage_meta_basic(sites = list_sites(), folder = tempdir(),
-  verbose = FALSE)
+stage_meta_basic(sites = list_sites(), on_exists = c("stop", "replace"),
+  folder = tempdir(), verbose = FALSE)
 }
 \arguments{
 \item{sites}{a vector of sites to acquire/update metadata for}

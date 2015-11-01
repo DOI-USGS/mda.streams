@@ -165,10 +165,11 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 #'   site code as used by the database.
 #' @param database a character or character vector of databases from which the 
 #'   site ID is derived, probably \code{"nwis"} (from the USGS NWIS database) or
-#'   \code{"styx"} (made-up data).
+#'   \code{"styx"} (made-up data) or \code{"indy"} (a real site independent of
+#'   NWIS or other large networks).
 #' @return site ID in ScienceBase and mda.streams lingo
 #' @export
-make_site_name <- function(sitenum, database=c("nwis", "styx")) {
+make_site_name <- function(sitenum, database=c("nwis", "styx", "indy")) {
   # error checking
   if(missing(database)) database <- "nwis"
   expected_databases <- paste0("^", paste0(eval(formals(make_site_name)$database), collapse="|"))
