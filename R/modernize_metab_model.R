@@ -49,6 +49,10 @@ modernize_metab_model <- function(metab_model) {
       new_fit <- left_join(new_fit, new_fit_rows, by='local.date')
     }
     
+    if(class(old_mm) == 'metab_bayes') {
+      new_mcmc <- get_mcmc(old_mm)
+    }
+    
     # fitting_time: add dummy if it wasn't there before
     new_fitting_time <- tryCatch(
       suppressWarnings(get_fitting_time(old_mm)),
@@ -82,6 +86,7 @@ modernize_metab_model <- function(metab_model) {
         data=new_data,
         data_daily=new_data_daily,
         pkg_version=new_pkg_version)
+    if(class(new_mm)=='metab_bayes') new_mm@mcmc <- new_mcmc
     
     # return
     new_mm
