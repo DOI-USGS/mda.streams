@@ -55,7 +55,7 @@ post_site <- function(sites, on_exists=c("stop", "skip", "clear", "replace"), ve
     }
      
     # create the item and add title, scheme, type, and key
-    site_id <- item_create(parent_id=locate_folder("sites"), title=site)
+    site_id <- item_create(locate_folder("sites"), title=site)$id
     item_update_identifier(site_id, scheme=get_scheme(), type="site_root", key=site)
     
     return(site_id)  
