@@ -19,7 +19,7 @@ verify_config <- function(config, checks=c('names'), on_fail=warning) {
     'names' = function(x,...) {
       # determine which columns should exist based on stage_metab_config
       expected_colnames <- names(suppressWarnings(
-        stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)))
+        stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL, omit_incomplete=FALSE)))
       if(!isTRUE(all.equal(names(x), expected_colnames))) {
         extras <- setdiff(names(x), expected_colnames)
         if(length(extras)>0) 

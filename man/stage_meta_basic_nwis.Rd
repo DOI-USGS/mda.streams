@@ -4,7 +4,7 @@
 \alias{stage_meta_basic_nwis}
 \title{Get data for NWIS sites}
 \usage{
-stage_meta_basic_nwis(sites_meta, verbose = FALSE)
+stage_meta_basic_nwis(sites_meta, empty_meta, verbose = FALSE)
 }
 \arguments{
 \item{sites_meta}{a data.frame of site_names and parse site_names, as in the

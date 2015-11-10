@@ -68,7 +68,7 @@ download_meta <- function(type, folder = tempdir(),
       }
     
     # return the file path if we successfully downloaded or skipped the download
-    if(isTRUE(out_destination) || is.na(out_destination)) {
+    if(isTRUE(out_destination == destination) || is.na(out_destination)) {
       return(destination)
     } else {
       stop("download failed for ", item_name)

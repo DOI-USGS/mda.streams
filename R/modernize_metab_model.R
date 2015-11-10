@@ -9,6 +9,7 @@
 #' @param metab_model a model or list of models
 #' @import dplyr
 #' @import streamMetabolizer
+#' @importFrom unitted u v
 #' @export
 modernize_metab_model <- function(metab_model) {
   # if metab_model isn't already a list, make it one
@@ -29,9 +30,28 @@ modernize_metab_model <- function(metab_model) {
     new_info <- if(is.list(old_info)) old_info else list()
     new_info$config <- new_config
  
-    # fit: rename 'date' to 'local.date'
+    # fit: rename 'date' to 'local.date' and add row.first, row.last to metab_night models
     new_fit <- get_fit(old_mm)
     if('date' %in% names(new_fit)) names(new_fit)[which(names(new_fit) == 'date')] <- 'local.date'
+    if(class(old_mm)=='metab_night' && !('row.first' %in% names(get_data(old_mm)))) {
+      new_fit_rows <- streamMetabolizer:::mm_model_by_ply(
+        function(data_ply, data_daily_ply, day_start, day_end, local_date, tests, model_specs) {
+          which_night <- which(data_ply$light < 0.1) #v(u(0.1, "umol m^-2 s^-1")))
+          has_night <- length(which_night) > 0
+          data.frame(
+            row.first = if(has_night) which_night[1] else NA,
+            row.last = if(has_night) which_night[length(which_night)] else NA)
+        },
+        data=v(get_data(old_mm)), data_daily=NULL,
+        day_start=get_args(old_mm)$day_start, day_end=get_args(old_mm)$day_end,
+        tests=c(), model_specs=c()
+      )
+      new_fit <- left_join(new_fit, new_fit_rows, by='local.date')
+    }
+    
+    if(class(old_mm) == 'metab_bayes') {
+      new_mcmc <- get_mcmc(old_mm)
+    }
     
     # fitting_time: add dummy if it wasn't there before
     new_fitting_time <- tryCatch(
@@ -66,6 +86,7 @@ modernize_metab_model <- function(metab_model) {
         data=new_data,
         data_daily=new_data_daily,
         pkg_version=new_pkg_version)
+    if(class(new_mm)=='metab_bayes') new_mm@mcmc <- new_mcmc
     
     # return
     new_mm

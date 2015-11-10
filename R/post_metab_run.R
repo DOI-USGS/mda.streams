@@ -53,7 +53,7 @@ post_metab_run <- function(folder, files, on_exists=c("stop", "skip", "addfiles"
   } else {
     # create the item
     if(verbose) message("creating metab_run item: ", title)
-    run_id <- item_create(parent_id=locate_folder("metab_runs"), title=title)
+    run_id <- item_create(locate_folder("metab_runs"), title=title)$id
   }
   
   # attach data file to ts item. SB quirk: must be done before tagging with 

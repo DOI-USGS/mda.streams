@@ -20,7 +20,7 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
   })
   
   if(length(var_src) > 1) {
-    combo <- do.call(combine_ts, c(data_list, list(method='approx', approx_tol=as.difftime(3, units="hours"))))
+    combo <- do.call(combine_ts, c(data_list, list(method=method, approx_tol=approx_tol)))
   } else {
     combo <- data_list[[1]]
   }
