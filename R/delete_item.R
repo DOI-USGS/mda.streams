@@ -16,7 +16,7 @@
 #' @keywords internal
 delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_children=FALSE, delete_item=TRUE, verbose=TRUE) {
   
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   if(length(item_ids) != length(item_names)) stop("expecting item_ids and item_names to have the same length")
   
   # delete in a loop over the assumed-to-be parallel vectors item_ids and item_names

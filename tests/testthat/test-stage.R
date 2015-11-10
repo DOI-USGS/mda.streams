@@ -1,6 +1,6 @@
 context("bulk staging & posting")
 
-if(!is.null(sbtools::current_session())) {
+if(!is.null(current_session()) && sbtools::session_validate()) {
   login_sb()
   set_scheme("mda_streams_dev")
  

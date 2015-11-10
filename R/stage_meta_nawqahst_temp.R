@@ -14,7 +14,7 @@
 stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil','landcover'), folder=tempdir()) {
   
   # authenticate SB - access is needed to download the data
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
   # create the folder if it doesn't exist
   if(!dir.exists(folder)) dir.create(folder, showWarnings=TRUE)
