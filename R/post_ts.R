@@ -55,7 +55,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     # look for an existing ts and respond appropriately
     ts_id <- locate_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, by="either")
     if (is.na(ts_id)) {
-      ts_id <- item_create(parent_id=site_root, title=ts_path$ts_name)
+      ts_id <- item_create(site_root, title=ts_path$ts_name)$id
     } else {
       if(verbose) message('the ', ts_path$ts_name, ' timeseries for site ', ts_path$site_name, ' already exists')
       switch(

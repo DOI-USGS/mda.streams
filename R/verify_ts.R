@@ -34,7 +34,8 @@ verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'n
       is.unitted(x)
     },
     'tz' = function(x,...) {
-      get_units(x[,1]) == 'UTC'
+      (get_units(x[,1]) == 'UTC') || 
+        (all(is.na(x[,1])) && nrow(x) == 1) # allow for 1-row const tses
     },
     'units' = function(x,v) {
       (get_units(x[,2]) == get_units(unitbundle(get_var_src_codes(var==v, out='units')[1]))) &&

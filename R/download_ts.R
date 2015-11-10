@@ -97,9 +97,9 @@ download_ts <- function(var_src, site_name, folder = tempdir(),
       }
       
       # do the downloadingdownload
-      needs[item_num, "download_success"] <- item_file_download(
+      needs[item_num, "download_success"] <- isTRUE(item_file_download(
         id=needs[item_num, "item"], names=file_list$fname, 
-        destinations=needs[item_num, "dest"], overwrite_file=TRUE)
+        destinations=needs[item_num, "dest"], overwrite_file=TRUE) == needs[item_num, "dest"])
     } else {
       stop("unexpected destination file condition or on_local_exists value")
     }

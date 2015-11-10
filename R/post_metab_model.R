@@ -38,7 +38,7 @@ post_metab_model <- function(files, on_exists=c("stop", "skip"), verbose=TRUE) {
         })
     } else {
       # create the item
-      model_id <- item_create(parent_id=locate_folder("metab_models"), title=modelpath$model_name)
+      model_id <- item_create(locate_folder("metab_models"), title=modelpath$model_name)$id
     }
     
     # attach data file to ts item. SB quirk: must be done before tagging with 

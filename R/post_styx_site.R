@@ -37,6 +37,7 @@ post_styx_site <- function(file_list) {
   # update the styx metadata
   meta_styx_file <- stage_meta_styx(rows=u(data.frame(site_name=site, basedon=basedon, info=info, stringsAsFactors=FALSE)), on_exists="replace")
   post_meta(meta_styx_file, on_exists="replace")
+  Sys.sleep(1)
   
   # report on what we've created
   summarize_ts(list_tses(site), site)

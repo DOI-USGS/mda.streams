@@ -64,13 +64,16 @@ post_meta <- function(files, on_exists=c("stop", "skip", "replace", "merge"), ve
         })
     } else {
       # create the item
-      meta_id <- item_create(parent_id=locate_folder("sites_meta"), title=metapath$meta_type)
+      meta_id <- item_create(locate_folder("sites_meta"), title=metapath$meta_type)$id
     }
 
     # attach data file to ts item. SB quirk: must be done before tagging with 
     # identifiers, or identifiers will be lost
     if(verbose) message("posting metadata file ", metapath$file_name)
     item_append_files(meta_id, files = metafile)
+    
+    # check/repair identifiers
+    repair_meta(metapath$type)
 
     return(meta_id)  
   })
