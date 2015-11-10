@@ -245,6 +245,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           'dosat_calcGGbconst' = {
             best_wtr <- paste0("wtr_", choose_data_source("wtr", site, logic="priority local")$src)
             wtr_best <- read_ts(download_ts(best_wtr, site, on_local_exists="replace"))
+            . <- '.dplyr.var'
             elev_ft <- get_meta('basic') %>% .[.$site_name==site,'alt']
             baro_const <- u(data.frame(DateTime=NA, baro=calc_air_pressure(elevation=elev_ft*u(0.3048,"m ft^-1"), attach.units=TRUE)*u(100, "Pa mb^-1")))
             if(!is.na(baro_const$DateTime)) stop("need non-NA baro$DateTime for dosat_calcGGbconst")
