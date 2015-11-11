@@ -1,6 +1,6 @@
 context("locate_item")
 
-if(!is.null(sbtools::current_session())) {
+if(!is.null(current_session()) && sbtools::session_validate()) {
   login_sb()
   
   test_that("locate_item by tag, dir, either all works", {

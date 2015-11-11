@@ -10,6 +10,8 @@ stage_meta_basic(sites = list_sites(), on_exists = c("stop", "replace"),
 \arguments{
 \item{sites}{a vector of sites to acquire/update metadata for}
 
+\item{on_exists}{what to do if the file already exists in the given folder}
+
 \item{folder}{the folder in which to save the metadata file}
 
 \item{verbose}{logical. print status messages?}

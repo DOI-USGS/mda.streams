@@ -14,6 +14,8 @@ stage_indy_site(site_num, data, info = as.character(NA),
 \item{site_num}{The id, not necessarily numeric that is to follow 'indy_' in
 the site_name}
 
+\item{data}{data.frame of data to parse and post}
+
 \item{info}{character string describing the primary source of data for this
 site}
 
@@ -32,6 +34,8 @@ local.time. DO.obs, DO.sat)?}
 
 \item{collapse_const}{If a data column has all identical values, should these
 be collapsed to a single const row in the ts file?}
+
+\item{folder}{the folder in which to save the staged information}
 }
 \description{
 This function is designed for truly isolated (non-NWIS, etc.) sites. The site

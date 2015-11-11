@@ -5,7 +5,7 @@
 #' @export
 list_metab_runs = function(){
   
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
   # get list of site items, then filter to those of the proper data_type
   run_items <- query_item_identifier(scheme = get_scheme(), type = 'metab_run', limit = 10000)
@@ -26,7 +26,7 @@ list_metab_runs = function(){
 #' @importFrom stats setNames
 #' @export
 list_metab_run_files <- function(title, out=c("filename","size_bytes","url")) {
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   out <- lapply(title, function(t) {
     run_id <- locate_metab_run(t)
     filedf <- setNames(item_list_files(run_id),c("filename","size_bytes","url"))

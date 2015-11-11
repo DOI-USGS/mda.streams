@@ -10,6 +10,8 @@ stage_meta_basic_styx(sites_meta, empty_meta, verbose = FALSE)
 \item{sites_meta}{a data.frame of site_names and parsed site_names, as in the
 opening lines of stage_meta_basic}
 
+\item{empty_meta}{a data.frame showing how an empty result should look}
+
 \item{verbose}{logical. give status messages?}
 }
 \description{

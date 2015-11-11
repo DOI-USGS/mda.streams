@@ -13,7 +13,7 @@
 repair_metab_model <- function(model_name, limit=5000) {
   
   # check the session; we'll need write access
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
   # package the args together for arg replication & easier looping
   query_args <- data.frame(

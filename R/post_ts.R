@@ -33,7 +33,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
   # check inputs & session
   if(is.null(files)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
   # loop through files, posting each and recording whether we'll need to add tags
   expect_id_loss <- TRUE
