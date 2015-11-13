@@ -1,6 +1,6 @@
 context("post_ts and delete_ts")
 
-if(!is.null(sbtools::current_session())) {
+if(!is.null(current_session()) && sbtools::session_validate()) {
   login_sb()
   set_scheme("mda_streams_dev")
   # the following commands require some waiting between lines. probably best to test manually.

@@ -9,6 +9,7 @@
 #' 
 #' @param site_num The id, not necessarily numeric that is to follow 'indy_' in 
 #'   the site_name
+#' @param data data.frame of data to parse and post
 #' @param info character string describing the primary source of data for this 
 #'   site
 #' @param long_name Longer character string describing the site, or blank if 
@@ -21,6 +22,7 @@
 #'   local.time. DO.obs, DO.sat)?
 #' @param collapse_const If a data column has all identical values, should these
 #'   be collapsed to a single const row in the ts file?
+#' @param folder the folder in which to save the staged information
 #' @export
 #' @importFrom unitted u v
 #' @importFrom lubridate force_tz

@@ -11,7 +11,7 @@ post_watershed = function(site, files){
 	#parent as site, scheme, type=watershed, key = site, title=watershed
 	
 	#check session
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
 	
 	##TODO: Check input
 	

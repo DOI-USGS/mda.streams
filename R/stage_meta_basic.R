@@ -1,6 +1,7 @@
 #' Create/modify sites file
 #' 
 #' @param sites a vector of sites to acquire/update metadata for
+#' @param on_exists what to do if the file already exists in the given folder
 #' @param folder the folder in which to save the metadata file
 #' @param verbose logical. print status messages?
 #' @import dplyr
@@ -68,6 +69,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
   } else {
     new_meta <- sites_meta
   }
+  site_name <- '.dplyr.var'
   new_meta <- new_meta %>% v() %>% arrange(site_name) %>% u(get_units(new_meta)) # way faster than order()
   
   # either return the data.frame, or save data to local file and return the
@@ -91,6 +93,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
 #' 
 #' @param sites_meta a data.frame of site_names and parse site_names, as in the
 #'   opening lines of stage_meta_basic
+#' @param empty_meta a data.frame showing how an empty result should look
 #' @param verbose logical. give status messages?
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u v
@@ -176,6 +179,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
 #' 
 #' @param sites_meta a data.frame of site_names and parsed site_names, as in the
 #'   opening lines of stage_meta_basic
+#' @param empty_meta a data.frame showing how an empty result should look
 #' @param verbose logical. give status messages?
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u v
@@ -204,10 +208,12 @@ stage_meta_basic_styx <- function(sites_meta, empty_meta, verbose=FALSE) {
 
 #' Get data for Indy (custom/independently collected data) sites
 #' 
-#' Helper to stage_meta_basic. Copies data from meta_indy into meta_basic where
+#' Helper to stage_meta_basic. Copies data from meta_indy into meta_basic where 
 #' this is available.
 #' 
-#' @param sites_meta
+#' @param sites_meta a data.frame of site_names and parsed site_names, as in the
+#'   opening lines of stage_meta_basic
+#' @param empty_meta a data.frame showing how an empty result should look
 #' @param verbose logical. give status messages?
 stage_meta_basic_indy <- function(sites_meta, empty_meta, verbose=FALSE) {
   indy_meta <- empty_meta[seq_len(nrow(sites_meta)),]

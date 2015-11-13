@@ -27,7 +27,7 @@ post_site <- function(sites, on_exists=c("stop", "skip", "clear", "replace"), ve
   # check inputs & session
   if(missing(sites) || is.null(sites)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
   posted_items <- sapply(setNames(sites, sites), function(site) {
     
