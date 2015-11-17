@@ -78,28 +78,28 @@ download_ts <- function(var_src, site_name, folder = tempdir(),
         switch(
           on_remote_missing,
           "return_NA"={
-            needs[item_num, "dest"] <- NA
-            needs[item_num, "download_success"] <- NA
+            needs[item_num, "dest"] <<- NA
+            needs[item_num, "download_success"] <<- NA
           },
           "stop"=stop("ts item unavailable on ScienceBase: ", item_name))
+      } else {
+        # find file name for download (get filename)
+        file_list <- item_list_files(needs[item_num, "item"])
+        
+        # check how many file names are coming back; we need exactly one  
+        if(nrow(file_list) != 1) {
+          stop("there are ", nrow(file_list), " files in SB item: ", item_name, "; need exactly 1")
+        }
+        if(file_list$fname != basename(needs[item_num, "dest"])) {
+          stop("expected SB filename (",file_list$fname,") to equal destination filename (",
+               basename(needs[item_num, "dest"]),")")
+        }
+        
+        # do the downloading
+        needs[item_num, "download_success"] <- isTRUE(item_file_download(
+          id=needs[item_num, "item"], names=file_list$fname, 
+          destinations=needs[item_num, "dest"], overwrite_file=TRUE) == needs[item_num, "dest"])
       }
-      
-      # find file name for download (get filename)
-      file_list <- item_list_files(needs[item_num, "item"])
-      
-      # check how many file names are coming back; we need exactly one  
-      if(nrow(file_list) != 1) {
-        stop("there are ", nrow(file_list), " files in SB item: ", item_name, "; need exactly 1")
-      }
-      if(file_list$fname != basename(needs[item_num, "dest"])) {
-        stop("expected SB filename (",file_list$fname,") to equal destination filename (",
-             basename(needs[item_num, "dest"]),")")
-      }
-      
-      # do the downloadingdownload
-      needs[item_num, "download_success"] <- isTRUE(item_file_download(
-        id=needs[item_num, "item"], names=file_list$fname, 
-        destinations=needs[item_num, "dest"], overwrite_file=TRUE) == needs[item_num, "dest"])
     } else {
       stop("unexpected destination file condition or on_local_exists value")
     }
