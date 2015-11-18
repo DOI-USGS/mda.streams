@@ -15,7 +15,7 @@ list_metab_models = function() {
     query_item_identifier(scheme = get_scheme(), type = 'metab_model', limit = 10000, pagesize = pgsize)$title
   })
   
-  if(nrow(model_queries[[1]]) > 0) {
+  if(length(model_queries[[1]]) > 0) {
     model_items <- unique(do.call(c, model_queries))
     if(length(model_items) != length(model_queries[[1]])) warning("failed to retrieve all metab models; a retry might work")
     return(model_items)
