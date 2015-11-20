@@ -114,8 +114,10 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 \dontrun{
-login_sb(); site="nwis_01646000"; stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
-  model="metab_Kvpred", site=site, filename=NULL,
+login_sb()
+site="nwis_01646000"
+cfg <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
+  model="metab_mle", site=site, filename=NULL,
   sitetime=choose_data_source("sitetime", site, logic="manual", src="calcLon", type="ts"),
   doobs=choose_data_source("doobs", site, logic="unused var"),
   dosat=choose_data_source("dosat", site, logic="unused var"),

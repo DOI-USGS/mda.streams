@@ -50,7 +50,7 @@ modernize_metab_model <- function(metab_model) {
     }
     
     if(class(old_mm) == 'metab_bayes') {
-      new_mcmc <- get_mcmc(old_mm)
+      new_mcmc <- tryCatch(get_mcmc(old_mm), error=function(e) NULL)
     }
     
     # fitting_time: add dummy if it wasn't there before
