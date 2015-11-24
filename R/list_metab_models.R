@@ -21,7 +21,7 @@ list_metab_models = function(order_by=c("date","tag","row","site","strategy","ti
     model_items <- unique(model_query)
     if(length(model_items) != length(model_query)) warning("failed to retrieve all metab models; a retry might work")
     # return
-    return(model_items[do.call(order, as.list(parse_metab_model_name(model_items, out=order_by)))])
+    return(model_items[do.call(order, as.list(parse_metab_model_name(model_items))[order_by])])
   } else {
     return(character())
   }
