@@ -86,7 +86,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       
       # Prepare the data, passing along any errors from config_to_data
       if(verbose) message("row ", row, ": preparing metab_data...")
-      metab_data_list <- config_to_data(config[row,], row, metab_fun, metab_args, on_error='quiet')
+      metab_data_list <- config_to_data(config[row,], row, metab_fun, on_error='quiet')
       metab_data_ok <- is.null(attr(metab_data_list, "errors"))
       if(!metab_data_ok) {
         out <- "error in data prep"

@@ -7,8 +7,6 @@
 #' @param row_num the row number/name that this config_row held in the original 
 #'   config
 #' @param metab_fun a metabolism modeling function
-#' @param metab_args a list of arguments (possibly just \code{list()}) that will
-#'   later be passed to the metab_fun
 #' @param on_error character. What to do if data cannot be acquired or merged? 
 #'   If 'stop' or 'warn', the appropriate condition is thrown. If 'warn' or 
 #'   'quiet', the function [also] returns a character of errors and/or a 
@@ -28,7 +26,7 @@
 #'     logic="simple dosat", type="const", src="12,mg L^-1"), 
 #'   depth=choose_data_source("depth", "nwis_04087142", logic="local file", 
 #'     type="file", src=depth_file), filename=NULL)
-#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle, metab_args=list())
+#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle)
 #' names(cdat)
 #' head(cdat[['data']])
 #'  
@@ -48,10 +46,10 @@
 #'   velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
 #'   omit_incomplete=FALSE)
 #' cdat <- config_to_data(config[1,], row_num=1, 
-#'   metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
+#'   metab_fun=streamMetabolizer::metab_Kvpred)
 #' }
 #' @export
-config_to_data <- function(config_row, row_num, metab_fun, metab_args, on_error=c('stop','warn','quiet')) {
+config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','warn','quiet')) {
 
   # process inputs
   on_error <- match.arg(on_error)

@@ -4,8 +4,8 @@
 \alias{config_to_data}
 \title{Convert config specifications into a data input table}
 \usage{
-config_to_data(config_row, row_num, metab_fun, metab_args,
-  on_error = c("stop", "warn", "quiet"))
+config_to_data(config_row, row_num, metab_fun, on_error = c("stop", "warn",
+  "quiet"))
 }
 \arguments{
 \item{config_row}{a 1-row config data.frame}
@@ -14,9 +14,6 @@ config_to_data(config_row, row_num, metab_fun, metab_args,
 config}
 
 \item{metab_fun}{a metabolism modeling function}
-
-\item{metab_args}{a list of arguments (possibly just \code{list()}) that will
-later be passed to the metab_fun}
 
 \item{on_error}{character. What to do if data cannot be acquired or merged?
 If 'stop' or 'warn', the appropriate condition is thrown. If 'warn' or
@@ -40,7 +37,7 @@ config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
     logic="simple dosat", type="const", src="12,mg L^-1"),
   depth=choose_data_source("depth", "nwis_04087142", logic="local file",
     type="file", src=depth_file), filename=NULL)
-cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle, metab_args=list())
+cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle)
 names(cdat)
 head(cdat[['data']])
 
@@ -60,7 +57,7 @@ config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
   velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
   omit_incomplete=FALSE)
 cdat <- config_to_data(config[1,], row_num=1,
-  metab_fun=streamMetabolizer::metab_Kvpred, metab_args=list())
+  metab_fun=streamMetabolizer::metab_Kvpred)
 }
 }
 
