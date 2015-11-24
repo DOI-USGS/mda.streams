@@ -377,7 +377,7 @@ parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_nam
       stringsAsFactors=FALSE) %>%
     mutate(
       date = substr(title, 1, split_1-1),
-      tag = substr(title, split_1+1, split_2-1),
+      tag = numeric_version(substr(title, split_1+1, split_2-1)),
       strategy = substr(title, split_2+1, nchar(title)))
   
   parsed <- parsed[,out]
