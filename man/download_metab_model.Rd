@@ -13,6 +13,9 @@ download_metab_model(model_name, folder = tempdir(), version = c("modern",
 
 \item{folder}{string for a folder location where files should be saved}
 
+\item{version}{character indicating whether you want the original metab_model
+or a modernized one that works with the current streamMetabolizer version}
+
 \item{on_remote_missing}{character indicating what to do if the}
 
 \item{on_local_exists}{character indicating what to do if the folder already

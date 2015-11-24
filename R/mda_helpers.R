@@ -448,6 +448,8 @@ parse_metab_model_name <- function(model_name, out=c('title','row','site','date'
 #' 
 #' @param model_name the name of the model as from make_metab_model_name()
 #' @param folder the folder of the model file
+#' @param version character indicating whether you want the original metab_model
+#'   or a modernized one that works with the current streamMetabolizer version
 #' @export
 make_metab_model_path <- function(model_name, folder, version=c('original','modern')) {
   # don't check; permit new items
