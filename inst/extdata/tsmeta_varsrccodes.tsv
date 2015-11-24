@@ -42,10 +42,10 @@ K600	estBest	d^-1	gas exchange rate	ts	K600	1	NA	estimate by best-available mode
 K600	estNightInterp	d^-1	gas exchange rate	ts	K600	2	NA	interpolate K600_estNight using a smoothing/regression function	streamMetabolizer	NA	calc	NA
 K600	estNight	d^-1	gas exchange rate	ts	K600	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
 K600	simNew	d^-1	gas exchange rate	ts	K600	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
-par	indy	umol m^-2 s^-1	photosynthetically active radiation	ts	light	1	NA	independent data source	NA	NA	data	NA
-par	nwis	umol m^-2 s^-1	photosynthetically active radiation	ts	light	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'99988'
-par	calcSw	umol m^-2 s^-1	photosynthetically active radiation	ts	light	3	NA	convert shortwave radiation to PAR using coefs from Britton & Dodd (1976)	streamMetabolizer	convert_SW_to_PAR	calc	NA
-par	calcLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	4	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	calc	NA
+par	calcLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	1	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	calc	NA
+par	indy	umol m^-2 s^-1	photosynthetically active radiation	ts	light	2	NA	independent data source	NA	NA	data	NA
+par	nwis	umol m^-2 s^-1	photosynthetically active radiation	ts	light	3	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'99988'
+par	calcSw	umol m^-2 s^-1	photosynthetically active radiation	ts	light	4	NA	convert shortwave radiation to PAR using coefs from Britton & Dodd (1976)	streamMetabolizer	convert_SW_to_PAR	calc	NA
 par	simLat	umol m^-2 s^-1	photosynthetically active radiation	ts	light	11	NA	calculate PAR using site latitude and suntime	streamMetabolizer	calc_solar_insolation	sim	NA
 par	simCopy	umol m^-2 s^-1	photosynthetically active radiation	ts	light	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 par	simNew	umol m^-2 s^-1	photosynthetically active radiation	ts	light	13	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
