@@ -17,19 +17,20 @@
 #' }
 #' @import sbtools
 #' @export
-download_metab_model <- function(model_name, folder = tempdir(), 
+download_metab_model <- function(model_name, folder = tempdir(), version=c('modern','original'),
                                on_remote_missing=c("stop","return_NA"), 
                                on_local_exists=c("stop","skip","replace")) {
   
   if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
   
+  version <- match.arg(version)
   on_remote_missing <- match.arg(on_remote_missing)
   on_local_exists <- match.arg(on_local_exists)
   
   ids <- locate_metab_model(model_name)
   
   download_item_files(
-    item_ids=ids, item_names=model_name, folder=folder, 
+    item_ids=ids, item_names=model_name, files=make_metab_model_path(model_name, version=version), folder=folder, 
     on_remote_missing=on_remote_missing, on_local_exists=on_local_exists)
     
 }

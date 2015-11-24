@@ -5,7 +5,7 @@
 \title{Parse a file path into metab_model information}
 \usage{
 parse_metab_model_path(file_path, out = c("dir_name", "file_name",
-  "model_name", "title", "row", "site", "date", "tag", "strategy"),
+  "model_name", "title", "row", "site", "date", "tag", "strategy", "version"),
   use_names = length(file_path) > 1)
 }
 \arguments{

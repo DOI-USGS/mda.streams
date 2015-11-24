@@ -4,9 +4,9 @@
 \alias{download_metab_model}
 \title{Download metabolism model .RData to local file}
 \usage{
-download_metab_model(model_name, folder = tempdir(),
-  on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
-  "skip", "replace"))
+download_metab_model(model_name, folder = tempdir(), version = c("modern",
+  "original"), on_remote_missing = c("stop", "return_NA"),
+  on_local_exists = c("stop", "skip", "replace"))
 }
 \arguments{
 \item{model_name}{the name of the metab_model file}

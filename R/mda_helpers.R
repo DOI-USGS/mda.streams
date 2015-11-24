@@ -449,11 +449,12 @@ parse_metab_model_name <- function(model_name, out=c('title','row','site','date'
 #' @param model_name the name of the model as from make_metab_model_name()
 #' @param folder the folder of the model file
 #' @export
-make_metab_model_path <- function(model_name, folder) {
+make_metab_model_path <- function(model_name, folder, version=c('original','modern')) {
   # don't check; permit new items
+  version <- match.arg(version)
   
   # create path
-  file_name <- sprintf('%s%s.%s', pkg.env$metab_model_prefix, model_name, pkg.env$metab_model_extension)
+  file_name <- sprintf('%s%s%s.%s', if(version=='modern') 'm' else '', pkg.env$metab_model_prefix, model_name, pkg.env$metab_model_extension)
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing (besides not break)
   } else {
@@ -470,19 +471,26 @@ make_metab_model_path <- function(model_name, folder) {
 #' @import dplyr
 #' @importFrom stats setNames
 #' @export
-parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy'), use_names=length(file_path)>1) {
+parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy','version'), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)
   
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
   
+  if(substring(file_path, 1, 3) == "mmm") {
+    version='modern'
+    file_path <- substring(file_path, 1)
+  } else {
+    version='original'
+  }
   parsed <- data.frame(
     dir_name = dir_name,
     file_name = file_name, 
     model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+1, nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
+    version = version,
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
-    bind_cols(parse_metab_model_name(parsed$model_name, out=c("title","row","site",'date','tag','strategy'), use_names=FALSE)) %>%
+    bind_cols(parse_metab_model_name(parsed$model_name, out=c("title","row","site",'date','tag','strategy','version'), use_names=FALSE)) %>%
     as.data.frame()
   
   parsed <- parsed[,out]
