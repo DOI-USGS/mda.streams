@@ -5,8 +5,9 @@
 \title{Summarize a timeseries}
 \usage{
 summarize_metab_inputs(config, rows, out = c("site", "model", "tag",
-  "strategy", "date", "start_date", "end_date", "num_dates", "num_rows",
-  "num_complete", "modal_timestep", "num_modal_timesteps"), verbose = TRUE)
+  "strategy", "date", "start_date", "true_start", "end_date", "true_end",
+  "num_dates", "num_rows", "num_complete", "modal_timestep",
+  "num_modal_timesteps"), verbose = TRUE)
 }
 \arguments{
 \item{config}{a config file/data.frame from which datasets should be

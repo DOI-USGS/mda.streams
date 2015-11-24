@@ -24,7 +24,7 @@ config <- stage_metab_config(
 
 Then use `config_to_metab` with `prep_only=TRUE` to get a list of the input data and arguments rather than a full metabolism model. Set the names of the list in a way that distinguishes meaningfully among the rows in config - that part is up to you to determine.
 ```{r}
-prep_list <- config_to_metab(config, prep_only = TRUE) %>%
+prep_list <- config_to_metab(config, rows=1:nrow(config), prep_only=TRUE) %>%
   setNames(sites)
 ```
 

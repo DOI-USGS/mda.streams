@@ -4,8 +4,7 @@
 \alias{config_to_metab}
 \title{Actually run the model as specified by the configuration arguments}
 \usage{
-config_to_metab(config, rows = 1:nrow(config), verbose = TRUE,
-  prep_only = FALSE)
+config_to_metab(config, rows, verbose = TRUE, prep_only = FALSE)
 }
 \arguments{
 \item{config}{data.frame, or file/filename to read a data.frame from. As an

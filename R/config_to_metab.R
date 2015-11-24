@@ -21,7 +21,7 @@
 #'   tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", filename=NULL))
 #' }
-config_to_metab <- function(config, rows=1:nrow(config), verbose=TRUE, prep_only=FALSE) {
+config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
 
   # Check the input
   if(!is.data.frame(config) && is.character(config)) {
