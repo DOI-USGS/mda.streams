@@ -27,6 +27,9 @@ modernize_metab_model <- function(metab_model) {
     old_config <- if(is.data.frame(old_info)) old_info else old_info$config
     empty_config <- suppressWarnings(stage_metab_config(tag='0.0.0', strategy='updating SB metab model', site=NA, filename=NULL))
     new_config <- bind_rows(empty_config, old_config) %>% as.data.frame
+    if(!('config.row' %in% names(old_config))) {
+      new_config$config.row <- rownames(old_config)
+    }
     new_info <- if(is.list(old_info)) old_info else list()
     new_info$config <- new_config
  

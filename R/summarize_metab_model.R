@@ -42,6 +42,7 @@ summarize_metab_model <- function(
   # parse the name into some starter information about each model
   model_info <- parse_metab_model_name(model_name) %>% 
     add_rownames(var="model_name") %>% 
+    mutate(tag=as.character(tag)) %>%
     as.data.frame(stringsAsFactors=FALSE)
   model_info_units <- rep(NA, ncol(model_info)) %>% setNames(names(model_info))
     
