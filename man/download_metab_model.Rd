@@ -4,14 +4,17 @@
 \alias{download_metab_model}
 \title{Download metabolism model .RData to local file}
 \usage{
-download_metab_model(model_name, folder = tempdir(),
-  on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
-  "skip", "replace"))
+download_metab_model(model_name, folder = tempdir(), version = c("modern",
+  "original"), on_remote_missing = c("stop", "return_NA"),
+  on_local_exists = c("stop", "skip", "replace"))
 }
 \arguments{
 \item{model_name}{the name of the metab_model file}
 
 \item{folder}{string for a folder location where files should be saved}
+
+\item{version}{character indicating whether you want the original metab_model
+or a modernized one that works with the current streamMetabolizer version}
 
 \item{on_remote_missing}{character indicating what to do if the}
 

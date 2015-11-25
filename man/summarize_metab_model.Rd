@@ -4,7 +4,7 @@
 \alias{summarize_metab_model}
 \title{Summarize a single metabolism model}
 \usage{
-summarize_metab_model(model_name, on_local_exists = "replace",
+summarize_metab_model(models, on_local_exists = "replace",
   out = c("num_dates", "num_complete", "KvR_kendall_cor", "GPP_pct_neg",
   "ER_pct_pos", "K600_pct_neg", "GPP_q0", "GPP_q10", "GPP_q50", "GPP_q90",
   "GPP_q100", "ER_q0", "ER_q10", "ER_q50", "ER_q90", "ER_q100", "K600_q0",
@@ -12,7 +12,8 @@ summarize_metab_model(model_name, on_local_exists = "replace",
   "DO_RMSE_q50", "DO_RMSE_q90", "DO_RMSE_q100"))
 }
 \arguments{
-\item{model_name}{the name of the metab_model file}
+\item{models}{either a character vector containing model_names or a named
+list of metab model objects where the list element names are model_names}
 
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}

@@ -4,7 +4,8 @@
 \alias{stage_metab_model}
 \title{Stage metabolism model outputs into individual metab_model .RData files}
 \usage{
-stage_metab_model(title, metab_outs, folder = tempdir(), verbose = FALSE)
+stage_metab_model(title, metab_outs, folder = tempdir(),
+  version = c("original", "modern"), verbose = FALSE)
 }
 \arguments{
 \item{title}{the title of the metab modeling run whose results are in
@@ -15,6 +16,9 @@ to extract the metab_model objects}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp
 directory)}
+
+\item{version}{character indicating whether this is the original verison of
+this metab_model or a modernized one}
 
 \item{verbose}{provide verbose output (currently not implemented)}
 }
