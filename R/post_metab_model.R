@@ -16,7 +16,7 @@
 #' # post_metab_model...
 #' set_scheme("mda_streams")
 #' }
-post_metab_model <- function(files, on_exists=c("stop", "skip"), verbose=TRUE) {
+post_metab_model <- function(files, on_exists=c("stop", "skip", "replace_file"), verbose=TRUE) {
   # handle inputs
   on_exists <- match.arg(on_exists)
   if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
@@ -35,6 +35,9 @@ post_metab_model <- function(files, on_exists=c("stop", "skip"), verbose=TRUE) {
         "skip"={ 
           if(isTRUE(verbose)) message("skipping posting of the metab_model item") 
           return(NA) # na is signal that doesn't need new tags
+        },
+        "replace_file"={
+          stop("whoops - this isn't yet possible")
         })
     } else {
       # create the item

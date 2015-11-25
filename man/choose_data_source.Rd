@@ -40,7 +40,7 @@ manually specified elements of site, type, src, and logic.
 choose_data_source(var="baro", site="nwis_03067510", logic='priority local')
 # expect warnings:
 choose_data_source(var="baro", site=c("nwis_08062500","nwis_03067510"),
-  logic='my made-up data', type="file", src=c("myfile1.txt","myfile2.txt"))
+  logic='my made-up data', type="ts_file", src=c("myfile1.txt","myfile2.txt"))
 choose_data_source(var="dosat", site="nwis_03067510", logic='priority local')
 
 # as in default to stage_metab_config
@@ -53,7 +53,7 @@ wtr=choose_data_source("wtr", site)
 par=choose_data_source("par", site)
 
 # as in verify_config
-choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simModel")
+choose_data_source(var="doobs", site="dummy_site", logic="manual", type="ts", src="simCopy")
 
 # for K
 K600=choose_data_source("K600", "nwis_08062500")

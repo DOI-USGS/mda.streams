@@ -50,7 +50,7 @@ modernize_metab_model <- function(metab_model) {
     }
     
     if(class(old_mm) == 'metab_bayes') {
-      new_mcmc <- get_mcmc(old_mm)
+      new_mcmc <- tryCatch(get_mcmc(old_mm), error=function(e) NULL)
     }
     
     # fitting_time: add dummy if it wasn't there before
@@ -62,7 +62,7 @@ modernize_metab_model <- function(metab_model) {
     # function, leave it untouched
     new_args <- get_args(old_mm)
     
-    # data: leave untouched
+    # data: leave untouched for the nonce (but see below)
     new_data <- get_data(old_mm)
     
     # data_daily: may be missing from older sites, so seek it robustly.
@@ -71,8 +71,8 @@ modernize_metab_model <- function(metab_model) {
       suppressWarnings(get_data_daily(old_mm)),
       error=function(e) NULL)
     
-    # pkg_version: keep unchanged
-    new_pkg_version <- old_mm@pkg_version
+    # pkg_version: mark with our new
+    new_pkg_version <- paste0(packageVersion("streamMetabolizer"), " (was ", old_mm@pkg_version, ")")
     
     # create a new model and copy the contents over - this creates any
     # additional slots that were missing in the old model, e.g., data_daily
@@ -88,6 +88,15 @@ modernize_metab_model <- function(metab_model) {
         pkg_version=new_pkg_version)
     if(class(new_mm)=='metab_bayes') new_mm@mcmc <- new_mcmc
     
+    # data: add predictions if missing & available
+    if(!('DO.mod' %in% names(new_data))) {
+      tryCatch({
+        new_mm@data <- predict_DO(new_mm)
+      }, error=function(e) {
+        warning(e)
+      })
+    }
+
     # return
     new_mm
   })

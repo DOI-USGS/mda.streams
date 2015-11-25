@@ -4,13 +4,22 @@
 \alias{get_metab_model}
 \title{Load one or more metab_model objects into R}
 \usage{
-get_metab_model(model_name, on_local_exists = "skip")
+get_metab_model(model_name, on_local_exists = "skip", version = c("modern",
+  "original"), update_sb = TRUE)
 }
 \arguments{
 \item{model_name}{the name of the metab_model file}
 
 \item{on_local_exists}{character indicating what to do if the folder already
 contains a file with the intended download name}
+
+\item{version}{character. which version of the model should be returned -
+('original') the original, or ('modern') one that's been updated to work
+with the current streamMetabolizer version? 'modern', the default, is
+recommended.}
+
+\item{update_sb}{logical. May we take some time to update ScienceBase if the
+most modern version isn't up there yet?}
 }
 \description{
 Uses a previously-downloaded copy of this metab_model unless (1) that

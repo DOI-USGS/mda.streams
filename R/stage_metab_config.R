@@ -36,6 +36,11 @@
 #' @param wtr Data Source for water temperature. See Data Source Format below.
 #' @param par Data Source for light (photosynthetically available radiation, 
 #'   PAR). See Data Source Format below.
+#' @param disch Data Source for unit-value stream discharge, for use in 
+#'   identifying daily priors or fixed values for K600. See Data Source Format 
+#'   below.
+#' @param veloc Data Source for unit-value flow velocity, for use in identifying
+#'   daily priors or fixed values for K600. See Data Source Format below.
 #' @param sitedate Data Source for the dates of interest. See Data Source Format
 #'   below.
 #' @param doinit Data Source for the first DO observation on each date to model,
@@ -69,8 +74,10 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' login_sb(); site="nwis_01646000"; stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
-#'   model="metab_Kvpred", site=site, filename=NULL,
+#' login_sb()
+#' site="nwis_01646000"
+#' cfg <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
+#'   model="metab_mle", site=site, filename=NULL,
 #'   sitetime=choose_data_source("sitetime", site, logic="manual", src="calcLon", type="ts"),
 #'   doobs=choose_data_source("doobs", site, logic="unused var"),
 #'   dosat=choose_data_source("dosat", site, logic="unused var"),
@@ -103,6 +110,8 @@ stage_metab_config <- function(
   depth=choose_data_source("depth", site),
   wtr=choose_data_source("wtr", site),
   par=choose_data_source("par", site),
+  disch=choose_data_source("disch", site, logic="unused var"),
+  veloc=choose_data_source("veloc", site, logic="unused var"),
   sitedate=choose_data_source("sitedate", site, logic="unused var"),
   doinit=choose_data_source("doobs1", site, logic="unused var"),
   gpp=choose_data_source("gpp", site, logic="unused var"),
@@ -120,7 +129,7 @@ stage_metab_config <- function(
     model=model, model_args=model_args,
     site=site, 
     sitetime=sitetime, 
-    doobs=doobs, dosat=dosat, depth=depth, wtr=wtr, par=par,
+    doobs=doobs, dosat=dosat, depth=depth, wtr=wtr, par=par, disch=disch, veloc=veloc,
     sitedate=sitedate, doinit=doinit, gpp=gpp, er=er, K600=K600, dischdaily=dischdaily, velocdaily=velocdaily,
     start_date=as.POSIXct(start_date, tz="UTC"), end_date=as.POSIXct(end_date, tz="UTC"),
     stringsAsFactors=FALSE)
@@ -147,7 +156,7 @@ stage_metab_config <- function(
   
   # Write the table to file if requested
   if(!is.null(filename)) {
-    write.table(config, file=filename, sep="\t", row.names=FALSE)
+    write_config(config, filename)
     return(filename)
   } else {
     return(config)

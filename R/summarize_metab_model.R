@@ -2,7 +2,8 @@
 #' 
 #' Returns a data.frame of metrics, one row per model_name
 #' 
-#' @param model_name the name of the metab_model file
+#' @param models either a character vector containing model_names or a named 
+#'   list of metab model objects where the list element names are model_names
 #' @inheritParams download_item_files
 #' @param out a list of one or more outputs to include in the summary dataframe,
 #'   in addition to the model_name and parsed name columns.
@@ -19,7 +20,7 @@
 #' }
 #' @export
 summarize_metab_model <- function(
-  model_name, on_local_exists='replace',
+  models, on_local_exists='replace',
   out=c('num_dates','num_complete','KvR_kendall_cor',
         'GPP_pct_neg','ER_pct_pos','K600_pct_neg',
         'GPP_q0', 'GPP_q10', 'GPP_q50', 'GPP_q90', 'GPP_q100',
@@ -28,9 +29,15 @@ summarize_metab_model <- function(
         'DO_RMSE_q0', 'DO_RMSE_q10', 'DO_RMSE_q50', 'DO_RMSE_q90', 'DO_RMSE_q100')) {
   
   # download the model objects
-  mms <- lapply(setNames(model_name,model_name), function(mname) {
-    get_metab_model(mname, on_local_exists = on_local_exists)
-  })
+  if(is.character(models)) {
+    model_name <- models
+    mms <- lapply(setNames(model_name,model_name), function(mname) {
+      get_metab_model(mname, on_local_exists = on_local_exists)
+    })
+  } else {
+    model_name <- names(models)
+    mms <- models
+  }
   
   # parse the name into some starter information about each model
   model_info <- parse_metab_model_name(model_name) %>% 

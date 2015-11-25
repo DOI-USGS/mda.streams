@@ -4,7 +4,8 @@
 \alias{post_metab_model}
 \title{Post individual metab_model object[s] to SB}
 \usage{
-post_metab_model(files, on_exists = c("stop", "skip"), verbose = TRUE)
+post_metab_model(files, on_exists = c("stop", "skip", "replace_file"),
+  verbose = TRUE)
 }
 \arguments{
 \item{files}{character one or more files to post to SB}

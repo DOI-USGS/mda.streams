@@ -4,7 +4,7 @@
 \alias{config_to_metab}
 \title{Actually run the model as specified by the configuration arguments}
 \usage{
-config_to_metab(config, rows, verbose = TRUE)
+config_to_metab(config, rows, verbose = TRUE, prep_only = FALSE)
 }
 \arguments{
 \item{config}{data.frame, or file/filename to read a data.frame from. As an
@@ -16,6 +16,10 @@ preceding arguments.}
 config data.frame to use for this particular model run.}
 
 \item{verbose}{logical. Should status messages be given?}
+
+\item{prep_only}{logical. If TRUE, data will be produced and returned without
+ever fitting a metabolism model. (return value is a list with 'data',
+'data_daily', and/or 'args' elements)}
 }
 \description{
 Actually run the model as specified by the configuration arguments
@@ -24,7 +28,8 @@ Actually run the model as specified by the configuration arguments
 \dontrun{
 config_to_metab(config=stage_metab_config(
   tag="0.0.1", strategy="try stage_metab_config",
-  site="nwis_04087142", filename=NULL))
+  site="nwis_04087142", start_date="2013-06-14", end_date="2013-06-19",
+  filename=NULL))
 }
 }
 

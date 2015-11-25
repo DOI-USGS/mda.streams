@@ -4,12 +4,15 @@
 \alias{make_metab_model_path}
 \title{Combine the model_name and folder into a file path for a metab_model}
 \usage{
-make_metab_model_path(model_name, folder)
+make_metab_model_path(model_name, folder, version = c("original", "modern"))
 }
 \arguments{
 \item{model_name}{the name of the model as from make_metab_model_name()}
 
 \item{folder}{the folder of the model file}
+
+\item{version}{character indicating whether you want the original metab_model
+or a modernized one that works with the current streamMetabolizer version}
 }
 \description{
 Combine the model_name and folder into a file path for a metab_model

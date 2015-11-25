@@ -11,6 +11,8 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   dosat = choose_data_source("dosat", site),
   depth = choose_data_source("depth", site), wtr = choose_data_source("wtr",
   site), par = choose_data_source("par", site),
+  disch = choose_data_source("disch", site, logic = "unused var"),
+  veloc = choose_data_source("veloc", site, logic = "unused var"),
   sitedate = choose_data_source("sitedate", site, logic = "unused var"),
   doinit = choose_data_source("doobs1", site, logic = "unused var"),
   gpp = choose_data_source("gpp", site, logic = "unused var"),
@@ -53,6 +55,13 @@ Data Source Format below.}
 
 \item{par}{Data Source for light (photosynthetically available radiation,
 PAR). See Data Source Format below.}
+
+\item{disch}{Data Source for unit-value stream discharge, for use in
+identifying daily priors or fixed values for K600. See Data Source Format
+below.}
+
+\item{veloc}{Data Source for unit-value flow velocity, for use in identifying
+daily priors or fixed values for K600. See Data Source Format below.}
 
 \item{sitedate}{Data Source for the dates of interest. See Data Source Format
 below.}
@@ -114,8 +123,10 @@ probably, but not necessarily, be run on a Condor cluster.
 }
 \examples{
 \dontrun{
-login_sb(); site="nwis_01646000"; stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
-  model="metab_Kvpred", site=site, filename=NULL,
+login_sb()
+site="nwis_01646000"
+cfg <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config",
+  model="metab_mle", site=site, filename=NULL,
   sitetime=choose_data_source("sitetime", site, logic="manual", src="calcLon", type="ts"),
   doobs=choose_data_source("doobs", site, logic="unused var"),
   dosat=choose_data_source("dosat", site, logic="unused var"),

@@ -7,6 +7,9 @@
 #' @param rows missing, integer, or vector of integers. The row number[s] of the
 #'   config data.frame to use for this particular model run.
 #' @param verbose logical. Should status messages be given?
+#' @param prep_only logical. If TRUE, data will be produced and returned without
+#'   ever fitting a metabolism model. (return value is a list with 'data', 
+#'   'data_daily', and/or 'args' elements)
 #' @import streamMetabolizer
 #' @import dplyr
 #' @importFrom utils read.table
@@ -16,9 +19,10 @@
 #' \dontrun{
 #' config_to_metab(config=stage_metab_config(
 #'   tag="0.0.1", strategy="try stage_metab_config", 
-#'   site="nwis_04087142", filename=NULL))
+#'   site="nwis_04087142", start_date="2013-06-14", end_date="2013-06-19", 
+#'   filename=NULL))
 #' }
-config_to_metab <- function(config, rows, verbose=TRUE) {
+config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
 
   # Check the input
   if(!is.data.frame(config) && is.character(config)) {
@@ -86,7 +90,7 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
       
       # Prepare the data, passing along any errors from config_to_data
       if(verbose) message("row ", row, ": preparing metab_data...")
-      metab_data_list <- config_to_data(config[row,], row, metab_fun, metab_args, on_error='quiet')
+      metab_data_list <- config_to_data(config[row,], row, metab_fun, on_error='quiet')
       metab_data_ok <- is.null(attr(metab_data_list, "errors"))
       if(!metab_data_ok) {
         out <- "error in data prep"
@@ -113,6 +117,11 @@ config_to_metab <- function(config, rows, verbose=TRUE) {
     # Add info on the time we took to prepare the args & data
     metab_args$info <- c(metab_args$info, list(prep_time=prep_time))
 
+    # Short-circuit if prep_only
+    if(isTRUE(prep_only)) {
+      return(c(list(data=metab_data, data_daily=metab_data_daily), metab_args))
+    }
+    
     # Run the model
     if(verbose) message("row ", row, ": running metab_fun...")
     fit <- tryCatch({
