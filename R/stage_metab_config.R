@@ -154,6 +154,10 @@ stage_metab_config <- function(
     config <- config[!incomplete,]
   }  
   
+  # Add a row index; this could go out of date if the user modifies the config
+  # file, but better than relying on fragile rownames
+  config$config.row <- seq_len(nrow(config))
+  
   # Write the table to file if requested
   if(!is.null(filename)) {
     write_config(config, filename)
