@@ -5,7 +5,7 @@
 \title{Summarize a timeseries}
 \usage{
 summarize_metab_inputs(config, rows, out = c("site", "model", "tag",
-  "strategy", "date", "start_date", "true_start", "end_date", "true_end",
+  "strategy", "date", "start_date", "end_date", "true_start", "true_end",
   "num_dates", "num_rows", "num_complete", "modal_timestep",
   "num_modal_timesteps"), verbose = TRUE)
 }

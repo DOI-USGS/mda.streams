@@ -25,15 +25,15 @@
 #'   site="nwis_04087142", dosat=choose_data_source("dosat", "nwis_04087142", 
 #'     logic="simple dosat", type="const", src="12,mg L^-1"), 
 #'   depth=choose_data_source("depth", "nwis_04087142", logic="local file", 
-#'     type="file", src=depth_file), filename=NULL)
-#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=metab_mle)
+#'     type="ts_file", src=depth_file), filename=NULL)
+#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=streamMetabolizer::metab_mle)
 #' names(cdat)
 #' head(cdat[['data']])
 #'  
 #' login_sb()
 #' site="nwis_01646000"
 #' config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
-#'   model="metab_Kvpred", site=site, filename=NULL,
+#'   model="metab_Kmodel", site=site, filename=NULL,
 #'   sitetime=choose_data_source("sitetime", site, logic="unused var"),
 #'   doobs=choose_data_source("doobs", site, logic="unused var"),
 #'   dosat=choose_data_source("dosat", site, logic="unused var"),
@@ -46,7 +46,7 @@
 #'   velocdaily=choose_data_source("velocdaily", site, logic="priority local"),
 #'   omit_incomplete=FALSE)
 #' cdat <- config_to_data(config[1,], row_num=1, 
-#'   metab_fun=streamMetabolizer::metab_Kvpred)
+#'   metab_fun=streamMetabolizer::metab_Kmodel)
 #' }
 #' @export
 config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','warn','quiet')) {
