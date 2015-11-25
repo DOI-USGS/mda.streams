@@ -156,7 +156,7 @@ stage_metab_config <- function(
   
   # Write the table to file if requested
   if(!is.null(filename)) {
-    write.table(config, file=filename, sep="\t", row.names=FALSE)
+    write_config(config, filename)
     return(filename)
   } else {
     return(config)

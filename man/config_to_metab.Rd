@@ -28,7 +28,8 @@ Actually run the model as specified by the configuration arguments
 \dontrun{
 config_to_metab(config=stage_metab_config(
   tag="0.0.1", strategy="try stage_metab_config",
-  site="nwis_04087142", filename=NULL))
+  site="nwis_04087142", start_date="2013-06-14", end_date="2013-06-19",
+  filename=NULL))
 }
 }
 
