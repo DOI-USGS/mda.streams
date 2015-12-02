@@ -39,6 +39,8 @@ gpp	estBest	g m^-2 d^-1	daily gross primary productivity	ts	GPP	1	NA	estimate by
 gpp	simCopy	g m^-2 d^-1	daily gross primary productivity	ts	GPP	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 gpp	simNew	g m^-2 d^-1	daily gross primary productivity	ts	GPP	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
 K600	estBest	d^-1	gas exchange rate	ts	K600	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+K600lwr	estBest	d^-1	gas exchange rate	ts	K600.lower	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+K600upr	estBest	d^-1	gas exchange rate	ts	K600.upper	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
 K600	estNightInterp	d^-1	gas exchange rate	ts	K600	2	NA	interpolate K600_estNight using a smoothing/regression function	streamMetabolizer	NA	calc	NA
 K600	estNight	d^-1	gas exchange rate	ts	K600	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
 K600	simNew	d^-1	gas exchange rate	ts	K600	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
