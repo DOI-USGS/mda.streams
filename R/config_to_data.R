@@ -154,7 +154,7 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
     data_df <- withCallingHandlers(
       tryCatch({
         combo <- do.call(combine_ts, c(data_list, list(
-          method='approx', approx_tol=as.difftime(if(datatype=="data") 3 else 25, units="hours")
+          method='approx', approx_tol=as.difftime(3, units="hours")
         )))
         
         # restrict dates of data if requested
@@ -287,6 +287,9 @@ config_preds_to_data_column <- function(var, site, src, type) {
     get(varname) %>% 
       modernize_metab_model()
   }
+  dailypredvars <- c(K600="K600",K600lwr="K600.lower",K600upr="K600.upper",
+                     gpp="GPP",gpplwr="GPP.lower",ggpupr="GPP.upper",
+                     er="ER",erlwr="ER.lower",erupr="ER.upper")
   local.time <- local.date <- DateTime <- DO.obs <- '.dplyr.var'
   if(var == "doobs") {
     # get key for sitetime
@@ -301,7 +304,7 @@ config_preds_to_data_column <- function(var, site, src, type) {
     preds <- preds[!is.na(preds$doobs), ]
     unique_pred_times <- unique(preds$DateTime)
     preds <- preds[match(unique_pred_times, preds$DateTime),]
-  } else if(var %in% c("gpp","er","K600")) {
+  } else if(var %in% names(dailypredvars)) {
     # get key for sitedate
     sitedate_choice <- choose_data_source("sitedate", site, "priority local")
     datetime_key <- config_to_data_column(var="sitedate", type="ts", site, sitedate_choice$src)
@@ -309,7 +312,8 @@ config_preds_to_data_column <- function(var, site, src, type) {
     preds <- predict_metab(mm) %>%
       #mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
       mutate(DateTime=datetime_key[match(local.date, datetime_key$sitedate), "DateTime"]) %>%
-      select_('DateTime', toupper(var))
+      select_('DateTime', dailypredvars[[var]]) %>%
+      setNames(c('DateTime', names(dailypredvars[var])))
   }
   # add units and return
   myvar <- var # need just for following line in get_var_src_codes
