@@ -98,17 +98,15 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
         attr(out, "warnings") <- attr(metab_data_list, "warnings")
         return(out)
       } else {
-        # if the data are valid, also remove units and rows with NAs. eventually 
-        # want to be able to pass units to metab_fun.
+        # if the data are valid, also remove units. eventually want to be able
+        # to pass units to metab_fun.
         . <- '.dplyr.var'
         metab_data <- metab_data_list$data
         metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
         metab_data <- v(metab_data)
-        metab_data <- metab_data[complete.cases(metab_data),]
         metab_data_daily <- metab_data_list$data_daily
         if(!is.null(metab_data_daily)) {
           metab_data_daily <- v(metab_data_daily)
-          metab_data_daily <- metab_data_daily[complete.cases(metab_data_daily),]
         }
       }
       
