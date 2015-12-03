@@ -40,6 +40,7 @@ summarize_metab_model <- function(
   }
   
   # parse the name into some starter information about each model
+  tag <- '.dplyr.var'
   model_info <- parse_metab_model_name(model_name) %>% 
     add_rownames(var="model_name") %>% 
     mutate(tag=as.character(tag)) %>%
