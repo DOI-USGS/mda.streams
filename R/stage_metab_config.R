@@ -51,6 +51,10 @@
 #'   simulation. See Data Source Format below.
 #' @param K600 Data Source for reaeration rates for use in data simulation. See 
 #'   Data Source Format below.
+#' @param K600lwr Data Source for lower bound on reaeration rates for use in
+#'   data simulation. See Data Source Format below.
+#' @param K600upr Data Source for upper bound on reaeration rates for use in
+#'   data simulation. See Data Source Format below.
 #' @param dischdaily Data Source for daily mean stream discharge, for use in 
 #'   identifying daily priors or fixed values for K600. See Data Source Format 
 #'   below.
