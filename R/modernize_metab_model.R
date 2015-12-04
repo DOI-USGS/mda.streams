@@ -93,7 +93,7 @@ modernize_metab_model <- function(metab_model) {
     if(class(new_mm)=='metab_bayes') new_mm@mcmc <- new_mcmc
     
     # data: add predictions if missing & available
-    if(!('DO.mod' %in% names(new_data))) {
+    if(!('DO.mod' %in% names(new_data)) && new_model_class != 'metab_Kmodel') {
       tryCatch({
         new_mm@data <- predict_DO(new_mm)
       }, error=function(e) {
