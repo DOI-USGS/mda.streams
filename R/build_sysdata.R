@@ -53,15 +53,9 @@ build_sysdata <- function(post=TRUE) {
     write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
     if(is.null(current_session()) || !session_validate()) login_sb()
     tsmeta_item <- locate_ts_meta('varsrccodes')
-    # remove the old, add the new, fix, the identifiers
+    # remove the old, add the new
     rm_out <- item_rm_files(tsmeta_item)
     add_out <- item_append_files(tsmeta_item, files=tempname)
-    # it sure looks like identifiers get kept, so don't bother updating identifiers here:
-    #   idlist <- list(type='ts_meta', scheme=get_scheme(), key='tsmeta_varsrccodes')
-    #   tryCatch(
-    #     item_update_identifier(id=tsmeta_item, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
-    #     warning=function(w) { message("warning in item_update_identifier: ", w) }
-    #   )
   } else {
     return(var_src_codes)
   }

@@ -49,7 +49,7 @@ repair_metab_run <- function(title, limit=5000) {
     # redo the action that somehow failed before
     idlist <- list(type="metab_run", scheme=get_scheme(), key=run_title)
     tryCatch(
-      item_update_identifier(id=run_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      item_update_identifier(sb_id=run_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }
     )
     
