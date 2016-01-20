@@ -62,7 +62,7 @@ download_meta <- function(type, folder = tempdir(),
           "stop"=stop("for ", item_name, ", download destination already has a file and on_local_exists=='stop'"),
           "skip"=NA )
       } else if(!file.exists(destination) || on_local_exists=="replace") {
-        item_file_download(id=item, names=file_list$fname, destinations=destination, overwrite_file=TRUE)
+        item_file_download(sb_id=item, names=file_list$fname, destinations=destination, overwrite_file=TRUE)
       } else {
         stop("unexpected destination file condition or on_local_exists value")
       }

@@ -78,7 +78,7 @@ download_item_files <- function(
           "stop"=stop("for ", item_name, ", download destination already has a file and on_local_exists=='stop'"),
           "skip"=NA )
       } else if(!any(file.exists(destination)) || on_local_exists=="replace") {
-        item_file_download(id=item_id, names=file_vec, destinations=destination, overwrite_file=TRUE)
+        item_file_download(sb_id=item_id, names=file_vec, destinations=destination, overwrite_file=TRUE)
       } else {
         stop("unexpected destination file condition or on_local_exists value")
       }

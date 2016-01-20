@@ -97,7 +97,7 @@ download_ts <- function(var_src, site_name, folder = tempdir(),
         
         # do the downloading
         needs[item_num, "download_success"] <- isTRUE(item_file_download(
-          id=needs[item_num, "item"], names=file_list$fname, 
+          sb_id=needs[item_num, "item"], names=file_list$fname, 
           destinations=needs[item_num, "dest"], overwrite_file=TRUE) == needs[item_num, "dest"])
       }
     } else {

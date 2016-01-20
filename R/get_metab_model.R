@@ -46,8 +46,8 @@ get_metab_model <- function(model_name, on_local_exists='skip', version=c('moder
           mm_staged <- stage_metab_model(title=paste0("m", mname), metab_outs=mm, verbose=FALSE)
           stop("not ready to post modernized models yet, but staged to ", mm_staged)
           post_metab_model(mm_staged, on_exists="replace_file")
-        }, error=function(e) warning("tried and failed to post updated file. error: ", e),
-        wraning=function(w) warning("tried and failed to post updated file. warning: ", w))
+        }, error=function(e) warning("tried and failed to post updated file. error: ", e, call.=FALSE),
+        warning=function(w) warning("tried and failed to post updated file. warning: ", w, call.=FALSE))
       }
     }
     
