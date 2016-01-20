@@ -55,7 +55,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
     # redo the action that somehow failed before
     idlist <- list(type=make_ts_name(var_src), scheme=get_scheme(), key=site_name)
     tryCatch(
-      item_update_identifier(id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      item_update_identifier(sb_id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }
     )
     

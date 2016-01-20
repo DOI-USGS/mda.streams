@@ -1,4 +1,7 @@
-#' @title read ts format (timeseries) for mda.streams into data.frame
+#' Read timeseries data into a data.frame
+#' 
+#' Reads a ts file (with format specific to mda.streams) into a data.frame
+#' 
 #' @param file a valid ts file path
 #' @param on_invalid character in \code{c("stop","warn")} indicating how to
 #'   handle invalid timeseries
