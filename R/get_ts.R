@@ -1,9 +1,16 @@
 #' Bring one or more timeseries into R and merge them
 #' 
-#' Downloads the file from SB if either (1) the file has not yet been downloaded
+#' The timeseries are iteratively joined, starting by joining the second element
+#' of \code{var_src} to the first, then adding in the third, etc. This method 
+#' means you have control, not just through the \code{method} and
+#' \code{approx_tol} arguments but also through how you order the elements of
+#' \code{var_src}, with consequences for the size and contents of the resulting
+#' data.frame.
+#' 
+#' Downloads each file from SB if either (1) the file has not yet been downloaded
 #' to the code{tempdir()} during this R session, or (2) 
-#' \code{on_local_exists='replace'}. There's a small risk that the resulting ts
-#' will be out of date relative to ScienceBase, but the benefit is faster
+#' \code{on_local_exists='replace'}. There's a small risk that the resulting ts 
+#' will be out of date relative to ScienceBase, but the benefit is faster 
 #' ts-getting.
 #' 
 #' @inheritParams download_ts
