@@ -57,17 +57,19 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   asktimes <- format(truetimes + as.difftime(c(-1, 0), units="hours"), "%Y-%m-%dT%H:%MZ")
 
   # download the data to nwis_data, with special handling for QW data
+  convert_qw <- TRUE
+  # convert QW to numeric in an if() block. this will let us (1) test with the
+  # existing code now, and (2) switch easily to QW format later
   switch(
     var,
-    # i prefer mutate or transmute to transform; %>% notation (chaining) to
-    # multiple calls. but if that's too hard, do what comes more naturally.
-    # please minimize the use of ad hoc 
     sed={
       nwis_data <- importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
-        transform(SuspSed=as.numeric(SuspSed)) %>%
-        transmute(site_no=site_no, 
-                  DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
-                  sed=SuspSed)
+        transform(DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
+                  sed=SuspSed) %>%
+        .[,c('site_no','DateTime','sed')]
+      if(convert_qw) {
+        nwis_data <- nwis_data %>% transform(sed=as.numeric(sed))
+      }
     },
     sedpfine={},
     so4={},
