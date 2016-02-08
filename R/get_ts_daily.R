@@ -1,11 +1,14 @@
-#' Bring one or more timeseries into R, merge them, and compute a daily statistic
+#' Bring one or more timeseries into R, merge them, and compute a daily
+#' statistic
 #' 
-#' Downloads each file from SB if either (1) the file has not yet been downloaded
-#' to the code{tempdir()} during this R session, or (2) 
-#' \code{on_local_exists='replace'}. There's a small risk that the resulting ts
-#' will be out of date relative to ScienceBase, but the benefit is faster
+#' Downloads each file from SB if either (1) the file has not yet been
+#' downloaded to the code{tempdir()} during this R session, or (2) 
+#' \code{on_local_exists='replace'}. There's a small risk that the resulting ts 
+#' will be out of date relative to ScienceBase, but the benefit is faster 
 #' ts-getting.
 #' 
+#' @param stat the function to apply to get the desired statistic. mean, sum,
+#'   max, function(x) {mean(x, na.rm=TRUE)}, etc. are all valid.
 #' @param day_start the time (as numeric hours, possibly negative) relative to 
 #'   each date from which to collect dates and possibly daily doinit (DO.mod.1) 
 #'   values
