@@ -12,6 +12,9 @@
 #' @importFrom dataRetrieval constructNWISURL importRDB1
 #' @importFrom unitted u
 #' @importFrom stats setNames
+#' @importFrom lubridate with_tz
+#' @importFrom smwrQW importNWISqw
+#' @import dplyr
 #'   
 #' @examples
 #' 
@@ -43,26 +46,57 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   vars <- var # need a renamed version for get_var_src_codes filter on var
   p_code <- '.dplyr_var'
   p_code <- get_var_src_codes(src=="nwis",var%in%vars,!is.na(p_code),out="p_code")
+  p_code_vec <- strsplit(p_code, split=",")[[1]]
   var_units <- get_var_src_codes(var==vars, src=='nwis', out='units')
+  site_nums <- parse_site_name(sites)
   
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
+  dates <- times # keep in char format for qw data
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
   asktimes <- format(truetimes + as.difftime(c(-1, 0), units="hours"), "%Y-%m-%dT%H:%MZ")
 
-  # download the data. rather than using xml (as in readNWISuv), use tsv because
-  # it's much faster. the drawback is that if the file is incomplete, we won't
-  # be told. that's life.
-  if(isTRUE(verbose)) message("requesting data from NWIS for p_code ", p_code)
-  url <- constructNWISURL(siteNumber = parse_site_name(sites), parameterCd = p_code, startDate = asktimes[1], endDate = asktimes[2], service="uv", format="tsv")
-  nwis_data <- tryCatch(
-    importRDB1(url, asDateTime = TRUE),
-    error=function(e) {
-      if(isTRUE(verbose)) {
-        message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
-      }
-      data.frame()
-    })
+  # download the data to nwis_data, with special handling for QW data
+  switch(
+    var,
+    # i prefer mutate or transmute to transform; %>% notation (chaining) to
+    # multiple calls. but if that's too hard, do what comes more naturally.
+    # please minimize the use of ad hoc 
+    sed={
+      nwis_data <- importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
+        transform(SuspSed=as.numeric(SuspSed)) %>%
+        transmute(site_no=site_no, 
+                  DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
+                  sed=SuspSed)
+    },
+    sedpfine={},
+    so4={},
+    ca={},
+    ph={},
+    alk={},
+    no3={},
+    ntot={},
+    ptot={},
+    po4={},
+    {
+      # default case for switch() applies to all metabolism input variables and 
+      # anything else not listed above. For these we use dataRetrieval.
+      if(isTRUE(verbose)) message("requesting data from NWIS for p_code ", p_code)
+      nwis_data <- tryCatch(
+        readNWISuv(siteNumbers=site_nums, parameterCd=p_code, startDate = asktimes[1], endDate = asktimes[2]),
+        error=function(e) {
+          if(isTRUE(verbose)) {
+            message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
+          }
+          data.frame()
+        })
+      datacol <- names(nwis_data)[5]
+      nwis_data <- nwis_data %>%
+        mutate(DateTime = dateTime) %>%
+        select_('site_no', 'DateTime', datacol) %>%
+        setNames(c('site_no', 'DateTime', var))
+    }
+  )
   
   # loop through to filter and write the data
   file_paths <- c()
@@ -73,11 +107,8 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
     for (i in 1:length(un_sites)){
       
       site <- parse_site_name(un_sites[i])
-      datacol <- names(nwis_data)[5]
       site_data <- filter(nwis_data, site_no == site) %>%
-        mutate(DateTime = as.POSIXct(datetime, tz = ifelse(tz_cd=="UTC", "GMT", tz_cd))) %>%
-        select_('DateTime', datacol) %>%
-        setNames(c("DateTime",var)) %>%
+        select_('DateTime', var) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
         u(c(NA,var_units))
 
