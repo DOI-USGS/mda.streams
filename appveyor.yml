@@ -16,7 +16,7 @@ install:
 
 build_script:
   - R --version
-  - travis-tool.sh install_github USGS-R/dataRetrieval USGS-R/geoknife USGS-R/sbtools appling/unitted USGS-R/streamMetabolizer
+  - travis-tool.sh install_github USGS-R/dataRetrieval USGS-R/sbtools appling/unitted USGS-R/streamMetabolizer
   - travis-tool.sh --CRAN="http://cran.rstudio.com','http://owi.usgs.gov/R" install_deps
 
 test_script:

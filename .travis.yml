@@ -24,7 +24,6 @@ before_install:
 r_github_packages:
   - jimhester/covr
   - USGS-R/dataRetrieval
-  - USGS-R/geoknife
   - USGS-R/sbtools
   - appling/unitted
   - USGS-R/streamMetabolizer
