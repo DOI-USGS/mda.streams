@@ -26,8 +26,8 @@ r_github_packages:
   - USGS-R/dataRetrieval
   - USGS-R/geoknife
   - USGS-R/sbtools
-  - USGS-R/streamMetabolizer
   - appling/unitted
+  - USGS-R/streamMetabolizer
 
 after_success:
   - Rscript -e 'covr::coveralls()'
