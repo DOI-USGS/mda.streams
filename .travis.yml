@@ -7,7 +7,7 @@ sudo: required
 warnings_are_errors: true
 
 repos:
-  CRAN: https://cran.rstudio.com
+  CRAN: http://cran.rstudio.com
   GRAN: http://owi.usgs.gov/R
   
 before_install:
