@@ -26,7 +26,6 @@ r_github_packages:
   - USGS-R/dataRetrieval
   - USGS-R/geoknife
   - USGS-R/sbtools
-  - USGS-R/smwrQW
   - USGS-R/streamMetabolizer
   - appling/unitted
 
