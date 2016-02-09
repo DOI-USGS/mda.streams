@@ -5,6 +5,7 @@ environment:
   R_INSTALL_ARGS: --no-multiarch
   GITHUB_PAT: 
     secure: qm2NVTPZnskxmmfSgZ/28XSSOKqIWja5Kc+XKSd8BsHwoeo/DXq+rUOZgKc3YtRv
+  CRAN: "http://cran.rstudio.com',GRAN='http://owi.usgs.gov/R"
 
 init:
   ps: |
@@ -18,7 +19,7 @@ install:
 build_script:
   - R --version
   - travis-tool.sh install_github USGS-R/dataRetrieval USGS-R/sbtools appling/unitted USGS-R/streamMetabolizer
-  - travis-tool.sh install_deps CRAN="http://cran.rstudio.com','http://owi.usgs.gov/R"
+  - travis-tool.sh install_deps
 
 test_script:
   - travis-tool.sh run_tests
