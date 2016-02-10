@@ -9,7 +9,6 @@ environment:
   R_INSTALL_ARGS: --no-multiarch
   GITHUB_PAT: 
     secure: lWDip/KqkDcRmLEPjvsVSpQ7HJcSmE5HwyQVzDBJetaUdaYI1Us5tAs6E9K8kpSj
-  CRAN: 'http://cran.rstudio.com",GRAN="http://owi.usgs.gov/R'
 
 init:
   ps: |
