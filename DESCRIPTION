@@ -17,7 +17,7 @@ Depends:
     R (>= 3.1)
 Imports:
     dataRetrieval (>= 2.4.8),
-    geoknife (>= 1.1.4),
+    geoknife (>= 1.0.0),
     sbtools (>= 0.15.2),
     smwrQW (>= 0.7.9),
     streamMetabolizer (>= 0.7.1),
