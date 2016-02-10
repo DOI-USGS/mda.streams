@@ -1,4 +1,4 @@
-# Defines the options for building the project on linux with Travis-CI
+# Defines the options for building the project on linux with Travis-CI.
 # For more configuration options, see the wiki:
 # https://github.com/craigcitro/r-travis/wiki/Porting-to-native-R-support-in-Travis
 
@@ -6,6 +6,10 @@ language: r
 sudo: required
 warnings_are_errors: true
 
+repos:
+  CRAN: http://cran.rstudio.com
+  GRAN: http://owi.usgs.gov/R
+  
 before_install:
   - wget http://owi.usgs.gov/R/r-buildtools/JAGS-3.4.0.tar.gz
   - tar xfvs JAGS-3.4.0.tar.gz
@@ -19,10 +23,7 @@ before_install:
   
 r_github_packages:
   - jimhester/covr
-  - appling/unitted
   - USGS-R/streamMetabolizer
-  - USGS-R/sbtools
-  - USGS-R/geoknife
 
 after_success:
   - Rscript -e 'covr::coveralls()'
