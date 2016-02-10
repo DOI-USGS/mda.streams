@@ -1,3 +1,6 @@
+# Defines the options for building the project on Windows with ci.appveyor.com
+# For more configuration options, see https://www.appveyor.com/docs/build-configuration.
+# Note that we're calling a customized version of appveyor-tool.ps1 to 
 
 environment:
   R_CHECK_ARGS: --no-build-vignettes --no-manual --no-multiarch
@@ -5,7 +8,7 @@ environment:
   R_INSTALL_ARGS: --no-multiarch
   GITHUB_PAT: 
     secure: qm2NVTPZnskxmmfSgZ/28XSSOKqIWja5Kc+XKSd8BsHwoeo/DXq+rUOZgKc3YtRv
-  CRAN: 'http://cran.rstudio.com",GRAN="http://owi.usgs.gov.s3-website-us-west-2.amazonaws.com/R'
+  CRAN: 'http://cran.rstudio.com",GRAN="http://owi.usgs.gov/R'
 
 init:
   ps: |
