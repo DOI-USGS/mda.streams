@@ -21,7 +21,7 @@ install:
 
 build_script:
   - R --version
-  - travis-tool.sh install_github USGS-R/streamMetabolizer
+  - travis-tool.sh install_github USGS-R/streamMetabolizer USGS-R/sbtools
   - travis-tool.sh install_deps
 
 test_script:
