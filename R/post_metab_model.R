@@ -19,7 +19,7 @@
 post_metab_model <- function(files, on_exists=c("stop", "skip", "replace_file"), verbose=TRUE) {
   # handle inputs
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   model_ids <- sapply(setNames(files, files), function(modelfile) {
     
