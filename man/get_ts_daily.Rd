@@ -14,7 +14,7 @@ get_ts_daily(var_src, site_name, stat = mean, day_start = 4, day_end = 28,
 \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
 var_src)})}
 
-\item{site_name}{a valid mda.streams site (see \link{get_sites})}
+\item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
 \item{stat}{the function to apply to get the desired statistic. mean, sum,
 max, function(x) {mean(x, na.rm=TRUE)}, etc. are all valid.}

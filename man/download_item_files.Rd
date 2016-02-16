@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_item_files.R
 \name{download_item_files}
 \alias{download_item_files}
-\title{Download metadata data to local file destination}
+\title{Download file[s] to local destination}
 \usage{
 download_item_files(item_ids, item_names, files = NA, folder = tempdir(),
   on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
@@ -31,7 +31,7 @@ file handle (character path) for the downloaded file, or NA if the
   timeseries is unavailable on ScienceBase
 }
 \description{
-Download a timeseries file to a user-specified (or temp file) location
+Download one or more files to a user-specified (or temp file) location
 }
 \examples{
 \dontrun{

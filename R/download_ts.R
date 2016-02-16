@@ -2,7 +2,7 @@
 #' 
 #' Download a timeseries file to a user-specified (or temp file) location
 #' 
-#' @param site_name a valid mda.streams site (see \link{get_sites})
+#' @param site_name a valid mda.streams site (see \link{list_sites})
 #' @param var_src a valid variable name for timeseries data (see 
 #'   \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
 #'   var_src)})

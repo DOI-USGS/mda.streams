@@ -4,12 +4,10 @@
 \alias{get_watershed_WMS}
 \title{get WMS from site}
 \usage{
-get_watershed_WMS(site, ...)
+get_watershed_WMS(site)
 }
 \arguments{
 \item{site}{a site identifier}
-
-\item{...}{Additional parameters supplied to \code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 a character string for WMS url or NULL if watershed doesn't exist for site, or site doesn't exist.

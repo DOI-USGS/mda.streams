@@ -12,7 +12,7 @@ get_ts(var_src, site_name, method = "approx", approx_tol = as.difftime(3,
 \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
 var_src)})}
 
-\item{site_name}{a valid mda.streams site (see \link{get_sites})}
+\item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
 \item{method}{character specifying the combination method to use}
 

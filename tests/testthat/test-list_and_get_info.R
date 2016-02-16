@@ -1,17 +1,11 @@
 context("get_sites")
 
 test_that("internal function get_sites works for multisites", {
-  sites <- get_sites()
+  sites <- mda.streams:::get_sites()
   expect_is(sites,'character')
   expect_true(length(sites) > 1)
-  
-  # this one yields a sporadic error, probably when SB goofs:
-  #   Error in mapply(FUN = f, ..., SIMPLIFY = FALSE) : 
-  #     zero-length inputs cannot be mixed with those of non-zero length
-  # so i'm commenting it out.
-  #expect_equal(get_sites(), list_sites())
-
-  expect_error(get_sites(with_dataset_name=c("wtr_nwis","doobs_nwis")))
+  expect_equal(sort(mda.streams:::get_sites()), list_sites())
+  expect_error(mda.streams:::get_sites(with_dataset_name=c("wtr_nwis","doobs_nwis")), "must have length 1")
 })
   
 
@@ -47,5 +41,4 @@ test_that("get_site_coords works", {
   expect_equal(dim(sc), c(2,3))
   expect_warning(sc <- get_site_coords(c("himom", "hidad"), on_missing = "omit"), "unrecognized site_name")
   expect_equal(dim(sc), c(0,3))
-  
 })
