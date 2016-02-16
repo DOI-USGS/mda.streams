@@ -1,7 +1,6 @@
 context("locate_item")
 
-if(!is.null(current_session()) && sbtools::session_validate()) {
-  login_sb()
+if(sbtools::is_logged_in()) {
   
   test_that("locate_item by tag, dir, either all works", {
     # find a folder
