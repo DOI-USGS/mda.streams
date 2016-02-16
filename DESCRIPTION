@@ -18,7 +18,7 @@ Depends:
 Imports:
     dataRetrieval (>= 2.4.8),
     geoknife (>= 1.2.0),
-    sbtools (>= 0.15.2),
+    sbtools (>= 0.15.3),
     smwrQW (>= 0.7.9),
     streamMetabolizer (>= 0.7.1),
     unitted (>= 0.2.5),
