@@ -4,16 +4,13 @@
 \alias{get_sites}
 \title{A helper to list_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
-get_sites(with_dataset_name = NULL, limit = 10000, ...)
+get_sites(with_dataset_name = NULL, limit = 10000)
 }
 \arguments{
 \item{with_dataset_name}{limit sites to those with children matching the
 specified ts or other dataset name (e.g., "ts_doobs_nwis")}
 
 \item{limit}{numeric. Max number of sites to return}
-
-\item{...}{Additional parameters supplied to 
-\code{\link[sbtools]{session_check_reauth}}}
 }
 \value{
 a character vector of "site_root" titles (keys)
@@ -25,10 +22,10 @@ dataset, and returns as a character vector of those site names
 }
 \examples{
 \dontrun{
-get_sites()
-get_sites(limit = 10)
+mda.streams:::get_sites()
+mda.streams:::get_sites(limit = 10)
 # get those sites that have water temperature
-get_sites(with_dataset_name = 'ts_wtr_nwis')
+mda.streams:::get_sites(with_dataset_name = 'ts_wtr_nwis')
 }
 }
 \keyword{internal}
