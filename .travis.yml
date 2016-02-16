@@ -3,6 +3,7 @@
 # https://github.com/craigcitro/r-travis/wiki/Porting-to-native-R-support-in-Travis
 
 language: r
+r: release
 sudo: required
 warnings_are_errors: true
 
@@ -24,6 +25,7 @@ before_install:
 r_github_packages:
   - jimhester/covr
   - USGS-R/streamMetabolizer
+  - USGS-R/sbtools
 
 after_success:
   - Rscript -e 'covr::coveralls()'

@@ -13,7 +13,7 @@ download_ts(var_src, site_name, folder = tempdir(),
 \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
 var_src)})}
 
-\item{site_name}{a valid mda.streams site (see \link{get_sites})}
+\item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
 \item{folder}{string for a folder location}
 

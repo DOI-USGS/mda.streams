@@ -23,7 +23,7 @@ download_metab_model <- function(model_name, folder = tempdir(), version=c('mode
                                on_remote_missing=c("stop","return_NA"), 
                                on_local_exists=c("stop","skip","replace")) {
   
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   version <- match.arg(version)
   on_remote_missing <- match.arg(on_remote_missing)

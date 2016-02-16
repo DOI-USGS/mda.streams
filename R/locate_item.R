@@ -47,7 +47,7 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
     ) %>%
     as.data.frame(stringsAsFactors=FALSE)
 
-  if(get_scheme() == 'mda_streams_dev' && (is.null(current_session()) || !session_validate()))
+  if(get_scheme() == 'mda_streams_dev' && !is_logged_in())
     stop("log in to use mda_streams_dev. see login_sb()")
 
   # run the query or queries

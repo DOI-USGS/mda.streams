@@ -1,6 +1,6 @@
-#' Download metadata data to local file destination
+#' Download file[s] to local destination
 #' 
-#' Download a timeseries file to a user-specified (or temp file) location
+#' Download one or more files to a user-specified (or temp file) location
 #' 
 #' @param item_ids the item id[s]
 #' @param item_names character names by which to refer to the respective items 

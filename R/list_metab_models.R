@@ -10,7 +10,7 @@
 list_metab_models = function(order_by=c("date","tag","row","site","strategy","title")) {
   
   order_by <- match.arg(order_by, several.ok = TRUE)
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   # get list of site items, then filter to those of the proper data_type
   model_query <- query_item_identifier(scheme = get_scheme(), type = 'metab_model', limit = 10000, pagesize = 500)$title

@@ -24,14 +24,14 @@
 #' head(read_ts(files[1]))
 #' 
 #' # par is unavailable for all sites, so returns NULL
-#' stage_nwis_ts(sites = get_sites(), var = "par",
+#' stage_nwis_ts(sites = list_sites(), var = "par",
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
 stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE){
 
   # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
-  # all_sites <- get_sites()
+  # all_sites <- list_sites()
   # all_files <- stage_nwis_ts(sites = all_sites, var = "doobs", times = c('2014-06-01','2014-06-02'), verbose=TRUE)
   # tz_00 <- sapply(setNames(all_files, mda.streams:::parse_ts_path(all_files, "site_name")), function(file) format(unitted::v(read_ts(file)[1,"DateTime"]), "%H") == "00")
   # tz_01 <- sapply(setNames(all_files, mda.streams:::parse_ts_path(all_files, "site_name")), function(file) format(unitted::v(read_ts(file)[1,"DateTime"]), "%H") == "01")
