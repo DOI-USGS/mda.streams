@@ -19,7 +19,7 @@
 #'@export
 get_watershed_WMS = function(site){
 	
-  watershed_item <- get_watershed_item(site, ...)
+  watershed_item <- get_watershed_item(site)
   
   WMS_url <- match_url_distro(watershed_item, "ScienceBase WMS Service")
   return(WMS_url)
