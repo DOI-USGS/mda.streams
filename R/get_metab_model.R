@@ -12,6 +12,7 @@
 #' @param update_sb logical. May we take some time to update ScienceBase if the
 #'   most modern version isn't up there yet?
 #' @export
+#' @import streamMetabolizer
 #' @importFrom stats setNames
 #' @import dplyr
 get_metab_model <- function(model_name, on_local_exists='skip', version=c('modern','original'), update_sb=TRUE) {
@@ -43,8 +44,7 @@ get_metab_model <- function(model_name, on_local_exists='skip', version=c('moder
       mm <- modernize_metab_model(mm)
       if(isTRUE(update_sb)) {
         tryCatch({
-          mm_staged <- stage_metab_model(title=paste0("m", mname), metab_outs=mm, verbose=FALSE)
-          stop("not ready to post modernized models yet, but staged to ", mm_staged)
+          mm_staged <- stage_metab_model(title=parse_metab_model_name(mname)$title, metab_outs=mm, version="modern", verbose=FALSE)
           post_metab_model(mm_staged, on_exists="replace_file")
         }, error=function(e) warning("tried and failed to post updated file. error: ", e, call.=FALSE),
         warning=function(w) warning("tried and failed to post updated file. warning: ", w, call.=FALSE))

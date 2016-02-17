@@ -5,12 +5,13 @@
 #' another chance to add tags.
 #' 
 #' @param model_name one or more model_name strings, e.g., "nwis_05515500-35-150729 0.1.2 compare_par_srces"
+#' @param verbose should status messages be given?
 #' @param limit the maximum number of items to return in the SB query
 #'   
 #' @import sbtools
 #' @importFrom stats setNames
 #' @export
-repair_metab_model <- function(model_name, limit=5000) {
+repair_metab_model <- function(model_name, verbose=FALSE, limit=5000) {
   
   # check the session; we'll need write access
   sb_require_login("stop")
@@ -42,6 +43,9 @@ repair_metab_model <- function(model_name, limit=5000) {
     
     # redo the action that somehow failed before
     idlist <- list(type='metab_model', scheme=get_scheme(), key=model_name)
+    if(verbose) message(
+      'setting identifiers for item ', mm_id_dir, ': \n',
+      '  scheme = "', idlist$scheme, '"\n  type   = "', idlist$type, '"\n  key    = "', idlist$key, '"')
     tryCatch(
       item_update_identifier(sb_id=mm_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }

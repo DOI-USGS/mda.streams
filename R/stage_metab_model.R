@@ -32,7 +32,9 @@ stage_metab_model <- function(title, metab_outs, folder = tempdir(), version=c("
     
     # check that info and element number match
     row_num <- config_row$config.row
-    if(out_num != row_num) warning("couldn't reconcile metab_outs position with get_info(mm)$config$config.row; using config.row")
+    if(out_num != row_num && length(metab_outs) > 1) {
+      warning("staging >1 model but couldn't reconcile metab_outs position with get_info(mm)$config$config.row; using config.row")
+    }
     
     # save mm to its own .RData file
     file_path <- make_metab_model_path(model_name=make_metab_model_name(title, row_num, site), folder=folder, version=version)
