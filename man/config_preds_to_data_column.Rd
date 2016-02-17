@@ -11,12 +11,20 @@ config_preds_to_data_column(var, site, src, type)
 
 \item{src}{the model_name or model file name}
 
-\item{type}{character in c("SB","file") indicating whether src is a
-model on sciencebase or a local file name}
+\item{type}{character in c("SB","file") indicating whether src is a model on 
+sciencebase or a local file name}
 }
 \description{
 Most of this code is the same whether it's a pred (the name of a model on 
 sciencebase) or a pred_file (the name of a local file name)
+}
+\details{
+The trick is that model predictions only store the input time, with was 
+either local.time (< streamMetabolizer 0.8.0) or solar.time (>=0.8.0) rather 
+than UTC time. So this function draws on our knowledge of the site-specific 
+mapping between UTC time and local.time, solar.time, local.date, or 
+solar.date (as stored in sitetime, solartime, sitedate, and solardate,
+respectively) to come up with the UTC time that makes these predictions
 }
 \keyword{internal}
 
