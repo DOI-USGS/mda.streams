@@ -13,12 +13,12 @@
 #' @importFrom unitted u
 #' @importFrom stats setNames
 #' @importFrom lubridate with_tz
-#' @importFrom smwrQW importNWISqw
 #' @import dplyr
 #'   
 #' @examples
 #' 
 #' \dontrun{
+#' 
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), 
 #'   var = "doobs", times = c('2014-01-01','2014-01-02'), verbose=TRUE)
 #' head(read_ts(files[1]))
@@ -58,12 +58,15 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
 
   # download the data to nwis_data, with special handling for QW data
   convert_qw <- TRUE
+  if(var %in% c("sed","sedpfine","so4","ca","ph","alk","no3","ntot","ptot","po4")) {
+    requireNamespace("smwrQW")
+  }
   # convert QW to numeric in an if() block. this will let us (1) test with the
   # existing code now, and (2) switch easily to QW format later
   switch(
     var,
     sed={
-      nwis_data <- importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
+      nwis_data <- smwrQW::importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
         transform(DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
                   sed=SuspSed) %>%
         .[,c('site_no','DateTime','sed')]

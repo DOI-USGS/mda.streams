@@ -2,6 +2,8 @@
 
 ## Changes
 
+* file downloads are faster and more internally streamlined
+
 * get_metab_model now posts a modernized model to SB when practical (0.8.16)
 
 * make get_sites private (0.8.15)
