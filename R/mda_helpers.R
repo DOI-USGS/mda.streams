@@ -231,14 +231,18 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param site_name the full site name, e.g., 'nwis_06893820'
 #' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
 #' @param folder the folder to write the file in, or missing
+#' @param version character string indicating the file format
 #' @return a full file path
 #' @export
-make_ts_path <- function(site_name, ts_name, folder) {
+make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
   parse_ts_name(ts_name)
+  version <- match.arg(version)
   
-  file_name <- sprintf('%s-%s.%s.%s', site_name, ts_name, pkg.env$ts_extension, (gz_extension="gz"))
+  file_name <- sprintf(
+    '%s-%s.%s', site_name, ts_name, 
+    switch(version, 'tsv'='tsv.gz', 'RData'='RData'))
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing
   } else {
@@ -259,7 +263,7 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' @importFrom stats setNames
 #' @export
 parse_ts_path <- function(file_path, 
-                          out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
+                          out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum"), 
                           use_names=length(file_path)>1) {
   
   out = match.arg(out, several.ok=TRUE)
@@ -272,6 +276,7 @@ parse_ts_path <- function(file_path,
     file_name = file_name, 
     site_name = sapply(splits, "[", 1),
     ts_name = sapply(splits, "[", 2),
+    version = sapply(splits, "[", 3),
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%

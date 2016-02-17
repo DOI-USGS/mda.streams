@@ -4,7 +4,7 @@
 \alias{make_ts_path}
 \title{Create a standardized file name for specific file contents}
 \usage{
-make_ts_path(site_name, ts_name, folder)
+make_ts_path(site_name, ts_name, folder, version = c("tsv", "RData"))
 }
 \arguments{
 \item{site_name}{the full site name, e.g., 'nwis_06893820'}
@@ -12,6 +12,8 @@ make_ts_path(site_name, ts_name, folder)
 \item{ts_name}{the full ts name, e.g., 'ts_doobs_nwis'}
 
 \item{folder}{the folder to write the file in, or missing}
+
+\item{version}{character string indicating the file format}
 }
 \value{
 a full file path

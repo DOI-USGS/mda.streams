@@ -9,17 +9,21 @@ download_item_files(item_ids, item_names, files = NA, folder = tempdir(),
   "skip", "replace"))
 }
 \arguments{
-\item{item_ids}{the item id[s]}
+\item{item_ids}{the item id[s], or NA if an id could not be found. an item_id
+will be ignored in the very special (but potentially common and speedy) 
+case that \code{files} is specified (not NA), all specified files for an 
+item are already available locally, and on_local_exists=='skip'.}
 
 \item{item_names}{character names by which to refer to the respective items 
 in messages}
 
 \item{files}{list of character vector[s] of file names to download, one list 
 element per item_ids. if the default is used, all files from each site will
-be downloaded. may also be passed as a single character vector to be
+be downloaded. may also be passed as a single character vector to be 
 replicated once for each item_id}
 
-\item{folder}{string for a folder location where files should be saved}
+\item{folder}{string for a folder location where files should be saved, or a 
+vector of as many folders as there are item_ids}
 
 \item{on_remote_missing}{character indicating what to do if the}
 
