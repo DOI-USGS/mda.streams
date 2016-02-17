@@ -22,8 +22,8 @@
 #' @export
 stage_meta_nawqahst <- function(types=c('AC_RUNOFF', 'Ac_popd10', 'AC_NLCD11'), folder='temp') {
   
-  # authenticate SB - access is needed to download the data
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  # SB access is needed to download the data
+  sb_require_login("stop")
   
   # create the folder if it doesn't exist
   if(!dir.exists(folder)) dir.create(folder, showWarnings=TRUE)

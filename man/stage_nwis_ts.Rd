@@ -28,12 +28,13 @@ get data from nwis and return created file handle
 \examples{
 
 \dontrun{
+
 files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), 
   var = "doobs", times = c('2014-01-01','2014-01-02'), verbose=TRUE)
 head(read_ts(files[1]))
 
 # par is unavailable for all sites, so returns NULL
-stage_nwis_ts(sites = get_sites(), var = "par",
+stage_nwis_ts(sites = list_sites(), var = "par",
   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 }
 }

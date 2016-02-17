@@ -20,19 +20,34 @@
 #' @import sbtools
 #' @export
 download_metab_model <- function(model_name, folder = tempdir(), version=c('modern','original'),
-                               on_remote_missing=c("stop","return_NA"), 
-                               on_local_exists=c("stop","skip","replace")) {
+                                 on_remote_missing=c("stop","return_NA"), 
+                                 on_local_exists=c("stop","skip","replace")) {
   
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   version <- match.arg(version)
   on_remote_missing <- match.arg(on_remote_missing)
   on_local_exists <- match.arg(on_local_exists)
   
-  ids <- locate_metab_model(model_name)
+  files <- dests <- '.dplyr.var'
+  params <- 
+    data_frame(
+      files = make_metab_model_path(model_name, version=version),
+      folder = folder,
+      model_name = model_name) %>%
+    mutate(
+      dests = file.path(folder, files),
+      need = if(on_local_exists %in% c('stop','skip')) !file.exists(dests) else TRUE,
+      ids = 'local_exists'
+    )
   
+  # only query SB for those ids we actually need
+  if(length(which(params$need)) > 0) {
+    params$ids[params$need] <- locate_metab_model(params$model_name[params$need])
+  }
+  
+  # download. this function will skip over ids we don't need
   download_item_files(
-    item_ids=ids, item_names=model_name, files=make_metab_model_path(model_name, version=version), folder=folder, 
+    item_ids=params$ids, item_names=params$model_name, files=as.list(params$files), folder=params$folder, 
     on_remote_missing=on_remote_missing, on_local_exists=on_local_exists)
-    
 }

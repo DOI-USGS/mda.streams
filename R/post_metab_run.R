@@ -23,7 +23,7 @@ post_metab_run <- function(folder, files, on_exists=c("stop", "skip", "addfiles"
 
   # check inputs
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   if(length(folder) != 1) stop("one folder name per call to post_metab_run, please")
   title <- basename(folder)
   

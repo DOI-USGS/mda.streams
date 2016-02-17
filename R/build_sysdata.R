@@ -51,7 +51,7 @@ build_sysdata <- function(post=TRUE) {
   if(isTRUE(post)) {
     tempname <- file.path(tempdir(), 'tsmeta_varsrccodes.tsv')
     write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
-    if(is.null(current_session()) || !session_validate()) login_sb()
+    sb_require_login("login")
     tsmeta_item <- locate_ts_meta('varsrccodes')
     # remove the old, add the new
     rm_out <- item_rm_files(tsmeta_item)

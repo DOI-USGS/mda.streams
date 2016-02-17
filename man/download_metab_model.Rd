@@ -11,7 +11,8 @@ download_metab_model(model_name, folder = tempdir(), version = c("modern",
 \arguments{
 \item{model_name}{the name of the metab_model file}
 
-\item{folder}{string for a folder location where files should be saved}
+\item{folder}{string for a folder location where files should be saved, or a 
+vector of as many folders as there are item_ids}
 
 \item{version}{character indicating whether you want the original metab_model
 or a modernized one that works with the current streamMetabolizer version}

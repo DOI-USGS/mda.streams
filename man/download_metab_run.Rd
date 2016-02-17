@@ -10,15 +10,13 @@ download_metab_run(title, files = NA, folder = tempdir(),
 }
 \arguments{
 \item{title}{the title of the metabolism run (date, tag, and strategy 
-separated by spaces)
-@param files NA for all files, or a vector of specific filenames (character) to download}
+separated by spaces)}
 
-\item{files}{list of character vector[s] of file names to download, one list 
-element per item_ids. if the default is used, all files from each site will
-be downloaded. may also be passed as a single character vector to be
-replicated once for each item_id}
+\item{files}{NA for all files, or a list of vectors of specific filenames 
+(character) to download, one vector per title}
 
-\item{folder}{string for a folder location where files should be saved}
+\item{folder}{string for a folder location where files should be saved, or a 
+vector of as many folders as there are item_ids}
 
 \item{on_remote_missing}{character indicating what to do if the}
 
@@ -30,9 +28,10 @@ file handle (character path) for the downloaded file, or NA if the
   timeseries is unavailable on ScienceBase
 }
 \description{
-Download all files stored in a metabolism run SB item to a user-specified (or
-temp file) location. A new folder will be created within that location to
-store the downloaded files.
+Download files stored in a metabolism run SB item to a user-specified (or 
+temp file) location. A new folder will be created within that location to 
+store the downloaded files. The default is to download all available files,
+but specific files may be specified with the \code{files} argument.
 }
 \examples{
 \dontrun{

@@ -53,14 +53,11 @@ config_to_metab_clusterfun <- function(
   force(verbose)
   
   function(row_num) {
-    # calls to this function should break immediately; no point in even trying if we can't run them
+    # calls to this function should break immediately if at all; no point in even trying if we can't run them
     library(mda.streams)
     if(length(row_num) != 1) stop("expecting exactly 1 row_num per call to clusterfun")
     if("pred" %in% config[row_num,grepl("type", names(config))]) {
-      if(is.null(sbtools::current_session()) || !sbtools::session_validate()) {
-        if(verbose) message("re-authenticating with ScienceBase with the password you set.\n")
-        sbtools::authenticate_sb(sb_user, sb_password) 
-      }
+      sb_renew_login(sb_user, sb_password, verbose=verbose)
     }
 
     # model metabolism & return results or error
@@ -91,10 +88,7 @@ config_to_metab_clusterfun <- function(
         # post
         if(isTRUE(post_metab)) {
           if(verbose) message("posting metab_model for config row ", row_num, ": starting at ", Sys.time())
-          if(is.null(sbtools::current_session()) || !sbtools::session_validate()) {
-            if(verbose) message("re-authenticating with ScienceBase with the password you set.\n")
-            sbtools::authenticate_sb(sb_user, sb_password) 
-          }
+          sb_renew_login(sb_user, sb_password, verbose=verbose)
           post_metab_model(staged)    
         }
 

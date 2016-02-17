@@ -4,18 +4,21 @@
 \alias{download_ts}
 \title{Download timeseries data to local file destination}
 \usage{
-download_ts(var_src, site_name, folder = tempdir(),
-  on_remote_missing = c("stop", "return_NA"), on_local_exists = c("stop",
-  "skip", "replace"))
+download_ts(var_src, site_name, folder = tempdir(), version = c("tsv",
+  "RData"), on_remote_missing = c("stop", "return_NA"),
+  on_local_exists = c("stop", "skip", "replace"))
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
 \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
 var_src)})}
 
-\item{site_name}{a valid mda.streams site (see \link{get_sites})}
+\item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
 \item{folder}{string for a folder location}
+
+\item{version}{character string indicating whether you want to download the 
+ts as a .tsv or .RData}
 
 \item{on_remote_missing}{character indicating what to do if the remote file 
 is missing}

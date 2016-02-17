@@ -13,9 +13,6 @@
 #' @importFrom unitted v u
 stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil','landcover'), folder=tempdir()) {
   
-  # authenticate SB - access is needed to download the data
-  if(is.null(current_session()) || !session_validate()) stop("need ScienceBase access; call login_sb() first")
-  
   # create the folder if it doesn't exist
   if(!dir.exists(folder)) dir.create(folder, showWarnings=TRUE)
   
@@ -30,7 +27,7 @@ stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil','landcove
   dests <- sapply(types, function(type) {
     
     # read Ted's table
-    ted_file <- paste0('../stream_metab_usa/starter_files/data_scripts/pow',toupper(substr(type, 1, 1)), substring(type, 2),'.csv')
+    ted_file <- paste0('../stream_metab_usa/starter_files/data_scripts/stets_wieczorek/pow',toupper(substr(type, 1, 1)), substring(type, 2),'.csv')
     ted_df <- read.table(ted_file, header=TRUE, sep=",", stringsAsFactors=FALSE)
 
     # rename site_name column
@@ -56,9 +53,11 @@ stage_meta_nawqahst_temp <- function(types=c('climate','hydrol','soil','landcove
     ted_df <- u(ted_df)
     
     # write & return path
-    dest <- paste0(folder,"/meta_",type,".tsv")
-    write_unitted(ted_df, file=dest)
-    dest
+    fpath <- make_meta_path(type=type, folder=folder)
+    gz_con <- gzfile(fpath, "w")
+    meta_file <- write_unitted(ted_df, file=gz_con, sep="\t", row.names=FALSE, quote=TRUE)
+    close(gz_con)
+    return(fpath)
   })
   
   # return
