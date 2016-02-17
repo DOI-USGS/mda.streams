@@ -479,16 +479,11 @@ parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","mode
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
   
-  if(substring(file_path, 1, 3) == "mmm") {
-    version='modern'
-    file_path <- substring(file_path, 1)
-  } else {
-    version='original'
-  }
+  version <- if(substring(file_name, 1, 3) == "mmm") "modern" else "original"
   parsed <- data.frame(
     dir_name = dir_name,
     file_name = file_name, 
-    model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+1, nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
+    model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+ifelse(version=="original", 1, 2), nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
     version = version,
     stringsAsFactors=FALSE)
   parsed <- parsed %>%

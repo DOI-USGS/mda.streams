@@ -4,10 +4,12 @@
 \alias{repair_metab_model}
 \title{Repair a metab_model item that is missing its identifier tags}
 \usage{
-repair_metab_model(model_name, limit = 5000)
+repair_metab_model(model_name, verbose = FALSE, limit = 5000)
 }
 \arguments{
 \item{model_name}{one or more model_name strings, e.g., "nwis_05515500-35-150729 0.1.2 compare_par_srces"}
+
+\item{verbose}{should status messages be given?}
 
 \item{limit}{the maximum number of items to return in the SB query}
 }

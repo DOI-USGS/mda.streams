@@ -2,7 +2,9 @@
 
 ## Changes
 
-* make get_sites private
+* get_metab_model now posts a modernized model to SB when practical (0.8.16)
+
+* make get_sites private (0.8.15)
 
 # mda.streams 0.8.14
 
