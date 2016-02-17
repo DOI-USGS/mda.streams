@@ -7,6 +7,10 @@ r: release
 sudo: required
 warnings_are_errors: true
 
+env:
+  global:
+    - _R_CHECK_FORCE_SUGGESTS_=FALSE
+
 repos:
   CRAN: http://cran.rstudio.com
   GRAN: http://owi.usgs.gov/R
