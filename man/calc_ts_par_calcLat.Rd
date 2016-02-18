@@ -7,7 +7,7 @@
 calc_ts_par_calcLat(utctime, suntime, latitude)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{suntime}{the apparent solar time at the site}
 

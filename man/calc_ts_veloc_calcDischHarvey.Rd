@@ -8,7 +8,7 @@ coefficients from Jud Harvey}
 calc_ts_veloc_calcDischHarvey(utctime, disch, k, m)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{disch}{the discharge in ft^3 s^-1}
 

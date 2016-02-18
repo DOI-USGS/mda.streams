@@ -62,7 +62,7 @@ stage_styx_site <- function(
   # function to filter by datetimes assuming times are in local clock time (standard, not DST)
   times.sitetime <- as.POSIXct(times, tz="UTC")
   filter_by_date <- function(df) {
-    sitetime <- convert_GMT_to_solartime(date.time = df$DateTime, longitude = coords$lon, time.type = "mean solar")
+    sitetime <- convert_UTC_to_solartime(date.time = df$DateTime, longitude = coords$lon, time.type = "mean solar")
     after_start <- if(is.na(times[1])) TRUE else sitetime >= times.sitetime[1]
     before_end <- if(length(times)<2 || is.na(times[2])) TRUE else sitetime <= times.sitetime[2]
     df[after_start & before_end, ] 

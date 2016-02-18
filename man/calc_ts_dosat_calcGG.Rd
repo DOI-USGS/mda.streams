@@ -7,7 +7,7 @@
 calc_ts_dosat_calcGG(utctime, wtr, baro)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{wtr}{the water temperature}
 

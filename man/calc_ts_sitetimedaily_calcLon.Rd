@@ -7,7 +7,7 @@
 calc_ts_sitetimedaily_calcLon(sitetime, longitude)
 }
 \arguments{
-\item{sitetime}{the DateTimes of the local noons of interest, in UTC/GMT}
+\item{sitetime}{the DateTimes of the local noons of interest, in UTC}
 
 \item{longitude}{the site longitude in degrees E}
 }
