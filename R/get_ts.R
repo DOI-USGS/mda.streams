@@ -49,17 +49,41 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
       data_list_ordered <- data_list[c(var_index, not_var_index)]
     }
     
-    num_obs <- unlist(lapply(data_list, nrow))
-    longer_than_var <- which(num_obs > num_obs[var_index])
-    if(any(longer_than_var)){
-      resolution_msg <- paste0("Results reflect the resolution of the ",
-                               var_src[var_index], 
-                               " timeseries. Some variables (", 
-                               paste(var_src[longer_than_var], collapse=", "),
-                               ") will lose resolution. Consider setting match_var to set the preferred resolution or condense_stat to set the statistic used when resolution is lost.")
-      warning(resolution_msg)
-    } 
+    get_feature  <- function(data, feature_nm){
+      all_dates <- unitted::v(data$DateTime)
       
+      match_feature <- switch(feature_nm,
+                              startDate = all_dates[1], 
+                              endDate = tail(all_dates, 1),
+                              resolution = attributes(diff(all_dates))$units)
+    }
+    
+    startDates <- do.call("c", lapply(data_list, get_feature, feature_nm = "startDate"))
+    endDates <- do.call("c", lapply(data_list, get_feature, feature_nm = "endDate"))
+    resolutions <- do.call("c", lapply(data_list, get_feature, feature_nm = "resolution"))
+    resolutions <- factor(resolutions, levels = c("secs", "mins", "hours", "days"), ordered = TRUE)
+    
+    startDate_warning <- which(startDates < startDates[var_index])
+    endDate_warning <- which(endDates > endDates[var_index])
+    resolution_warning <- which(resolutions < resolutions[var_index])
+    
+    warn_msg <- function(var_src, var_index, warning_index, reflect_val, lost_val){
+      if(any(warning_index)){
+        warning_msg <- paste0("Results reflect the ", reflect_val ," of the ",
+                              var_src[var_index], 
+                              " timeseries. Some variables (",
+                              paste(var_src[warning_index], collapse=", "),
+                              ") will lose ", lost_val, ". Consider selecting match_var to set the preferred ",
+                              reflect_val, " or condense_stat to set the statistic used when ", 
+                              lost_val, " is lost.")
+        warning(warning_msg)
+      } 
+    }
+    
+    startDate_warning_msg <- warn_msg(var_src, var_index, startDate_warning, "start date and time", "data")
+    endDate_warning_msg <- warn_msg(var_src, var_index, endDate_warning, "end date and time", "data")
+    resolution_warning_msg <- warn_msg(var_src, var_index, resolution_warning, "resolution", "resolution")
+    
     combo <- do.call(combine_ts, c(data_list_ordered, list(method=method, approx_tol=approx_tol)))
     combo <- combo[, df_order]
     
