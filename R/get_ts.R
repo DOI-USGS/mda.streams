@@ -25,7 +25,7 @@
 #' @inheritParams read_ts
 #' @export
 get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3, units="hours"), 
-                   on_local_exists='skip', on_invalid='stop', expand_on = "leftmost") {
+                   on_local_exists='skip', on_invalid='stop', match_var = "leftmost") {
 
   if(length(site_name) > 1) stop("only one site_name is allowed")
   
@@ -38,12 +38,12 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     
     df_order <- c("DateTime", gsub("\\_.*","",var_src))
     
-    if(expand_on == "leftmost"){
+    if(match_var == "leftmost"){
       var_index <- 1
       data_list_ordered <- data_list
     } else {
-      var_index <- which(var_src == expand_on)
-      not_var_index <- which(var_src != expand_on)
+      var_index <- which(var_src == match_var)
+      not_var_index <- which(var_src != match_var)
       data_list_ordered <- data_list[c(var_index, not_var_index)]
     }
     
@@ -54,7 +54,7 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
                                var_src[var_index], 
                                " timeseries. Some variables (", 
                                paste(var_src[longer_than_var], collapse=", "),
-                               ") will lose resolution. Consider setting expand_on to set the preferred resolution or condense_stat to set the statistic used when resolution is lost.")
+                               ") will lose resolution. Consider setting match_var to set the preferred resolution or condense_stat to set the statistic used when resolution is lost.")
       warning(resolution_msg)
     } 
       
