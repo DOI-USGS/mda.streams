@@ -28,6 +28,8 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
                    on_local_exists='skip', on_invalid='stop', match_var = "leftmost") {
 
   if(length(site_name) > 1) stop("only one site_name is allowed")
+  if(length(match_var) > 1) stop("only one match_var is allowed")
+  if(match_var != "leftmost" & !match_var %in% var_src) stop("match_var must be come from var_src")
   
   data_list <- lapply(var_src, function(vs) {
     file <- download_ts(var_src=vs, site_name=site_name, on_local_exists=on_local_exists)
