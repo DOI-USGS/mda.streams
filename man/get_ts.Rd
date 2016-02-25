@@ -5,7 +5,8 @@
 \title{Bring one or more timeseries into R and merge them}
 \usage{
 get_ts(var_src, site_name, method = "approx", approx_tol = as.difftime(3,
-  units = "hours"), on_local_exists = "skip", on_invalid = "stop")
+  units = "hours"), on_local_exists = "skip", on_invalid = "stop",
+  expand_on = "leftmost")
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
@@ -25,6 +26,13 @@ contains a file with the intended download name}
 
 \item{on_invalid}{character in \code{c("stop","warn")} indicating how to
 handle invalid timeseries}
+}
+\value{
+\code{get_ts} returns a data.frame, where the first column is the \code{DateTime} 
+and subsequent columns are the timeseries defined in \code{var_src}. The names of
+the variable columns are equal to the string in each \code{var_src} variable 
+before the underscore. E.g. if \code{var_src} had a variable \code{"disch_nwis"}, 
+then the corresponding column name would be \code{disch}.
 }
 \description{
 The timeseries are iteratively joined, starting by joining the second element

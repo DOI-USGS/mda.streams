@@ -13,6 +13,7 @@
 #' will be out of date relative to ScienceBase, but the benefit is faster 
 #' ts-getting.
 #' 
+#' @return 
 #' \code{get_ts} returns a data.frame, where the first column is the \code{DateTime} 
 #' and subsequent columns are the timeseries defined in \code{var_src}. The names of
 #' the variable columns are equal to the string in each \code{var_src} variable 
