@@ -42,6 +42,7 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     
     if(match_var == "leftmost"){
       var_index <- 1
+      not_var_index <- 2:length(var_src)
       data_list_ordered <- data_list
     } else {
       var_index <- which(var_src == match_var)
@@ -51,17 +52,16 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     
     get_feature  <- function(data, feature_nm){
       all_dates <- unitted::v(data$DateTime)
-      
       match_feature <- switch(feature_nm,
                               startDate = all_dates[1], 
-                              endDate = tail(all_dates, 1),
-                              resolution = attributes(diff(all_dates))$units)
+                              endDate = tail(all_dates, 1))
     }
     
     startDates <- do.call("c", lapply(data_list, get_feature, feature_nm = "startDate"))
     endDates <- do.call("c", lapply(data_list, get_feature, feature_nm = "endDate"))
-    resolutions <- do.call("c", lapply(data_list, get_feature, feature_nm = "resolution"))
-    resolutions <- factor(resolutions, levels = c("secs", "mins", "hours", "days"), ordered = TRUE)
+    resolutions_df <- summarize_ts(var_src[c(var_index, not_var_index)], site_name, out="modal_timestep") %>% 
+      unitted::v() 
+    resolutions <- resolutions_df$modal_timestep
     
     startDate_warning <- which(startDates < startDates[var_index])
     endDate_warning <- which(endDates > endDates[var_index])
