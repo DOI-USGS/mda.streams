@@ -92,28 +92,31 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
       
       #matching dates: start/end dates + gaps in the middle
       match_dates <- unitted::v(data_list_ordered[[var_index]]$DateTime)
-      diff_time <- diff(match_dates)
-      gap_index <- which(abs(diff_time) > 1) 
+      match_dates <- format(match_dates, "%Y-%m-%d")
       
-      data_list_filtered <- lapply(data_list_ordered, 
-                                   function(data, start, end, before_gap, after_gap){
+      data_list_filtered <- lapply(data_list_ordered[resolution_warning], 
+                                   function(data, start, end, match_dates){
+                                      ts_units <- get_units(data)
                                       data_nounits <- unitted::v(data)
                                       data_filtered <- data_nounits %>% 
                                         filter(DateTime >= start) %>% 
                                         filter(DateTime <= end) %>% 
-                                        filter(DateTime <= before_gap | DateTime >= after_gap)
+                                        filter(format(DateTime, "%Y-%m-%d") %in% match_dates)
+                                      data_filtered <- u(data_filtered, ts_units)
                                     }, 
                                     start = match_dates[1], 
                                     end = tail(match_dates,1),
-                                    before_gap = match_dates[gap_index], 
-                                    after_gap = match_dates[gap_index + 1])
+                                    match_dates = match_dates)
       
 
-      data_list_condensed <- lapply(data_list_filtered[resolution_warning], condense_by_stat, 
+      data_list_condensed <- lapply(data_list_filtered, condense_by_stat, 
                                     condense_stat = condense_stat, site_lon = site_lon)
+      data_list_formatted <- append(data_list_ordered[-resolution_warning], data_list_condensed)
+    } else {
+      data_list_formatted <- data_list_ordered
     }
     
-    combo <- do.call(combine_ts, c(data_list_ordered, list(method=method, approx_tol=approx_tol)))
+    combo <- do.call(combine_ts, c(data_list_formatted, list(method=method, approx_tol=approx_tol)))
     combo <- combo[, df_order]
     
   } else {
@@ -126,14 +129,20 @@ condense_by_stat <- function(ts, condense_stat, site_lon){
   solar.time <- convert_UTC_to_solartime(ts$DateTime, site_lon, time.type = "mean solar")
   ts_solar <- ts %>% v() %>% mutate(solar.time = solar.time)
   
+  col_names <- names(ts)
+  ts_units <- get_units(ts)
+  
   ts_condensed <- streamMetabolizer:::mm_model_by_ply(
     model_fun=condense_by_ply, # should look like mm_model_by_ply_prototype
-    data=unitted::v(ts_solar), #include sitetime
+    data=ts_solar, #include sitetime
     data_daily=NULL,
     day_start=4,
     day_end=28,
     stat_func=condense_stat
   )
+  
+  colnames(ts_condensed) <- col_names
+  ts_condensed <- u(ts_condensed, ts_units)
   
   return(ts_condensed)
 }
