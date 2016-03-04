@@ -94,22 +94,22 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
       match_dates <- unitted::v(data_list_ordered[[var_index]]$DateTime)
       match_dates <- format(match_dates, "%Y-%m-%d")
       
-      data_list_filtered <- lapply(data_list_ordered[resolution_warning], 
-                                   function(data, start, end, match_dates){
-                                      ts_units <- get_units(data)
-                                      data_nounits <- unitted::v(data)
-                                      data_filtered <- data_nounits %>% 
-                                        filter(DateTime >= start) %>% 
-                                        filter(DateTime <= end) %>% 
-                                        filter(format(DateTime, "%Y-%m-%d") %in% match_dates)
-                                      data_filtered <- u(data_filtered, ts_units)
-                                    }, 
-                                    start = match_dates[1], 
-                                    end = tail(match_dates,1),
-                                    match_dates = match_dates)
+      # data_list_filtered <- lapply(data_list_ordered[resolution_warning], 
+      #                              function(data, start, end, match_dates){
+      #                                 ts_units <- get_units(data)
+      #                                 data_nounits <- unitted::v(data)
+      #                                 data_filtered <- data_nounits %>% 
+      #                                   filter(DateTime >= start) %>% 
+      #                                   filter(DateTime <= end) %>% 
+      #                                   filter(format(DateTime, "%Y-%m-%d") %in% match_dates)
+      #                                 data_filtered <- u(data_filtered, ts_units)
+      #                               }, 
+      #                               start = match_dates[1], 
+      #                               end = tail(match_dates,1),
+      #                               match_dates = match_dates)
       
 
-      data_list_condensed <- lapply(data_list_filtered, condense_by_stat, 
+      data_list_condensed <- lapply(data_list_ordered[resolution_warning], condense_by_stat, 
                                     condense_stat = condense_stat, site_lon = site_lon)
       data_list_formatted <- append(data_list_ordered[-resolution_warning], data_list_condensed)
     } else {
@@ -141,6 +141,11 @@ condense_by_stat <- function(ts, condense_stat, site_lon){
     stat_func=condense_stat
   )
   
+  ts_condensed <- ts_condensed %>% 
+    mutate(solar.time = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
+                                                 longitude=site_lon, time.type="mean solar")) %>% 
+    select(solar.time, summarize_stat, -date)
+    
   colnames(ts_condensed) <- col_names
   ts_condensed <- u(ts_condensed, ts_units)
   
