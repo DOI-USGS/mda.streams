@@ -6,7 +6,7 @@
 \usage{
 get_ts(var_src, site_name, method = "approx", approx_tol = as.difftime(3,
   units = "hours"), on_local_exists = "skip", on_invalid = "stop",
-  match_var = "leftmost")
+  match_var = "leftmost", condense_stat = "mean")
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
