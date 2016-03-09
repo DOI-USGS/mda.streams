@@ -39,90 +39,91 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
   
   if(length(var_src) > 1) {
     
+    # vector of column names in order that user specified
     df_order <- c("DateTime", gsub("\\_.*","",var_src))
     
-    if(match_var == "leftmost"){
-      var_index <- 1
-      not_var_index <- 2:length(var_src)
-      data_list_ordered <- data_list
-    } else {
-      var_index <- which(var_src == match_var)
-      not_var_index <- which(var_src != match_var)
-      data_list_ordered <- data_list[c(var_index, not_var_index)]
-    }
-    
-    startDates <- do.call("c", lapply(data_list, function(data) {
-        all_dates <- unitted::v(data$DateTime)
-        return(all_dates[1]) 
-      }))
-    endDates <- do.call("c", lapply(data_list, function(data) {
-        all_dates <- unitted::v(data$DateTime)
-        return(tail(all_dates, 1)) 
-      }))
-    resolutions_df <- summarize_ts(var_src, site_name, out="modal_timestep") %>% 
-      unitted::v() 
-    resolutions <- resolutions_df$modal_timestep
-    
-    startDate_warning <- which(startDates < startDates[var_index])
-    endDate_warning <- which(endDates > endDates[var_index])
-    resolution_warning <- which(resolutions < resolutions[var_index])
-    
-    warn_msg <- function(var_src, var_index, warning_index, reflect_val, lost_val){
-      if(any(warning_index)){
-        warning_msg <- paste0("Results reflect the ", reflect_val ," of the ",
-                              var_src[var_index], 
-                              " timeseries. Some variables (",
-                              paste(var_src[warning_index], collapse=", "),
-                              ") will lose ", lost_val, ". Consider selecting match_var to set the preferred ",
-                              reflect_val, " or condense_stat to set the statistic used when ", 
-                              lost_val, " is lost.")
-        warning(warning_msg)
-      } 
-    }
-    
-    startDate_warning_msg <- warn_msg(var_src, var_index, startDate_warning, "start date and time", "data")
-    endDate_warning_msg <- warn_msg(var_src, var_index, endDate_warning, "end date and time", "data")
-    resolution_warning_msg <- warn_msg(var_src, var_index, resolution_warning, "resolution", "resolution")
+    if(match_var == "leftmost"){ match_var <- var_src[1] } 
+    var_index <- which(var_src == match_var)
+    not_var_index <- which(var_src != match_var)
+    data_list_ordered <- data_list[c(var_index, not_var_index)] #ordered with match_var on far left for use in combine_ts
 
-    #condense_stat
-    if(resolutions[var_index] != 60 & length(resolution_warning) > 0){
-      siteName <- site_name #hacky
-      site_meta <- get_meta("basic") %>% v() %>% filter(site_name == siteName)
-      site_lon <- site_meta$lon
-      
-      #matching dates: start/end dates + gaps in the middle
-      match_dates <- unitted::v(data_list_ordered[[var_index]]$DateTime)
-      match_dates <- format(match_dates, "%Y-%m-%d")
-      
-      # data_list_filtered <- lapply(data_list_ordered[resolution_warning], 
-      #                              function(data, start, end, match_dates){
-      #                                 ts_units <- get_units(data)
-      #                                 data_nounits <- unitted::v(data)
-      #                                 data_filtered <- data_nounits %>% 
-      #                                   filter(DateTime >= start) %>% 
-      #                                   filter(DateTime <= end) %>% 
-      #                                   filter(format(DateTime, "%Y-%m-%d") %in% match_dates)
-      #                                 data_filtered <- u(data_filtered, ts_units)
-      #                               }, 
-      #                               start = match_dates[1], 
-      #                               end = tail(match_dates,1),
-      #                               match_dates = match_dates)
-      
+    startDates <- warn_msg(var_src, var_index, "startDate", data_list_ordered=data_list_ordered)
+    endDates <- warn_msg(var_src, var_index, "endDate", data_list_ordered=data_list_ordered)
+    resolutions <- warn_msg(var_src, var_index, "resolution", site_name=site_name)
 
-      data_list_condensed <- lapply(data_list_ordered[resolution_warning], condense_by_stat, 
-                                    condense_stat = condense_stat, site_lon = site_lon)
-      data_list_formatted <- append(data_list_ordered[-resolution_warning], data_list_condensed)
+    # applying condense_stat
+    resolution_to_hourly <- resolutions$values[var_index] == 60
+    if(length(resolutions$warning_index) > 0){
+      
+      if(resolution_to_hourly){
+        warning("condense_stat only supported for continuous to daily; continous to hourly is not supported")
+        data_list_formatted <- data_list_ordered
+      } else {
+      
+        siteName <- site_name #hacky
+        site_meta <- get_meta("basic") %>% v() %>% filter(site_name == siteName)
+        site_lon <- site_meta$lon
+  
+        data_list_condensed <- lapply(data_list_ordered[resolutions$warning_index], condense_by_stat, 
+                                      condense_stat = condense_stat, site_lon = site_lon)
+        
+        data_list_formatted <- append(data_list_ordered[-resolutions$warning_index], data_list_condensed)
+      }
+        
     } else {
       data_list_formatted <- data_list_ordered
     }
     
     combo <- do.call(combine_ts, c(data_list_formatted, list(method=method, approx_tol=approx_tol)))
-    combo <- combo[, df_order]
+    combo <- combo[, df_order] #put columns back as user specified
     
   } else {
     combo <- data_list[[1]]
   }
   combo
+}
+
+warn_msg <- function(var_src, var_index, warning_type, ...){
+  args <- list(...)
+  
+  if(warning_type == "resolution"){
+    values_df <- summarize_ts(var_src, args$site_name, out="modal_timestep") %>% unitted::v()
+    values <- values_df$modal_timestep
+    warning_index <- which(values < values[var_index])
+    reflect_val <- "resolution"
+    lost_val <- "resolution"
+    
+  } else if(warning_type == "startDate"){
+    values <- do.call("c", lapply(args$data_list_ordered, function(data) {
+      all_dates <- unitted::v(data$DateTime)
+      return(all_dates[1])  
+    }))
+    warning_index <- which(values < values[var_index])
+    reflect_val <- "start date and time"
+    lost_val <- "data"
+    
+  } else if(warning_type == "endDate"){
+    values <- do.call("c", lapply(args$data_list_ordered, function(data) {
+      all_dates <- unitted::v(data$DateTime)
+      return(tail(all_dates, 1)) 
+    }))
+    warning_index <- which(values > values[var_index])
+    reflect_val <- "end date and time"
+    lost_val <- "data"
+  }
+  
+  if(any(warning_index)){
+    warning_msg <- paste0("Results reflect the ", reflect_val ," of the ",
+                          var_src[var_index], 
+                          " timeseries. Some variables (",
+                          paste(var_src[warning_index], collapse=", "),
+                          ") will lose ", lost_val, ". Consider selecting match_var to set the preferred ",
+                          reflect_val, " or condense_stat to set the statistic used when ", 
+                          lost_val, " is lost.")
+    warning(warning_msg)
+  } 
+  
+  return(list(values = values, warning_index = warning_index))
 }
 
 condense_by_stat <- function(ts, condense_stat, site_lon){
