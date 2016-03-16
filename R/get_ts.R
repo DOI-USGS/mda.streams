@@ -30,7 +30,8 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
   if(length(site_name) > 1) stop("only one site_name is allowed")
   if(length(match_var) > 1) stop("only one match_var is allowed")
   if(length(condense_stat) > 1) stop("only one condense_stat is allowed")
-  if(match_var != "leftmost" & !match_var %in% var_src) stop("match_var must be come from var_src")
+  if(match_var == "leftmost") match_var <- var_src[1]
+  if(!match_var %in% var_src) stop("match_var must come from var_src")
   
   data_list <- lapply(var_src, function(vs) {
     file <- download_ts(var_src=vs, site_name=site_name, on_local_exists=on_local_exists)
@@ -42,88 +43,29 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     # vector of column names in order that user specified
     df_order <- c("DateTime", gsub("\\_.*","",var_src))
     
-    if(match_var == "leftmost"){ match_var <- var_src[1] } 
     var_index <- which(var_src == match_var)
     not_var_index <- which(var_src != match_var)
     data_list_ordered <- data_list[c(var_index, not_var_index)] #ordered with match_var on far left for use in combine_ts
 
-    startDates <- warn_msg(var_src, var_index, "startDate", data_list_ordered=data_list_ordered)
-    endDates <- warn_msg(var_src, var_index, "endDate", data_list_ordered=data_list_ordered)
-    resolutions <- warn_msg(var_src, var_index, "resolution", site_name=site_name)
+    warning_info <- warning_table(var_src, var_index, condense_stat, data_list_ordered, site_name)
 
     # applying condense_stat
-    resolution_to_hourly <- resolutions$values[var_index] == 60
-    if(length(resolutions$warning_index) > 0){
-      
-      if(resolution_to_hourly){
-        warning("condense_stat only supported for continuous to daily; continous to hourly is not supported")
-        data_list_formatted <- data_list_ordered
-      } else {
-      
-        siteName <- site_name #hacky
-        site_meta <- get_meta("basic") %>% v() %>% filter(site_name == siteName)
-        site_lon <- site_meta$lon
-  
-        data_list_condensed <- lapply(data_list_ordered[resolutions$warning_index], condense_by_stat, 
-                                      condense_stat = condense_stat, site_lon = site_lon)
-        
-        data_list_formatted <- append(data_list_ordered[-resolutions$warning_index], data_list_condensed)
-      }
-        
-    } else {
-      data_list_formatted <- data_list_ordered
-    }
+    to_condense <- grep("Condensed", warning_info$result)
     
-    combo <- do.call(combine_ts, c(data_list_formatted, list(method=method, approx_tol=approx_tol)))
+    longitude <- ifelse(length(to_condense) != 0, 
+                        get_meta("basic") %>% v() %>% filter(site_name == get('site_name')) %>% .$lon,
+                        NA)
+    
+    data_list_ordered[to_condense] <- lapply(data_list_ordered[to_condense], condense_by_stat, 
+                                               condense_stat = condense_stat, site_lon = longitude)
+    
+    combo <- do.call(combine_ts, c(data_list_ordered, list(method=method, approx_tol=approx_tol)))
     combo <- combo[, df_order] #put columns back as user specified
     
   } else {
     combo <- data_list[[1]]
   }
   combo
-}
-
-warn_msg <- function(var_src, var_index, warning_type, ...){
-  args <- list(...)
-  
-  if(warning_type == "resolution"){
-    values_df <- summarize_ts(var_src, args$site_name, out="modal_timestep") %>% unitted::v()
-    values <- values_df$modal_timestep
-    warning_index <- which(values < values[var_index])
-    reflect_val <- "resolution"
-    lost_val <- "resolution"
-    
-  } else if(warning_type == "startDate"){
-    values <- do.call("c", lapply(args$data_list_ordered, function(data) {
-      all_dates <- unitted::v(data$DateTime)
-      return(all_dates[1])  
-    }))
-    warning_index <- which(values < values[var_index])
-    reflect_val <- "start date and time"
-    lost_val <- "data"
-    
-  } else if(warning_type == "endDate"){
-    values <- do.call("c", lapply(args$data_list_ordered, function(data) {
-      all_dates <- unitted::v(data$DateTime)
-      return(tail(all_dates, 1)) 
-    }))
-    warning_index <- which(values > values[var_index])
-    reflect_val <- "end date and time"
-    lost_val <- "data"
-  }
-  
-  if(any(warning_index)){
-    warning_msg <- paste0("Results reflect the ", reflect_val ," of the ",
-                          var_src[var_index], 
-                          " timeseries. Some variables (",
-                          paste(var_src[warning_index], collapse=", "),
-                          ") will lose ", lost_val, ". Consider selecting match_var to set the preferred ",
-                          reflect_val, " or condense_stat to set the statistic used when ", 
-                          lost_val, " is lost.")
-    warning(warning_msg)
-  } 
-  
-  return(list(values = values, warning_index = warning_index))
 }
 
 condense_by_stat <- function(ts, condense_stat, site_lon){
@@ -143,12 +85,10 @@ condense_by_stat <- function(ts, condense_stat, site_lon){
   )
   
   ts_condensed <- ts_condensed %>% 
-    mutate(solar.time = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
+    mutate(DateTime = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
                                                  longitude=site_lon, time.type="mean solar")) %>% 
-    select(solar.time, summarize_stat, -date)
-    
-  colnames(ts_condensed) <- col_names
-  ts_condensed <- u(ts_condensed, ts_units)
+    select(DateTime, everything(), -date) %>% 
+    u(ts_units)
   
   return(ts_condensed)
 }
@@ -159,7 +99,76 @@ condense_by_ply <- function(data_ply, data_daily_ply, ..., day_start, day_end, p
   dates_col <- which(names(data_ply) == "solar.time")
   data_col <- which(!names(data_ply) %in% c("DateTime", "solar.time"))
   
-  summarize_stat <- do.call(args$stat_func, list(data_ply[, data_col]))
+  summarize_stat <- data.frame(do.call(args$stat_func, list(data_ply[, data_col]))) %>% 
+    setNames(names(data_ply)[data_col])
   
-  return(data.frame(summarize_stat))
+  return(summarize_stat)
+}
+
+warning_table <- function(var_src, var_index, condense_stat, data, site_name){
+  timestep_df <- summarize_ts(var_src, site_name, out="modal_timestep") %>% unitted::v()
+  
+  #returns UTC
+  all_dates <- do.call(rbind, lapply(data, function(data) {
+    all_dates <- unitted::v(data$DateTime)
+    return(data.frame(start_date = all_dates[1], 
+                      end_date = tail(all_dates, 1)))  
+  }))
+  
+  # Returns CDT
+  # start_dates <- do.call("c", lapply(data, function(data) {
+  #   all_dates <- unitted::v(data$DateTime)
+  #   return(all_dates[1])  
+  # }))
+  # 
+  # end_dates <- do.call("c", lapply(data, function(data) {
+  #   all_dates <- unitted::v(data$DateTime)
+  #   return(tail(all_dates, 1))  
+  # }))
+    
+  timestep_df <- timestep_df %>% bind_cols(., all_dates) 
+  
+  get_timestep_info <- function(v, t, s, e, condense_stat, t_match, s_match, e_match){
+    
+    res_words <- switch(as.character(t),
+                        "15" = "15 min",
+                        "60" = "hourly",
+                        "1440" = "daily")
+
+    if(t == t_match){res_result <- "As is"}
+    if(t > t_match){res_result <- "NAs introduced"}
+    if(t < t_match & t_match == 60){res_result <- "Matched by approx (condense_stat not supported)"}
+    if(t < t_match & t_match != 60){res_result <- paste("Condensed by", condense_stat)}
+
+    if(s < s_match){start_result <- "Earlier (unused data)"}
+    if(s > s_match){start_result <- "Later (missing data)"}
+    if(s == s_match){start_result <- "Equal"}
+
+    if(e < e_match){end_result <- "Earlier (missing data)"}
+    if(e > e_match){end_result <- "Later (unused data)"}
+    if(e == e_match){end_result <- "Equal"}
+
+    return(data.frame(var_src = v, resolution_change = res_words, result = res_result, start_date = start_result, 
+                      end_date = end_result, stringsAsFactors = FALSE))
+  }
+  
+  warning_df <- timestep_df %>% 
+    rowwise() %>% 
+    do(get_timestep_info(v = .$var_src, t = .$modal_timestep, s = .$start_date, e = .$end_date,
+                         condense_stat = condense_stat, t_match = timestep_df$modal_timestep[var_index],
+                         s_match = all_dates$start_date[var_index], e_match = all_dates$end_date[var_index]))
+
+  match_res <- warning_df$resolution_change[var_index]
+  match_var <- var_src[var_index]
+  
+  warning_df <- warning_df %>% 
+    mutate(resolution_change = paste(resolution_change, "to", match_res)) %>% 
+    mutate(resolution_change = replace(resolution_change, result == "As is", "No change")) %>% 
+    mutate(resolution_change = replace(resolution_change, var_src == match_var, "--"))
+
+  warning(print(warning_df))
+  
+  return(data.frame(timestep = timestep_df$modal_timestep, 
+                    result = warning_df$result,
+                    stringsAsFactors = FALSE))
 }
