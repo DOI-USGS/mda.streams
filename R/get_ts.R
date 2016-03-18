@@ -124,12 +124,16 @@ warning_table <- function(var_src, condense_stat, data, site_name){
                         "15" = "15 min",
                         "60" = "hourly",
                         "1440" = "daily")
-
+    
     if(t == t_match){res_result <- "As is"}
     if(t > t_match){res_result <- "NAs introduced"}
-    if(t < t_match & t_match == 60){res_result <- "Matched by approx (condense_stat not supported)"}
-    if(t < t_match & t_match != 60){res_result <- paste("Condensed by", condense_stat)}
-
+    if(!exists("res_result") & condense_stat == "match"){
+      res_result <- "Matched by approx"
+    } else {
+      if(t < t_match & t_match == 60){res_result <- "Matched by approx (condense_stat not supported)"}
+      if(t < t_match & t_match != 60){res_result <- paste("Condensed by", condense_stat)}
+    }
+    
     if(s < s_match){start_result <- "Earlier (unused data)"}
     if(s > s_match){start_result <- "Later (missing data)"}
     if(s == s_match){start_result <- "Equal"}
