@@ -25,7 +25,8 @@
 #' @inheritParams read_ts
 #' @export
 get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3, units="hours"), 
-                   on_local_exists='skip', on_invalid='stop', match_var = "leftmost", condense_stat = "mean") {
+                   on_local_exists='skip', on_invalid='stop', match_var = "leftmost", 
+                   condense_stat = "mean", day_start = 4, day_end = 28) {
 
   if(length(site_name) > 1) stop("only one site_name is allowed")
   if(length(match_var) > 1) stop("only one match_var is allowed")
@@ -46,8 +47,9 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     var_index <- which(var_src == match_var)
     not_var_index <- which(var_src != match_var)
     data_list_ordered <- data_list[c(var_index, not_var_index)] #ordered with match_var on far left for use in combine_ts
+    var_src_ordered <- var_src[c(var_index, not_var_index)]
 
-    warning_info <- warning_table(var_src, var_index, condense_stat, data_list_ordered, site_name)
+    warning_info <- warning_table(var_src_ordered, condense_stat, data_list_ordered, site_name)
 
     # applying condense_stat
     to_condense <- grep("Condensed", warning_info$result)
@@ -56,8 +58,9 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
                         get_meta("basic") %>% v() %>% filter(site_name == get('site_name')) %>% .$lon,
                         NA)
     
-    data_list_ordered[to_condense] <- lapply(data_list_ordered[to_condense], condense_by_stat, 
-                                               condense_stat = condense_stat, site_lon = longitude)
+    data_list_ordered[to_condense] <- lapply(data_list_ordered[to_condense], condense_by_stat,
+                                             condense_stat = condense_stat, site_lon = longitude, 
+                                             day_start = day_start, day_end = day_end)
     
     combo <- do.call(combine_ts, c(data_list_ordered, list(method=method, approx_tol=approx_tol)))
     combo <- combo[, df_order] #put columns back as user specified
@@ -68,19 +71,17 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
   combo
 }
 
-condense_by_stat <- function(ts, condense_stat, site_lon){
+condense_by_stat <- function(ts, condense_stat, site_lon, day_start, day_end){
+    
   solar.time <- convert_UTC_to_solartime(ts$DateTime, site_lon, time.type = "mean solar")
   ts_solar <- ts %>% v() %>% mutate(solar.time = solar.time)
-  
-  col_names <- names(ts)
-  ts_units <- get_units(ts)
   
   ts_condensed <- streamMetabolizer:::mm_model_by_ply(
     model_fun=condense_by_ply, # should look like mm_model_by_ply_prototype
     data=ts_solar, #include sitetime
     data_daily=NULL,
-    day_start=4,
-    day_end=28,
+    day_start=day_start,
+    day_end=day_end,
     stat_func=condense_stat
   )
   
@@ -88,9 +89,10 @@ condense_by_stat <- function(ts, condense_stat, site_lon){
     mutate(DateTime = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
                                                  longitude=site_lon, time.type="mean solar")) %>% 
     select(DateTime, everything(), -date) %>% 
-    u(ts_units)
+    u(get_units(ts))
   
   return(ts_condensed)
+ 
 }
 
 condense_by_ply <- function(data_ply, data_daily_ply, ..., day_start, day_end, ply_date) {
@@ -105,26 +107,14 @@ condense_by_ply <- function(data_ply, data_daily_ply, ..., day_start, day_end, p
   return(summarize_stat)
 }
 
-warning_table <- function(var_src, var_index, condense_stat, data, site_name){
+warning_table <- function(var_src, condense_stat, data, site_name){
   timestep_df <- summarize_ts(var_src, site_name, out="modal_timestep") %>% unitted::v()
-  
-  #returns UTC
+
   all_dates <- do.call(rbind, lapply(data, function(data) {
     all_dates <- unitted::v(data$DateTime)
     return(data.frame(start_date = all_dates[1], 
                       end_date = tail(all_dates, 1)))  
   }))
-  
-  # Returns CDT
-  # start_dates <- do.call("c", lapply(data, function(data) {
-  #   all_dates <- unitted::v(data$DateTime)
-  #   return(all_dates[1])  
-  # }))
-  # 
-  # end_dates <- do.call("c", lapply(data, function(data) {
-  #   all_dates <- unitted::v(data$DateTime)
-  #   return(tail(all_dates, 1))  
-  # }))
     
   timestep_df <- timestep_df %>% bind_cols(., all_dates) 
   
@@ -155,11 +145,11 @@ warning_table <- function(var_src, var_index, condense_stat, data, site_name){
   warning_df <- timestep_df %>% 
     rowwise() %>% 
     do(get_timestep_info(v = .$var_src, t = .$modal_timestep, s = .$start_date, e = .$end_date,
-                         condense_stat = condense_stat, t_match = timestep_df$modal_timestep[var_index],
-                         s_match = all_dates$start_date[var_index], e_match = all_dates$end_date[var_index]))
+                         condense_stat = condense_stat, t_match = timestep_df$modal_timestep[1],
+                         s_match = all_dates$start_date[1], e_match = all_dates$end_date[1]))
 
-  match_res <- warning_df$resolution_change[var_index]
-  match_var <- var_src[var_index]
+  match_res <- warning_df$resolution_change[1]
+  match_var <- var_src[1]
   
   warning_df <- warning_df %>% 
     mutate(resolution_change = paste(resolution_change, "to", match_res)) %>% 
