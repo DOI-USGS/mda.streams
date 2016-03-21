@@ -234,7 +234,7 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param version character string indicating the file format
 #' @return a full file path
 #' @export
-make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
+make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','rds','RData')) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
   parse_ts_name(ts_name)
@@ -242,7 +242,7 @@ make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
   
   file_name <- sprintf(
     '%s-%s.%s', site_name, ts_name, 
-    switch(version, 'tsv'='tsv.gz', 'RData'='RData'))
+    switch(version, 'tsv'='tsv.gz', 'RData'='RData', 'rds'='rds'))
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing
   } else {
