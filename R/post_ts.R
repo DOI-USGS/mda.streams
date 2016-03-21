@@ -18,7 +18,7 @@
 #' sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
 #' post_site(sites, on_exists="clear")
 #' files <- stage_nwis_ts(sites = sites, var = "doobs", 
-#'   times = c('2014-01-01 00:00','2014-01-01 05:00'))
+#'   times = c('2014-01-01 00:00','2014-01-01 05:00'), version='tsv')
 #' post_ts(files)
 #' locate_ts("doobs_nwis", sites) # find the newly posted data online
 #' post_ts(files, on_exists="skip")
@@ -56,7 +56,12 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     ts_id <- locate_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, by="either")
     if (is.na(ts_id)) {
       ts_id <- item_create(site_root, title=ts_path$ts_name)$id
-    } else {
+      ts_files <- c()
+    } else{
+      ts_files <- item_list_files(sb_id = ts_id)$fname # what happens when item exists w/o file?
+    }
+    
+    if (basename(files[i]) %in% ts_files){
       if(verbose) message('the ', ts_path$ts_name, ' timeseries for site ', ts_path$site_name, ' already exists')
       switch(
         on_exists,
@@ -67,8 +72,9 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         },
         "replace"={ 
           if(verbose) message("deleting timeseries data before replacement: ", ts_id)
-          delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
-          expect_id_loss <<- FALSE
+          item_rm_files(ts_id, files = basename(files[i]))
+          #delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
+          expect_id_loss <<- FALSE #??
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
@@ -115,10 +121,14 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     # tag item with our special identifiers. if the item already existed,
     # identifiers should be wiped out by a known SB quirk, so sleep to give time
     # for the files to be added and the identifiers to disappear so we can replace them
+    
+    # NOTE, the ids don't seem to be wiped out when adding the SECOND (or third) file, so 
+    # we skip the 
     if(expect_id_loss) {
       for(wait in 1:100) {
         Sys.sleep(0.2)
-        if(nrow(item_list_files(ts_id)) > 0 && is.null(item_get(ts_id)$identifiers)) break
+        if(nrow(item_list_files(ts_id)) == 1 && is.null(item_get(ts_id)$identifiers)) break
+        if(nrow(item_list_files(ts_id)) > 1) break
         if(wait==100) stop("identifiers didn't disappear and so can't be replaced; try again later with ",
                            "repair_ts('", ts_path$var_src, "', '", ts_path$site_name, "')")
       }

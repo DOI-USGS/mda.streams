@@ -26,7 +26,7 @@ set_scheme("mda_streams_dev")
 sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
 post_site(sites, on_exists="clear")
 files <- stage_nwis_ts(sites = sites, var = "doobs", 
-  times = c('2014-01-01 00:00','2014-01-01 05:00'))
+  times = c('2014-01-01 00:00','2014-01-01 05:00'), version='tsv')
 post_ts(files)
 locate_ts("doobs_nwis", sites) # find the newly posted data online
 post_ts(files, on_exists="skip")
