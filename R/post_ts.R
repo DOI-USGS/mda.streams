@@ -36,7 +36,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
   sb_require_login("stop")
   
   # loop through files, posting each and recording whether we'll need to add tags
-  expect_id_loss <- TRUE
   ts_ids <- sapply(1:length(files), function(i) {
     if(verbose) message('preparing to post file ', files[i])
     
@@ -73,8 +72,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
         "replace"={ 
           if(verbose) message("deleting timeseries data before replacement: ", ts_id)
           item_rm_files(ts_id, files = basename(files[i]))
-          #delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
-          expect_id_loss <<- FALSE #??
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
@@ -93,7 +90,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
           delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
-          expect_id_loss <<- FALSE
         })
     }
     
@@ -105,40 +101,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     # return id as signal that needs tags
     return(ts_id)
   })
-  
-  # separate loop to increase probability of success in re-tagging files when length(files) >> 1
-  posted_items <- sapply(1:length(ts_ids), function(i) {
-    
-    # if we skipped it once, skip it again
-    if(is.na(ts_ids[i])) 
-      return(NA)
-    else
-      ts_id <- ts_ids[i]
-    
-    # parse (again) the file name to determine where to post the file
-    ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
-    
-    # tag item with our special identifiers. if the item already existed,
-    # identifiers should be wiped out by a known SB quirk, so sleep to give time
-    # for the files to be added and the identifiers to disappear so we can replace them
-    
-    # NOTE, the ids don't seem to be wiped out when adding the SECOND (or third) file, so 
-    # we skip the 
-    if(expect_id_loss) {
-      for(wait in 1:100) {
-        Sys.sleep(0.2)
-        if(nrow(item_list_files(ts_id)) == 1 && is.null(item_get(ts_id)$identifiers)) break
-        if(nrow(item_list_files(ts_id)) > 1) break
-        if(wait==100) stop("identifiers didn't disappear and so can't be replaced; try again later with ",
-                           "repair_ts('", ts_path$var_src, "', '", ts_path$site_name, "')")
-      }
-      if(verbose) message("adding/replacing identifiers for item ", ts_id, ": ",
-                          "scheme=", get_scheme(), ", type=", ts_path$ts_name, ", key=", ts_path$site_name)
-      repair_ts(ts_path$var_src, ts_path$site_name, limit=5000)
-    }
-    
-    ts_id
-  })
-  
-  invisible(posted_items)
+  invisible(ts_ids)
+
 }
