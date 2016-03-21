@@ -5,7 +5,7 @@
 \title{Download timeseries data to local file destination}
 \usage{
 download_ts(var_src, site_name, folder = tempdir(), version = c("tsv",
-  "RData"), on_remote_missing = c("stop", "return_NA"),
+  "rds", "RData"), on_remote_missing = c("stop", "return_NA"),
   on_local_exists = c("stop", "skip", "replace"))
 }
 \arguments{

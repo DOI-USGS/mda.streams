@@ -17,11 +17,17 @@
 #' @importFrom unitted read_unitted get_units
 #' @export
 read_ts = function(file, on_invalid=c("stop","warn")) {
+  
+  
   on_invalid <- match.arg(on_invalid)
   if (length(file) != 1)
     stop('read_ts only supported for a single file')
   
-  df <- read_unitted(file, sep=pkg.env$ts_delim)
+  # what format is the file? tsv, rds, RDdata
+  file.ver <- parse_ts_path(file, out = 'version')
+  df <- switch(file.ver,
+               tsv = read_unitted(file, sep=pkg.env$ts_delim),
+               rds = readRDS(file))
   
   # convert units to tz field for suntime before verify_ts
   if(names(df)[2] %in% c("sitetime", "suntime")) {

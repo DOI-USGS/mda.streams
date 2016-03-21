@@ -4,7 +4,8 @@
 \alias{stage_nwis_ts}
 \title{stage nwis data into a file}
 \usage{
-stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE)
+stage_nwis_ts(sites, var, times, folder = tempdir(), version = c("tsv",
+  "rds"), verbose = FALSE)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -16,6 +17,9 @@ stage_nwis_ts(sites, var, times, folder = tempdir(), verbose = FALSE)
 
 \item{folder}{a folder to place the file outputs in (defaults to temp 
 directory)}
+
+\item{version}{character string indicating whether you want to stage the 
+\code{ts} as a .tsv or .rds}
 
 \item{verbose}{provide verbose output (currently not implemented)}
 }

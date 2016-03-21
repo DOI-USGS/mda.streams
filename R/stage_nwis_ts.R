@@ -7,6 +7,8 @@
 #' @param times a length 2 vector of text dates in YYYY-MM-DD format
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
+#' @param version character string indicating whether you want to stage the 
+#'   \code{ts} as a .tsv or .rds
 #' @param verbose provide verbose output (currently not implemented)
 #' @return a character vector of file handles
 #' @importFrom dataRetrieval readNWISuv
@@ -28,7 +30,7 @@
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
-stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE){
+stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE){
 
   # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
   # all_sites <- list_sites()
@@ -119,7 +121,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
         u(c(NA,var_units))
 
       if(nrow(site_data) > 0) {
-        fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder)
+        fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder, version=version)
         file_paths <- c(file_paths, fpath)
       } else {
         if(isTRUE(verbose)) message("no data found for site ", un_sites[i])

@@ -4,7 +4,7 @@
 \alias{make_ts_path}
 \title{Create a standardized file name for specific file contents}
 \usage{
-make_ts_path(site_name, ts_name, folder, version = c("tsv", "RData"))
+make_ts_path(site_name, ts_name, folder, version = c("tsv", "rds", "RData"))
 }
 \arguments{
 \item{site_name}{the full site name, e.g., 'nwis_06893820'}
