@@ -126,7 +126,7 @@ stage_styx_site <- function(
     find_dates_fun <- function(data_ply, data_daily_ply, ..., day_start, day_end, local_date) {
       data.frame(dummy=NA)
     }
-    date_ts <- streamMetabolizer:::mm_model_by_ply(
+    date_ts <- streamMetabolizer::mm_model_by_ply(
       find_dates_fun, data=data.frame(local.time=sitetime_ts$sitetime), data_daily=NULL, 
       day_start=day_start, day_end=day_end)['local.date']
   } else {
@@ -161,7 +161,7 @@ stage_styx_site <- function(
       data.frame(doinit=data_ply$DO.obs[1])
     }
     doobs_ts <- read_ts(doobs)
-    doinit_ts <- streamMetabolizer:::mm_model_by_ply(
+    doinit_ts <- streamMetabolizer::mm_model_by_ply(
       find_doinit_fun, data=data.frame(local.time=sitetime_ts$sitetime, DO.obs=doobs_ts$doobs), data_daily=NULL, 
       day_start=day_start, day_end=day_end)
     date_matches <- match(sitedate_ts$sitedate, doinit_ts$local.date)

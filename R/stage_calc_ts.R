@@ -371,7 +371,7 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
 calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
   data.frame(
     DateTime = convert_solartime_to_UTC(
-      solar.time = sitetime, 
+      any.solar.time = sitetime, 
       longitude = longitude, 
       time.type = "mean solar"),
     sitetimedaily = sitetime) %>%
@@ -388,7 +388,7 @@ calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
 calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
   data.frame(
     DateTime = convert_solartime_to_UTC(
-      solar.time = sitetime, 
+      any.solar.time = sitetime, 
       longitude = longitude, 
       time.type = "mean solar"),
     sitedate = as.Date(format(sitetime, "%Y-%m-%d"))) %>%
@@ -426,7 +426,7 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
     DateTime = utctime,
     par = convert_SW_to_PAR(
       calc_solar_insolation(
-        solar.time = suntime,
+        app.solar.time = suntime,
         latitude = latitude))) %>% 
     u()
 }
@@ -621,8 +621,9 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
       dischdaily = mean(disch)) %>%
     mutate(
       DateTime = convert_solartime_to_UTC(
-        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
-        longitude=longitude, time.type="mean solar")) %>%
+        any.solar.time=as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude,
+        time.type="mean solar")) %>%
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
     transform(dischdaily = verify_units(u(dischdaily, disch_units) * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')) %>%
@@ -682,7 +683,7 @@ calc_ts_doamp_calcDAmp <- function(sitetime, longitude, dopsat) {
       doamp = diff(range(dopsat))) %>%
     mutate(
       DateTime = convert_solartime_to_UTC(
-        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        any.solar.time=as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
         longitude=longitude, time.type="mean solar")) %>%
     select(DateTime, doamp) %>%
     as.data.frame() %>%

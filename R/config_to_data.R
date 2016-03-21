@@ -320,6 +320,7 @@ config_preds_to_data_column <- function(var, site, src, type) {
     daily=predict_metab(mm))
   
   # determine which time translation needs to happen
+  preds_res <- '.dplyr.var'
   time_relation <- 
     data_frame(
       preds_res = c('inst','daily'),

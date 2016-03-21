@@ -114,7 +114,8 @@ stage_indy_site <- function(
   } else {
     # ignores the possibility that sw is present. if this feature becomes needed, add it here
     suntime <- convert_UTC_to_solartime(data$DateTime, longitude=lon, time.type='apparent solar')
-    data$par_calcLat <- convert_SW_to_PAR(calc_solar_insolation(solar.time=v(suntime), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
+    data$par_calcLat <- convert_SW_to_PAR(calc_solar_insolation(
+      app.solar.time=v(suntime), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
   } 
   
   # write the data (instantaneous) timeseries files

@@ -9,7 +9,7 @@
 #'   directory)
 #' @param verbose provide verbose output (currently not implemented)
 #' @return a character vector of file handles
-#' @importFrom dataRetrieval constructNWISURL importRDB1
+#' @importFrom dataRetrieval readNWISuv
 #' @importFrom unitted u
 #' @importFrom stats setNames
 #' @importFrom lubridate with_tz
@@ -66,6 +66,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   switch(
     var,
     sed={
+      . <- sample_dt <- sample_tm <- SuspSed <- sed <- dateTime <- '.dplyr.var'
       nwis_data <- smwrQW::importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
         transform(DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
                   sed=SuspSed) %>%
