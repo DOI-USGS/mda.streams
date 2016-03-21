@@ -27,7 +27,7 @@
 #'   on_local_exists="skip")
 #' }
 #' @export
-download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv','RData'),
+download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv','rds','RData'),
                         on_remote_missing=c("stop","return_NA"), 
                         on_local_exists=c("stop","skip","replace")) {
   
