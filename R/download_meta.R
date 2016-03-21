@@ -23,55 +23,30 @@ download_meta <- function(type, folder = tempdir(),
                         on_remote_missing=c("stop","return_NA"), 
                         on_local_exists=c("stop","skip","replace")) {
   
-  # check inputs & session
-  on_local_exists <- match.arg(on_local_exists)
+  # mda.streams:::sb_require_login("continue", verbose=TRUE) # no login is fine for site data (meta)
+  
   on_remote_missing <- match.arg(on_remote_missing)
-  folder <- gsub("\\", "/", folder, fixed=TRUE)
+  on_local_exists <- match.arg(on_local_exists)
   
-  # find item IDs for download
-  items <- locate_meta(type=type)
+  files <- dests <- '.dplyr.var'
+  params <- 
+    data_frame(
+      files = make_meta_path(type),
+      folder = folder,
+      type = type) %>%
+    mutate(
+      dests = file.path(folder, files),
+      need = if(on_local_exists %in% c('stop','skip')) !file.exists(dests) else TRUE,
+      ids = 'local_exists'
+    )
   
-  # loop through items, downloading each file and returning a file path or NA
-  # for each. collect the outputs in a character vector.
-  sapply(seq_along(items), function(item_num) {
-    item <- items[item_num]
-    item_name <- paste0('meta_', type[item_num])
-    
-    # skip or stop if item is unavailable
-    if(is.na(item)) {
-      switch(
-        on_remote_missing,
-        "return_NA"=return(as.character(NA)),
-        "stop"=stop("metadata item unavailable on ScienceBase: ", item_name))
-    }
-    
-    # find file name for download (get filename)
-    file_list = item_list_files(item)
-    
-    # check how many file names are coming back; we need exactly one  
-    if(nrow(file_list) != 1) {
-      stop("there are ", nrow(file_list), " files in SB item: ", item_name, "; need exactly 1")
-    }
-    
-    # do the downloading
-    destination  = file.path(folder, file_list$fname)
-    out_destination <- 
-      if(file.exists(destination) && on_local_exists %in% c("stop","skip")) {
-        switch(
-          on_local_exists,
-          "stop"=stop("for ", item_name, ", download destination already has a file and on_local_exists=='stop'"),
-          "skip"=NA )
-      } else if(!file.exists(destination) || on_local_exists=="replace") {
-        item_file_download(id=item, names=file_list$fname, destinations=destination, overwrite_file=TRUE)
-      } else {
-        stop("unexpected destination file condition or on_local_exists value")
-      }
-    
-    # return the file path if we successfully downloaded or skipped the download
-    if(isTRUE(out_destination) || is.na(out_destination)) {
-      return(destination)
-    } else {
-      stop("download failed for ", item_name)
-    }
-  })  
+  # only query SB for those ids we actually need
+  if(length(which(params$need)) > 0) {
+    params$ids[params$need] <- locate_meta(params$type[params$need])
+  }
+  
+  # download. this function will skip over ids we don't need
+  download_item_files(
+    item_ids=params$ids, item_names=params$type, files=as.list(params$files), folder=params$folder, 
+    on_remote_missing=on_remote_missing, on_local_exists=on_local_exists)
 }

@@ -14,8 +14,7 @@
 #' set_scheme('mda_streams')
 #' }
 delete_metab_run <- function(title, files_only=FALSE, verbose=TRUE) {
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
-  
   item_ids <- locate_metab_run(title=title, by="either")
-  delete_item(item_ids, item_names=title, delete_files=TRUE, delete_children=FALSE, delete_item=!files_only, verbose=verbose)
+  delete_item(item_ids, item_names=title, 
+              delete_files=files_only, delete_children=FALSE, delete_item=!files_only, verbose=verbose)
 }

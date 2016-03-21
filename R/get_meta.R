@@ -11,6 +11,7 @@
 #' @import sbtools
 #' @import dplyr
 #' @importFrom lubridate with_tz
+#' @importFrom unitted u
 #' @export
 get_meta <- function(types=list_metas(), out='all') {
   
@@ -28,7 +29,7 @@ get_meta <- function(types=list_metas(), out='all') {
       } else {
         # if already cached, check timestamp
         cache_timestamp <- get(x=meta_type_timestamp, envir=pkg.env)
-        sb_timestamp <- item_get(locate_ts("doobs_nwis", "nwis_01458500"))$files[[1]]$dateUploaded %>%
+        sb_timestamp <- item_get(locate_meta(type))$files[[1]]$dateUploaded %>%
           strptime("%Y-%m-%dT%H:%M:%S", tz="UTC")
         sb_timestamp > cache_timestamp
       }
@@ -46,8 +47,11 @@ get_meta <- function(types=list_metas(), out='all') {
   
   # either create+save or get the full metadata table
   if(any(updated_data)) {
+    # determine what tables we ought to have now
+    cached_types <- grep("^meta_[[:alpha:]]+$", ls(pkg.env), value=TRUE)
+    cached_types <- substring(cached_types[!cached_types %in% c("meta_all","meta_delim","meta_extension")], 6)
     # load the individual metadata tables
-    metas <- lapply(types, function(type) {
+    metas <- lapply(cached_types, function(type) {
       # always use the [updated] cached value here - quicker
       meta_type <- paste0('meta_', type)
       meta <- get(meta_type, envir=pkg.env)
@@ -55,6 +59,7 @@ get_meta <- function(types=list_metas(), out='all') {
       if(type != 'basic') {
         names(meta)[names(meta) != 'site_name'] <- paste0(type, ".", names(meta)[names(meta) != 'site_name'])
       }
+      meta[[paste0('row_in.', type)]] <- u(rep(TRUE, nrow(meta)), NA)
       meta
     })
     # combine the metadata tables into a single table
@@ -74,10 +79,13 @@ get_meta <- function(types=list_metas(), out='all') {
     other_cols <- unlist(lapply(types[types!='basic'], function(type) {
       which(grepl(paste0('^',type,'\\.'), names(data)))
     }))
-    # 
+    # combine into one vector
     out <- c(basic_cols, other_cols)
   }
-  data <- unique(data[,out])
+  # figure out which rows are relevant
+  out_rows <- which(unname(apply(v(data)[paste0('row_in.', types)], 1, any)))
+  # subset to relevant rows and requested cols
+  data <- unique(data[out_rows, out, drop=FALSE])
   
   data
 }

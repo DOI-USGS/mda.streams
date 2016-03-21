@@ -4,12 +4,8 @@
 #' @import sbtools
 #' @export
 list_metab_runs = function(){
-  
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
-  
-  # get list of site items, then filter to those of the proper data_type
+  sb_require_login("stop")
   run_items <- query_item_identifier(scheme = get_scheme(), type = 'metab_run', limit = 10000)
-
   if(nrow(run_items) > 0) {
     return(run_items$title)
   } else {
@@ -23,9 +19,10 @@ list_metab_runs = function(){
 #' @param out the columns to return
 #' @return dataframe of file names and sizes within a metab_run
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 list_metab_run_files <- function(title, out=c("filename","size_bytes","url")) {
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   out <- lapply(title, function(t) {
     run_id <- locate_metab_run(t)
     filedf <- setNames(item_list_files(run_id),c("filename","size_bytes","url"))

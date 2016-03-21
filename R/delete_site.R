@@ -15,61 +15,20 @@
 #' 
 #' sites <- c("nwis_00000000", "nwis_00000001", "nwis_00000002")
 #' post_site(sites)
+#' file_par2 <- stage_calc_ts(sites="nwis_00000000", var="par", src="simNew", verbose=TRUE,
+#'   inputs=list(utctime=NA, value=unitted::u(rnorm(1, 10, 2), "umol m^-2 s^-1")))
+#' post_ts(file_par2)
+#' list_tses("nwis_00000000")
+#' mda.streams:::delete_site(sites, children_only=TRUE)
+#' locate_site(sites)
+#' list_tses("nwis_00000000")
 #' mda.streams:::delete_site(sites)
+#' locate_site(sites)
 #' 
 #' set_scheme("mda_streams")
 #' }
 delete_site <- function(sites, children_only=FALSE, verbose=TRUE) {
-  
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
-  
-  deletion_msgs <- lapply(sites, function(site) {
-    # find the item id by hook or by crook (aka tag or dir)
-    site_id <- locate_site(site, by="either")
-    if(is.na(site_id)) {
-      if(isTRUE(verbose)) message("skipping deletion of missing site ", site)
-      return(NA) # do nothing if it's already not there
-    }
-    
-    # delete the children and their files
-    children <- item_list_children(site_id, limit=100)
-    if(nrow(children) > 0) {
-      for(child in children$id) {
-        item_rm_files(child) # delete any data files from the child
-      }
-      # use 2 loops to reduce waiting time for multiple children
-      for(child in children$id) {
-        for(wait in 1:100) {
-          Sys.sleep(0.2) # sleep to give time for full deletion
-          if(nrow(item_list_files(child)) == 0) break
-        }
-        item_rm(child) # delete the child itself
-      }
-      # sleep for a bit so it can finish deleting the children
-      for(wait in 1:100) {
-        Sys.sleep(0.2)
-        if(nrow(item_list_children(site_id, limit=2)) == 0) break
-        if(wait==100) stop("failed to delete children of site ", site)
-      }
-    }
-    
-    # delete the site folder or return its ID
-    if(children_only) {
-      return(site_id)
-    } else {
-      # delete the folder
-      if(isTRUE(verbose)) message("deleting site ", site)
-      out <- item_rm(site_id)
-      # sleep again to finish deleting the folder
-      for(wait in 1:100) {
-        Sys.sleep(0.2)
-        if(is.na(locate_site(site))) break
-        if(wait==100) stop("failed to delete site ", site)
-      }
-      # if it worked, return the output
-      return(out)
-    }
-  })
-  
-  invisible(deletion_msgs)
+  site_ids <- locate_site(sites)
+  delete_item(item_ids=site_ids, item_names=sites, 
+              delete_files=FALSE, delete_children=TRUE, delete_item=!children_only, verbose=verbose)
 }

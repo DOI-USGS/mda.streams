@@ -9,6 +9,7 @@
 #'   all listed var_src:site_name combinations
 #'   
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 #' 
 #' @examples 
@@ -18,7 +19,7 @@
 repair_meta <- function(type, limit=5000) {
   
   # check the session; we'll need write access
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   # package the args together for arg replication & easier looping
   query_args <- data.frame(
@@ -50,7 +51,7 @@ repair_meta <- function(type, limit=5000) {
     # redo the action that somehow failed before
     idlist <- list(type="sites_meta", scheme=get_scheme(), key=meta_type)
     tryCatch(
-      item_update_identifier(id=meta_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      item_update_identifier(sb_id=meta_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }
     )
     

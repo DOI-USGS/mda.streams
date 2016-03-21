@@ -1,12 +1,3 @@
-#' Variable and source code data
-#'
-#' Variable and source code data
-#'
-#' @name var_src_codes
-#' @docType data
-#' @export
-NULL
-
 #' For use in package development only: build R/sysdata.rda
 #' 
 #' Moves/reformats the tables of variable and source metadata from inst/extdata 
@@ -14,12 +5,18 @@ NULL
 #' storage location for data used internally by mda.streams)
 #'
 #' @import dplyr 
+#' @import sbtools
+#' @importFrom utils read.table write.table
 #' @keywords internal
-build_sysdata <- function() {
+build_sysdata <- function(post=TRUE) {
 
   # Read in the raw, hand-editable tsv file
+  tsvfile <- ifelse(
+    file.exists("inst/extdata/tsmeta_varsrccodes.tsv"), "inst/extdata/tsmeta_varsrccodes.tsv", 
+    system.file("extdata/tsmeta_varsrccodes.tsv", package="mda.streams"))
+  var <- src <- ".dplyr.var"
   var_src_codes <- 
-    read.table(file="inst/extdata/var_src_codes.tsv", header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
+    read.table(file=tsvfile, header=TRUE, colClasses="character", sep="\t", stringsAsFactors=FALSE) %>% 
     mutate(var_src=paste0(var, "_", src),
            priority=as.numeric(priority))
   
@@ -50,8 +47,18 @@ build_sysdata <- function() {
     stop("p_code for non-data src: ", paste0(var_src_codes[odd_pcode,"var"], "_", var_src_codes[odd_pcode,"src"], collapse=", "))
   }
   
-  # Save
-  save(var_src_codes, file="R/sysdata.rda")
+  # Post to ScienceBase or return as df
+  if(isTRUE(post)) {
+    tempname <- file.path(tempdir(), 'tsmeta_varsrccodes.tsv')
+    write.table(var_src_codes, file=tempname, sep='\t', row.names=FALSE, quote=FALSE)
+    sb_require_login("login")
+    tsmeta_item <- locate_ts_meta('varsrccodes')
+    # remove the old, add the new
+    rm_out <- item_rm_files(tsmeta_item)
+    add_out <- item_append_files(tsmeta_item, files=tempname)
+  } else {
+    return(var_src_codes)
+  }
 }
 
 # NWIS data notes

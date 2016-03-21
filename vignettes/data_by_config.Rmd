@@ -1,0 +1,49 @@
+---
+title: "Get the model inputs specified by a config file"
+author: "Alison Appling"
+date: "November 24, 2015"
+output: html_document
+---
+
+Fitting models in batch mode with config files is nice, but sometimes you just want to look at some data and/or run a model manually. In this case you can still leverage config files to specify the data based on what's available on ScienceBase.
+
+```{r, message=FALSE}
+library(mda.streams)
+library(dplyr)
+library(streamMetabolizer)
+```
+
+First make a config file.
+```{r}
+sites <- c("nwis_05515500", "nwis_03254520")
+config <- stage_metab_config(
+  tag='0.0.13', strategy='initial K600 estimate', date=Sys.time(), 
+  model="metab_mle", model_args="list(day_start=2, day_end=26)", site=sites, 
+  start_date="2015-03-15", end_date="2015-04-15", filename=NULL)
+```
+
+Then use `config_to_metab` with `prep_only=TRUE` to get a list of the input data and arguments rather than a full metabolism model. Set the names of the list in a way that distinguishes meaningfully among the rows in config - that part is up to you to determine.
+```{r}
+prep_list <- config_to_metab(config, rows=1:nrow(config), prep_only=TRUE) %>%
+  setNames(sites)
+```
+
+The result is a list as long as `nrow(config)`, where each list element is itself a list containing `data`, `data_daily`, and other arguments for that config row.
+```{r}
+names(prep_list[[1]])
+```
+
+You can now inspect the data.
+```{r}
+lapply(prep_list, function(prep) range(prep$data$local.time))
+```
+
+You can still run the model if you like.
+```{r, warning=FALSE}
+mm <- do.call(metab_mle, prep_list[[1]])
+```
+
+The resulting model can now be explored.
+```{r, fig.width=9, fig.height=6}
+plot_DO_preds(predict_DO(mm, "2015-04-07", "2015-04-10"))
+```

@@ -23,14 +23,14 @@ test_that("metab runs can be posted & deleted", {
     expect_equal(nchar(mrid <- locate_metab_run(title=basename(metab_dir))), 24)
     
     # download files
-    expect_equal(1, length(localfile <- download_item_files(item_ids=mrid, item_names="metabrun1", files="dummy_config.tsv", on_local_exists='replace')))
-    expect_equal(3, length(localfiles <- download_item_files(item_ids=mrid, item_names="metabrun1", files=NA, on_local_exists='replace')))
+    expect_equal(1, length(localfile <- mda.streams:::download_item_files(item_ids=mrid, item_names="metabrun1", files="dummy_config.tsv", on_local_exists='replace')))
+    expect_equal(3, length(localfiles <- mda.streams:::download_item_files(item_ids=mrid, item_names="metabrun1", files=NA, on_local_exists='replace')))
     expect_true(all(c("dummy_config.tsv","dummy_dat.RData","dummy_out.Rout") %in% dir(tempdir())))
     #view_folder(localfiles[1])
     
     # delete files
     mda.streams:::delete_metab_run(basename(metab_dir), files_only=TRUE)
-    expect_true(is.na(download_item_files(item_ids=mrid, item_names="metabrun1", files=NA, on_remote_missing="return_NA")))
+    expect_true(is.na(mda.streams:::download_item_files(item_ids=mrid, item_names="metabrun1", files=NA, on_remote_missing="return_NA")))
     
     # delete item
     expect_message(post_metab_run(folder=metab_dir, files=c("dummy_config.tsv","dummy_dat.RData"), on_exists="addfiles"))

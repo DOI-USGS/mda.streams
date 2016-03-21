@@ -6,6 +6,7 @@
 #' @param verbose logical. print status messages?
 #' @import dplyr
 #' @importFrom unitted u v get_units
+#' @importFrom utils read.table
 #' @export
 stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
   

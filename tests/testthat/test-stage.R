@@ -1,7 +1,6 @@
 context("bulk staging & posting")
 
-if(!is.null(sbtools::current_session())) {
-  login_sb()
+if(sbtools::is_logged_in()) {
   set_scheme("mda_streams_dev")
  
   test_that("can stage sitelist and post sites", {
@@ -11,11 +10,11 @@ if(!is.null(sbtools::current_session())) {
     
     # post
     post_site(sites, on_exists="clear")
-    expect_true(all.equal(sort(sites), sort(get_sites())))
+    expect_true(all.equal(sort(sites), sort(mda.streams:::get_sites())))
   }) 
   
   test_that("can stage and post nwis data", {
-    sites <- get_sites()
+    sites <- list_sites()
 
     # clear any existing doobs data
     mda.streams:::delete_ts("doobs_nwis", sites)

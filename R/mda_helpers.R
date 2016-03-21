@@ -9,7 +9,7 @@ make_var_src <- function(var, src) {
   paste0(var, "_", src)
 }
 
-#' Check whether a var_src is listed in var_src_codes
+#' Check whether a var_src is listed in get_var_src_codes()
 #' 
 #' @param var_var_src may be either a variable, e.g. "doobs", or a var_src, e.g.
 #'   "doobs_nwis".
@@ -19,6 +19,7 @@ make_var_src <- function(var, src) {
 #'   the var_src is not valid
 #' @return a single TRUE if successful, else on_fail(msg) followed by a vector
 #'   of T/F values with F for invalid var_srces
+#' @importFrom stats setNames
 #' @export
 verify_var_src <- function(var_var_src, src, on_fail=warning) {
   # combine var & src
@@ -29,21 +30,21 @@ verify_var_src <- function(var_var_src, src, on_fail=warning) {
   valid <- rep(TRUE, nrow(var_src_p))
 
   # check that the var_src combo is known
-  if(any(missing_var_src <- !(var_src %in% var_src_codes$var_src))) {
+  if(any(missing_var_src <- !(var_src %in% get_var_src_codes()$var_src))) {
     msg <- paste0("unrecognized var_src",if(length(which(missing_var_src))>1) "es" else "",": ", paste0(var_src[missing_var_src], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_var_src
   }
   
   # check that the var is known
-  if(any(missing_var <- !(var_src_p$var %in% var_src_codes$var))) {
+  if(any(missing_var <- !(var_src_p$var %in% get_var_src_codes()$var))) {
     msg <- paste0("unrecognized var",if(length(which(missing_var))>1) "s" else "",": ", paste0(var_src_p$var[missing_var], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_var
   }
 
   # check that the var is known
-  if(any(missing_src <- !(var_src_p$src %in% var_src_codes$src))) {
+  if(any(missing_src <- !(var_src_p$src %in% get_var_src_codes()$src))) {
     msg <- paste0("unrecognized src",if(length(which(missing_src))>1) "s" else "",": ", paste0(var_src_p$src[missing_src], collapse=", "))
     on_fail(msg)
     valid <- valid & !missing_src
@@ -64,6 +65,7 @@ verify_var_src <- function(var_var_src, src, on_fail=warning) {
 #' @param use_names logical. Should names/rownames be attached to the
 #'   vector/data.frame?
 #' @return if length(out)==1 a vector, else a data.frame
+#' @importFrom stats setNames
 #' @export
 parse_var_src <- function(var_src, out=c("var","src"), use_names=FALSE) {
   splitcols <- c("var","src")
@@ -121,6 +123,7 @@ make_ts_name <- function(var_var_src, src) {
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"))
 #' mda.streams:::parse_ts_name(ts_name="ts_doobs_nwis", out=c("var_src","src"))
 #' mda.streams:::parse_ts_name(c("ts_doobs_nwis", "ts_stage_nwis"), c("src","var"))
+#' @importFrom stats setNames
 #' @export
 parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   # error checking
@@ -162,10 +165,11 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
 #'   site code as used by the database.
 #' @param database a character or character vector of databases from which the 
 #'   site ID is derived, probably \code{"nwis"} (from the USGS NWIS database) or
-#'   \code{"styx"} (made-up data).
+#'   \code{"styx"} (made-up data) or \code{"indy"} (a real site independent of
+#'   NWIS or other large networks).
 #' @return site ID in ScienceBase and mda.streams lingo
 #' @export
-make_site_name <- function(sitenum, database=c("nwis", "styx")) {
+make_site_name <- function(sitenum, database=c("nwis", "styx", "indy")) {
   # error checking
   if(missing(database)) database <- "nwis"
   expected_databases <- paste0("^", paste0(eval(formals(make_site_name)$database), collapse="|"))
@@ -191,6 +195,7 @@ make_site_name <- function(sitenum, database=c("nwis", "styx")) {
 #' @return the database, sitenum, or both. If both, the return value is a 
 #'   data.frame; otherwise it's a vector.
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
   # split first
@@ -226,14 +231,18 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param site_name the full site name, e.g., 'nwis_06893820'
 #' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
 #' @param folder the folder to write the file in, or missing
+#' @param version character string indicating the file format
 #' @return a full file path
 #' @export
-make_ts_path <- function(site_name, ts_name, folder) {
+make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
   parse_ts_name(ts_name)
+  version <- match.arg(version)
   
-  file_name <- sprintf('%s-%s.%s.%s', site_name, ts_name, pkg.env$ts_extension, (gz_extension="gz"))
+  file_name <- sprintf(
+    '%s-%s.%s', site_name, ts_name, 
+    switch(version, 'tsv'='tsv.gz', 'RData'='RData'))
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing
   } else {
@@ -251,9 +260,10 @@ make_ts_path <- function(site_name, ts_name, folder) {
 #' @param use_names logical. Should the return vector be named according to the 
 #'   input values?
 #' @return a character
+#' @importFrom stats setNames
 #' @export
 parse_ts_path <- function(file_path, 
-                          out=c("dir_name","file_name","site_name","ts_name","var_src","var","src","database","sitenum"), 
+                          out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum"), 
                           use_names=length(file_path)>1) {
   
   out = match.arg(out, several.ok=TRUE)
@@ -266,6 +276,7 @@ parse_ts_path <- function(file_path,
     file_name = file_name, 
     site_name = sapply(splits, "[", 1),
     ts_name = sapply(splits, "[", 2),
+    version = sapply(splits, "[", 3),
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
@@ -311,6 +322,7 @@ make_meta_path <- function(type, folder) {
 #'   list elements?
 #' @return a data.frame, one row per path
 #' @export
+#' @importFrom stats setNames
 parse_meta_path <- function(file_path, out=c("dir_name","file_name","type","meta_type"), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)
   
@@ -354,6 +366,7 @@ make_metab_run_title <- function(date, tag, strategy) {
 #'   list elements?
 #' @return a data.frame, one row per path
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_names=length(title)>1) {
   
@@ -369,7 +382,7 @@ parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_nam
       stringsAsFactors=FALSE) %>%
     mutate(
       date = substr(title, 1, split_1-1),
-      tag = substr(title, split_1+1, split_2-1),
+      tag = numeric_version(substr(title, split_1+1, split_2-1)),
       strategy = substr(title, split_2+1, nchar(title)))
   
   parsed <- parsed[,out]
@@ -404,6 +417,7 @@ make_metab_model_name <- function(title, row, site) {
 #'   list elements?
 #' @import dplyr
 #' @export
+#' @importFrom stats setNames
 parse_metab_model_name <- function(model_name, out=c('title','row','site','date','tag','strategy'), use_names=length(model_name)>1) {
   
   out = match.arg(out, several.ok=TRUE)
@@ -439,12 +453,15 @@ parse_metab_model_name <- function(model_name, out=c('title','row','site','date'
 #' 
 #' @param model_name the name of the model as from make_metab_model_name()
 #' @param folder the folder of the model file
+#' @param version character indicating whether you want the original metab_model
+#'   or a modernized one that works with the current streamMetabolizer version
 #' @export
-make_metab_model_path <- function(model_name, folder) {
+make_metab_model_path <- function(model_name, folder, version=c('original','modern')) {
   # don't check; permit new items
+  version <- match.arg(version)
   
   # create path
-  file_name <- sprintf('%s%s.%s', pkg.env$metab_model_prefix, model_name, pkg.env$metab_model_extension)
+  file_name <- sprintf('%s%s%s.%s', if(version=='modern') 'm' else '', pkg.env$metab_model_prefix, model_name, pkg.env$metab_model_extension)
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing (besides not break)
   } else {
@@ -459,20 +476,23 @@ make_metab_model_path <- function(model_name, folder) {
 #' @param out character. which columns to return
 #' @param use_names attach row/vector names?
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
-parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy'), use_names=length(file_path)>1) {
+parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","model_name","title","row","site",'date','tag','strategy','version'), use_names=length(file_path)>1) {
   out = match.arg(out, several.ok=TRUE)
   
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
   
+  version <- if(substring(file_name, 1, 3) == "mmm") "modern" else "original"
   parsed <- data.frame(
     dir_name = dir_name,
     file_name = file_name, 
-    model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+1, nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
+    model_name = substr(file_name, nchar(pkg.env$metab_model_prefix)+ifelse(version=="original", 1, 2), nchar(file_name)-1-nchar(pkg.env$metab_model_extension)),
+    version = version,
     stringsAsFactors=FALSE)
   parsed <- parsed %>%
-    bind_cols(parse_metab_model_name(parsed$model_name, out=c("title","row","site",'date','tag','strategy'), use_names=FALSE)) %>%
+    bind_cols(parse_metab_model_name(parsed$model_name, out=c("title","row","site",'date','tag','strategy','version'), use_names=FALSE)) %>%
     as.data.frame()
   
   parsed <- parsed[,out]

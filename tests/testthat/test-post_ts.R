@@ -1,7 +1,6 @@
 context("post_ts and delete_ts")
 
-if(!is.null(sbtools::current_session())) {
-  login_sb()
+if(sbtools::is_logged_in()) {
   set_scheme("mda_streams_dev")
   # the following commands require some waiting between lines. probably best to test manually.
   manual <- TRUE

@@ -12,12 +12,18 @@
 #'   to the new SB item
 #' @param on_exists character. what should be done when an item already exists?
 #' @param verbose logical. Should status messages be given?
+#' @examples
+#' \dontrun{
+#' post_metab_run(
+#'   folder=make_metab_run_title(config$date[1], config$tag[1], "styx_001_experiment_sim_models"),
+#'   files=c("config.tsv", "condor_notes.txt"))
+#' }
 #' @export
 post_metab_run <- function(folder, files, on_exists=c("stop", "skip", "addfiles"), verbose=TRUE) {
 
   # check inputs
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   if(length(folder) != 1) stop("one folder name per call to post_metab_run, please")
   title <- basename(folder)
   
@@ -47,7 +53,7 @@ post_metab_run <- function(folder, files, on_exists=c("stop", "skip", "addfiles"
   } else {
     # create the item
     if(verbose) message("creating metab_run item: ", title)
-    run_id <- item_create(parent_id=locate_folder("metab_runs"), title=title)
+    run_id <- item_create(locate_folder("metab_runs"), title=title)$id
   }
   
   # attach data file to ts item. SB quirk: must be done before tagging with 

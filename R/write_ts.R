@@ -1,4 +1,8 @@
-#' @title write timeseries format compressed file
+#' Write timeseries data into a compressed file
+#' 
+#' Writes a ts file (with format specific to mda.streams) a data.frame into a
+#' compressed file suitable for posting to ScienceBase
+#' 
 #' @param data unitted data.frame
 #' @param site the full site name, e.g., 'nwis_06893820'
 #' @param var the variable name of the output, e.g., 'doobs'

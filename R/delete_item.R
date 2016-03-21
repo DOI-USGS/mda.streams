@@ -16,7 +16,7 @@
 #' @keywords internal
 delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_children=FALSE, delete_item=TRUE, verbose=TRUE) {
   
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   if(length(item_ids) != length(item_names)) stop("expecting item_ids and item_names to have the same length")
   
   # delete in a loop over the assumed-to-be parallel vectors item_ids and item_names
@@ -32,11 +32,11 @@ delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_childre
     }
     
     # declare intent
-    if(verbose) message("deleting item ", item_name, " (", item_id, ")")
     deletion_msg <- list()
       
     # if requested, delete all files from the item
     if(isTRUE(delete_files)) {
+      if(verbose) message("deleting files from item ", item_name, " (", item_id, ")")
       # do the deletion
       item_status <- item_rm_files(item_id)
       # sleep to give time for full deletion
@@ -50,12 +50,13 @@ delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_childre
     
     # if requested, delete all children from the item. this is recursive - be careful!
     if(isTRUE(delete_children)) {
+      if(verbose) message("deleting children from item ", item_name, " (", item_id, ")")
       # identify child items to delete
       children <- item_list_children(item_id, limit=1000)
       # delete them
       if(nrow(children) > 0) {
         for(child in children$id) {
-          delete_item(item_id=child, item_name=child, delete_files=TRUE, delete_children=TRUE, delete_item=TRUE, verbose=verbose)
+          delete_item(item_id=child, item_name=child, delete_files=FALSE, delete_children=TRUE, delete_item=TRUE, verbose=verbose)
         }
       }
       # sleep to give time for full deletion
@@ -69,6 +70,7 @@ delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_childre
     
     # if requested, delete the item itself
     if(isTRUE(delete_item)) {
+      if(verbose) message("deleting item ", item_name, " (", item_id, ")")
       # do the deletion
       rm_msg <- item_rm(item_id) 
       deletion_msg <- c(deletion_msg, list(rm_msg))

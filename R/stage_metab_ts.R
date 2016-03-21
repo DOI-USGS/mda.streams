@@ -11,6 +11,7 @@
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom stats setNames
 #' @export
 stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
   # check inputs
@@ -18,7 +19,7 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
   
   staged <- unname(unlist(lapply(metab_outs, function(metab_mod) {
     # pull info from the model
-    config_row <- get_info(metab_mod)
+    config_row <- get_info(metab_mod)$config
     mod_model <- config_row[[1,"model"]]
     src <- switch(
       mod_model,
@@ -32,11 +33,12 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     # represent each corresponding Date
     coords <- get_site_coords(site)
     preds$DateTime <- convert_solartime_to_GMT(
-      as.POSIXct(paste0(preds$date, " 12:00:00"), tz="UTC"), 
+      as.POSIXct(paste0(preds$local.date, " 12:00:00"), tz="UTC"), 
       longitude=coords$lon, time.type="mean solar")
     
     # extract specific columns into ts files. this section will need rewriting
     # as the range of model options expands.
+    var <- ".dplyr.var"
     file_paths <- sapply(c("gpp","er","K600"), function(pvar) {
       metab_var <- get_var_src_codes(var==pvar, out="metab_var")[1]
       var_units <- get_var_src_codes(var==pvar, out="units")[1]

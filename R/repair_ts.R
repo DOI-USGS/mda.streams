@@ -10,6 +10,7 @@
 #'   all listed var_src:site_name combinations
 #'   
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 #' 
 #' @examples 
@@ -22,7 +23,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
   verify_var_src(var_src, on_fail=warning)
   
   # check the session; we'll need write access
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   # package the args together for arg replication & easier looping
   query_args <- data.frame(
@@ -54,7 +55,7 @@ repair_ts <- function(var_src, site_name, limit=5000) {
     # redo the action that somehow failed before
     idlist <- list(type=make_ts_name(var_src), scheme=get_scheme(), key=site_name)
     tryCatch(
-      item_update_identifier(id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
+      item_update_identifier(sb_id=ts_id_dir, scheme=idlist$scheme, type=idlist$type, key=idlist$key),
       warning=function(w) { message("warning in item_update_identifier: ", w) }
     )
     

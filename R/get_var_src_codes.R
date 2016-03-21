@@ -9,9 +9,10 @@
 #'   dimensions be dropped?
 #' @import dplyr
 #' @importFrom lazyeval lazy_dots
+#' @importFrom utils read.table
 #' @examples 
 #' get_var_src_codes()
-#' get_var_src_codes(var=="baro", out='var')
+#' unique(get_var_src_codes(var=="baro", out='var'))
 #' get_var_src_codes(var=="baro", out='var', drop=FALSE)
 #' get_var_src_codes(var=="baro", out=c('var','var_descrip'))
 #' get_var_src_codes(var=="baro", out=c('var','var_descrip'), drop=FALSE)
@@ -20,7 +21,22 @@
 #'   out=list('var','var_src','p_code', 'src_type'))
 #' @export
 get_var_src_codes <- function(..., out, drop=TRUE) {
-  codes <- var_src_codes
+  # get the codes
+  if(!exists('tsmeta_varsrccodes', envir=pkg.env)) {
+    var_src_codes <- tryCatch({
+      code_item <- locate_ts_meta('varsrccodes')
+      code_file <- file.path(tempdir(), 'varsrccodes.tsv')
+      sbtools::item_file_download(sb_id=code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file, overwrite_file = TRUE)
+      read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
+    }, error=function(e) {
+      warning("had trouble downloading tsmeta_varsrccodes; using local copy")
+      build_sysdata(post=FALSE)
+    })
+    assign(x='tsmeta_varsrccodes', value=var_src_codes, envir=pkg.env)
+  }
+  codes <- pkg.env$tsmeta_varsrccodes
+  
+  # process filtering and column selection criteria
   dots=lazyeval::lazy_dots(...)
   if(length(dots) > 0)
     codes <- filter_(codes, .dots=dots)

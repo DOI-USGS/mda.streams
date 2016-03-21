@@ -23,6 +23,7 @@
 #' @param browser logical. Should the URL be opened in a browser?
 #' @import dplyr
 #' @import sbtools
+#' @importFrom stats setNames
 #' @examples 
 #' \dontrun{
 #' mda.streams:::locate_item(key="sites", type="root")
@@ -46,7 +47,7 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
     ) %>%
     as.data.frame(stringsAsFactors=FALSE)
 
-  if(get_scheme() == 'mda_streams_dev' && is.null(current_session())) 
+  if(get_scheme() == 'mda_streams_dev' && !is_logged_in())
     stop("log in to use mda_streams_dev. see login_sb()")
 
   # run the query or queries

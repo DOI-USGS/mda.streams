@@ -20,7 +20,7 @@
 #'   
 #'   \itemize{
 #'   
-#'   \item \code{\link{get_sites}} - lists all site IDs (e.g. "nwis_04067500") 
+#'   \item \code{\link{list_sites}} - lists all site IDs (e.g. "nwis_04067500") 
 #'   that are currently on ScienceBase
 #'   
 #'   \item \code{\link{list_datasets}} - Given a site ID, returns a list of 

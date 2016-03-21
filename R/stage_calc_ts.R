@@ -13,7 +13,7 @@
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
 #'   function. These inputs are downloaded from standard locations for the 
 #'   calcXxxx variants.
-#' @param verbose provide verbose output (currently not implemented)
+#' @param verbose logical. provide status messages?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
 #' @return a file handle for time series file created
@@ -22,6 +22,7 @@
 #' @importFrom lubridate tz
 #' @import streamMetabolizer
 #' @import dplyr
+#' @importFrom stats complete.cases
 #'   
 #' @examples
 #' \dontrun{
@@ -89,6 +90,20 @@
 #' file_suntime2
 #' head(read_ts(file_suntime2))
 #' 
+#' # daily means
+#' 
+#' file_sitetimedaily <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="sitetimedaily", src="calcLon", verbose=TRUE)
+#' head(read_ts(file_sitetimedaily))
+#' 
+#' file_sitedate <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="sitedate", src="calcLon", verbose=TRUE)
+#' str(read_ts(file_sitedate))
+#' 
+#' file_dischdaily <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="dischdaily", src="calcDMean", verbose=TRUE)
+#' head(read_ts(file_dischdaily))
+#' 
 #' set_scheme("mda_streams")
 #' }
 #' @export
@@ -107,158 +122,185 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
     # compute the data
     if(isTRUE(verbose)) message("computing the data for ", site, "-", var, "_", src)
     ts_calc <- tryCatch({
-      switch(
-        paste0(var, "_", src),
-        'sitetime_calcLon' = {
-          calc_ts_sitetime_calcLon(
-            utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
-            longitude = get_site_coords(site)$lon)
-        },
-        'suntime_calcLon' = {
-          calc_ts_suntime_calcLon(
-            utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
-            longitude = get_site_coords(site)$lon)
-        },
-        'suntime_simLon' = {
-          calc_ts_with_input_check(inputs, 'calc_ts_suntime_calcLon')
-        },
-        'suntime_simNew' = {
-          calc_ts_with_input_check(inputs=c(list(var='suntime'), inputs), 'calc_ts_simNew')
-        },
-        'suntime_simCopy' = {
-          calc_ts_with_input_check(inputs=c(list(var='suntime'), inputs), 'calc_ts_simCopy')
-        },
-        'par_calcLat' = {
-          suntime_calcLon <- read_ts(download_ts('suntime_calcLon', site, on_local_exists="replace"))
-          calc_ts_par_calcLat(
-            utctime = suntime_calcLon$DateTime,
-            suntime = suntime_calcLon$suntime,
-            latitude = get_site_coords(site)$lat)
-        },
-        'par_calcSw' = {
-          sw_nldas <- read_ts(download_ts('sw_nldas', site, on_local_exists="replace"))
-          calc_ts_par_calcSw(
-            utctime = sw_nldas$DateTime,
-            sw = sw_nldas$sw)
-        },
-        'par_simLat' = {
-          calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
-        },
-        'par_simNew' = {
-          calc_ts_with_input_check(inputs=c(list(var='par'), inputs), 'calc_ts_simNew')
-        },
-        'depth_calcDisch' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          calc_ts_depth_calcDisch(
-            utctime = disch_nwis$DateTime,
-            disch = disch_nwis$disch)
-        },
-        'depth_calcDischRaymond' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          calc_ts_depth_calcDischRaymond(
-            utctime = disch_nwis$DateTime,
-            disch = disch_nwis$disch)
-        },
-        'depth_calcDischHarvey' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          dvqcoefs <- get_meta('dvqcoefs')
-          dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-          if(nrow(dvqcoef) == 0) dvqcoef[1,'c'] <- u(NA,'m')
-          calc_ts_depth_calcDischHarvey(
-            utctime = disch_nwis$DateTime,
-            disch = disch_nwis$disch,
-            c = dvqcoef[[1,'dvqcoefs.c']],
-            f = dvqcoef[[1,'dvqcoefs.f']])
-        },
-        'veloc_calcDischRaymond' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          calc_ts_veloc_calcDischRaymond(
-            utctime = disch_nwis$DateTime,
-            disch = disch_nwis$disch)
-        },
-        'veloc_calcDischHarvey' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          dvqcoefs <- get_meta('dvqcoefs')
-          dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-          if(nrow(dvqcoef) == 0) dvqcoef[1,'k'] <- u(NA,'m s^-1')
-          calc_ts_veloc_calcDischHarvey(
-            utctime = disch_nwis$DateTime,
-            disch = disch_nwis$disch,
-            k = dvqcoef[[1,'dvqcoefs.k']],
-            m = dvqcoef[[1,'dvqcoefs.m']])
-        },
-        'depth_simDisch' = {
-          calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDisch')
-        },
-        'depth_simNew' = {
-          calc_ts_with_input_check(inputs=c(list(var='depth'), inputs), 'calc_ts_simNew')
-        },
-        'dosat_calcGGbts' = {
-          wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
-          baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
-          combo <- combine_ts(wtr_nwis, baro_nldas, method='approx')
-          calc_ts_dosat_calcGG(
-            utctime = combo$DateTime,
-            wtr = combo$wtr,
-            baro = combo$baro)
-        },
-        'dosat_calcGGbconst' = {
-          wtr_nwis <- read_ts(download_ts("wtr_nwis", site, on_local_exists="replace"))
-          baro_const <- u(data.frame(DateTime=NA, baro=calc_air_pressure(attach.units=TRUE)))
-          combo <- combine_ts(wtr_nwis, baro_const, method='approx')
-          calc_ts_dosat_calcGG(
-            utctime = combo$DateTime,
-            wtr = combo$wtr,
-            baro = combo$baro)
-        },
-        'dopsat_calcObsSat' = {
-          doobs_nwis <- read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))
-          best_dosat <- paste0("dosat_", choose_data_source("dosat", site, logic="priority local")$src)
-          if(best_dosat == "dosat_NA") stop("could not locate an appropriate dosat ts for site ", site)
-          dosat_best <- read_ts(download_ts(best_dosat, site, on_local_exists="replace"))
-          combo <- combine_ts(doobs_nwis, dosat_best, method='approx')
-          calc_ts_dopsat_calcObsSat(
-            utctime = combo$DateTime, 
-            doobs = combo$doobs, 
-            dosat = combo$dosat)
-        },
-        'dosat_simGGbts' = {
-          if(!is.na(inputs$baro$DateTime)) stop("need non-NA baro$DateTime for dosat_simGGbts")
-          calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
-        },
-        'dosat_simGGbconst' = {
-          if(nrow(inputs$baro) != 1) stop("need 1-row baro for dosat_simGGbconst")
-          calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
-        },
-        'dosat_simNew' = {
-          calc_ts_with_input_check(inputs=c(list(var='dosat'), inputs), 'calc_ts_simNew')
-        },
-        'dischdaily_calcDMean' = {
-          disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
-          sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
-          combo <- combine_ts(sitetime_calcLon, disch_nwis, method='approx')
-          combo <- combo[complete.cases(combo),]
-          calc_ts_dischdaily_calcDMean(
-            sitetime = combo$sitetime,
-            longitude = get_site_coords(site)$lon,
-            disch = combo$disch)
-        },
-        'velocdaily_calcDMean' = {
-          best_veloc <- paste0("veloc_", choose_data_source("veloc", site, logic="priority local")$src)
-          if(best_veloc == "veloc_NA") stop("could not locate an appropriate dosat ts for site ", site)
-          veloc_best <- read_ts(download_ts(best_veloc, site, on_local_exists="replace"))
-          sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
-          combo <- combine_ts(sitetime_calcLon, veloc_best, method='approx')
-          combo <- combo[complete.cases(combo),]
-          calc_ts_velocdaily_calcDMean(
-            sitetime = combo$sitetime,
-            longitude = get_site_coords(site)$lon,
-            veloc = combo$veloc)
-        },
-        {
-          stop("the calculation for var_src ", paste0(var, "_", src), " isn't implemented yet")
-        }
-      )}, error=function(e) {
+      if(src %in% c('simNew', 'simCopy')) {
+        switch(
+          src,
+          'simNew' = calc_ts_with_input_check(inputs=c(list(var=var), inputs), 'calc_ts_simNew'),
+          'simCopy' = calc_ts_with_input_check(inputs=c(list(var=var), inputs), 'calc_ts_simCopy')
+        )
+      } else {
+        switch(
+          paste0(var, "_", src),
+          'sitetime_calcLon' = {
+            calc_ts_sitetime_calcLon(
+              utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
+              longitude = get_site_coords(site)$lon)
+          },
+          'sitetime_simLon' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_sitetime_calcLon')
+          },
+          'sitetimedaily_calcLon' = {
+            sitetime <- read_ts(download_ts("sitetime_calcLon", site, on_local_exists="replace"))
+            calc_ts_sitetimedaily_calcLon(
+              sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
+              longitude = get_site_coords(site)$lon)
+          },
+          'sitedate_calcLon' = {
+            sitetime <- read_ts(download_ts("sitetime_calcLon", site, on_local_exists="replace"))
+            calc_ts_sitedate_calcLon(
+              sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
+              longitude = get_site_coords(site)$lon)
+          },
+          'sitedate_simLon' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_sitedate_calcLon')
+          },
+          'suntime_calcLon' = {
+            calc_ts_suntime_calcLon(
+              utctime = read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))$DateTime, 
+              longitude = get_site_coords(site)$lon)
+          },
+          'suntime_simLon' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_suntime_calcLon')
+          },
+          'par_calcLat' = {
+            suntime_calcLon <- read_ts(download_ts('suntime_calcLon', site, on_local_exists="replace"))
+            calc_ts_par_calcLat(
+              utctime = suntime_calcLon$DateTime,
+              suntime = suntime_calcLon$suntime,
+              latitude = get_site_coords(site)$lat)
+          },
+          'par_calcSw' = {
+            sw_nldas <- read_ts(download_ts('sw_nldas', site, on_local_exists="replace"))
+            calc_ts_par_calcSw(
+              utctime = sw_nldas$DateTime,
+              sw = sw_nldas$sw)
+          },
+          'par_simLat' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
+          },
+          'depth_calcDisch' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            calc_ts_depth_calcDisch(
+              utctime = disch_nwis$DateTime,
+              disch = disch_nwis$disch)
+          },
+          'depth_calcDischRaymond' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            calc_ts_depth_calcDischRaymond(
+              utctime = disch_nwis$DateTime,
+              disch = disch_nwis$disch)
+          },
+          'depth_calcDischHarvey' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            dvqcoefs <- get_meta('dvqcoefs')
+            dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+            if(nrow(dvqcoef) == 0) dvqcoef[1,'c'] <- u(NA,'m')
+            calc_ts_depth_calcDischHarvey(
+              utctime = disch_nwis$DateTime,
+              disch = disch_nwis$disch,
+              c = dvqcoef[[1,'dvqcoefs.c']],
+              f = dvqcoef[[1,'dvqcoefs.f']])
+          },
+          'veloc_calcDischRaymond' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            calc_ts_veloc_calcDischRaymond(
+              utctime = disch_nwis$DateTime,
+              disch = disch_nwis$disch)
+          },
+          'veloc_calcDischHarvey' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            dvqcoefs <- get_meta('dvqcoefs')
+            dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+            if(nrow(dvqcoef) == 0) dvqcoef[1,'k'] <- u(NA,'m s^-1')
+            calc_ts_veloc_calcDischHarvey(
+              utctime = disch_nwis$DateTime,
+              disch = disch_nwis$disch,
+              k = dvqcoef[[1,'dvqcoefs.k']],
+              m = dvqcoef[[1,'dvqcoefs.m']])
+          },
+          'depth_simDisch' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDisch')
+          },
+          'doamp_calcDAmp' = {
+            dopsat_calcObsSat <- read_ts(download_ts("dopsat_calcObsSat", site, on_local_exists="replace"))
+            sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+            combo <- combine_ts(sitetime_calcLon, dopsat_calcObsSat, method='approx')
+            combo <- combo[complete.cases(combo),]
+            calc_ts_doamp_calcDAmp(
+              sitetime = combo$sitetime,
+              longitude = get_site_coords(site)$lon,
+              dopsat = combo$dopsat)
+          },
+          'dosat_calcGGbts' = {
+            best_wtr <- paste0("wtr_", choose_data_source("wtr", site, logic="priority local")$src)
+            wtr_best <- read_ts(download_ts(best_wtr, site, on_local_exists="replace"))
+            baro_nldas <- read_ts(download_ts("baro_nldas", site, on_local_exists="replace"))
+            if(nrow(baro_nldas) != nrow(wtr_best)/2) stop("need nrow(baro)~=nrow(wtr) for dosat_calcGGbts")
+            combo <- combine_ts(wtr_best, baro_nldas, method='approx')
+            calc_ts_dosat_calcGG(
+              utctime = combo$DateTime,
+              wtr = combo$wtr,
+              baro = combo$baro)
+          },
+          'dosat_calcGGbconst' = {
+            best_wtr <- paste0("wtr_", choose_data_source("wtr", site, logic="priority local")$src)
+            wtr_best <- read_ts(download_ts(best_wtr, site, on_local_exists="replace"))
+            . <- '.dplyr.var'
+            elev_ft <- get_meta('basic') %>% .[.$site_name==site,'alt']
+            baro_const <- u(data.frame(DateTime=NA, baro=calc_air_pressure(elevation=elev_ft*u(0.3048,"m ft^-1"), attach.units=TRUE)*u(100, "Pa mb^-1")))
+            if(!is.na(baro_const$DateTime)) stop("need non-NA baro$DateTime for dosat_calcGGbconst")
+            combo <- combine_ts(wtr_best, baro_const, method='approx')
+            calc_ts_dosat_calcGG(
+              utctime = combo$DateTime,
+              wtr = combo$wtr,
+              baro = combo$baro)
+          },
+          'dosat_simGGbts' = {
+            if(length(inputs$baro) < length(inputs$utctime)/2) stop("need length(baro)~=length(utctime) for dosat_simGGbts")
+            calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
+          },
+          'dosat_simGGbconst' = {
+            if(length(inputs$baro) != 1) stop("need 1-row baro for dosat_simGGbconst")
+            calc_ts_with_input_check(inputs, 'calc_ts_dosat_calcGG')
+          },
+          'dopsat_calcObsSat' = {
+            doobs_nwis <- read_ts(download_ts("doobs_nwis", site, on_local_exists="replace"))
+            best_dosat <- paste0("dosat_", choose_data_source("dosat", site, logic="priority local")$src)
+            if(best_dosat == "dosat_NA") stop("could not locate an appropriate dosat ts for site ", site)
+            dosat_best <- read_ts(download_ts(best_dosat, site, on_local_exists="replace"))
+            combo <- combine_ts(doobs_nwis, dosat_best, method='approx')
+            calc_ts_dopsat_calcObsSat(
+              utctime = combo$DateTime, 
+              doobs = combo$doobs, 
+              dosat = combo$dosat)
+          },
+          'dischdaily_calcDMean' = {
+            disch_nwis <- read_ts(download_ts("disch_nwis", site, on_local_exists="replace"))
+            sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+            combo <- combine_ts(sitetime_calcLon, disch_nwis, method='approx', approx_tol=as.difftime(3, units="hours"))
+            combo <- combo[complete.cases(combo),]
+            calc_ts_dischdaily_calcDMean(
+              sitetime = combo$sitetime,
+              longitude = get_site_coords(site)$lon,
+              disch = combo$disch)
+          },
+          'velocdaily_calcDMean' = {
+            best_veloc <- paste0("veloc_", choose_data_source("veloc", site, logic="priority local")$src)
+            if(best_veloc == "veloc_NA") stop("could not locate an appropriate dosat ts for site ", site)
+            veloc_best <- read_ts(download_ts(best_veloc, site, on_local_exists="replace"))
+            sitetime_calcLon <- read_ts(download_ts('sitetime_calcLon', site, on_local_exists="replace"))
+            combo <- combine_ts(sitetime_calcLon, veloc_best, method='approx')
+            combo <- combo[complete.cases(combo),]
+            calc_ts_velocdaily_calcDMean(
+              sitetime = combo$sitetime,
+              longitude = get_site_coords(site)$lon,
+              veloc = combo$veloc)
+          },
+          {
+            stop("the calculation for var_src ", paste0(var, "_", src), " isn't implemented yet")
+          }
+        )
+      }}, error=function(e) {
         message(e, "\n")
         data.frame()
       }
@@ -316,6 +358,40 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
       date.time = utctime, 
       longitude = longitude, 
       time.type = "mean solar")) %>%
+    as.data.frame() %>% u()
+}
+
+#' Internal - calculate sitetimedaily_calcLon from any data
+#' 
+#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param longitude the site longitude in degrees E
+#' @importFrom unitted u
+#'   
+#' @keywords internal
+calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
+  data.frame(
+    DateTime = convert_solartime_to_GMT(
+      solar.time = sitetime, 
+      longitude = longitude, 
+      time.type = "mean solar"),
+    sitetimedaily = sitetime) %>%
+    as.data.frame() %>% u()
+}
+
+#' Internal - calculate sitedate_calcLon from any data
+#' 
+#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param longitude the site longitude in degrees E
+#' @importFrom unitted u
+#'   
+#' @keywords internal
+calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
+  data.frame(
+    DateTime = convert_solartime_to_GMT(
+      solar.time = sitetime, 
+      longitude = longitude, 
+      time.type = "mean solar"),
+    sitedate = as.Date(format(sitetime, "%Y-%m-%d"))) %>%
     as.data.frame() %>% u()
 }
 
@@ -493,6 +569,7 @@ calc_ts_dopsat_calcObsSat <- function(utctime, doobs, dosat) {
 #' @param utctime the DateTime with tz of UTC/GMT
 #' @param value unitted vector of ts values
 #' @importFrom unitted u
+#' @importFrom stats setNames
 #' 
 #' @keywords internal
 calc_ts_simNew <- function(var, utctime, value) {
@@ -533,6 +610,7 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
 #' @keywords internal
 calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
   onedate <- DateTime <- dischdaily <- '.dplyr.var'
+  disch_units <- get_units(disch)
   data.frame(
     date = as.Date(v(sitetime)),
     disch = v(disch)
@@ -547,7 +625,8 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
         longitude=longitude, time.type="mean solar")) %>%
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
-    u(c(NA, get_units(disch)))
+    transform(dischdaily = verify_units(u(dischdaily, disch_units) * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')) %>%
+    u()
 }
 
 #' Internal - calculate daily mean velocity from instantaneous
@@ -580,4 +659,32 @@ calc_ts_velocdaily_calcDMean <- function(sitetime, longitude, veloc) {
     select(DateTime, velocdaily) %>%
     as.data.frame() %>%
     u(c(NA, get_units(veloc)))
+}
+
+
+#' Internal - calculate the daily amplitude in DO
+#' 
+#' @param sitetime the local time, e.g. from sitetime_calcLon
+#' @param doobs the observed DO concentration
+#' @import streamMetabolizer
+#' @importFrom unitted u v
+#' 
+#' @keywords internal
+calc_ts_doamp_calcDAmp <- function(sitetime, longitude, dopsat) {
+  onedate <- DateTime <- doamp <- '.dplyr.var'
+  data.frame(
+    date = as.Date(v(sitetime)),
+    dopsat = v(dopsat)
+  ) %>% 
+    group_by(date) %>%
+    summarize(
+      onedate = date[1],
+      doamp = diff(range(dopsat))) %>%
+    mutate(
+      DateTime = convert_solartime_to_GMT(
+        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude, time.type="mean solar")) %>%
+    select(DateTime, doamp) %>%
+    as.data.frame() %>%
+    u(c(NA, get_units(dopsat)))
 }

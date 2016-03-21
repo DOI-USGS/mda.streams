@@ -10,25 +10,27 @@
 #'   are 'DateTime' for timeseries data or 'site_name' for site metadata.
 #' @param allow_constants logical. if TRUE, tables with \code{NA} in their \code{by} column
 #' @return a joined function
+#' @importFrom stats setNames
 #' @keywords internal
 combine_tables <- function(..., by, fun=combine_dplyr('full_join', by=by), allow_constants=FALSE) {
   dots <- list(...)
   if(length(dots) == 0) return(NULL)
+  
+  is_const <- function(tbl) { is.na(tbl[1,by]) && nrow(tbl)==1 }
+  
   data <- dots[[1]]
-  if(is.na(data[1,by]) && nrow(data)==1) {
+  if(is_const(data)) {
     stop("first table in list should always be a full table, not a const")
   }
   if(!isTRUE(allow_constants)) {
-    const_tbl <- sapply(dots[-1], function(dot) {
-      is.na(dot[1,by]) && nrow(dot)==1
-    })
+    const_tbl <- sapply(dots[-1], is_const)
     if(any(const_tbl)) {
       stop("table ", paste0(const_tbl+1, collapse=", "), " is a const, but allow_constants==FALSE")
     }
   }
   for(dot in dots[-1]) {
     data <- 
-      if(isTRUE(allow_constants) && isTRUE(is.na(dot[1,by]))) {
+      if(isTRUE(allow_constants) && is_const(dot)) {
         data.frame(data, rep(dot[,2],nrow(data))) %>%
           setNames(c(names(data), names(dot[2]))) %>%
           u()

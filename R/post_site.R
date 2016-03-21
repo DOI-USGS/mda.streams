@@ -6,6 +6,7 @@
 #' @return an item list
 #' @author Corinna Gries
 #' @import sbtools
+#' @importFrom stats setNames
 #' @export
 #' @examples 
 #' \dontrun{
@@ -26,7 +27,7 @@ post_site <- function(sites, on_exists=c("stop", "skip", "clear", "replace"), ve
   # check inputs & session
   if(missing(sites) || is.null(sites)) return(invisible(NULL))
   on_exists <- match.arg(on_exists)
-  if(is.null(current_session())) stop("need ScienceBase access; call login_sb() first")
+  sb_require_login("stop")
   
   posted_items <- sapply(setNames(sites, sites), function(site) {
     
@@ -54,7 +55,7 @@ post_site <- function(sites, on_exists=c("stop", "skip", "clear", "replace"), ve
     }
      
     # create the item and add title, scheme, type, and key
-    site_id <- item_create(parent_id=locate_folder("sites"), title=site)
+    site_id <- item_create(locate_folder("sites"), title=site)$id
     item_update_identifier(site_id, scheme=get_scheme(), type="site_root", key=site)
     
     return(site_id)  
