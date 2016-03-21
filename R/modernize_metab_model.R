@@ -1,10 +1,18 @@
 #' Update a metabolism model from SB to meet current formatting requirements
 #' 
 #' Known changes since first models include:
-#' (1) config was the entire info slot, now is an element named config in a list that is the info slot.
-#' (2) config df has more columns now; old columns have not changed names or contents.
-#' (3) the column named 'date' in early fits is now named 'local.date'.
-#' (4) the args list may be expanded from before but retains the same 
+#' 
+#' (1) config was the entire info slot, now is an element named config in a list
+#' that is the info slot.
+#' 
+#' (2) config df has more columns now; old columns have not changed names or
+#' contents.
+#' 
+#' (3) the column named 'date' in early fits and 'local.date' in the next round
+#' is now named 'solar.date'.
+#' 
+#' (4) the args list may be expanded from before but retains the same core
+#' elements.
 #' 
 #' @param metab_model a model or list of models
 #' @import dplyr
@@ -34,9 +42,10 @@ modernize_metab_model <- function(metab_model) {
     new_info <- if(is.list(old_info)) old_info else list()
     new_info$config <- new_config
  
-    # fit: rename 'date' to 'local.date' and add row.first, row.last to metab_night models
+    # fit: rename 'date' and 'local.date' to 'solar.date' and add row.first, row.last to metab_night models
     new_fit <- get_fit(old_mm)
-    if('date' %in% names(new_fit)) names(new_fit)[which(names(new_fit) == 'date')] <- 'local.date'
+    if(any(c('date','local.date') %in% names(new_fit))) 
+      names(new_fit)[which(names(new_fit) %in% c('date','local.date'))] <- 'solar.date'
     if(class(old_mm)=='metab_night' && !('row.first' %in% names(get_data(old_mm)))) {
       new_fit_rows <- streamMetabolizer:::mm_model_by_ply(
         function(data_ply, data_daily_ply, day_start, day_end, local_date, tests, model_specs) {
@@ -50,7 +59,7 @@ modernize_metab_model <- function(metab_model) {
         day_start=get_args(old_mm)$day_start, day_end=get_args(old_mm)$day_end,
         tests=c(), model_specs=c()
       )
-      new_fit <- left_join(new_fit, new_fit_rows, by='local.date')
+      new_fit <- left_join(new_fit, new_fit_rows, by='solar.date')
     }
     
     if(class(old_mm) == 'metab_bayes') {
@@ -66,8 +75,11 @@ modernize_metab_model <- function(metab_model) {
     # function, leave it untouched
     new_args <- get_args(old_mm)
     
-    # data: leave untouched for the nonce (but see below)
+    # data: rename 'local.time' to 'solar.time' (and also see below, where we'll
+    # add preds to the data after putting it into a new metab_model)
     new_data <- get_data(old_mm)
+    if('local.time' %in% names(new_data))
+      names(new_data)[which(names(new_data) == 'local.time')] <- 'solar.time'
     
     # data_daily: may be missing from older sites, so seek it robustly.
     # Otherwise, don't change it.

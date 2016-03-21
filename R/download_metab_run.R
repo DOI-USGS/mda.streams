@@ -33,6 +33,7 @@ download_metab_run <- function(title, files=NA, folder = tempdir(),
   
   # prepare the item download specs
   ids <- locate_metab_run(title=title)
+  if(any(is.na(ids))) stop("could not locate the metab_run; check title")
   if(is.na(files)) {
     files <- lapply(ids, function(id) item_list_files(id)$fname)
   } else {
@@ -46,7 +47,7 @@ download_metab_run <- function(title, files=NA, folder = tempdir(),
   # make inner folder[s] for this run
   inner_folder <- file.path(folder, title)
   for(infold in inner_folder) {
-    dir.create(infold)
+    dir.create(infold, showWarnings = FALSE)
   }
   
   download_item_files(
