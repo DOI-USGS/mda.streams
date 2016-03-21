@@ -8,12 +8,14 @@
 #' @param var the variable name of the output, e.g., 'doobs'
 #' @param src the source of the data, e.g., 'nwis' or 'nldas'
 #' @param folder the folder to write the file in
+#' @param version the output version for the file (tsv, rds)
 #' @keywords internal
 #' @importFrom lubridate tz
 #' @importFrom unitted u
 #' @export
-write_ts <- function(data, site, var, src, folder){
+write_ts <- function(data, site, var, src, folder, version=c('tsv','rds')){
   
+  version <- match.arg(version)
   verify_var_src(var, src, on_fail=warning)
   
   if (!verify_ts(data, var, checks=c('ncol','names')))
@@ -36,9 +38,14 @@ write_ts <- function(data, site, var, src, folder){
   if (nrow(data) == 0)
     invisible(NULL)
   
-  fpath <- make_ts_path(site, make_ts_name(var, src), folder)
-  gz_con <- gzfile(fpath, "w")
-  write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
-  close(gz_con)
+  fpath <- make_ts_path(site, make_ts_name(var, src), folder, version)
+  if (version == 'tsv'){
+    gz_con <- gzfile(fpath, "w")
+    write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
+    close(gz_con)
+  } else if (version == 'rds'){
+    saveRDS(data, file = fpath, compress=pkg.env$rds_compression)
+  }
+  
   invisible(fpath)
 }
