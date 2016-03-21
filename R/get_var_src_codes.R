@@ -23,15 +23,17 @@
 get_var_src_codes <- function(..., out, drop=TRUE) {
   # get the codes
   if(!exists('tsmeta_varsrccodes', envir=pkg.env)) {
-    var_src_codes <- tryCatch({
-      code_item <- locate_ts_meta('varsrccodes')
-      code_file <- file.path(tempdir(), 'varsrccodes.tsv')
-      sbtools::item_file_download(sb_id=code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file, overwrite_file = TRUE)
-      read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
-    }, error=function(e) {
-      warning("had trouble downloading tsmeta_varsrccodes; using local copy")
-      build_sysdata(post=FALSE)
-    })
+    # TEMPORARY CHANGE WHILE SWITCHING TO solar.time IN streamMetabolizer AND mda.streams. switch back on GRAN build
+    # var_src_codes <- tryCatch({
+    #   code_item <- locate_ts_meta('varsrccodes')
+    #   code_file <- file.path(tempdir(), 'varsrccodes.tsv')
+    #   sbtools::item_file_download(sb_id=code_item, names='tsmeta_varsrccodes.tsv', destinations=code_file, overwrite_file = TRUE)
+    #   read.table(file=code_file, header=TRUE, sep='\t', colClasses='character', stringsAsFactors=FALSE, fill=TRUE, quote="\"")
+    # }, error=function(e) {
+    #   warning("had trouble downloading tsmeta_varsrccodes; using local copy")
+    #   build_sysdata(post=FALSE)
+    # })
+    var_src_codes <- build_sysdata(post=FALSE)
     assign(x='tsmeta_varsrccodes', value=var_src_codes, envir=pkg.env)
   }
   codes <- pkg.env$tsmeta_varsrccodes

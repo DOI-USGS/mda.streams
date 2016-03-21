@@ -2,7 +2,7 @@
 
 ## Changes
 
-* file downloads are faster and more internally streamlined
+* file downloads are faster and more internally streamlined (0.8.17)
 
 * get_metab_model now posts a modernized model to SB when practical (0.8.16)
 

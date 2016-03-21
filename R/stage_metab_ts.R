@@ -32,7 +32,7 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     # add a DateTime column to preds, using noon sitetime (mean solar time) to
     # represent each corresponding Date
     coords <- get_site_coords(site)
-    preds$DateTime <- convert_solartime_to_GMT(
+    preds$DateTime <- convert_solartime_to_UTC(
       as.POSIXct(paste0(preds$local.date, " 12:00:00"), tz="UTC"), 
       longitude=coords$lon, time.type="mean solar")
     

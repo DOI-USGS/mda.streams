@@ -7,7 +7,7 @@
 calc_ts_dopsat_calcObsSat(utctime, doobs, dosat)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{doobs}{the observed DO concentration}
 

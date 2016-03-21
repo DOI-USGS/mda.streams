@@ -346,7 +346,7 @@ calc_ts_with_input_check <- function(inputs, calc_fun) {
 
 #' Internal - calculate sitetime_calcLon from any data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param longitude the site longitude in degrees E
 #' @importFrom unitted u
 #' 
@@ -354,7 +354,7 @@ calc_ts_with_input_check <- function(inputs, calc_fun) {
 calc_ts_sitetime_calcLon <- function(utctime, longitude) {
   data.frame(
     DateTime = utctime,
-    sitetime = convert_GMT_to_solartime(
+    sitetime = convert_UTC_to_solartime(
       date.time = utctime, 
       longitude = longitude, 
       time.type = "mean solar")) %>%
@@ -363,15 +363,15 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
 
 #' Internal - calculate sitetimedaily_calcLon from any data
 #' 
-#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param sitetime the DateTimes of the local noons of interest, in UTC
 #' @param longitude the site longitude in degrees E
 #' @importFrom unitted u
 #'   
 #' @keywords internal
 calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
   data.frame(
-    DateTime = convert_solartime_to_GMT(
-      solar.time = sitetime, 
+    DateTime = convert_solartime_to_UTC(
+      any.solar.time = sitetime, 
       longitude = longitude, 
       time.type = "mean solar"),
     sitetimedaily = sitetime) %>%
@@ -380,15 +380,15 @@ calc_ts_sitetimedaily_calcLon <- function(sitetime, longitude) {
 
 #' Internal - calculate sitedate_calcLon from any data
 #' 
-#' @param sitetime the DateTimes of the local noons of interest, in UTC/GMT
+#' @param sitetime the DateTimes of the local noons of interest, in UTC
 #' @param longitude the site longitude in degrees E
 #' @importFrom unitted u
 #'   
 #' @keywords internal
 calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
   data.frame(
-    DateTime = convert_solartime_to_GMT(
-      solar.time = sitetime, 
+    DateTime = convert_solartime_to_UTC(
+      any.solar.time = sitetime, 
       longitude = longitude, 
       time.type = "mean solar"),
     sitedate = as.Date(format(sitetime, "%Y-%m-%d"))) %>%
@@ -397,7 +397,7 @@ calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
 
 #' Internal - calculate suntime_calcLon from any data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param longitude the site longitude in degrees E
 #' @importFrom unitted u
 #' 
@@ -405,7 +405,7 @@ calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
 calc_ts_suntime_calcLon <- function(utctime, longitude) {
   data.frame(
     DateTime = utctime,
-    suntime = convert_GMT_to_solartime(
+    suntime = convert_UTC_to_solartime(
       date.time = utctime, 
       longitude = longitude, 
       time.type = "apparent solar")) %>%
@@ -414,7 +414,7 @@ calc_ts_suntime_calcLon <- function(utctime, longitude) {
 
 #' Internal - calculate par_calcLat from any data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param suntime the apparent solar time at the site
 #' @param latitude the site latitude in degrees N
 #' @import streamMetabolizer
@@ -426,14 +426,14 @@ calc_ts_par_calcLat <- function(utctime, suntime, latitude) {
     DateTime = utctime,
     par = convert_SW_to_PAR(
       calc_solar_insolation(
-        solar.time = suntime,
+        app.solar.time = suntime,
         latitude = latitude))) %>% 
     u()
 }
 
 #' Internal - calculate par from SW data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param sw shortwave radiation in W m^-2
 #' @import streamMetabolizer
 #' @importFrom unitted u
@@ -450,7 +450,7 @@ calc_ts_par_calcSw <- function(utctime, sw) {
 #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' coefficients
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param disch the discharge in ft^3 s^-1
 #' @importFrom unitted u
 #' @import streamMetabolizer
@@ -466,7 +466,7 @@ calc_ts_depth_calcDisch <- function(utctime, disch) {
 #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' coefficients
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param disch the discharge in ft^3 s^-1
 #' @importFrom unitted u
 #' @import streamMetabolizer
@@ -482,7 +482,7 @@ calc_ts_depth_calcDischRaymond <- function(utctime, disch) {
 #' Internal - calculate depth_calcDisch from discharge and depth-vs-discharge
 #' coefficients from Jud Harvey
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param disch the discharge in ft^3 s^-1
 #' @param c the multiplier in d = c * Q^f
 #' @param f the exponent in d = c * Q^f
@@ -500,7 +500,7 @@ calc_ts_depth_calcDischHarvey <- function(utctime, disch, c, f) {
 #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' coefficients
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param disch the discharge in ft^3 s^-1
 #' @importFrom unitted u
 #' @import streamMetabolizer
@@ -517,7 +517,7 @@ calc_ts_veloc_calcDischRaymond <- function(utctime, disch) {
 #' Internal - calculate velocity from discharge and velocity-vs-discharge 
 #' coefficients from Jud Harvey
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param disch the discharge in ft^3 s^-1
 #' @param k the multiplier in U = k * Q^m
 #' @param m the exponent in U = k * Q^m
@@ -534,7 +534,7 @@ calc_ts_veloc_calcDischHarvey <- function(utctime, disch, k, m) {
 
 #' Internal - calculate dosat_calcGG from any data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param wtr the water temperature
 #' @param baro the barometric pressure
 #' @importFrom unitted u
@@ -551,7 +551,7 @@ calc_ts_dosat_calcGG <- function(utctime, wtr, baro) {
 
 #' Internal - calculate dopsat_calcObsSat from any data
 #' 
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param doobs the observed DO concentration
 #' @param dosat the DO concentration at saturation
 #' @importFrom unitted u
@@ -566,7 +566,7 @@ calc_ts_dopsat_calcObsSat <- function(utctime, doobs, dosat) {
 #' Internal - calculate any variable with simNew from any data
 #' 
 #' @param var the variable name
-#' @param utctime the DateTime with tz of UTC/GMT
+#' @param utctime the DateTime with tz of UTC
 #' @param value unitted vector of ts values
 #' @importFrom unitted u
 #' @importFrom stats setNames
@@ -620,9 +620,10 @@ calc_ts_dischdaily_calcDMean <- function(sitetime, longitude, disch) {
       onedate = date[1],
       dischdaily = mean(disch)) %>%
     mutate(
-      DateTime = convert_solartime_to_GMT(
-        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
-        longitude=longitude, time.type="mean solar")) %>%
+      DateTime = convert_solartime_to_UTC(
+        any.solar.time=as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+        longitude=longitude,
+        time.type="mean solar")) %>%
     select(DateTime, dischdaily) %>%
     as.data.frame() %>%
     transform(dischdaily = verify_units(u(dischdaily, disch_units) * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')) %>%
@@ -653,7 +654,7 @@ calc_ts_velocdaily_calcDMean <- function(sitetime, longitude, veloc) {
       onedate = date[1],
       velocdaily = mean(veloc)) %>%
     mutate(
-      DateTime = convert_solartime_to_GMT(
+      DateTime = convert_solartime_to_UTC(
         as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
         longitude=longitude, time.type="mean solar")) %>%
     select(DateTime, velocdaily) %>%
@@ -681,8 +682,8 @@ calc_ts_doamp_calcDAmp <- function(sitetime, longitude, dopsat) {
       onedate = date[1],
       doamp = diff(range(dopsat))) %>%
     mutate(
-      DateTime = convert_solartime_to_GMT(
-        as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
+      DateTime = convert_solartime_to_UTC(
+        any.solar.time=as.POSIXct(paste0(onedate, " 12:00:00"), tz="UTC"), 
         longitude=longitude, time.type="mean solar")) %>%
     select(DateTime, doamp) %>%
     as.data.frame() %>%
