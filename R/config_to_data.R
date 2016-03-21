@@ -271,15 +271,25 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' Most of this code is the same whether it's a pred (the name of a model on 
 #' sciencebase) or a pred_file (the name of a local file name)
 #' 
+#' The trick is that model predictions only store the input time, with was 
+#' either local.time (< streamMetabolizer 0.8.0) or solar.time (>=0.8.0) rather 
+#' than UTC time. So this function draws on our knowledge of the site-specific 
+#' mapping between UTC time and solar.time or solar.date (as stored in sitetime 
+#' and sitedate, respectively) to come up with the UTC DateTime stamps that 
+#' correspond to these predictions. We could potentially just use
+#' convert_solartime_to_UTC, but I'm nervous about tiny imprecisions that would
+#' make these not match up to other DateTime stamps.
+#' 
 #' @param var the variable name to retrieve
 #' @param src the model_name or model file name
-#' @param type character in c("SB","file") indicating whether src is a
-#'   model on sciencebase or a local file name
+#' @param type character in c("SB","file") indicating whether src is a model on 
+#'   sciencebase or a local file name
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
 #' @keywords internal
 config_preds_to_data_column <- function(var, site, src, type) {
+  # load the model
   mm <- if(type=="pred") {
     get_metab_model(src) 
   } else if(type=="pred_file") {
@@ -287,34 +297,65 @@ config_preds_to_data_column <- function(var, site, src, type) {
     get(varname) %>% 
       modernize_metab_model()
   }
-  dailypredvars <- c(K600="K600",K600lwr="K600.lower",K600upr="K600.upper",
-                     gpp="GPP",gpplwr="GPP.lower",ggpupr="GPP.upper",
-                     er="ER",erlwr="ER.lower",erupr="ER.upper")
-  local.time <- local.date <- DateTime <- DO.obs <- '.dplyr.var'
-  if(var == "doobs") {
-    # get key for sitetime
-    sitetime_choice <- choose_data_source("sitetime", site, "priority local")
-    datetime_key <- config_to_data_column(var="sitetime", type="ts", site, sitetime_choice$src)
-    # get predictions
-    preds <- predict_DO(mm) %>% 
-      mutate(DateTime=datetime_key[match(local.time, datetime_key$sitetime), "DateTime"]) %>%
-      select(DateTime, doobs=DO.obs)
-    # make sure we only get one obs per local.time, even if the time ranges
-    # overlap. pick the first (using match)
-    preds <- preds[!is.na(preds$doobs), ]
-    unique_pred_times <- unique(preds$DateTime)
-    preds <- preds[match(unique_pred_times, preds$DateTime),]
+  
+  # determine which temporal resolution we'll be working in and which
+  dailypredvars <- c(
+    K600="K600",K600lwr="K600.lower",K600upr="K600.upper",
+    gpp="GPP",gpplwr="GPP.lower",ggpupr="GPP.upper",
+    er="ER",erlwr="ER.lower",erupr="ER.upper")
+  if(var=='doobs') {
+    resolution <- 'inst'
+    preds_var <- c(doobs='DO.obs')
   } else if(var %in% names(dailypredvars)) {
-    # get key for sitedate
-    sitedate_choice <- choose_data_source("sitedate", site, "priority local")
-    datetime_key <- config_to_data_column(var="sitedate", type="ts", site, sitedate_choice$src)
-    # get predictions
-    preds <- predict_metab(mm) %>%
-      #mutate(local.time=as.POSIXct(paste0(date, " 12:00:00"), tz="UTC")) %>%
-      mutate(DateTime=datetime_key[match(local.date, datetime_key$sitedate), "DateTime"]) %>%
-      select_('DateTime', dailypredvars[[var]]) %>%
-      setNames(c('DateTime', names(dailypredvars[var])))
+    resolution <- 'daily'
+    preds_var <- dailypredvars[var]
+  } else {
+    stop('cannot determine temporal resolution of desired prediction')
   }
+  
+  # get predictions
+  preds <- switch(
+    resolution,
+    inst=predict_DO(mm),
+    daily=predict_metab(mm))
+  
+  # determine which time translation needs to happen
+  preds_res <- '.dplyr.var'
+  time_relation <- 
+    data_frame(
+      preds_res = c('inst','daily'),
+      preds_col = c('solar.time','solar.date'),
+      ts_col = c('sitetime','sitedate')) %>%
+    filter(preds_res == resolution)
+  
+  if(resolution=='inst') {
+    # remove NA predictions, which might occur if the predictors were available
+    # for a partial day and GPP, etc. were not fit for that partial day
+    preds <- preds[!is.na(preds[[unname(preds_var)]]), ]
+    
+    # filter predictions to only those that are the first of each timestamp (even 
+    # though some models will have had >24-hour 'days' and therefore two 
+    # predictions per time that falls into two 'days'). match() picks the first
+    # match when there's more than one available
+    preds <- preds[match(unique(preds[[time_relation$preds_col]]), preds[[time_relation$preds_col]]),]
+  }
+  
+  # download and format the appropriate datetime key for translating from preds_time to DateTime
+  preds_time_config <- c(var=time_relation$ts_col, as.list(choose_data_source(time_relation$ts_col, site, "priority local"))[c('type','site','src')])
+  datetime_key <- v(do.call(config_to_data_column, preds_time_config))
+    
+  # add translated DateTime to preds. use match(), which picks the first match,
+  # to make sure we only get one prediction per DateTime even if the time ranges 
+  # overlap
+  preds_w_DateTime <- inner_join(preds, datetime_key, by=setNames(time_relation$ts_col, time_relation$preds_col))
+  if(nrow(preds_w_DateTime) != nrow(preds)) stop('failed to match up model predictions to UTC DateTime')
+  preds <- preds_w_DateTime
+  
+  # select just the two columns we need
+  preds <- preds %>%
+    select_('DateTime', unname(preds_var)) %>%
+    setNames(c('DateTime', names(preds_var)))
+  
   # add units and return
   myvar <- var # need just for following line in get_var_src_codes
   varunits <- unique(get_var_src_codes(var==myvar, out='units'))

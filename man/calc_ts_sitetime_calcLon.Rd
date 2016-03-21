@@ -7,7 +7,7 @@
 calc_ts_sitetime_calcLon(utctime, longitude)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{longitude}{the site longitude in degrees E}
 }

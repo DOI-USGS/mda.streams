@@ -4,5 +4,5 @@
 #' @return config data.frame
 #' @export
 read_config <- function(file) {
-  read.table(file, sep="\t", header=TRUE, stringsAsFactors=FALSE)
+  read.table(file, sep="\t", header=TRUE, stringsAsFactors=FALSE, colClasses='character')
 }

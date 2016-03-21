@@ -8,7 +8,7 @@ coefficients}
 calc_ts_depth_calcDischRaymond(utctime, disch)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{disch}{the discharge in ft^3 s^-1}
 }
