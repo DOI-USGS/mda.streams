@@ -41,7 +41,6 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     
     # parse the file name to determine where to post the file
     ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
-
     # don't even try if the var_src shouldn't be there
     verify_var_src(ts_path$var_src, on_fail=stop)
         
@@ -55,12 +54,12 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     ts_id <- locate_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, by="either")
     if (is.na(ts_id)) {
       ts_id <- item_create(site_root, title=ts_path$ts_name)$id
-      ts_files <- c()
+      file_exists <- FALSE
     } else{
-      ts_files <- item_list_files(sb_id = ts_id)$fname # what happens when item exists w/o file?
+      file_exists <- basename(files[i]) %in% sbtools::item_list_files(sb_id = ts_id)$fname 
     }
     
-    if (basename(files[i]) %in% ts_files){
+    if (file_exists){
       if(verbose) message('the ', ts_path$ts_name, ' timeseries for site ', ts_path$site_name, ' already exists')
       switch(
         on_exists,
@@ -89,9 +88,9 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           dir.create(post_merge_dir, showWarnings=FALSE)
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
-          delete_ts(ts_path$var_src, ts_path$site_name, files_only=TRUE, verbose=verbose)
+          item_rm_files(ts_id, files = basename(files[i]))
         })
-    }
+    } # // else, it doesn't exist and we add it, just like we are doing below regardless
     
     # attach data file to ts item. SB quirk: must be done before tagging with 
     # identifiers, or identifiers will be lost
