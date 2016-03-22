@@ -33,6 +33,8 @@
 #' @export
 stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE){
 
+  version <- match.arg(version)
+  
   # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
   # all_sites <- list_sites()
   # all_files <- stage_nwis_ts(sites = all_sites, var = "doobs", times = c('2014-06-01','2014-06-02'), verbose=TRUE)
@@ -118,7 +120,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
       site_data <- filter(nwis_data, site_no == site)
       which.var <- select(site_data, -DateTime, -site_no) %>% 
         tidyr::gather() %>% group_by(key) %>% summarize(keys = sum(!is.na(value))) %>% 
-        filter(keys==max(keys)) %>% select(key) %>% .$key
+        filter(keys==max(keys)) %>% .$key[1]
       
       site_data <- select_(site_data, 'DateTime', which.var) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)

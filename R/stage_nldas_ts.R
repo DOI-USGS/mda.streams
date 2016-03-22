@@ -26,6 +26,8 @@
 #' @export
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE, ...){
   
+  version <- match.arg(version)
+  
   if(length(var) > 1) stop("one var at a time, please")
   verify_var_src(var, "nldas", on_fail=warning)
   vars <- var # need a renamed version for get_var_src_codes filter on var
