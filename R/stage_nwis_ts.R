@@ -98,11 +98,10 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
           }
           data.frame()
         })
-      datacol <- names(nwis_data)[5]
-      nwis_data <- nwis_data %>%
-        mutate(DateTime = dateTime) %>%
-        select_('site_no', 'DateTime', datacol) %>%
-        setNames(c('site_no', 'DateTime', var))
+      ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
+      nwis_data <- nwis_data[, !ignore.cols] %>%
+        rename(DateTime = dateTime) %>%
+        select(site_no, DateTime, everything())
     }
   )
   
@@ -115,10 +114,15 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
     for (i in 1:length(un_sites)){
       
       site <- parse_site_name(un_sites[i])
-      site_data <- filter(nwis_data, site_no == site) %>%
-        select_('DateTime', var) %>%
+      site_data <- filter(nwis_data, site_no == site)
+      which.var <- select(site_data, -DateTime, -site_no) %>% 
+        tidyr::gather() %>% group_by(key) %>% summarize(keys = sum(!is.na(value))) %>% 
+        filter(keys==max(keys)) %>% select(key) %>% .$key
+      
+      site_data <- select_(site_data, 'DateTime', which.var) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
-        u(c(NA,var_units))
+        u(c(NA,var_units)) %>% 
+        setNames(c('DateTime', var))
 
       if(nrow(site_data) > 0) {
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder, version=version)
