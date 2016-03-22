@@ -28,7 +28,7 @@
 #' set_scheme("mda_streams_")
 #' }
 #' @export
-post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE){
+post_ts = function(files, on_exists=c("stop", "skip", "replace_file", "merge"), verbose=TRUE){
   
   # check inputs & session
   if(is.null(files)) return(invisible(NULL))
@@ -68,7 +68,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           if(verbose) message("skipping timeseries item already on ScienceBase: ", ts_id)
           return(NA) # na is signal that doesn't need new tags
         },
-        "replace"={ 
+        "replace_file"={ 
           if(verbose) message("deleting timeseries data before replacement: ", ts_id)
           item_rm_files(ts_id, files = basename(files[i]))
         },
