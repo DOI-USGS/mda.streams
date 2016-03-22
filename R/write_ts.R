@@ -18,22 +18,23 @@ write_ts <- function(data, site, var, src, folder, version=c('tsv','rds')){
   version <- match.arg(version)
   verify_var_src(var, src, on_fail=warning)
   
-  if (!verify_ts(data, var, checks=c('ncol','names')))
+  if (!verify_ts(data, var, checks=c('ncol','names', 'tz','units')))
     stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
+
   
   # store the timezone code[s] in the units field[s]; read_ts will pull it back out
-  if(!("" == get_units(data$DateTime))) stop("timeseries DateTime units should be empty on ")
-  data$DateTime <- u(data$DateTime, tz(data$DateTime))
-  
-  if (!verify_ts(data, var, checks=c('tz','units')))
-    stop('timeseries input for site ',site,', var ',var,', and src ', src, ' is not valid')
-  
-  # store the timezone code in the units field for suntime, too, now that we've checked
-  if(names(data)[2] %in% c("sitetime", "suntime")) {
-    if(tz(data[,2]) != "UTC") stop("tz of ",names(data)[2]," must be 'UTC'")
-    if(get_units(data[,2]) != "") stop(names(data)[2], " units should be empty on call to write_ts")
-    data[,2] <- u(data[,2], 'UTC')
+  if (version=='tsv'){
+
+    data$DateTime <- u(data$DateTime, tz(data$DateTime))
+
+    # store the timezone code in the units field for suntime, too, now that we've checked
+    if(names(data)[2] %in% c("sitetime", "suntime")) {
+      if(tz(data[,2]) != "UTC") stop("tz of ",names(data)[2]," must be 'UTC'")
+      if(get_units(data[,2]) != "") stop(names(data)[2], " units should be empty on call to write_ts")
+      data[,2] <- u(data[,2], 'UTC')
+    }
   }
+  
   
   if (nrow(data) == 0)
     invisible(NULL)
