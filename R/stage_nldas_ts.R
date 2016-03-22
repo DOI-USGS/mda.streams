@@ -7,6 +7,8 @@
 #' @param times a length 2 vector of POSIXct dates
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
+#' @param version character string indicating whether you want to stage the 
+#'   \code{ts} as a .tsv or .rds
 #' @param verbose logical. provide verbose output?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #' @return a file handle for time series file created
