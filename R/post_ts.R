@@ -28,7 +28,7 @@
 #' set_scheme("mda_streams_")
 #' }
 #' @export
-post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbose=TRUE){
+post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archive"), verbose=TRUE){
   
   # check inputs & session
   if(is.null(files)) return(invisible(NULL))
@@ -40,7 +40,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
     if(verbose) message('preparing to post file ', files[i])
     
     # parse the file name to determine where to post the file
-    ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name'))
+    ts_path <- parse_ts_path(files[i], out = c('ts_name','var','src','var_src','site_name','file_name','dir_name','version'))
     # don't even try if the var_src shouldn't be there
     verify_var_src(ts_path$var_src, on_fail=stop)
         
@@ -63,7 +63,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
       if(verbose) message('the ', ts_path$ts_name, ' timeseries for site ', ts_path$site_name, ' already exists')
       switch(
         on_exists,
-        "stop"={ stop('item already exists and on_exists="stop"') },
+        "stop"={ stop('item already exists and on_exists="stop"', call.=FALSE) },
         "skip"={ 
           if(verbose) message("skipping timeseries item already on ScienceBase: ", ts_id)
           return(NA) # na is signal that doesn't need new tags
@@ -76,7 +76,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           if(verbose) message("merging new timeseries with old: ", ts_id)
           pre_merge_dir <- file.path(ts_path$dir_name, "pre_merge_temp")
           dir.create(pre_merge_dir, showWarnings=FALSE)
-          ts_old <- read_ts(download_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, folder=pre_merge_dir, on_local_exists="replace"))
+          ts_old <- read_ts(download_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, folder=pre_merge_dir, version=ts_path$version, on_local_exists="replace"))
           ts_new <- read_ts(files[i])
           # join. these lines should be changed once unitted::full_join.unitted is implemented
           if(!all.equal(get_units(ts_old), get_units(ts_new))) stop("units mismatch between old and new ts files")
@@ -89,11 +89,12 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge"), verbo
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
           item_rm_files(ts_id, files = basename(files[i]))
+        },
+        "archive"={
+         stop("archive not yet implemented for 'post_ts'", call. = FALSE) 
         })
-    } # // else, it doesn't exist and we add it, just like we are doing below regardless
+    } # // else, it doesn't exist and we add it, just like we are doing below for all cases that make it this far
     
-    # attach data file to ts item. SB quirk: must be done before tagging with 
-    # identifiers, or identifiers will be lost
     if(verbose) message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
     item_append_files(ts_id, files = files[i])
 

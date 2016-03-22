@@ -4,7 +4,7 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
+post_ts(files, on_exists = c("stop", "skip", "replace", "merge", "archive"),
   verbose = TRUE)
 }
 \arguments{
