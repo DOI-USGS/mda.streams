@@ -55,6 +55,9 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
     if (is.na(ts_id)) {
       ts_id <- item_create(site_root, title=ts_path$ts_name)$id
       file_exists <- FALSE
+      if(verbose) 
+        message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
+      item_append_files(ts_id, files = files[i])
     } else{
       file_exists <- basename(files[i]) %in% sbtools::item_list_files(sb_id = ts_id)$fname 
     }
@@ -69,8 +72,11 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
           return(NA) # na is signal that doesn't need new tags
         },
         "replace"={ 
-          if(verbose) message("deleting timeseries data before replacement: ", ts_id)
-          item_rm_files(ts_id, files = basename(files[i]))
+          if(verbose) {
+            message("deleting timeseries data before replacement: ", ts_id)
+            message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
+          }
+          item_replace_files(ts_id, files = basename(files[i]), all=FALSE)
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
@@ -88,17 +94,13 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
           dir.create(post_merge_dir, showWarnings=FALSE)
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
-          item_rm_files(ts_id, files = basename(files[i]))
+          item_replace_files(ts_id, files = basename(files[i]), all=FALSE)
         },
         "archive"={
          stop("archive not yet implemented for 'post_ts'", call. = FALSE) 
         })
-    } # // else, it doesn't exist and we add it, just like we are doing below for all cases that make it this far
-    
-    if(verbose) message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
-    item_append_files(ts_id, files = files[i])
+    }
 
-    # return id as signal that needs tags
     return(ts_id)
   })
   invisible(ts_ids)
