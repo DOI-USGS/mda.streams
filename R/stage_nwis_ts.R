@@ -15,6 +15,7 @@
 #' @importFrom unitted u
 #' @importFrom stats setNames
 #' @importFrom lubridate with_tz
+#' @importFrom tidyr gather
 #' @import dplyr
 #'   
 #' @examples
