@@ -26,7 +26,7 @@
 #' @export
 get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3, units="hours"), 
                    on_local_exists='skip', on_invalid='stop', match_var = "leftmost", 
-                   condense_stat = "mean", day_start = 4, day_end = 28) {
+                   condense_stat = mean, day_start = 4, day_end = 28) {
 
   if(length(site_name) > 1) stop("only one site_name is allowed")
   if(length(match_var) > 1) stop("only one match_var is allowed")
@@ -49,7 +49,10 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     data_list_ordered <- data_list[c(var_index, not_var_index)] #ordered with match_var on far left for use in combine_ts
     var_src_ordered <- var_src[c(var_index, not_var_index)]
 
-    warning_info <- warning_table(var_src_ordered, condense_stat, data_list_ordered, site_name)
+    condense_stat_nm <-as.character(substitute(condense_stat))[1] 
+    if(condense_stat_nm == 'function'){condense_stat_nm <- 'custom function'} 
+    
+    warning_info <- warning_table(var_src_ordered, condense_stat_nm, data_list_ordered, site_name, method)
 
     # applying condense_stat
     to_condense <- grep("Condensed", warning_info$result)
@@ -58,11 +61,20 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
                         get_meta("basic") %>% v() %>% filter(site_name == get('site_name')) %>% .$lon,
                         NA)
     
-    data_list_ordered[to_condense] <- lapply(data_list_ordered[to_condense], condense_by_stat,
-                                             condense_stat = condense_stat, site_lon = longitude, 
-                                             day_start = day_start, day_end = day_end)
+    #distinguish NA observations from NAs added during the full_join
+    original_obs_list <- lapply(data_list_ordered[to_condense], function(d){
+      nm <- paste0("has.", names(d)[2])
+      d[[nm]] <- TRUE
+      return(d)
+    })
+    original_obs_list$by <- "DateTime"
+    to_condense_df <- do.call("full_join", original_obs_list)
     
-    combo <- do.call(combine_ts, c(data_list_ordered, list(method=method, approx_tol=approx_tol)))
+    vars_condensed_list <- condense_by_stat(to_condense_df, condense_stat = condense_stat, site_lon = longitude, 
+                          day_start = day_start, day_end = day_end)
+    data_list_condensed <- append(data_list_ordered[-to_condense], vars_condensed_list)
+    
+    combo <- do.call(combine_ts, c(data_list_condensed, list(method=method, approx_tol=approx_tol)))
     combo <- combo[, df_order] #put columns back as user specified
     
   } else {
@@ -82,6 +94,7 @@ condense_by_stat <- function(ts, condense_stat, site_lon, day_start, day_end){
     data_daily=NULL,
     day_start=day_start,
     day_end=day_end,
+    #day_tests = c(),
     stat_func=condense_stat
   )
   
@@ -89,10 +102,13 @@ condense_by_stat <- function(ts, condense_stat, site_lon, day_start, day_end){
     mutate(DateTime = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
                                                  longitude=site_lon, time.type="mean solar")) %>% 
     select(DateTime, everything(), -date) %>% 
-    u(get_units(ts))
+    u(get_units(ts)[names(.)])
   
-  return(ts_condensed)
- 
+  ts_condensed_list <- lapply(2:length(ts_condensed), function(var_col, df_all){
+    df <- df_all[, c(1, var_col)]
+  }, df_all = ts_condensed)
+  
+  return(ts_condensed_list)
 }
 
 condense_by_ply <- function(data_ply, data_daily_ply, ..., day_start, day_end, ply_date) {
@@ -100,14 +116,21 @@ condense_by_ply <- function(data_ply, data_daily_ply, ..., day_start, day_end, p
   
   dates_col <- which(names(data_ply) == "solar.time")
   data_col <- which(!names(data_ply) %in% c("DateTime", "solar.time"))
+  vars <- grep("has", names(data_ply[data_col]), invert = TRUE, value = TRUE)
   
-  summarize_stat <- data.frame(do.call(args$stat_func, list(data_ply[, data_col]))) %>% 
-    setNames(names(data_ply)[data_col])
+  vars_list <- lapply(setNames(vars, vars), function(var, df, stat_func){
+    has_nm <- paste0("has.", var)
+    has <- which(!is.na(df[,has_nm]))
+    condensed_var <- stat_func(df[has, var])
+    return(condensed_var)
+  }, df = data_ply, stat_func = args$stat_func)
+  
+  summarize_stat <- as.data.frame(vars_list)
   
   return(summarize_stat)
 }
 
-warning_table <- function(var_src, condense_stat, data, site_name){
+warning_table <- function(var_src, condense_stat, data, site_name, method){
   timestep_df <- summarize_ts(var_src, site_name, out="modal_timestep") %>% unitted::v()
 
   all_dates <- do.call(rbind, lapply(data, function(data) {
@@ -121,17 +144,24 @@ warning_table <- function(var_src, condense_stat, data, site_name){
   get_timestep_info <- function(v, t, s, e, condense_stat, t_match, s_match, e_match){
     
     res_words <- switch(as.character(t),
-                        "15" = "15 min",
                         "60" = "hourly",
-                        "1440" = "daily")
+                        "1440" = "daily",
+                        paste(t, "min"))
     
-    if(t == t_match){res_result <- "As is"}
-    if(t > t_match){res_result <- "NAs introduced"}
-    if(!exists("res_result") & condense_stat == "match"){
-      res_result <- "Matched by approx"
-    } else {
-      if(t < t_match & t_match == 60){res_result <- "Matched by approx (condense_stat not supported)"}
-      if(t < t_match & t_match != 60){res_result <- paste("Condensed by", condense_stat)}
+    if(t == t_match){
+      res_result <- "As is"
+    }else if(t > t_match){
+      res_result <- "NAs introduced"
+    }else {
+      if(condense_stat == "match"){
+        res_result <- paste("Matched by", method)
+      } else {
+        if(t_match < 1440){
+          res_result <- "Matched by approx (condense_stat not supported for sub-daily)"
+        } else {
+          res_result <- paste("Condensed by", condense_stat)
+        }
+      }
     }
     
     if(s < s_match){start_result <- "Earlier (unused data)"}
@@ -157,8 +187,7 @@ warning_table <- function(var_src, condense_stat, data, site_name){
   
   warning_df <- warning_df %>% 
     mutate(resolution_change = paste(resolution_change, "to", match_res)) %>% 
-    mutate(resolution_change = replace(resolution_change, result == "As is", "No change")) %>% 
-    mutate(resolution_change = replace(resolution_change, var_src == match_var, "--"))
+    mutate(resolution_change = replace(resolution_change, result == "As is", "No change"))
 
   warning(print(warning_df))
   

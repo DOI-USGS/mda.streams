@@ -35,7 +35,7 @@ summarize_ts <- function(var_src, site_name, out=c("date_updated", "start_date",
   item_units <- c(date_updated=NA)[out[out %in% names(item_funs)]]
   
   # download the files all at once, slightly reducing the number of requests to SB
-  ts_files <- download_ts(var_src, site_name, on_remote_missing="return_NA", on_local_exists="replace")
+  ts_files <- download_ts(var_src, site_name, on_remote_missing="return_NA", on_local_exists="skip")
   
   # define the functions that might be applied to each ts data.frame, then
   # select only those that have been requested
