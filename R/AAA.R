@@ -14,6 +14,7 @@ define_pkg_env <- function() {
   pkg.env$meta_delim <- "\t"
   pkg.env$metab_model_prefix <- "mm_"
   pkg.env$metab_model_extension <- "RData"
+  pkg.env$rds_compression <- "xz"
   return(pkg.env)
 }
 pkg.env <- define_pkg_env()

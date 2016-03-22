@@ -8,7 +8,7 @@
 #'   var_src)})
 #' @param folder string for a folder location
 #' @param version character string indicating whether you want to download the 
-#'   ts as a .tsv or .RData
+#'   ts as a .tsv or .rds
 #' @param on_remote_missing character indicating what to do if the remote file 
 #'   is missing
 #' @param on_local_exists character indicating what to do if the folder already 
@@ -27,7 +27,7 @@
 #'   on_local_exists="skip")
 #' }
 #' @export
-download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv','RData'),
+download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv','rds'),
                         on_remote_missing=c("stop","return_NA"), 
                         on_local_exists=c("stop","skip","replace")) {
   

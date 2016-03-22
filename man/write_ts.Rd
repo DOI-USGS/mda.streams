@@ -4,7 +4,7 @@
 \alias{write_ts}
 \title{Write timeseries data into a compressed file}
 \usage{
-write_ts(data, site, var, src, folder)
+write_ts(data, site, var, src, folder, version = c("tsv", "rds"))
 }
 \arguments{
 \item{data}{unitted data.frame}
@@ -16,6 +16,8 @@ write_ts(data, site, var, src, folder)
 \item{src}{the source of the data, e.g., 'nwis' or 'nldas'}
 
 \item{folder}{the folder to write the file in}
+
+\item{version}{the output version for the file (tsv, rds)}
 }
 \description{
 Writes a ts file (with format specific to mda.streams) a data.frame into a

@@ -7,6 +7,8 @@
 #' @param times a length 2 vector of POSIXct dates
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
+#' @param version character string indicating whether you want to stage the 
+#'   \code{ts} as a .tsv or .rds
 #' @param verbose logical. provide verbose output?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #' @return a file handle for time series file created
@@ -22,7 +24,9 @@
 #' read_ts(files[1])
 #' }
 #' @export
-stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE, ...){
+stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE, ...){
+  
+  version <- match.arg(version)
   
   if(length(var) > 1) stop("one var at a time, please")
   verify_var_src(var, "nldas", on_fail=warning)
@@ -65,7 +69,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), verbose = FALS
         u(c(NA, units))
       
       if (!all(is.na(site_data[var]))){
-        fpath <- write_ts(site_data, site=sites[i], var=var, src="nldas", folder)
+        fpath <- write_ts(site_data, site=sites[i], var=var, src="nldas", folder, version)
         file_paths <- c(file_paths, fpath)
       } else {
         if(isTRUE(verbose)) message("site ",sites[i], " has all NA values. Skipping file write")
