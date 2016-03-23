@@ -20,6 +20,33 @@
 #' before the underscore. E.g. if \code{var_src} had a variable \code{"disch_nwis"}, 
 #' then the corresponding column name would be \code{disch}. 
 #' 
+#' @param match_var character string indicating which variable's timesteps the 
+#'   resulting data.frame should match. The string must also be in `var_src`. The  
+#'   default chooses the first variable listed in `var_src`. 
+#' @param condense_stat function name used to condense observations to 
+#'   `match_var`'s timestep (only for variables with more frequent observations than 
+#'   `match_var`), or the term `match` to indicate that the function defined in `method`
+#'   will be used to match the timestep of `match_var`. Function names should be 
+#'   unquoted, where as `match` should be string. Examples of what to use: mean (default), 
+#'   median, max, and min. A custom function can also be used, but it's input must be 
+#'   a numeric vector and output must be a single numeric value. 
+#' @param day_start start time (inclusive) of a day's data in number of hours 
+#'   from the midnight that begins the date. For example, day_start=-1.5 
+#'   indicates that data describing 2006-06-26 begin at 2006-06-25 22:30, or at 
+#'   the first observation time that occurs after that time if day_start doesn't
+#'   fall exactly on an observation time. For metabolism models working with 
+#'   single days of input data, it is conventional/useful to begin the day the 
+#'   evening before, e.g., -1.5, and to end just before the next sunrise, e.g., 
+#'   30. For multiple consecutive days, it may make the most sense to start just
+#'   before sunrise (e.g., 4) and to end 24 hours later. For nighttime 
+#'   regression, the date assigned to a chunk of data should be the date whose 
+#'   evening contains the data. The default is therefore 12 to 36 for 
+#'   metab_night, of which the times of darkness will be used.
+#' @param day_end end time (exclusive) of a day's data in number of hours from 
+#'   the midnight that begins the date. For example, day_end=30 indicates that 
+#'   data describing 2006-06-26 end at the last observation time that occurs 
+#'   before 2006-06-27 06:00. See day_start for recommended start and end times.
+#' 
 #' @inheritParams download_ts
 #' @inheritParams combine_ts
 #' @inheritParams read_ts
@@ -49,8 +76,12 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     data_list_ordered <- data_list[c(var_index, not_var_index)] #ordered with match_var on far left for use in combine_ts
     var_src_ordered <- var_src[c(var_index, not_var_index)]
 
-    condense_stat_nm <-as.character(substitute(condense_stat))[1] 
-    if(condense_stat_nm == 'function'){condense_stat_nm <- 'custom function'} 
+    if(condense_stat == "match"){
+      condense_stat_nm <- condense_stat
+    } else { 
+      condense_stat_nm <-as.character(substitute(condense_stat))[1] 
+      if(condense_stat_nm == 'function'){condense_stat_nm <- 'custom function'} 
+    }
     
     warning_info <- warning_table(var_src_ordered, condense_stat_nm, data_list_ordered, site_name, method)
 
@@ -189,7 +220,7 @@ warning_table <- function(var_src, condense_stat, data, site_name, method){
     mutate(resolution_change = paste(resolution_change, "to", match_res)) %>% 
     mutate(resolution_change = replace(resolution_change, result == "As is", "No change"))
 
-  warning(print(warning_df))
+  warning(paste0(capture.output(print(warning_df, row.names=FALSE)), collapse='\n'))
   
   return(data.frame(timestep = timestep_df$modal_timestep, 
                     result = warning_df$result,
