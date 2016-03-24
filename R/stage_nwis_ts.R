@@ -118,9 +118,9 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
       
       site <- parse_site_name(un_sites[i])
       site_data <- filter(nwis_data, site_no == site)
-      which.var <- select(site_data, -DateTime, -site_no) %>% 
+      which.var <- (select(site_data, -DateTime, -site_no) %>% 
         tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
-        filter(num_non_NAs==max(num_non_NAs)) %>% .$key[1] 
+        filter(num_non_NAs==max(num_non_NAs)) %>% .$key)[1] 
       
       site_data <- select_(site_data, 'DateTime', which.var) %>%
         filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
