@@ -6,7 +6,7 @@
 #' @return the package environment
 define_pkg_env <- function() {
   pkg.env <- new.env()
-  pkg.env$scheme <- "mda_streams_dev"
+  pkg.env$scheme <- "mda_streams"
   pkg.env$ts_prefix <- "ts_"
   pkg.env$ts_extension <- "tsv"
   pkg.env$ts_delim <- "\t"
