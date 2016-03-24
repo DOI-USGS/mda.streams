@@ -106,6 +106,20 @@ make_ts_name <- function(var_var_src, src) {
   paste0(pkg.env$ts_prefix, var_src)
 }
 
+#' Create a archive file name for a file on ScienceBase
+#' @param filename of the file that is to be archived
+#' @param the file field of the ScienceBase item that will be archived (list)
+#' @return a file name to be used as an archive
+#' @export
+make_archive_name <- function(filename, file_field) {
+ 
+  upload_date <- file_field$dateUploaded
+  if (is.null(upload_date))
+      stop('file_field is invalid. needs date to create archive name')
+  archive_id <- format(as.Date(upload_date),'%Y%m%d_')
+  paste0(pkg.env$archive_prefix, archive_id, filename)
+}
+
 #' Translate a timeseries name from ScienceBase to mda.streams
 #' 
 #' @import dplyr

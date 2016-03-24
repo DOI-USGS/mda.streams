@@ -6,7 +6,7 @@
 #' @return the package environment
 define_pkg_env <- function() {
   pkg.env <- new.env()
-  pkg.env$scheme <- "mda_streams"
+  pkg.env$scheme <- "mda_streams_dev"
   pkg.env$ts_prefix <- "ts_"
   pkg.env$ts_extension <- "tsv"
   pkg.env$ts_delim <- "\t"
@@ -15,6 +15,7 @@ define_pkg_env <- function() {
   pkg.env$metab_model_prefix <- "mm_"
   pkg.env$metab_model_extension <- "RData"
   pkg.env$rds_compression <- "xz"
+  pkg.env$archive_prefix <- 'ARCHIVE_'
   return(pkg.env)
 }
 pkg.env <- define_pkg_env()
