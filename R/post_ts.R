@@ -100,7 +100,8 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
          ts_files <- sapply(ts_fields, function(x) x$name)
          # find which 
          archive_indx <- which(basename(files[i]) == ts_files)
-         archive_name <- make_archive_name(basename(files[i]), file_field = ts_fields[[archive_indx]])
+         creation_date <- as.Date(ts_fields[[archive_indx]]$dateUploaded)
+         archive_name <- make_ts_archive_path(basename(files[i]), creation_date = creation_date)
          ts_fields[[archive_indx]]$name <- archive_name
          if(verbose) message("archiving old timeseries as: ", archive_name)
          item_update(ts_id, info = list(files=ts_fields)) # do field ids disappear?
