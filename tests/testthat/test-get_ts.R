@@ -14,8 +14,8 @@ test_that('get_ts works', {
   tses <- get_ts(c('sitetime_calcLon','doobs_nwis'), 'nwis_06601200')
   
   # multiple different-length, different-resolution tses give useful warnings
-  expect_warning(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200'), 'Matched by approx')
-  expect_warning(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200', method='full_join'), 'Matched by full_join')
+  expect_warning(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200'))
+  expect_warning(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200', method='full_join'))
   hourlytohalf1 <- tryCatch(get_ts(c('doobs_nwis','sw_nldas'), 'nwis_06601200'), warning=function(w) w$message)
   hourlytohalf2 <- tryCatch(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200', match_var='doobs_nwis'), warning=function(w) w$message)
   expect_equal(hourlytohalf1, hourlytohalf2)
@@ -30,7 +30,7 @@ test_that('get_ts works', {
   
   # realistic request
   tses1 <- get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp'), 'nwis_06601200', quietly=TRUE) # one var to condense
-  profvis::profvis(get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp','baro_nldas'), 'nwis_06601200', quietly=TRUE)) # >1 var to condense
+  tses2 <- get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp','baro_nldas'), 'nwis_06601200', quietly=TRUE) # >1 var to condense
   expect_equal(nrow(tses1), nrow(gpp))
   expect_equal(nrow(tses2), nrow(gpp))
   

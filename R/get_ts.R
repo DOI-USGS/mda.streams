@@ -87,6 +87,7 @@ get_ts <- function(var_src, site_name, method='approx', approx_tol=as.difftime(3
     # applying condense_stat
     to_condense <- grep("Condensed", warning_info$result)
     
+    . <- '.dplyr.var'
     longitude <- ifelse(length(to_condense) != 0, 
                         get_meta("basic") %>% v() %>% filter(site_name == get('site_name')) %>% .$lon,
                         NA)
@@ -145,6 +146,7 @@ condense_by_stat <- function(ts, condense_stat, site_lon, day_start, day_end){
     timestep_days=FALSE,
     stat_func=condense_stat)
   
+  DateTime <- everything <- . <- '.dplyr.var'
   ts_condensed <- ts_condensed %>% 
     mutate(DateTime = convert_solartime_to_UTC(as.POSIXct(paste(as.character(date), "12:00:00"), tz='UTC'),
                                                  longitude=site_lon, time.type="mean solar")) %>% 
@@ -241,10 +243,11 @@ warning_table <- function(var_src, condense_stat, data, site_name, method, quiet
     if(e > e_match){end_result <- "Later (truncated)"}
     if(e == e_match){end_result <- "Equal"}
 
-    return(data.frame(var_src = v, resolution_change = res_words, resolution_result = res_result, start_date = start_result, 
-                      end_date = end_result, stringsAsFactors = FALSE))
+    return(data.frame(var_src = v, resolution_change = res_words, resolution_result = res_result, 
+                      start_date = start_result, end_date = end_result, stringsAsFactors = FALSE))
   }
   
+  . <- resolution_change <- resolution_result <- '.dplyr.var'
   warning_df <- timestep_df %>% 
     rowwise() %>% 
     do(get_timestep_info(v = .$var_src, t = .$modal_timestep, s = .$start_date, e = .$end_date,
