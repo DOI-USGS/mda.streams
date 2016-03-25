@@ -7,13 +7,17 @@
 #' @param out character vector or 'all'. if 'all', all columns from the selected
 #'   types will be returned. if anything else, the selected columns will be 
 #'   returned.
+#' @param on_local_exists character indicating what to do if the folder already 
+#'   contains a file with the intended download name
 #' @return a metadata table
 #' @import sbtools
 #' @import dplyr
 #' @importFrom lubridate with_tz
 #' @importFrom unitted u
 #' @export
-get_meta <- function(types=list_metas(), out='all') {
+get_meta <- function(types=list_metas(), out='all', on_local_exists=c('skip','replace')) {
+  
+  on_local_exists <- match.arg(on_local_exists)
   
   # check and re-download each of the requested tables as needed
   updated_data <- sapply(types, function(type) {
@@ -28,10 +32,17 @@ get_meta <- function(types=list_metas(), out='all') {
         TRUE
       } else {
         # if already cached, check timestamp
-        cache_timestamp <- get(x=meta_type_timestamp, envir=pkg.env)
-        sb_timestamp <- item_get(locate_meta(type))$files[[1]]$dateUploaded %>%
-          strptime("%Y-%m-%dT%H:%M:%S", tz="UTC")
-        sb_timestamp > cache_timestamp
+        switch(
+          on_local_exists,
+          replace = {
+            cache_timestamp <- get(x=meta_type_timestamp, envir=pkg.env)
+            sb_timestamp <- item_get(locate_meta(type))$files[[1]]$dateUploaded %>%
+              strptime("%Y-%m-%dT%H:%M:%S", tz="UTC")
+            sb_timestamp > cache_timestamp
+          },
+          skip= {
+            FALSE
+          })
       }
     
     # download and cache if needed

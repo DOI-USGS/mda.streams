@@ -47,8 +47,8 @@ download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv',
     mutate(
       dests = file.path(folder, files),
       need = if(on_local_exists %in% c('stop','skip')) !file.exists(dests) else TRUE,
-      item_names <- sapply(files, function(f) strsplit(f, ".", fixed=TRUE)[[1]][1], USE.NAMES=FALSE), # strip the file extension
-      ids = 'local_exists'
+      item_names = sapply(files, function(f) strsplit(f, ".", fixed=TRUE)[[1]][1], USE.NAMES=FALSE), # strip the file extension
+      ids = 'local_exists' # to be overwritten later if we look to SB for the file
     )
   
   # only query SB for those ids we actually need
