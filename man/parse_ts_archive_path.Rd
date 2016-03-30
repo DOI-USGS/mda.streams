@@ -26,6 +26,6 @@ Split archived file path into contents
 }
 \examples{
 mda.streams:::parse_ts_archive_path(c('ARCHIVE_20160324_nwis_05406479-ts_doobs_nwis.tsv.gz', 
-'ARCHIVE_20160324_nwis_0406479-ts_doobs_nwis.tsv.gz'), use_names = T)
+'ARCHIVE_20160324_nwis_0406479-ts_doobs_nwis.tsv.gz'), use_names = TRUE)
 }
 

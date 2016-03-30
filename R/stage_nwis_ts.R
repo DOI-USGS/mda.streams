@@ -102,6 +102,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
           data.frame()
         })
       ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
+      everything <- '.dplyr.var'
       nwis_data <- nwis_data[, !ignore.cols] %>%
         rename(DateTime = dateTime) %>%
         select(site_no, DateTime, everything())
@@ -118,6 +119,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv'
       
       site <- parse_site_name(un_sites[i])
       site_data <- filter(nwis_data, site_no == site)
+      key <- value <- num_non_NAs <- '.dplyr.var'
       which.var <- select(site_data, -DateTime, -site_no) %>% 
         tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
         filter(num_non_NAs==max(num_non_NAs)) %>% {.$key[1]}

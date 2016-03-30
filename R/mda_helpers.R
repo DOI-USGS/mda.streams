@@ -106,9 +106,10 @@ make_ts_name <- function(var_var_src, src) {
   paste0(pkg.env$ts_prefix, var_src)
 }
 
-#' Create a archive file name for a file on ScienceBase
+#' Create an archive file name for a file on ScienceBase
 #' @param filename of the file that is to be archived
-#' @param the creation_date of the ScienceBase file that will be archived (as.Date)
+#' @param creation_date the creation date of the ScienceBase file that will be 
+#'   archived (as.Date)
 #' @return a file name to be used as an archive
 #' @export
 make_ts_archive_path <- function(filename, creation_date) {
@@ -127,7 +128,7 @@ make_ts_archive_path <- function(filename, creation_date) {
 #' @return a character
 #' @examples 
 #' mda.streams:::parse_ts_archive_path(c('ARCHIVE_20160324_nwis_05406479-ts_doobs_nwis.tsv.gz', 
-#' 'ARCHIVE_20160324_nwis_0406479-ts_doobs_nwis.tsv.gz'), use_names = T)
+#' 'ARCHIVE_20160324_nwis_0406479-ts_doobs_nwis.tsv.gz'), use_names = TRUE)
 #' @export
 parse_ts_archive_path <- function(file_path, 
                                   out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum","creation_date"), 
