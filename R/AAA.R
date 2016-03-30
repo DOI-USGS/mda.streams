@@ -15,6 +15,7 @@ define_pkg_env <- function() {
   pkg.env$metab_model_prefix <- "mm_"
   pkg.env$metab_model_extension <- "RData"
   pkg.env$rds_compression <- "xz"
+  pkg.env$archive_prefix <- 'ARCHIVE_'
   return(pkg.env)
 }
 pkg.env <- define_pkg_env()

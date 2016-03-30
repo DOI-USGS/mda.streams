@@ -54,10 +54,8 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
     ts_id <- locate_ts(var_src=ts_path$var_src, site_name=ts_path$site_name, by="either")
     if (is.na(ts_id)) {
       ts_id <- item_create(site_root, title=ts_path$ts_name)$id
+      repair_ts(ts_path$var_src, ts_path$site_name)
       file_exists <- FALSE
-      if(verbose) 
-        message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
-      item_append_files(ts_id, files = files[i])
     } else{
       file_exists <- basename(files[i]) %in% sbtools::item_list_files(sb_id = ts_id)$fname 
     }
@@ -76,7 +74,7 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
             message("deleting timeseries data before replacement: ", ts_id)
             message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
           }
-          item_replace_files(ts_id, files = basename(files[i]), all=FALSE)
+          item_replace_files(ts_id, files = files[i], all=FALSE)
         },
         "merge"={ 
           if(verbose) message("merging new timeseries with old: ", ts_id)
@@ -94,12 +92,29 @@ post_ts = function(files, on_exists=c("stop", "skip", "replace", "merge","archiv
           dir.create(post_merge_dir, showWarnings=FALSE)
           files[i] <- write_ts(data=ts_merged, site=ts_path$site_name, var=ts_path$var, src=ts_path$src, folder=post_merge_dir)
           # delete the old one in preparation for overwriting
-          item_replace_files(ts_id, files = basename(files[i]), all=FALSE)
+          item_replace_files(ts_id, files = files[i], all=FALSE)
         },
         "archive"={
-         stop("archive not yet implemented for 'post_ts'", call. = FALSE) 
+        
+         ts_fields <- item_get_fields(ts_id, 'files')
+         ts_files <- sapply(ts_fields, function(x) x$name)
+         # find which 
+         archive_indx <- which(basename(files[i]) == ts_files)
+         creation_date <- as.Date(ts_fields[[archive_indx]]$dateUploaded)
+         archive_name <- make_ts_archive_path(basename(files[i]), creation_date = creation_date)
+         ts_fields[[archive_indx]]$name <- archive_name
+         if(verbose) message("archiving old timeseries as: ", archive_name)
+         item_update(ts_id, info = list(files=ts_fields)) # do field ids disappear?
+         if(verbose) 
+           message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
+         item_append_files(ts_id, files = files[i])
         })
+    } else {
+      if(verbose) 
+        message("posting file to site ", ts_path$site_name, ", timeseries ", ts_path$ts_name)
+      item_append_files(ts_id, files = files[i])
     }
+    
 
     return(ts_id)
   })

@@ -106,6 +106,48 @@ make_ts_name <- function(var_var_src, src) {
   paste0(pkg.env$ts_prefix, var_src)
 }
 
+#' Create a archive file name for a file on ScienceBase
+#' @param filename of the file that is to be archived
+#' @param the creation_date of the ScienceBase file that will be archived (as.Date)
+#' @return a file name to be used as an archive
+#' @export
+make_ts_archive_path <- function(filename, creation_date) {
+ 
+  archive_id <- format(creation_date,'%Y%m%d_')
+  paste0(pkg.env$archive_prefix, archive_id, filename)
+}
+
+#' Split archived file path into contents
+#' @param file_path a valid file path for ts file
+#' @param out a character for desired output ('dir_name','file_name',
+#'   'site_name', 'ts_name', 'creation_date' or any of the out names from parse_ts_name or
+#'   parse_site_name)
+#' @param use_names logical. Should the return vector be named according to the 
+#'   input values?
+#' @return a character
+#' @examples 
+#' mda.streams:::parse_ts_archive_path(c('ARCHIVE_20160324_nwis_05406479-ts_doobs_nwis.tsv.gz', 
+#' 'ARCHIVE_20160324_nwis_0406479-ts_doobs_nwis.tsv.gz'), use_names = T)
+#' @export
+parse_ts_archive_path <- function(file_path, 
+                                  out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum","creation_date"), 
+                                  use_names=length(file_path)>1){
+  id_ts_names <- gsub(pkg.env$archive_prefix, replacement = '', x = file_path) # remove the prefix
+  archive_ids <- unname(sapply(id_ts_names, function(x) strsplit(x,'[_]')[[1]][1]))
+  ts_files <- unname(sapply(id_ts_names, function(x) paste(tail(strsplit(x,'[_]')[[1]],-1), collapse='_')))
+  ts_path = parse_ts_path(ts_files, out=out[!out %in% "creation_date"], use_names=TRUE)
+  if ("creation_date" %in% out){
+    ts_path <- cbind(ts_path, data.frame('creation_date'=as.Date(archive_ids, '%Y%m%d')))
+  }
+  if (!use_names){
+    rownames(ts_path)<-NULL
+  } else {
+    rownames(ts_path) <- file_path
+  }
+  return(ts_path)
+  
+}
+
 #' Translate a timeseries name from ScienceBase to mda.streams
 #' 
 #' @import dplyr
