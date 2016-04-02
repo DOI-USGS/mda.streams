@@ -274,7 +274,10 @@ warning_table <- function(var_src, condense_stat, data, site_name, method, quiet
        any(warning_df$resolution_result != 'As is') ||
        any(warning_df$start_date != 'Equal') ||
        any(warning_df$end_date != 'Equal')) {
-      warning(paste0(capture.output(print(warning_df, row.names=FALSE)), collapse='\n'))
+      warning(paste0(c(
+        'Combining tses will result in these changes:',
+        capture.output(print(warning_df, row.names=FALSE))[-c(1:3)]), 
+        collapse='\n'), call.=FALSE)
     }
   }
   

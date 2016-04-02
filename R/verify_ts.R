@@ -45,13 +45,18 @@ verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'n
       names(x)[2] == v
     })
     
-  pass <- TRUE
+  failures <- c()
   for (check in checks){
     if (!tests[[check]](x = data, v = var)) {
-      on_fail("verify_ts failed on test for ", check)
-      pass <- FALSE
+      failures <- c(failures, check)
     }
   }
-  return(pass)
+  if(length(failures) > 0) {
+    on_fail("verify_ts for ", var, " failed on test",if(length(failures)>1) "s" else "",
+            " for ", paste0(failures, collapse=", "), call.=FALSE)
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
   
 }
