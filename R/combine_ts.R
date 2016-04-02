@@ -7,10 +7,12 @@
 #' for all rows.
 #' 
 #' @param ... one or more ts and/or const data.frames to be combined
-#' @param method character specifying the combination method to use
-#' @param approx_tol difftime. if method='approx', the maximum time interval 
-#'   over which an approximation will be used to fill in data gaps in the 
-#'   2nd:nth data argument to combine_ts (relative to the first argument)
+#' @param method character specifying the method to use to combine the
+#'   data.frames
+#' @param approx_tol difftime. ignored if method != 'approx'. if method == 
+#'   'approx', the maximum time interval over which an approximation will be 
+#'   used to fill in data gaps in the 2nd:nth data argument to combine_ts 
+#'   (relative to the first argument)
 #' @import dplyr
 #' @importFrom unitted u v get_units
 #' @importFrom stats setNames approx

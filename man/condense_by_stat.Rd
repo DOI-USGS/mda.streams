@@ -10,12 +10,12 @@ condense_by_stat(ts, condense_stat, site_lon, day_start, day_end)
 \item{ts}{the ts dataframe to condense}
 
 \item{condense_stat}{function name used to condense observations to 
-`match_var`'s timestep (only for variables with more frequent observations
-than `match_var`), or the term `match` to indicate that the function
-defined in `method` will be used to match the timestep of `match_var`.
-Function names should be unquoted, where as `match` should be string.
-Examples of what to use: mean (default), median, max, and min. A custom
-function can also be used, but it's input must be a numeric vector and
+`match_var`'s timestep (only for variables with more frequent observations 
+than `match_var`), or the term `match` to indicate that the function 
+defined in `method` will be used to match the timestep of `match_var`. 
+Function names should be unquoted, where as `match` should be string. 
+Examples of what to use: mean (default), median, max, and min. A custom 
+function can also be used, but it's input must be a numeric vector and 
 output must be a single numeric value.}
 
 \item{site_lon}{the longitude of the site}

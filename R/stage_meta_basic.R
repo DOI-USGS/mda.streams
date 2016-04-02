@@ -27,14 +27,15 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
   # get metadata from each site database in turn. if stage_meta_basic_nwis
   # changes its output, empty_meta in stage_meta_basic should also be changed
   empty_meta <- u(data.frame(
-    site_name=u(as.character(NA),NA), long_name=u(as.character(NA),NA), 
+    site_name=u(as.character(NA),NA), long_name=u(as.character(NA),NA),
     lat=u(as.numeric(NA),"degN"), lon=u(as.numeric(NA),"degE"), coord_datum=u(as.character(NA),NA), 
-    alt=u(as.numeric(NA),"ft"), alt_datum=u(as.character(NA),NA), nhdplus_id=u(as.numeric(NA),NA), nhdplus_id_confidence=u(as.character(NA),NA),
+    alt=u(as.numeric(NA),"ft"), alt_datum=u(as.character(NA),NA), site_type=u(as.character(NA),NA), 
+    nhdplus_id=u(as.numeric(NA),NA), nhdplus_id_confidence=u(as.character(NA),NA),
     stringsAsFactors=FALSE))[NULL,]
   meta_nwis <- sites_meta[sites_meta$site_database=="nwis",] %>% stage_meta_basic_nwis(empty_meta=empty_meta, verbose=verbose)
   meta_styx <- sites_meta[sites_meta$site_database=="styx",] %>% stage_meta_basic_styx(empty_meta=empty_meta, verbose=verbose)
   meta_indy <- sites_meta[sites_meta$site_database=="indy",] %>% stage_meta_basic_indy(empty_meta=empty_meta, verbose=verbose)
-
+  
   # merge the datasets
   if(!all.equal(get_units(meta_nwis), get_units(meta_styx)) ||
      !all.equal(get_units(meta_nwis), get_units(meta_indy))) stop("units mismatch in binding meta_xxxxes")
@@ -42,7 +43,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
     as.data.frame() %>% 
     u(get_units(meta_nwis))
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
- 
+  
   # add a quick-access column of sciencebase site item IDs
   sites_meta$sciencebase_id <- locate_site(sites_meta$site_name, format="id", browser=FALSE)
   
@@ -112,7 +113,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
 #' str(mda.streams:::stage_meta_basic_nwis(sites_meta, verbose=TRUE))
 #' }
 stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
-
+  
   # this empty_meta ignores everything else in this function; if
   # stage_meta_basic_nwis changes its output, empty_meta in stage_meta_basic
   # should also be changed.
@@ -201,7 +202,7 @@ stage_meta_basic_styx <- function(sites_meta, empty_meta, verbose=FALSE) {
   
   styx_meta[,'site_name'] <- sites_meta$site_name
   styx_meta[,'long_name'] <- paste0("Simulated data: ",sites_meta$site_name)
-
+  
   styx_meta
 }
 

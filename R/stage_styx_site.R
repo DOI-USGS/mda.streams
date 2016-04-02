@@ -59,7 +59,7 @@ stage_styx_site <- function(
   
   ## INSTANTANEOUS (UNIT) TIMESERIES ##
   
-  # function to filter by datetimes assuming times are in local clock time (standard, not DST)
+  # function to filter by datetimes
   times.sitetime <- as.POSIXct(times, tz="UTC")
   filter_by_date <- function(df) {
     sitetime <- convert_UTC_to_solartime(date.time = df$DateTime, longitude = coords$lon, time.type = "mean solar")
