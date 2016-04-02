@@ -1,3 +1,7 @@
+# mda.streams 0.9.3
+
+* Now automatically checks for available updates when you attach the package
+
 # mda.streams 0.9.2
 
 * complex requests to get_ts() are about 7 times faster now if accompanied by
