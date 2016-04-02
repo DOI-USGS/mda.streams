@@ -11,7 +11,7 @@
 #' \dontrun{
 #' stage_meta_basic(sites=list_sites()[655:665], verbose=TRUE, folder=NULL)
 #' }
-stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), folder = tempdir(), verbose = FALSE) {
+stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows','stop','replace_rows'), folder = tempdir(), verbose = FALSE) {
   
   on_exists <- match.arg(on_exists)
   
@@ -48,27 +48,36 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('stop','replace'), 
   sites_meta$sciencebase_id <- locate_site(sites_meta$site_name, format="id", browser=FALSE)
   
   # merge with existing metadata if appropriate
-  if('basic' %in% list_metas()) {
-    # get existing metadata
-    old_meta <- read_meta(download_meta('basic', on_local_exists = 'replace'))
-    
-    # quick & unhelpful compatibility check
-    if(!all.equal(names(old_meta), names(sites_meta))) 
-      stop("column names of old and new metadata don't match")
-    
-    # check for conflicting rows and stop or replace
-    replacements <- old_meta$site_name[which(old_meta$site_name %in% sites_meta$site_name)]
-    if(length(replacements) > 0) {
-      on_exists <- match.arg(on_exists)
-      if(on_exists=="stop") stop("these sites are already in meta_basic: ", paste0(replacements, collapse=", "))
-      old_meta[match(replacements, old_meta$site_name), ] <- sites_meta[match(replacements, sites_meta$site_name), ]
-      sites_meta <- sites_meta[!(sites_meta$site_name %in% replacements),]
-    }
-    
-    # add truly new rows
-    new_meta <- rbind.unitted(old_meta, sites_meta)
-  } else {
+  on_exists <- match.arg(on_exists)
+  if(on_exists == 'replace') {
     new_meta <- sites_meta
+  } else {
+    if('basic' %in% list_metas()) {
+      if(on_exists == 'stop') stop("on_exists == 'stop' and 'basic' meta already exists on ScienceBase")
+        
+      # get existing metadata
+      old_meta <- read_meta(download_meta('basic', on_local_exists = 'replace'))
+      
+      # quick & unhelpful compatibility check
+      if(!all.equal(names(old_meta), names(sites_meta))) 
+        stop("column names of old and new metadata don't match")
+      
+      # check for conflicting rows and stop or replace
+      replacements <- old_meta$site_name[which(old_meta$site_name %in% sites_meta$site_name)]
+      if(length(replacements) > 0) {
+        if(on_exists=="add_rows") {
+          stop("these sites are already in meta_basic: ", paste0(replacements, collapse=", "))
+        } else { # on_exists=='replace_rows'
+          old_meta[match(replacements, old_meta$site_name), ] <- sites_meta[match(replacements, sites_meta$site_name), ]
+          sites_meta <- sites_meta[!(sites_meta$site_name %in% replacements),]
+        }
+      }
+      
+      # add truly new rows
+      new_meta <- rbind.unitted(old_meta, sites_meta)
+    } else {
+      new_meta <- sites_meta
+    }
   }
   site_name <- '.dplyr.var'
   new_meta <- new_meta %>% v() %>% arrange(site_name) %>% u(get_units(new_meta)) # way faster than order()
@@ -124,13 +133,16 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
   
   # get NWIS site metadata from NWIS in chunks
   site_database <- site_name <- group <- . <- '.dplyr.var'
-  group_size <- 10
+  group_size <- 50 # dataRetrieval can't handle huge lists of sites
   sites_meta <- sites_meta %>%
     v() %>% # unitted can't handle all that's to come here
     filter(site_database == "nwis") %>%
     mutate(group=rep(1:ceiling(length(site_name)/group_size), each=group_size)[1:length(site_name)]) %>%
     group_by(group) %>%
-    do(readNWISsite(.$site_num))
+    do(readNWISsite(.$site_num) %>%
+         select(agency_cd, site_no, station_nm, site_tp_cd,
+                lat_va, long_va, dec_lat_va, dec_long_va, coord_datum_cd, dec_coord_datum_cd,
+                alt_va, alt_datum_cd))
   
   # do our best to get decimal coordinates
   parse_nwis_coords <- function(coords) {
@@ -145,6 +157,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
   sites_meta <- sites_meta %>% 
     mutate(
       long_name=station_nm,
+      site_type=site_tp_cd,
       lat=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_lat_va, parse_nwis_coords(lat_va)),
       lon=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_long_va, -parse_nwis_coords(long_va)),
       coord_datum=ifelse(!is.na(dec_lat_va) & !is.na(dec_long_va), dec_coord_datum_cd, coord_datum_cd),
@@ -153,7 +166,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
     # eliminate duplicates
     group_by(site_no) %>%
     summarize(long_name=long_name[1], lat=mean(lat, na.rm=TRUE), lon=mean(lon, na.rm=TRUE), coord_datum=unique(coord_datum),
-              alt=mean(alt_va), alt_datum=unique(alt_datum_cd)) %>%
+              alt=mean(alt_va), alt_datum=unique(alt_datum_cd), site_type=site_type[1]) %>%
     # turn site_no into site_name
     mutate(site_name=make_site_name(unique(site_no), database="nwis"))
   
@@ -163,15 +176,16 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
   matched_comids <- comids[match(sites_meta$site_no, comids$nwis_id),c("comid_best","comid_confidence")]
   sites_meta$nhdplus_id <- matched_comids$comid_best
   sites_meta$nhdplus_id_confidence <- matched_comids$comid_confidence
-
+  
   # format
   nhdplus_id <- nhdplus_id_confidence <- '.dplyr.var'
   sites_meta  %>%
     # put columns in proper order
-    select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, nhdplus_id, nhdplus_id_confidence) %>%
+    select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, site_type, nhdplus_id, nhdplus_id_confidence) %>%
     # add units
     as.data.frame() %>%
-    u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, alt="ft", alt_datum=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
+    u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, 
+        alt="ft", alt_datum=NA, site_type=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
 }
 
 #' Get data for Styx (simulated data) sites
