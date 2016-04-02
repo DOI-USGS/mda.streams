@@ -4,7 +4,7 @@
 \alias{read_ts}
 \title{Read timeseries data into a data.frame}
 \usage{
-read_ts(file, on_invalid = c("stop", "warn"))
+read_ts(file, on_invalid = c("warn", "stop"))
 }
 \arguments{
 \item{file}{a valid ts file path}
