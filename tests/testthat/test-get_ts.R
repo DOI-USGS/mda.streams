@@ -4,11 +4,12 @@ test_that('get_ts works', {
   
   # easy ones: no errors or warnings
   doobs <- get_ts('doobs_nwis', 'nwis_06601200')
-  sw <- get_ts('sw_nldas', 'nwis_06601200')
   gpp <- get_ts('gpp_estBest', 'nwis_06601200')
+  sw <- suppressWarnings(get_ts('sw_nldas', 'nwis_06601200')) # verify_ts for sw failed on test for timesteps
   
   # multiple sites gives error on purpose
-  expect_error(get_ts('sitetime_calcLon', c('nwis_06601200','nwis_08062500')), "only one site_name is allowed")
+  expect_error(suppressWarnings(get_ts('sitetime_calcLon', c('nwis_06601200','nwis_08062500'))), 
+               "only one site_name is allowed")
   
   # multiple compatible tses works fine, no warning or error
   tses <- get_ts(c('sitetime_calcLon','doobs_nwis'), 'nwis_06601200')

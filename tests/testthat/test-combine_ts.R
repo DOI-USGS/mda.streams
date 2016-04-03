@@ -5,7 +5,7 @@ test_that("combine_ts works", {
   dim(base <- read_ts(xy[1]))
   dim(same <- read_ts(xy[2]))
   dim(more <- read_ts(xy[3]))
-  dim(offset <- read_ts(xy[4])[1:1234,])
+  dim(offset <- suppressWarnings(read_ts(xy[4])[1:1234,]))
   library(dplyr); library(unitted)
   datevec <- seq(Sys.time(), Sys.time()+as.difftime(1, units='hours'), by=as.difftime(1, units='mins'))
   offline <- unitted::u(data.frame(DateTime=datevec, suntime=datevec-as.difftime(5.4, units='hours')))
