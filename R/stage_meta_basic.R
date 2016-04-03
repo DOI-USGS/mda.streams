@@ -132,7 +132,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
   if(verbose) message("acquiring NWIS metadata")
   
   # get NWIS site metadata from NWIS in chunks
-  site_database <- site_name <- group <- . <- '.dplyr.var'
+  site_database <- site_name <- group <- . <- agency_cd <- site_tp_cd <- '.dplyr.var'
   group_size <- 50 # dataRetrieval can't handle huge lists of sites
   sites_meta <- sites_meta %>%
     v() %>% # unitted can't handle all that's to come here
@@ -153,7 +153,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
   }
   station_nm <- dec_lat_va <- dec_long_va <- lat_va <- long_va <- dec_coord_datum_cd <- 
     coord_datum_cd <- alt_va <- alt_datum_cd <- site_name <- site_no <- 
-    long_name <- lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
+    long_name <- site_type <- lat <- lon <- coord_datum <- alt <- alt_datum <- site_name <- '.dplyr.var'
   sites_meta <- sites_meta %>% 
     mutate(
       long_name=station_nm,
