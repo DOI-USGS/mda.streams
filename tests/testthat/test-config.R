@@ -1,5 +1,7 @@
 context("config")
 
+set_scheme("mda_streams")
+
 test_that("config files can be staged", {
   
   config_file <- stage_metab_config(
