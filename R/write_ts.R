@@ -13,7 +13,7 @@
 #' @importFrom lubridate tz
 #' @importFrom unitted u
 #' @export
-write_ts <- function(data, site, var, src, folder, version=c('tsv','rds')){
+write_ts <- function(data, site, var, src, folder, version=c('rds','tsv')){
   
   version <- match.arg(version)
   verify_var_src(var, src, on_fail=warning)

@@ -275,9 +275,16 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
 #' @param folder the folder to write the file in, or missing
 #' @param version character string indicating the file format
+#' @param creation_date NA for a standard ts_path, or a POSIXct date of file
+#'   creation if the path should describe an archived ts
 #' @return a full file path
 #' @export
-make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','rds')) {
+#' @examples 
+#' make_ts_path(c('nwis_08062500','nwis_83105638'), 'ts_doobs_nwis')
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', version='tsv')
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', creation_date=Sys.time())
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', folder='temp/1', creation_date=Sys.time())
+make_ts_path <- function(site_name, ts_name, folder, version=c('rds','tsv'), creation_date=NA) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
   parse_ts_name(ts_name)
@@ -286,6 +293,11 @@ make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','rds')) {
   file_name <- sprintf(
     '%s-%s.%s', site_name, ts_name, 
     switch(version, 'tsv'='tsv.gz', 'rds'='rds'))
+  if(any(archive_files <- !is.na(creation_date))) {
+    if(length(creation_date) == 1 && length(file_name) > 1) 
+      creation_date <- rep(creation_date, length(file_name))
+    file_name[archive_files] <- make_ts_archive_path(file_name[archive_files], creation_date[archive_files])
+  }
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing
   } else {

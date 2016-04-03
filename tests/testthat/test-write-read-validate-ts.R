@@ -9,7 +9,7 @@ test_that("verify_ts and write_ts and read_ts work", {
   
   # write and read
   datfile <- write_ts(dat, "nwis_06893820", "doobs", "nwis", tempdir())
-  expect_equal(basename(datfile), "nwis_06893820-ts_doobs_nwis.tsv.gz")
+  expect_equal(basename(datfile), "nwis_06893820-ts_doobs_nwis.rds")
   expect_equal(read_ts(datfile), dat)
   expect_true(file.remove(datfile))
 })

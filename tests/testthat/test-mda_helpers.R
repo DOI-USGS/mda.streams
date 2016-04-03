@@ -58,8 +58,8 @@ test_that("site names can be made and parsed", {
 
 test_that("ts file paths can be made and parsed", {
   # make_ts_path
-  expect_equal(make_ts_path("nwis_12398074", "ts_doobs_nwis"), "nwis_12398074-ts_doobs_nwis.tsv.gz")
-  expect_equal(make_ts_path(make_site_name("12398074"), make_ts_name("doobs","nwis")), "nwis_12398074-ts_doobs_nwis.tsv.gz")
+  expect_equal(make_ts_path("nwis_12398074", "ts_doobs_nwis"), "nwis_12398074-ts_doobs_nwis.rds")
+  expect_equal(make_ts_path(make_site_name("12398074"), make_ts_name("doobs","nwis")), "nwis_12398074-ts_doobs_nwis.rds")
   
   # parse_ts_path
   expect_equal(colnames(parse_ts_path("nwis_12398074-ts_doobs_nwis.tsv.gz", use_names=FALSE)), eval(formals(parse_ts_path)$out))

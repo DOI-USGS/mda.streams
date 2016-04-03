@@ -24,7 +24,7 @@
 #' read_ts(files[1])
 #' }
 #' @export
-stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE, ...){
+stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('rds','tsv'), verbose = FALSE, ...){
   
   version <- match.arg(version)
   
