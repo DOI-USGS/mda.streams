@@ -37,9 +37,11 @@ write_ts <- function(data, site, var, src, folder, version=c('rds','tsv')){
     }
   }
   
+  # do the file writing. gz1 seems pretty efficient; see
+  # https://github.com/USGS-R/mda.streams/issues/229
   fpath <- make_ts_path(site, make_ts_name(var, src), folder, version)
   if (version == 'tsv'){
-    gz_con <- gzfile(fpath, "w")
+    gz_con <- gzfile(fpath, "w", compression=1)
     write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
     close(gz_con)
   } else if (version == 'rds'){
