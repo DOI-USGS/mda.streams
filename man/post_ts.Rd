@@ -4,14 +4,18 @@
 \alias{post_ts}
 \title{Post a new timeseries file to SB}
 \usage{
-post_ts(files, on_exists = c("stop", "skip", "replace", "merge", "archive"),
-  verbose = TRUE)
+post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
+  archive_existing = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
 
-\item{on_exists}{character specifying an action when a file to post already
+\item{on_exists}{character specifying an action when a file to post already 
 exists on ScienceBase}
+
+\item{archive_existing}{logical. if the file already exists, should it be
+archived before being replaced with a new or merged file (when on_exists ==
+'replace' or 'merge', respectively)?}
 
 \item{verbose}{logical. Should status messages be given?}
 }
@@ -33,7 +37,7 @@ post_ts(files, on_exists="skip")
 post_ts(files, on_exists="replace")
 post_site(sites, on_exists="clear")
  
-set_scheme("mda_streams_")
+set_scheme("mda_streams")
 }
 }
 \author{
