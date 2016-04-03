@@ -3,7 +3,7 @@ context('combine_ts')
 test_that("combine_ts works", {
   xy <- download_ts(c('suntime_calcLon', 'doobs_nwis', 'wtr_nwis', 'baro_nldas'), 'nwis_01467087', on_local_exists="replace")
   dim(base <- read_ts(xy[1]))
-  dim(same <- read_ts(xy[2]))
+  dim(same <- suppressWarnings(read_ts(xy[2])))
   dim(more <- read_ts(xy[3]))
   dim(offset <- suppressWarnings(read_ts(xy[4])[1:1234,]))
   library(dplyr); library(unitted)
