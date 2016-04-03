@@ -31,7 +31,7 @@
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
-stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE){
+stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds','tsv'), verbose = FALSE){
 
   version <- match.arg(version)
   

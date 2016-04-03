@@ -12,21 +12,22 @@ warning_table(var_src, condense_stat, data, site_name, method, quietly)
 var_src)})}
 
 \item{condense_stat}{function name used to condense observations to 
-`match_var`'s timestep (only for variables with more frequent observations
-than `match_var`), or the term `match` to indicate that the function
-defined in `method` will be used to match the timestep of `match_var`.
-Function names should be unquoted, where as `match` should be string.
-Examples of what to use: mean (default), median, max, and min. A custom
-function can also be used, but it's input must be a numeric vector and
+`match_var`'s timestep (only for variables with more frequent observations 
+than `match_var`), or the term `match` to indicate that the function 
+defined in `method` will be used to match the timestep of `match_var`. 
+Function names should be unquoted, where as `match` should be string. 
+Examples of what to use: mean (default), median, max, and min. A custom 
+function can also be used, but it's input must be a numeric vector and 
 output must be a single numeric value.}
 
 \item{data}{list of downloaded timeseries data.frames, as named in var_src}
 
 \item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
-\item{method}{character specifying the combination method to use}
+\item{method}{character specifying the method to use to combine timeseries 
+datasets}
 
-\item{quietly}{logical. if one or more timeseries will be truncated, padded
+\item{quietly}{logical. if one or more timeseries will be truncated, padded 
 with NAs, or condensed, should a warning message be given?}
 }
 \description{

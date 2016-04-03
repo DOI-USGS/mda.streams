@@ -18,26 +18,26 @@ depth	simCopy	m	stream depth	ts	depth	12	NA	"simulate by copying from another si
 depth	simNew	m	stream depth	ts	depth	13	NA	"arbitrarily assign numbers for model testing"	streamMetabolizer	NA	sim	NA
 disch	nwis	ft^3 s^-1	discharge	ts	discharge	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
 dischdaily	calcDMean	m^3 s^-1	daily mean discharge	ts	discharge.daily	1	NA	daily mean values, midnight to midnight sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
-doinit	simNew	mg L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
-doobs	indy	mg L^-1	dissolved oxygen concentration	ts	DO.obs	1	NA	independent data source	NA	NA	data	NA
-doobs	nwis	mg L^-1	dissolved oxygen concentration	ts	DO.obs	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00300'
-doobs	simCopy	mg L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+doinit	simNew	mgO2 L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
+doobs	indy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	1	NA	independent data source	NA	NA	data	NA
+doobs	nwis	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00300'
+doobs	simCopy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 doamp	calcDAmp	%	daily amplitude in dissolved oxygen percent saturation	ts	NA	1	NA	daily max-min of dopsat	mda.streams	max(dopsat)-min(dopsat)	calc	NA
 dopsat	calcObsSat	%	percent dissolved oxygen saturation	ts	NA	1	NA	choose_data_source to get best dosat, divide doobs by dosat	mda.streams	100*doobs/dosat	calc	NA
-dosat	indy	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	independent data source	NA	NA	data	NA
-dosat	calcGGbts	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	calcGGbconst	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	3	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	simGGbts	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using a baro ts & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	simGGbconst	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	simCopy	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
-dosat	simNew	mg L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	14	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
-er	estBest	g m^-2 d^-1	daily ecosystem respiration	ts	ER	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
-er	estNight	g m^-2 d^-1	daily ecosystem respiration	ts	ER	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
-er	simCopy	g m^-2 d^-1	daily ecosystem respiration	ts	ER	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
-er	simNew	g m^-2 d^-1	daily ecosystem respiration	ts	ER	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
-gpp	estBest	g m^-2 d^-1	daily gross primary productivity	ts	GPP	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
-gpp	simCopy	g m^-2 d^-1	daily gross primary productivity	ts	GPP	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
-gpp	simNew	g m^-2 d^-1	daily gross primary productivity	ts	GPP	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
+dosat	indy	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	independent data source	NA	NA	data	NA
+dosat	calcGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	3	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	simGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using a baro ts & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	simGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	simCopy	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+dosat	simNew	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	14	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
+er	estBest	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+er	estNight	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	3	NA	calculate K600 & ER for individual days by nighttime regression	streamMetabolizer	metab_night	calc	NA
+er	simCopy	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+er	simNew	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
+gpp	estBest	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
+gpp	simCopy	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
+gpp	simNew	gO2 m^-2 d^-1	daily gross primary productivity	ts	GPP	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
 K600	estBest	d^-1	gas exchange rate	ts	K600	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
 K600lwr	estBest	d^-1	gas exchange rate	ts	K600.lower	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA
 K600upr	estBest	d^-1	gas exchange rate	ts	K600.upper	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA

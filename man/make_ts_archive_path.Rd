@@ -4,18 +4,23 @@
 \alias{make_ts_archive_path}
 \title{Create an archive file name for a file on ScienceBase}
 \usage{
-make_ts_archive_path(filename, creation_date)
+make_ts_archive_path(file_path, creation_date)
 }
 \arguments{
-\item{filename}{of the file that is to be archived}
+\item{file_path}{of the file that is to be archived}
 
 \item{creation_date}{the creation date of the ScienceBase file that will be 
-archived (as.Date)}
+archived (as.POSIXct). can't be NA.}
 }
 \value{
 a file name to be used as an archive
 }
 \description{
-Create an archive file name for a file on ScienceBase
+Usually subsidiary to make_ts_path, but may also be called directly if you
+already have a non-archive file_path to modify
+}
+\examples{
+make_ts_archive_path('nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
+make_ts_archive_path('temp/nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
 }
 
