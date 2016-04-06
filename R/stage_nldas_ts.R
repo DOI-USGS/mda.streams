@@ -13,7 +13,7 @@
 #' @param url for web dataset. If missing, uses geoknife's "nldas" url
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}}
 #' @return a file handle for time series file created
-#' @importFrom geoknife simplegeom webdata geoknife result webprocess times
+#' @importFrom geoknife simplegeom webdata geoknife result webprocess times times<-
 #' @importFrom dataRetrieval readNWISsite
 #' @importFrom unitted u get_units unitbundle
 #' @importFrom stats setNames
