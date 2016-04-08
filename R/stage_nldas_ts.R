@@ -72,7 +72,7 @@ stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv
         select(-variable)
       
       units <- as.character(site_data$units) %>% unique()
-      if (p_code == 'sw' & units == 'W/m^2')
+      if (p_code == "dswrfsfc" & units == 'W/m^2')
         units = "W m^-2"
       
       if(get_units(unitbundle(units)) != expected_units) 
