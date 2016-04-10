@@ -97,37 +97,46 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
         readNWISuv(siteNumbers=site_nums, parameterCd=p_code, startDate = asktimes[1], endDate = asktimes[2]),
         error=function(e) {
           if(isTRUE(verbose)) {
-            message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
+            message("NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
           }
           data.frame()
         })
-      ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
-      everything <- '.dplyr.var'
-      nwis_data <- nwis_data[, !ignore.cols] %>%
-        rename(DateTime = dateTime) %>%
-        select(site_no, DateTime, everything())
+      if(ncol(nwis_data) == 0) {
+        if(isTRUE(verbose)) {
+          message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ".")
+        }
+      } else {
+        ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
+        everything <- '.dplyr.var'
+        nwis_data <- nwis_data[, !ignore.cols] %>%
+          rename(DateTime = dateTime) %>%
+          select(site_no, DateTime, everything())
+      }
     }
   )
   
   # loop through to filter and write the data
   file_paths <- c()
   site_no <- datetime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
-  if (ncol(nwis_data)!=0){
+  if (ncol(nwis_data) != 0){
     if(isTRUE(verbose)) message("writing the downloaded data to file")
     un_sites <- unique(sites)
     for (i in 1:length(un_sites)){
       
       site <- parse_site_name(un_sites[i])
       site_data <- filter(nwis_data, site_no == site)
-      key <- value <- num_non_NAs <- '.dplyr.var'
-      which.var <- select(site_data, -DateTime, -site_no) %>% 
-        tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
-        filter(num_non_NAs==max(num_non_NAs)) %>% {.$key[1]}
       
-      site_data <- select_(site_data, 'DateTime', which.var) %>%
-        filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
-        u(c(NA,var_units)) %>% 
-        setNames(c('DateTime', var))
+      if(nrow(site_data) > 0) {
+        key <- value <- num_non_NAs <- '.dplyr.var'
+        which.var <- select(site_data, -DateTime, -site_no) %>% 
+          tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
+          filter(num_non_NAs==max(num_non_NAs)) %>% {.$key[1]}
+        
+        site_data <- select_(site_data, 'DateTime', which.var) %>%
+          filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
+          u(c(NA,var_units)) %>% 
+          setNames(c('DateTime', var))
+      }
 
       if(nrow(site_data) > 0) {
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder, version=version)

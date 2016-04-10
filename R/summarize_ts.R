@@ -17,11 +17,12 @@
 #'   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 #' }
 summarize_ts <- function(
-  var_src, site_name, 
+  var_src, site_name, version=c('tsv','rds'),
   out=c("date_updated","start_date","end_date","num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"),
   on_local_exists=c("skip","stop","replace")) {
   
   # check inputs & session
+  version <- match.arg(version)
   out <- match.arg(out, several.ok=TRUE)
   on_local_exists <- match.arg(on_local_exists)
   var_src_char <- if(is.list(var_src)) names(var_src) else var_src
@@ -73,7 +74,7 @@ summarize_ts <- function(
   ts_items <- 
     if(length(item_funs) > 0) {
       locate_ts(var_src_char, site_name) %>%
-        lapply(item_get)
+        lapply(function(id) if(is.na(id)) NA else item_get(id))
     } else {
       rep(NA, nrow(ts_summary))
     }
@@ -85,7 +86,7 @@ summarize_ts <- function(
         var_src
       } else {
         # download the files all at once, slightly reducing the number of requests to SB. then read iteratively
-        download_ts(var_src, site_name, on_remote_missing="return_NA", on_local_exists=on_local_exists) %>%
+        download_ts(var_src, site_name, version=version, on_remote_missing="return_NA", on_local_exists=on_local_exists) %>%
           lapply(function(ts_file) if(is.na(ts_file)) NA else read_ts(ts_file) )
       }
     } else {
