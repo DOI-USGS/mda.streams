@@ -61,10 +61,12 @@
 #' @export
 get_ts <- function(var_src, site_name, method=c('approx', 'full_join', 'left_join', 'inner_join'), 
                    approx_tol=as.difftime(3, units="hours"), 
+                   version=c('tsv','rds'),
                    on_local_exists='skip', on_invalid='warn', match_var = "leftmost", 
                    condense_stat = mean, day_start = 4, day_end = 28, quietly=FALSE) {
 
   method <- match.arg(method)
+  version <- match.arg(version)
   if(length(site_name) > 1) stop("only one site_name is allowed")
   if(length(match_var) > 1) stop("only one match_var is allowed")
   if(length(condense_stat) > 1) stop("only one condense_stat is allowed")
@@ -72,7 +74,7 @@ get_ts <- function(var_src, site_name, method=c('approx', 'full_join', 'left_joi
   if(!match_var %in% var_src) stop("match_var must come from var_src")
   
   data_list <- lapply(var_src, function(vs) {
-    file <- download_ts(var_src=vs, site_name=site_name, on_local_exists=on_local_exists)
+    file <- download_ts(var_src=vs, site_name=site_name, version=version, on_local_exists=on_local_exists)
     read_ts(file, on_invalid=on_invalid)
   })
   
