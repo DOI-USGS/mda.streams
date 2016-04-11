@@ -4,13 +4,8 @@
 \alias{stage_nldas_ts}
 \title{stage nldas data into a time series file}
 \usage{
-<<<<<<< HEAD
 stage_nldas_ts(sites, var, times, folder = tempdir(), version = c("tsv",
   "rds"), verbose = FALSE, url, ...)
-=======
-stage_nldas_ts(sites, var, times, folder = tempdir(), version = c("rds",
-  "tsv"), verbose = FALSE, ...)
->>>>>>> 4eb7ad81ad6ac87e59d46b531ef1458cc2680f9b
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
