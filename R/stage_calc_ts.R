@@ -95,7 +95,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
   un_sites <- unique(sites)
   site <- '.local.var' #just to be sure about scope; will break if get_staging_ts doesn't use site from for loop below
   get_staging_ts <- function(var_src, ...) {
-    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
+    tryCatch({
+      get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
+    }, error=function(e) {
+      get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
+    })
   }
   choose_ts <- function(var) {
     best_src <- choose_data_source(var, site, logic="priority local")$src
@@ -288,15 +292,13 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
       }
     )
     
-    # ensure proper format here
-    
     # write the data to file
     if(isTRUE(verbose)) message("writing the computed data to file")
     if(nrow(ts_calc) > 0) {
       fpath <- write_ts(ts_calc, site=site, var=var, src=src, folder)
       file_paths <- c(file_paths, fpath)
     } else {
-      if(isTRUE(verbose)) message("data couldn't be computed for site ", site)
+      if(isTRUE(verbose)) message("nrow(data) == 0 for site ", site)
       # leave file_paths untouched if there's no new file
     }
   }
@@ -572,6 +574,6 @@ calc_ts_simNew <- function(var, utctime, value) {
 calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
   from_data <- get_ts(
     var_src=make_var_src(var, from_src), 
-    site_name=from_site, version='rds', on_local_exists="replace")
+    site_name=from_site, version='tsv', on_local_exists="replace")
   if(!is.null(filter_fun)) filter_fun(from_data) else from_data
 }
