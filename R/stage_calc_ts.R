@@ -257,12 +257,14 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             calc_ts_with_input_check(inputs, 'calc_ts_dopsat_calcObsSat')
           },
           'doamp_calcDAmp' = {
+            DateTime <- dopsat <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', 'dopsat_calcObsSat'), 
               condense_stat = function(dopsat) diff(range(dopsat)), day_start=4, day_end=28, quietly=TRUE) %>%
               select(DateTime, doamp=dopsat)
           },
           'dischdaily_calcDMean' = {
+            DateTime <- disch <- dischdaily <- '.dplyr.var'
             get_staging_ts(
               var_src=c(choose_ts('sitedate'), choose_ts('disch')), 
               condense_stat = mean, day_start=4, day_end=28, quietly=TRUE) %>%
@@ -270,6 +272,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
               mutate(dischdaily = dischdaily * u(0.0283168466, "m^3 ft^-3"))
           },
           'velocdaily_calcDMean' = {
+            DateTime <- veloc <- '.dplyr.var'
             get_staging_ts(
               var_src=c(choose_ts('sitedate'), choose_ts('veloc')), 
               condense_stat = mean, day_start=4, day_end=28, quietly=TRUE) %>%
