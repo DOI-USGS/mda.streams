@@ -28,7 +28,7 @@ before_install:
   
 r_github_packages:
   - jimhester/covr
-  - USGS-R/streamMetabolizer
+  - USGS-R/streamMetabolizer@develop
   - USGS-R/sbtools
 
 after_success:

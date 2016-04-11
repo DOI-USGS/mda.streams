@@ -44,8 +44,7 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       tag=data.frame(key=key, type=type, stringsAsFactors=FALSE),
       dir=data.frame(parent=parent, title=title, stringsAsFactors=FALSE),
       either=data.frame(key=key, type=type, parent=parent, title=title, stringsAsFactors=FALSE)
-    ) %>%
-    as.data.frame(stringsAsFactors=FALSE)
+    )
 
   if(get_scheme() == 'mda_streams_dev' && !is_logged_in())
     stop("log in to use mda_streams_dev. see login_sb()")
@@ -70,14 +69,22 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
     needy_argnums <- unique(items[is.na(items$id), "argnum"])
     for(i in needy_argnums) {
       query <- items[items$argnum == i, ]
+      # query_item_in_folder finds items where the title matches any text 
+      # (title, abstract, key, etc.) anywhere in the specified folder or its 
+      # children
       query_out <- query_item_in_folder(text=query$title[1], folder=query$parent[1], limit=limit)
-      query_out <- query_out[tolower(query_out$title) == tolower(query$title[1]), ]
-      if(nrow(query_out) > 0) {
-        query_out$parentId <- sapply(query_out$id, function(id) {item_get_fields(id, "parentId")})
-        query_match <- query_out[query_out$parentId == query$parent[1], ]
-        if(nrow(query_match) > 0) {
-          items[items$argnum == i, "id"] <- query_match$id
-          items[items$argnum == i, "title"] <- query_match$title
+      # filter to just those whose *title* matches the text query
+      if(length(query_out) > 0) {
+        query_out <- query_out[tolower(sapply(query_out, function(qitem) qitem$title)) == tolower(query$title[1])]
+      }
+      # filter again to just those whose parentID is exactly the folder we specified
+      if(length(query_out) > 0) {
+        parentIds <- sapply(query_out, function(qitem) {item_get_fields(qitem$id, "parentId")}) # slow, but necessary until sbtools#193 gets resolved
+        query_out <- query_out[parentIds == query$parent[1]]
+        if(length(query_out) > 0) {
+          if(length(query_out) > 1) stop('found more than one match in query for key=', query$key, ', type=', query$type, ', parent=', query$parent, ', title=', query$title)
+          items[items$argnum == i, "id"] <- query_out[[1]]$id
+          items[items$argnum == i, "item.title"] <- query_out[[1]]$title
         }
       }
     }

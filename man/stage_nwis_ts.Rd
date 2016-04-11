@@ -4,8 +4,8 @@
 \alias{stage_nwis_ts}
 \title{stage nwis data into a file}
 \usage{
-stage_nwis_ts(sites, var, times, folder = tempdir(), version = c("tsv",
-  "rds"), verbose = FALSE)
+stage_nwis_ts(sites, var, times, folder = tempdir(), version = c("rds",
+  "tsv"), verbose = FALSE)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}

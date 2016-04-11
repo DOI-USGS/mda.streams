@@ -79,8 +79,13 @@ download_item_files <- function(
     
     # look for specific files
     if(!isTRUE(is.na(file_vec))) {
-      if(!all(found_file <- file_vec %in% file_list$fname)) 
-        stop("couldn't find file[s] in item ", item_name, " (", item_id, "): ", paste0(file_vec[!found_file], collapse=", "))
+      if(!all(found_file <- file_vec %in% file_list$fname)) {
+        msg <- paste0("found item but not file[s] in item ", item_name, " (", item_id, "): ", paste0(file_vec[!found_file], collapse=", "))
+        switch(
+          on_remote_missing,
+          "return_NA"={warning(msg); return(NA_character_)},
+          "stop"=stop(msg))
+      }
     } else {
       file_vec <- file_list$fname
     }

@@ -1,3 +1,21 @@
+# mda.streams 0.9.3
+
+* Now automatically checks for available updates when you attach the package
+
+# mda.streams 0.9.2
+
+* complex requests to get_ts() are about 7 times faster now if accompanied by
+update to streamMetabolizer v0.9.3
+
+# mda.streams 0.9.1
+
+* read_ts, write_ts, post_ts, and download_ts now support either .tsv or .Rds 
+versions of data (Jordan Read)
+
+* get_ts is now much smarter about requests for multiple timeseries whose 
+temporal resolutions and/or extents are different (e.g., merging daily and 
+15-minute data) (Lindsay Carr)
+
 # mda.streams 0.9.0
 
 ## Changes

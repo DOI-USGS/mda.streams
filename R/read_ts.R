@@ -16,7 +16,7 @@
 #' @import tools
 #' @importFrom unitted read_unitted get_units
 #' @export
-read_ts = function(file, on_invalid=c("stop","warn")) {
+read_ts = function(file, on_invalid=c("warn","stop")) {
   
   
   on_invalid <- match.arg(on_invalid)
@@ -46,7 +46,8 @@ read_ts = function(file, on_invalid=c("stop","warn")) {
   # check the data for mda.streams validity
   if (!verify_ts(df, parse_ts_path(file, 'var'))) {
     msg <- paste0('timeseries in file ', file, ' is not valid')
-    if(on_invalid=="stop") stop(msg) else warning(msg)
+    if(on_invalid=="stop") stop(msg)
+    #else warning(msg) # this would be redundant with warnings thrown straight from verify_ts
   }
   
   

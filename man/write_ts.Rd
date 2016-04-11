@@ -4,7 +4,7 @@
 \alias{write_ts}
 \title{Write timeseries data into a compressed file}
 \usage{
-write_ts(data, site, var, src, folder, version = c("tsv", "rds"))
+write_ts(data, site, var, src, folder, version = c("rds", "tsv"))
 }
 \arguments{
 \item{data}{unitted data.frame}

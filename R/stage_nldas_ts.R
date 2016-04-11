@@ -25,8 +25,9 @@
 #' read_ts(files[1])
 #' }
 #' @export
+
 stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE, url, ...){
-  
+
   version <- match.arg(version)
   
   if(length(var) > 1) stop("one var at a time, please")
