@@ -56,9 +56,11 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
       }
       y_val_num <- as.numeric(y[,2])[!is.na(y[,2])] # only interpolate non-NAs
       y_approx <- approx(x=y_date_num, y=y_val_num, xout=x_date_num, rule=2)$y
-      if(names(y)[2] == 'suntime') {
-        posix_origin <- as.POSIXct("1970-01-01 00:00:00", tz="UTC") # in ?as.POSIXct | Note
+      posix_origin <- as.POSIXct("1970-01-01 00:00:00", tz="UTC") # in ?as.POSIXct | Note
+      if(any(grepl('POSIX', class(y[,2])))) {
         y_approx <- as.POSIXct(y_approx, origin=posix_origin, tz="UTC")
+      } else if(any(grepl('Date', class(y[,2])))) {
+        y_approx <- as.Date(y_approx, origin=posix_origin, tz="UTC")
       }
       # remove the value if the gap is beyond our tolerance
       y_approx[min_gap > approx_toln] <-  NA
