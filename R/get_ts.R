@@ -223,34 +223,40 @@ warning_table <- function(var_src, condense_stat, data, site_name, method, quiet
   
   get_timestep_info <- function(v, t, s, e, condense_stat, t_match, s_match, e_match){
     
-    res_words <- switch(as.character(t),
-                        "60" = "hourly",
-                        "1440" = "daily",
-                        paste(t, "min"))
+    res_words <- 
+      switch(
+        as.character(t),
+        "60" = "hourly",
+        "1440" = "daily",
+        paste(t, "min"))
     
-    if(t == t_match){
-      res_result <- "As is"
-    }else if(t > t_match){
-      res_result <- "NAs added"
-    }else {
-      if(condense_stat == "match"){
-        res_result <- paste("Matched by", method)
-      } else {
-        if(t_match < 1440){
-          res_result <- paste("Matched by", method, "(condense_stat not supported for sub-daily)")
+    res_result <- 
+      if(is.na(t)){"Replicated"
+      }else if(t == t_match){"As is"
+      }else if(t > t_match){"NAs added"
+      }else {
+        if(condense_stat == "match"){
+          paste("Matched by", method)
         } else {
-          res_result <- paste("Condensed by", condense_stat)
+          if(t_match < 1440){
+            paste("Matched by", method, "(condense_stat not supported for sub-daily)")
+          } else {
+            paste("Condensed by", condense_stat)
+          }
         }
       }
-    }
     
-    if(s < s_match){start_result <- "Earlier (truncated)"}
-    if(s > s_match){start_result <- "Later (NAs added)"}
-    if(s == s_match){start_result <- "Equal"}
-
-    if(e < e_match){end_result <- "Earlier (NAs added)"}
-    if(e > e_match){end_result <- "Later (truncated)"}
-    if(e == e_match){end_result <- "Equal"}
+    start_result <- 
+      if(is.na(s)){"NA (replicated)"
+      }else if(s < s_match){"Earlier (truncated)"
+      }else if(s > s_match){"Later (NAs added)"
+      }else if(s == s_match){"Equal"}
+    
+    end_result <- 
+      if(is.na(e)){"NA (replicated)"
+      }else if(e < e_match){"Earlier (NAs added)"
+      }else if(e > e_match){"Later (truncated)"
+      }else if(e == e_match){"Equal"}
 
     return(data.frame(var_src = v, resolution_change = res_words, resolution_result = res_result, 
                       start_date = start_result, end_date = end_result, stringsAsFactors = FALSE))

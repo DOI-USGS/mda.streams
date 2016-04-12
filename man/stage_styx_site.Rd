@@ -6,10 +6,10 @@
 \usage{
 stage_styx_site(site = "styx_000000", basedon = "nwis_07239450",
   times = c("2012-05-14 21:00:00", "2012-05-16 07:00:00"), depth = u(0.2,
-  "m"), day_start = -1.5, day_end = 30, dates = c("2012-05-14",
-  "2012-05-16"), doinit, gpp = u(as.numeric(NA), "gO2 m^-2 d^-1"),
-  er = u(as.numeric(NA), "gO2 m^-2 d^-1"), K600 = u(as.numeric(NA), "d^-1"),
-  info = NA, verbose = TRUE)
+  "m"), day_start = -1.5, day_end = 30, dates = NA,
+  doinit = u(as.numeric(NA), "mgO2 L^-1"), gpp = u(as.numeric(NA),
+  "gO2 m^-2 d^-1"), er = u(as.numeric(NA), "gO2 m^-2 d^-1"),
+  K600 = u(as.numeric(NA), "d^-1"), info = NA, verbose = TRUE)
 }
 \arguments{
 \item{site}{a single styx site ID for which to generate data}

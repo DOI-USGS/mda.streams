@@ -19,6 +19,7 @@ depth	simNew	m	stream depth	ts	depth	13	NA	"arbitrarily assign numbers for model
 disch	nwis	ft^3 s^-1	discharge	ts	discharge	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
 dischdaily	calcDMean	m^3 s^-1	daily mean discharge	ts	discharge.daily	1	NA	daily mean values, 4am to 4am sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
 doinit	simNew	mgO2 L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
+doinit	simDStart	mgO2 L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	13	NA	first value of each day (default 4am)	streamMetabolizer	NA	sim	NA
 doobs	indy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	1	NA	independent data source	NA	NA	data	NA
 doobs	nwis	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00300'
 doobs	simCopy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
@@ -58,8 +59,8 @@ sitetime	indy	''	mean solar time (regular timesteps)	ts	solar.time	1	NA	independ
 sitetime	calcLon	''	mean solar time (regular timesteps)	ts	solar.time	2	NA	calculate time from UTC and site longitude	streamMetabolizer	convert_UTC_to_localtime	calc	NA
 sitetime	simLon	''	mean solar time (regular timesteps)	ts	solar.time	11	NA	time as stored or assumed	streamMetabolizer	convert_UTC_to_localtime	calc	NA
 sitetimedaily	calcLon	''	mean solar noons, nominally UTC	ts	NA	1	NA	calculate time from UTC and site longitude	streamMetabolizer	convert_UTC_to_solartime	calc	NA
-sitedate	calcLon	''	dates defined relative to solar time	ts	solar.date	1	NA	calculate time from UTC and site longitude	streamMetabolizer	convert_UTC_to_solartime	calc	NA
-sitedate	simLon	''	dates defined relative to solar time	ts	solar.date	11	NA	time as stored or assumed	streamMetabolizer	convert_UTC_to_solartime	calc	NA
+sitedate	calcLon	''	dates defined relative to solar time	ts	date	1	NA	calculate time from UTC and site longitude	streamMetabolizer	convert_UTC_to_solartime	calc	NA
+sitedate	simLon	''	dates defined relative to solar time	ts	date	11	NA	time as stored or assumed	streamMetabolizer	convert_UTC_to_solartime	calc	NA
 suntime	calcLon	''	apparent solar time (perfect match to sun)	ts	app.solar.time	1	NA	calculate time from UTC and site longitude	streamMetabolizer	convert_UTC_to_solartime	calc	NA
 suntime	simLon	''	apparent solar time (perfect match to sun)	ts	app.solar.time	11	NA	time as stored or assumed	streamMetabolizer	convert_UTC_to_solartime	sim	NA
 suntime	simCopy	''	apparent solar time (perfect match to sun)	ts	app.solar.time	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
