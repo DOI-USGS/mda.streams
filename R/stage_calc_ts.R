@@ -379,6 +379,7 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
 #'   
 #' @keywords internal
 calc_ts_sitedate_calcLon <- function(sitetime, longitude, day_start=4, day_end=28) {
+  sitenoon<- '.dplyr.var'
   mm_model_by_ply(
     function(data_ply, data_daily_ply, ply_date, ...) {
       data.frame(
@@ -407,6 +408,7 @@ calc_ts_sitedate_calcLon <- function(sitetime, longitude, day_start=4, day_end=2
 #'   
 #' @keywords internal
 calc_ts_doinit_calcDStart <- function(sitetime, doobs, longitude, day_start=4, day_end=28) {
+  sitenoon <- doinit <- '.dplyr.var'
   mm_model_by_ply(
     function(data_ply, data_daily_ply, ply_date, ...) {
       data.frame(

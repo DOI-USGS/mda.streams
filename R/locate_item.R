@@ -51,48 +51,52 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
 
   # run the query or queries
   if(by %in% c("tag","either")) {
-    items <- bind_rows(lapply(1:nrow(query_args), function(argnum) {
+    item_df <- bind_rows(lapply(1:nrow(query_args), function(argnum) {
       # query by tag
-      item <- query_item_identifier(scheme = get_scheme(), type = query_args$type[argnum], key = query_args$key[argnum], limit=limit)
+      item_list <- query_item_identifier(scheme=get_scheme(), type=query_args$type[argnum], key=query_args$key[argnum], limit=limit)
       # create a df of NAs if item wasn't found
-      if(ncol(item) == 0) item <- data.frame(title=NA, id=NA)
+      arg_item_df <- if(length(item_list) == 0) {
+        data.frame(title=NA_character_, id=NA_character_)
+      } else {
+        bind_rows(lapply(item_list, function(item) as_data_frame(item[c('title','id')])))
+      }
       # attach argnum and return
-      data.frame(query_args[argnum,], argnum=argnum, setNames(item, c("item.title","id")))
-    })) %>% as.data.frame(stringsAsFactors=FALSE)
+      data.frame(query_args[argnum,], argnum=argnum, rename(arg_item_df, item.title=title), stringsAsFactors=FALSE)
+    }))
   } else if(by == "dir") {
     # just set up df so that the next block will do the search
-    items <- data.frame(query_args, argnum=1:nrow(query_args), item.title=NA, id=NA)
+    item_df <- data.frame(query_args, argnum=1:nrow(query_args), item.title=NA_character_, id=NA_character_, stringsAsFactors=FALSE)
   }
   
   # query by title as requested+needed
   if(by %in% c("dir","either")) {
-    needy_argnums <- unique(items[is.na(items$id), "argnum"])
+    needy_argnums <- unique(item_df[is.na(item_df$id), "argnum"])
     for(i in needy_argnums) {
-      query <- items[items$argnum == i, ]
-      # query_item_in_folder finds items where the title matches any text 
+      query <- item_df[item_df$argnum == i, ]
+      # query_item_in_folder finds item_df where the title matches any text 
       # (title, abstract, key, etc.) anywhere in the specified folder or its 
       # children
-      query_out <- query_item_in_folder(text=query$title[1], folder=query$parent[1], limit=limit)
+      items <- query_item_in_folder(text=query$title[1], folder=query$parent[1], limit=limit)
       # filter to just those whose *title* matches the text query
-      if(length(query_out) > 0) {
-        query_out <- query_out[tolower(sapply(query_out, function(qitem) qitem$title)) == tolower(query$title[1])]
+      if(length(items) > 0) {
+        items <- items[tolower(sapply(items, function(qitem) qitem$title)) == tolower(query$title[1])]
       }
       # filter again to just those whose parentID is exactly the folder we specified
-      if(length(query_out) > 0) {
-        parentIds <- sapply(query_out, function(qitem) {item_get_fields(qitem$id, "parentId")}) # slow, but necessary until sbtools#193 gets resolved
-        query_out <- query_out[parentIds == query$parent[1]]
-        if(length(query_out) > 0) {
-          if(length(query_out) > 1) stop('found more than one match in query for key=', query$key, ', type=', query$type, ', parent=', query$parent, ', title=', query$title)
-          items[items$argnum == i, "id"] <- query_out[[1]]$id
-          items[items$argnum == i, "item.title"] <- query_out[[1]]$title
+      if(length(items) > 0) {
+        parentIds <- sapply(items, function(qitem) {item_get_fields(qitem$id, "parentId")}) # slow, but necessary until sbtools#193 gets resolved
+        items <- items[parentIds == query$parent[1]]
+        if(length(items) > 0) {
+          if(length(items) > 1) stop('found more than one match in query for key=', query$key, ', type=', query$type, ', parent=', query$parent, ', title=', query$title)
+          item_df[item_df$argnum == i, "id"] <- items[[1]]$id
+          item_df[item_df$argnum == i, "item.title"] <- items[[1]]$title
         }
       }
     }
   }
   
   # reformat the results to our liking
-  sapply(1:nrow(items), function(item) {
-    format_item(items[item,], format, browser)
+  sapply(1:nrow(item_df), function(item) {
+    format_item(item_df[item,], format, browser)
   })
 }
 
@@ -101,8 +105,8 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
 #' Internal helper to locate_item. Doesn't check the value of format - that's up
 #' to the calling functions to do, for efficiency.
 #' 
-#' @param item a ScienceBase item data.frame, e.g., as returned from 
-#'   query_item_identifier
+#' @param item a data.frame with columns for title and id describing one or more
+#'   ScienceBase items
 #' @inheritParams locate_item
 #' @import httr
 #' @keywords internal

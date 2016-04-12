@@ -193,6 +193,7 @@ stage_styx_site <- function(
     if(any(doinit_NAs)) {
       warning("doinit could not be identified for these dates: ", paste0(doinit_ts[doinit_NAs,'sitedate'], collapse=", "))
     }
+    DateTime <- '.dplyr.var'
     doinit_ts <- doinit_ts %>% select(DateTime, doinit)
     doinit_file <- write_ts(doinit_ts, site=site, var='doinit', src='simDStart', folder=tempdir())
   } else {

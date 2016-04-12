@@ -5,9 +5,9 @@
 #' @export
 list_metab_runs = function(){
   sb_require_login("stop")
-  run_items <- query_item_identifier(scheme = get_scheme(), type = 'metab_run', limit = 10000)
-  if(nrow(run_items) > 0) {
-    return(run_items$title)
+  run_items <- query_item_identifier(scheme=get_scheme(), type='metab_run', limit = 10000)
+  if(length(run_items) > 0) {
+    return(sapply(run_items, function(item) item$title))
   } else {
     return(character())
   }

@@ -27,13 +27,9 @@ get_watershed_WFS = function(site){
 
 get_watershed_item = function(site){
 	
-  identifier <- query_item_identifier(scheme = get_scheme(), type = 'watershed', key = site)
+  items <- query_item_identifier(scheme = get_scheme(), type = 'watershed', key = site)
   
-  watershed_id <- identifier$id
-  
-  watershed_item <- item_get(id = watershed_id)
-  
-  return(watershed_item)
+  return(items)
 }
 match_url_distro = function(item, title_to_match){
   
