@@ -226,7 +226,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
       num_tries <- 3
       for(i in 1:num_tries) {
         dfile <- tryCatch(
-          download_ts(make_var_src(var, src), site, on_local_exists="skip", on_remote_missing="stop"),
+          download_ts(make_var_src(var, src), site, version="rds", on_local_exists="skip", on_remote_missing="stop"),
           error=function(e) { warning(paste0("download try ",i,": ",e$message)); NULL })
         if(!is.null(dfile)) break else Sys.sleep(1)
       }
