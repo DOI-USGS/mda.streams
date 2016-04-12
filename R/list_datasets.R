@@ -19,6 +19,7 @@
 #' @import sbtools
 #' @importFrom stringr str_detect
 #' @importFrom stats setNames
+#' @import dplyr
 #' @export
 list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
   
@@ -34,17 +35,21 @@ list_datasets = function(site_name, data_type=c("ts","watershed"), ...){
   # get list of site items, then filter to those of the proper data_type
   . <- '.dplyr.var'
   site_items <- query_item_identifier(scheme = get_scheme(), key = site_name, limit = 10000)
-  if (nrow(site_items) == 0){ 
+  if (length(site_items) == 0){ 
     stop('site ', site_name, ' does not exist')
   } else {
-    site_items <- site_items[site_items$title != site_name, ]
+    item_titles <- sapply(site_items, function(item) item$title)
+    site_items <- site_items[item_titles != site_name]
+    item_titles <- item_titles[item_titles != site_name] # update item_titles to be parallel to site_items
   }
-  if(nrow(site_items) > 0) {
-    prefix_matches <- lapply(setNames(str_match_patterns,str_match_patterns), 
-                             function (x) str_detect(site_items$title, pattern = x)) %>% as_data_frame()
+  if(length(site_items) > 0) {
+    prefix_matches <- lapply(
+      setNames(str_match_patterns,str_match_patterns), 
+      function (x) str_detect(item_titles, pattern = x)) %>% as_data_frame()
     is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
     is_ts <- unlist(unname(prefix_matches[,1]))
-    datasets <- site_items$title %>%
+    datasets <- 
+      sapply(site_items, function(item) item$title) %>%
       ifelse(is_ts, parse_ts_name(.), .) %>%
       .[is_dataset] %>%
       unique() %>%

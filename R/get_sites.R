@@ -25,30 +25,26 @@ get_sites <- function(with_dataset_name=NULL, limit=10000){
   if (is.null(with_dataset_name)){
     # get the superset of sites. this query is used in both if{} blocks but with
     # different limits.
-    sites <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=limit)$title
+    site_items <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=limit)
+    sites <- sapply(site_items, function(item) item$title)
   } else {
 
     # find all the time series items for the specified var_src
     if(length(with_dataset_name) != 1) stop("with_dataset_name must have length 1")
-    # create the query
-    filter_items = list('scheme'=get_scheme(), 'type'=with_dataset_name)
-    filter = paste0('itemIdentifier=', toJSON(filter_items, auto_unbox=TRUE))
-    # run the query & pull out the content (timeseries item IDs)
-    query = list('filter' = filter, 'max' = limit, 'format' = 'json', 'fields' = 'parentId')
-    child_ids <- query_items(query) 
-    response <- content(child_ids, 'parsed')
+    ts_items <- query_item_identifier(scheme=get_scheme(), type=with_dataset_name, limit=limit)
     
     # convert from parents of these items to site names
-    parents <- sapply(response$items, function(item) item$parentId ) # get the parents (site items) of the timeseries items
-    if (length(parents)==0) {
+    site_ids <- sapply(ts_items, function(ts) ts$parentId)
+    if(length(site_ids)==0) {
       sites <- vector('character')
     } else {
-      # get all potential parents. ignore specified limiter on query because
-      # we're asking for a superset of expected output
-      identifiers <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
-      sites <- identifiers$title[match(parents, identifiers$id)] # translate IDs to site names
+      # get all sites IDs and titles, then filter to sites whose IDs match ours.
+      # override limit arg because this is a superset of the final output
+      all_site_items <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
+      all_site_info <- bind_rows(lapply(all_site_items, function(site) as_data_frame(site[c('title','id')])))
+      sites <- all_site_info$title[match(site_ids, all_site_info$id)] # translate IDs to site names
       # this code would be slower because it involves many SB queries:
-      # sites <- sapply(response$items, function(item) item_get(item$parentId)$title )
+      # sites <- sapply(site_ids, function(id) as.sbitem(id)$title)
     }
   }
 

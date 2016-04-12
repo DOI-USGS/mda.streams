@@ -18,14 +18,14 @@ post_watershed = function(site, files){
 	#Check that it doesn't already exist
 	check = query_item_identifier(scheme=get_scheme(),type='watershed', key=site)
 	
-	if(nrow(check) > 0){
+	if(length(check) > 0){
 		stop('Watershed item already exists for this site')
 	}
 	
 	#get site_root
 	site_root = query_item_identifier(scheme=get_scheme(), type='site_root', key=site)
 	
-	if(nrow(site_root) != 1){
+	if(length(site_root) != 1){
 		stop('Site root not found or ambiguous, check site ID:', site)
 	}
 	

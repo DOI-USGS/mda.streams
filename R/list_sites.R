@@ -15,7 +15,7 @@
 #' \dontrun{
 #' list_sites()
 #' list_sites(with_var_src=c("wtr_nwis","doobs_nwis","shed_nhdplus"), logic="any")
-#' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simModel"),
+#' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy"),
 #'                 any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
 #' }
 list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {

@@ -7,8 +7,8 @@
 format_item(item, format, browser)
 }
 \arguments{
-\item{item}{a ScienceBase item data.frame, e.g., as returned from 
-query_item_identifier}
+\item{item}{a data.frame with columns for title and id describing one or more
+ScienceBase items}
 
 \item{format}{character indicating whether the folder should be returned as 
 an ID or as a full URL}
