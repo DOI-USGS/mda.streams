@@ -34,7 +34,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
       error_strategy=sapply(strsplit(strategy, " "), `[`, 3)) %>%
     .[rep(1,times),] %>%
     select(src, error_strategy, strategy, model_args)
-  estimates <- bind_rows(lapply(mtb, function(mm) predict_metab(mm)[2,]))
+  estimates <- bind_rows(lapply(mtb, function(mm) predict_metab(mm)))
   prep_time <- bind_rows(lapply(mtb, function(mm) as.data.frame(as.list(get_info(mm)$prep_time))))
   fitting_time <- bind_rows(lapply(mtb, function(mm) as.data.frame(as.list(get_fitting_time(mm)))))
 
