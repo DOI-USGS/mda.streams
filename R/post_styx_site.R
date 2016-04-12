@@ -40,5 +40,5 @@ post_styx_site <- function(file_list) {
   Sys.sleep(1)
   
   # report on what we've created
-  summarize_ts(list_tses(site), site)
+  summarize_ts(list_tses(site), site, version='rds')
 }
