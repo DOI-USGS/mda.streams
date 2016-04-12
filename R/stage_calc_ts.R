@@ -5,7 +5,7 @@
 #' @param sites a character vector of valid NWIS site IDs
 #' @param var short name of variable as in 
 #'   \code{unique(get_var_src_codes(out='var'))}
-#' @param src short name of src as in \code{get_var_src_codes(var==myvar,
+#' @param src short name of src as in \code{get_var_src_codes(var==myvar, 
 #'   out='src')}
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
@@ -13,6 +13,8 @@
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
 #'   function. These inputs are downloaded from standard locations for the 
 #'   calcXxxx variants.
+#' @param day_start hour of day start as in \code{mm_model_by_ply}
+#' @param day_end hour of day end as in \code{mm_model_by_ply}
 #' @param verbose logical. provide status messages?
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
@@ -84,7 +86,7 @@
 #' head(read_ts(file_dischdaily))
 #' }
 #' @export
-stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), verbose = FALSE, ...){
+stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), day_start=4, day_end=4, verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
   if(length(src) > 1) stop("one src at a time, please")
@@ -138,8 +140,10 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           'sitedate_calcLon' = {
             sitetime <- get_staging_ts("sitetime_calcLon")
             calc_ts_sitedate_calcLon(
-              sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
-              longitude = get_site_coords(site)$lon)
+              sitetime = sitetime$sitetime, 
+              longitude = get_site_coords(site)$lon,
+              day_start = day_start,
+              day_end = day_end)
           },
           'sitedate_simLon' = {
             calc_ts_with_input_check(inputs, 'calc_ts_sitedate_calcLon')
@@ -260,18 +264,21 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
           'dopsat_simObsSat' = {
             calc_ts_with_input_check(inputs, 'calc_ts_dopsat_calcObsSat')
           },
+          'doinit_simDStart' = {
+            calc_ts_with_input_check(inputs, 'calc_ts_doinit_calcDStart')
+          },
           'doamp_calcDAmp' = {
             DateTime <- dopsat <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', 'dopsat_calcObsSat'), 
-              condense_stat = function(dopsat) diff(range(dopsat)), day_start=4, day_end=28, quietly=TRUE) %>%
+              condense_stat = function(dopsat) diff(range(dopsat)), day_start=day_start, day_end=day_end, quietly=TRUE) %>%
               select(DateTime, doamp=dopsat)
           },
           'dischdaily_calcDMean' = {
             DateTime <- disch <- dischdaily <- '.dplyr.var'
             get_staging_ts(
               var_src=c(choose_ts('sitedate'), choose_ts('disch')), 
-              condense_stat = mean, day_start=4, day_end=28, quietly=TRUE) %>%
+              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
               select(DateTime, dischdaily=disch) %>%
               mutate(dischdaily = dischdaily * u(0.0283168466, "m^3 ft^-3"))
           },
@@ -279,7 +286,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), ve
             DateTime <- veloc <- '.dplyr.var'
             get_staging_ts(
               var_src=c(choose_ts('sitedate'), choose_ts('veloc')), 
-              condense_stat = mean, day_start=4, day_end=28, quietly=TRUE) %>%
+              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
               select(DateTime, velocdaily=veloc)
           },
           {
@@ -367,16 +374,56 @@ calc_ts_sitetime_calcLon <- function(utctime, longitude) {
 #' @param sitetime the DateTimes of the local noons of interest, in UTC
 #' @param longitude the site longitude in degrees E
 #' @importFrom unitted u
+#' @import streamMetabolizer
+#' @import dplyr
 #'   
 #' @keywords internal
-calc_ts_sitedate_calcLon <- function(sitetime, longitude) {
-  data.frame(
-    DateTime = convert_solartime_to_UTC(
-      any.solar.time = sitetime, 
-      longitude = longitude, 
-      time.type = "mean solar"),
-    sitedate = as.Date(format(sitetime, "%Y-%m-%d"))) %>%
-    as.data.frame() %>% u()
+calc_ts_sitedate_calcLon <- function(sitetime, longitude, day_start=4, day_end=28) {
+  mm_model_by_ply(
+    function(data_ply, data_daily_ply, ply_date, ...) {
+      data.frame(
+        sitenoon=as.POSIXct(paste0(ply_date, " 12:00:00"), tz="UTC"))
+    }, 
+    data=data.frame(solar.time=sitetime, dummycol=NA), # need dummycol so df is >1 col so mm_model_by_ply works
+    data_daily=NULL, 
+    day_start=day_start, day_end=day_end, day_tests=c(), timestep_days=FALSE
+  ) %>%
+    transmute(
+      DateTime = convert_solartime_to_UTC(
+        any.solar.time = sitenoon, 
+        longitude = longitude, 
+        time.type = "mean solar"),
+      sitedate = date) %>% u()
+}
+
+#' Internal - calculate doinit_calcDStart from any data
+#' 
+#' @param sitetime the DateTimes of the local noons of interest, in UTC
+#' @param doobs vector of dissolved oxygen values, same length as sitetime
+#' @param longitude the site longitude in degrees E
+#' @importFrom unitted u
+#' @import streamMetabolizer
+#' @import dplyr
+#'   
+#' @keywords internal
+calc_ts_doinit_calcDStart <- function(sitetime, doobs, longitude, day_start=4, day_end=28) {
+  mm_model_by_ply(
+    function(data_ply, data_daily_ply, ply_date, ...) {
+      data.frame(
+        sitenoon=as.POSIXct(paste0(ply_date, " 12:00:00"), tz="UTC"),
+        doinit=data_ply[1,'doobs'])
+    },
+    data=data.frame(solar.time=sitetime, doobs=doobs), # need dummycol so df is >1 col so mm_model_by_ply works
+    data_daily=NULL, 
+    day_start=day_start, day_end=day_end, day_tests=c(), timestep_days=FALSE
+  ) %>%
+    transmute(
+      DateTime = convert_solartime_to_UTC(
+        any.solar.time = sitenoon, 
+        longitude = longitude, 
+        time.type = "mean solar"),
+      doinit = doinit) %>% 
+    u(c(NA, get_units(doobs))) # transmute loses the units
 }
 
 #' Internal - calculate suntime_calcLon from any data
@@ -572,8 +619,10 @@ calc_ts_simNew <- function(var, utctime, value) {
 #'    
 #' @keywords internal
 calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
-  from_data <- get_ts(
-    var_src=make_var_src(var, from_src), 
-    site_name=from_site, version='tsv', on_local_exists="replace")
+  from_data <- tryCatch({
+    get_ts(var_src=make_var_src(var, from_src), site_name=from_site, version='rds', on_local_exists="replace")
+  }, error=function(e) {
+    get_ts(var_src=make_var_src(var, from_src), site_name=from_site, version='tsv', on_local_exists="replace")
+  })
   if(!is.null(filter_fun)) filter_fun(from_data) else from_data
 }

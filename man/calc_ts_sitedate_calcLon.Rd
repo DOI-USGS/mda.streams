@@ -4,7 +4,7 @@
 \alias{calc_ts_sitedate_calcLon}
 \title{Internal - calculate sitedate_calcLon from any data}
 \usage{
-calc_ts_sitedate_calcLon(sitetime, longitude)
+calc_ts_sitedate_calcLon(sitetime, longitude, day_start = 4, day_end = 28)
 }
 \arguments{
 \item{sitetime}{the DateTimes of the local noons of interest, in UTC}

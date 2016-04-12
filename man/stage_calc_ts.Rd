@@ -5,7 +5,7 @@
 \title{stage calculated or modeled data into a time series file}
 \usage{
 stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
-  verbose = FALSE, ...)
+  day_start = 4, day_end = 4, verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -13,7 +13,7 @@ stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
 \item{var}{short name of variable as in 
 \code{unique(get_var_src_codes(out='var'))}}
 
-\item{src}{short name of src as in \code{get_var_src_codes(var==myvar,
+\item{src}{short name of src as in \code{get_var_src_codes(var==myvar, 
 out='src')}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp 
@@ -23,6 +23,10 @@ directory)}
 inputs (data.frames, constants, etc.) to pass to the specified calculation 
 function. These inputs are downloaded from standard locations for the 
 calcXxxx variants.}
+
+\item{day_start}{hour of day start as in \code{mm_model_by_ply}}
+
+\item{day_end}{hour of day end as in \code{mm_model_by_ply}}
 
 \item{verbose}{logical. provide status messages?}
 
