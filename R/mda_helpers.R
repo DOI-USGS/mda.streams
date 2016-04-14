@@ -371,7 +371,7 @@ parse_ts_archive_name <- function(
   ts_files <- gsub('[[:digit:]]{14}-','',id_ts_names) # remove ids, if present
   parsed <- data.frame(ts_name=ts_files, is_archive=archive_files, creation_date=as.POSIXct(NA), stringsAsFactors=FALSE)
   if(length(archive_ids) > 0) {
-    parsed$creation_date[archive_files] <- strptime(paste(archive_ids), format='%Y%m%d%H%M%S', tz='UTC')
+    parsed$creation_date[archive_files] <- as.POSIXct(paste(archive_ids), format='%Y%m%d%H%M%S', tz='UTC')
   }
   parsed <- parsed[,out]
   if(!use_names) {

@@ -37,7 +37,7 @@ get_meta <- function(types=list_metas(), out='all', on_local_exists=c('skip','re
           replace = {
             cache_timestamp <- get(x=meta_type_timestamp, envir=pkg.env)
             sb_timestamp <- item_get(locate_meta(type))$files[[1]]$dateUploaded %>%
-              strptime("%Y-%m-%dT%H:%M:%S", tz="UTC")
+              as.POSIXct("%Y-%m-%dT%H:%M:%S", tz="UTC")
             sb_timestamp > cache_timestamp
           },
           skip= {
