@@ -56,9 +56,9 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       item_list <- query_item_identifier(scheme=get_scheme(), type=query_args$type[argnum], key=query_args$key[argnum], limit=limit)
       # create a df of NAs if item wasn't found
       arg_item_df <- if(length(item_list) == 0) {
-        data.frame(title=NA_character_, id=NA_character_)
+        data.frame(title=NA_character_, id=NA_character_,stringsAsFactors=FALSE)
       } else {
-        bind_rows(lapply(item_list, function(item) as_data_frame(item[c('title','id')])))
+        as.data.frame(bind_rows(lapply(item_list, function(item) as_data_frame(item[c('title','id')]))))
       }
       # attach argnum and return
       data.frame(query_args[argnum,], argnum=argnum, rename(arg_item_df, item.title=title), stringsAsFactors=FALSE)
