@@ -41,7 +41,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
     mm <- config_to_metab(rep_config, rows=reprow, verbose=verbose)[[1]]
     if(is(mm, 'metab_model')) {
       if(length(mtb_to_save) == 0 || reprow == times) mtb_to_save <<- mm
-      fits_to_save[[reprow]] <- get_fit(mm)
+      fits_to_save[[reprow]] <<- get_fit(mm)
       tryCatch(
         data.frame(
           rep=reprow,
