@@ -1,10 +1,37 @@
+# mda.streams 0.9.5
+
+* config_to_metab_repeat now works better with Bayesian models and arbitrary 
+model 'strategy' fields
+
+* simulation pipeline (data -> DO simulation model -> metabolism fitting model)
+is up to date with recent package changes
+
+* updates for querying ScienceBase with sbtools 0.18.0
+
+* more internal functions seek .Rds timeseries data; external functions (get_ts,
+etc.) still seek .tsv by default for backward compatibility
+
+# mda.streams 0.9.4
+
+* moving toward system-wide use of binary (.Rds) timeseries files rather than 
+text (.tsv) - allows greater precision and censoring information in stored data
+
+* now using gO2 and mgO2 for units of oxygen variables
+
+* stage_nldas_ts has been updated in response to changes in how NLDAS data are 
+served
+
+* updates for querying ScienceBase with sbtools 0.16.0
+
+* stage_calc_ts for stage_styx_site are back up to date
+
 # mda.streams 0.9.3
 
 * Now automatically checks for available updates when you attach the package
 
 # mda.streams 0.9.2
 
-* complex requests to get_ts() are about 7 times faster now if accompanied by
+* complex requests to get_ts() are about 7 times faster now if accompanied by 
 update to streamMetabolizer v0.9.3
 
 # mda.streams 0.9.1
