@@ -61,7 +61,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   # add info to a single model object
   if(is(mtb_to_save, 'metab_model')) {
     mtb_to_save@info <- c(get_info(mtb_to_save), list(
-      fit_reps=left_join(mtbout, data.frame(sim=sim), by=c('date'='sim.data_daily.date')),
+      fit_reps=tryCatch(left_join(mtbout, data.frame(sim=sim), by=c('date'='sim.data_daily.date')), error=function(e) e),
       fit_raws=fits_to_save,
       sim_model=sm
     ))
