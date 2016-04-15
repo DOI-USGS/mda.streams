@@ -75,9 +75,8 @@ test_that("ts file paths can be made and parsed", {
   # with archive
   expect_equal(make_ts_path("nwis_12398074", "ts_doobs_nwis", creation_date=as.POSIXct("2014-07-13")), 
                "ARCHIVE_20140713000000-nwis_12398074-ts_doobs_nwis.rds")
-  expect_equal(parse_ts_path("ARCHIVE_20140713000000-nwis_12398074-ts_doobs_nwis.rds")$creation_date, 
+  expect_equal(lubridate::with_tz(parse_ts_path("ARCHIVE_20140713000000-nwis_12398074-ts_doobs_nwis.rds")$creation_date, 'UTC'), 
                as.POSIXct("2014-07-13", tz="UTC"))
-  
   
 })
 
