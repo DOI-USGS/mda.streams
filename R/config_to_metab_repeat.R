@@ -21,34 +21,36 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   if(length(row) != 1) stop("this function is for 1 row at a time")
   if(verbose) message("repeatedly fitting models for config row ", row)
   
-  # run the model many times
-  rep_config <- config[rep(row, times=times), ]
-  mtb <- config_to_metab(rep_config, verbose=verbose)
+  # collect info about the simulation model being used in this config row
+  . <- src <- error_strategy <- strategy <- model_args <- '.dplyr.var'
+  sm <- get_metab_model(config$doobs.src[row])
+  sim <- data.frame(
+      model_name = config$doobs.src[row],
+      params = get_specs(sm)$calc_DO_args[c('err.obs.sigma','err.proc.sigma','err.proc.phi','ODE_method')],
+      data_daily = get_data_daily(sm),
+      stringsAsFactors=FALSE)
   
-  # collect info to return
-  . <- src <- error_strategy <- strategy <- model_args <- tag <- model <- site <- '.dplyr.var'
-  sim_model <- get_metab_model(config$doobs.src[row])
-  sim_error <- get_info(sim_model)$config %>%
-    mutate(
-      src = config$doobs.src[row],
-      error_strategy=sapply(strsplit(strategy, " "), `[`, 3)) %>%
-    .[rep(1,times),] %>%
-    select(src, error_strategy, strategy, model_args)
-  estimates <- bind_rows(lapply(mtb, function(mm) predict_metab(mm)))
-  prep_time <- bind_rows(lapply(mtb, function(mm) as.data.frame(as.list(get_info(mm)$prep_time))))
-  fitting_time <- bind_rows(lapply(mtb, function(mm) as.data.frame(as.list(get_fitting_time(mm)))))
+  # now run the model many times and collect info to return. run one model at a 
+  # time so we're not storing a large number of models in session memory all at 
+  # once. save just the first one in its entirety
+  tag <- model <- site <- '.dplyr.var'
+  rep_config <- config[rep(row, times=times), ]
+  mtb_to_save <- NULL
+  mtbout <- bind_rows(lapply(1:times, function(reprow) {
+    mm <- config_to_metab(rep_config, rows=reprow, verbose=verbose)[[1]]
+    if(reprow==1) mtb_to_save <<- mm
+    data.frame(
+      rep=reprow,
+      predict_metab(mm),
+      prep_time=as.data.frame(as.list(get_info(mm)$prep_time)),
+      fitting_time=as.data.frame(as.list(get_fitting_time(mm))),
+      stringsAsFactors=FALSE)
+  }))
 
   # add info to a single model object
-  mtb_to_save <- mtb[[1]]
-  mtb_to_save@info <- c(mtb_to_save@info, list(
-    fit_reps=data.frame(
-      estimates,
-      prep_time=prep_time,
-      fitting_time=fitting_time,
-      sim=sim_error,
-      config=select(mtb_to_save@info$config, tag, strategy, date, model, model_args, site),
-      stringsAsFactors=FALSE),
-    sim_model=sim_model
+  mtb_to_save@info <- c(get_info(mtb_to_save), list(
+    fit_reps=left_join(mtbout, data.frame(sim=sim), by=c('date'='sim.data_daily.date')),
+    sim_model=sm
   ))
   mtb_to_save
 }

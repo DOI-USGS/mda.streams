@@ -57,7 +57,7 @@ config_to_metab_clusterfun <- function(
     library(mda.streams)
     if(length(row_num) != 1) stop("expecting exactly 1 row_num per call to clusterfun")
     if("pred" %in% config[row_num,grepl("type", names(config))]) {
-      sb_renew_login(sb_user, sb_password, verbose=verbose)
+      authenticate_sb(sb_user, sb_password)
     }
 
     # model metabolism & return results or error
@@ -88,7 +88,7 @@ config_to_metab_clusterfun <- function(
         # post
         if(isTRUE(post_metab)) {
           if(verbose) message("posting metab_model for config row ", row_num, ": starting at ", Sys.time())
-          sb_renew_login(sb_user, sb_password, verbose=verbose)
+          authenticate_sb(sb_user, sb_password)
           post_metab_model(staged)    
         }
 
