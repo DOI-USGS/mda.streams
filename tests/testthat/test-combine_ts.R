@@ -56,8 +56,8 @@ test_that("combine_ts works", {
   expect_equal(dim(bma), c(dim(base)[1], 3))
   mba <- combine_ts(more, base, method='approx', approx_tol=as.difftime(3, units="hours"))
   expect_equal(dim(mba), c(dim(more)[1], 3))
-  expect_equal(mba$suntime[v(mba$DateTime) > "2015-03-09 22:59:59 UTC" & v(mba$DateTime) < "2015-03-09 23:00:01 UTC"], 
-               base$suntime[v(base$DateTime) > "2015-03-09 22:59:59 UTC" & v(base$DateTime) < "2015-03-09 23:00:01 UTC"])
+  expect_equal(v(mba$suntime)[v(mba$DateTime) == "2015-03-09 23:00:00 UTC"], 
+               v(base$suntime)[v(base$DateTime) == "2015-03-09 23:00:00 UTC"])
   # dates should be added to mba only when they're close to pre-existing dates
   extras_from_more <- as.POSIXct(setdiff(more$DateTime, base$DateTime), origin="1970-01-01 00:00:00")
   added_dates <- mba[mba$DateTime %in% extras_from_more, "suntime"]
