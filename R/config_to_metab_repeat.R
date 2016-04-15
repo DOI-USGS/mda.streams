@@ -37,21 +37,26 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   rep_config <- config[rep(row, times=times), ]
   mtb_to_save <- NULL
   fits_to_save <- list()
-  mtbout <- bind_rows(lapply(1:times, function(reprow) {
+  mtbout <- lapply(1:times, function(reprow) {
     mm <- config_to_metab(rep_config, rows=reprow, verbose=verbose)[[1]]
     if(is(mm, 'metab_model')) {
       if(length(mtb_to_save) == 0 || reprow == times) mtb_to_save <<- mm
       fits_to_save[[reprow]] <- get_fit(mm)
-      data.frame(
-        rep=reprow,
-        predict_metab(mm),
-        prep_time=as.data.frame(as.list(get_info(mm)$prep_time)),
-        fitting_time=as.data.frame(as.list(get_fitting_time(mm))),
-        stringsAsFactors=FALSE)
+      tryCatch(
+        data.frame(
+          rep=reprow,
+          predict_metab(mm),
+          prep_time=as.data.frame(as.list(get_info(mm)$prep_time)),
+          fitting_time=as.data.frame(as.list(get_fitting_time(mm))),
+          stringsAsFactors=FALSE),
+        error=function(e) 
+          NULL
+      )
     } else {
       NULL
     }
-  }))
+  })
+  if(length(mtbout) > 0) mtbout <- bind_rows(mtbout)
 
   # add info to a single model object
   if(is(mtb_to_save, 'metab_model')) {
