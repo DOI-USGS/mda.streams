@@ -48,6 +48,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
           predict_metab(mm),
           prep_time=as.data.frame(as.list(get_info(mm)$prep_time)),
           fitting_time=as.data.frame(as.list(get_fitting_time(mm))),
+          fit=if(is(mm, 'metab_bayes')) get_fit(mm)$daily else get_fit(mm),
           stringsAsFactors=FALSE),
         error=function(e) 
           NULL
