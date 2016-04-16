@@ -20,9 +20,13 @@ repair_metab_model <- function(model_name, verbose=FALSE, limit=5000) {
   query_args <- data.frame(
     model_name=model_name,
     mm_id_tag=locate_metab_model(model_name=model_name, by='tag', limit=limit),
-    mm_id_dir=locate_metab_model(model_name=model_name, by='either', limit=limit),
     stringsAsFactors=FALSE
   )
+  query_args$mm_id_dir <- query_args$mm_id_tag
+  if(any(is.na(query_args$mm_id_dir))) {
+    nas <- which(is.na(query_args$mm_id_dir))
+    query_args[nas, 'mm_id_dir'] <- locate_metab_model(model_name=query_args$model_name[nas], by='dir', limit=limit)
+  }
   
   # if we can't find the item, throw an error
   if(any(bad_rows <- is.na(query_args$mm_id_dir))) {
