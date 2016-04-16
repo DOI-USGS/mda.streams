@@ -136,6 +136,8 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
           filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
           u(c(NA,var_units)) %>% 
           setNames(c('DateTime', var))
+        
+        site_data <- site_data[!is.na(site_data[[var]]), ]
       }
 
       if(nrow(site_data) > 0) {
