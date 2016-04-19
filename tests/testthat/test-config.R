@@ -7,7 +7,8 @@ test_that("config files can be staged", {
   expect_is(read.table(config_file, header=TRUE, stringsAsFactors=FALSE), "data.frame")
   
   config_object <- stage_metab_config(
-    tag="0.0.1", strategy="test", site=c("nwis_01433500", "nwis_01454700", "nwis_01463500"), filename=NULL)
+    tag="0.0.1", strategy="test", site=c("nwis_01433500", "nwis_01454700", "nwis_01463500"), filename=NULL,
+    omit_incomplete=FALSE)
   expect_equal(3, nrow(config_object))
   
 })

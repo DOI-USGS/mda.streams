@@ -8,17 +8,22 @@
 #' @param logic how to join the constraints in with_var_src, ...: is any of the
 #'   listed parameters sufficient, or do you need all of them to be available
 #'   for a site to qualify?
-#' @param ... additional querying arguments yet to be implemented
+#' @inheritParams ts_has_file
+#' @inheritParams get_sites
 #' @return a character vector of site IDs
 #' @export
 #' @examples 
 #' \dontrun{
 #' list_sites()
-#' list_sites(with_var_src=c("wtr_nwis","doobs_nwis","shed_nhdplus"), logic="any")
-#' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy"),
-#'                 any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
+#' list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
+#' list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any",
+#'   with_ts_version=c('tsv'), with_ts_archived=TRUE, limit=45)
+#' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
 #' }
-list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
+#' @seealso \code{\link{locate_site}} \code{\link{list_tses}}
+list_sites <- function(
+  with_var_src = NULL, logic=c("all","any"), 
+  with_ts_version='rds', with_ts_archived=FALSE, limit=10000) {
   
   # process args
   logic <- match.arg(logic)
@@ -27,7 +32,7 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
   # combination. options 2 & 3 use the specified logic for top-level combination
   if(is.null(with_var_src)){
     # if no criteria are specified, return all sites
-    sites <- get_sites()
+    sites <- get_sites(limit=limit)
     return(sort(sites))
     
   } else if(is.list(with_var_src)) {
@@ -38,7 +43,9 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
     for (k in 1:length(with_var_src)) {
       newlogic <- names(with_var_src)[k]
       if(newlogic=="") newlogic <- "all" # if unspecified, use the default
-      sites <- append(sites, list_sites(with_var_src[[k]], logic=newlogic))
+      sites <- append(sites, list_sites(
+        with_var_src[[k]], logic=newlogic, 
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, limit=limit))
     }
     
   } else {
@@ -53,7 +60,9 @@ list_sites <- function(with_var_src = NULL, logic=c("all","any"), ...) {
     # get the sites meeting each criterion individually
     sites <- vector('character')
     for (k in 1:length(data_names)){
-      sites <- append(sites, get_sites(with_dataset_name = data_names[k]))
+      sites <- append(sites, get_sites(
+        with_dataset_name = data_names[[k]],
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, limit=limit))
     }
   }
 
