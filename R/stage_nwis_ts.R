@@ -99,6 +99,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
           if(isTRUE(verbose)) {
             message("NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
           }
+          warning('error in data') # I want to know if it is an error vs missing data
           data.frame()
         })
       if(ncol(nwis_data) == 0) {
@@ -136,6 +137,8 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
           filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
           u(c(NA,var_units)) %>% 
           setNames(c('DateTime', var))
+        
+        site_data <- site_data[!is.na(site_data[[var]]), ]
       }
 
       if(nrow(site_data) > 0) {
