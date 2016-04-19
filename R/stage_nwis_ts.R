@@ -99,6 +99,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
           if(isTRUE(verbose)) {
             message("NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
           }
+          warning('error in data') # I want to know if it is an error vs missing data
           data.frame()
         })
       if(ncol(nwis_data) == 0) {
