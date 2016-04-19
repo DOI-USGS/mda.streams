@@ -35,10 +35,8 @@ contain specific timeseries variables.
 list_sites()
 list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
 list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any",
-  with_ts_version=c('tsv'), with_ts_archived=TRUE, limit=10000)
+  with_ts_version=c('tsv'), with_ts_archived=TRUE, limit=45)
 list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
-list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy"),
-  any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
 }
 }
 \seealso{
