@@ -21,7 +21,7 @@ dataset extension to anything in with_ts_version (if the dataset is a ts)}
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
 to sites that have a ts that's archived, not archived, or either}
 
-\item{limit}{numeric. Max number of sites to return}
+\item{limit}{integer. the maximum number of items to return}
 }
 \value{
 a character vector of site IDs
@@ -40,5 +40,8 @@ list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
 list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy"),
   any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
 }
+}
+\seealso{
+\code{\link{locate_site}} \code{\link{list_tses}}
 }
 

@@ -6,11 +6,8 @@
 #' 
 #' @param with_dataset_name limit sites to those with children matching the 
 #'   specified ts or other dataset name (e.g., "ts_doobs_nwis")
-#' @param with_ts_version one or more of \code{c('tsv','rds')} to limit the 
-#'   dataset extension to anything in with_ts_version (if the dataset is a ts)
-#' @param with_ts_archived one or more of \code{c(TRUE,FALSE)} to limit the list
-#'   to sites that have a ts that's archived, not archived, or either
-#' @param limit numeric. Max number of sites to return
+#' @inheritParams ts_has_file
+#' @param limit integer. the maximum number of items to return
 #' @return a character vector of "site_root" titles (keys)
 #' @import sbtools
 #' @keywords internal
@@ -19,13 +16,14 @@
 #' mda.streams:::get_sites()
 #' mda.streams:::get_sites(limit = 10)
 #' # get those sites that have water temperature in rds, non-archive form
-#' mda.streams:::get_sites(with_dataset_name='ts_disch_nwis', 
-#'   with_ts_version='rds', with_ts_archived=FALSE)
+#' mda.streams:::get_sites(with_dataset_name='ts_disch_nwis', with_ts_version='tsv')
+#' mda.streams:::get_sites(with_dataset_name='ts_doobs_nwis', 
+#'   with_ts_version=c('tsv','rds'), with_ts_archived=TRUE)
 #' }
 #' @import jsonlite
 #' @import httr
 #' @import sbtools
-get_sites <- function(with_dataset_name=NULL, with_ts_version=c('tsv','rds'), with_ts_archived=FALSE, limit=10000){
+get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_archived=FALSE, limit=10000){
 
   if (is.null(with_dataset_name)){
     # get the superset of sites. this query is used in both if{} blocks but with
@@ -40,17 +38,11 @@ get_sites <- function(with_dataset_name=NULL, with_ts_version=c('tsv','rds'), wi
     
     # filter to the time series items that have a file of the specified version
     is_ts <- grepl("^ts_", with_dataset_name)
-    if(is_ts) {
-      with_ts_version <- match.arg(with_ts_version, several.ok=TRUE)
+    if(is_ts) { #length(ts_items) > 0 && 
       if(!is.logical(with_ts_archived) || length(with_ts_archived) < 1) 
         stop("with_ts_archived must be logical")
-      has_version_and_archive <- sapply(ts_items, function(item) {
-        filenames <- sapply(item$files, function(file) file$name)
-        parsed <- parse_ts_path(filenames)
-        any(parsed$version %in% with_ts_version & 
-              parsed$is_archive %in% with_ts_archived)
-      })
-      ts_items <- ts_items[has_version_and_archive]
+      has_file <- ts_has_file(ts_items, with_ts_version=with_ts_version, with_ts_archived=with_ts_archived)
+      ts_items <- ts_items[has_file]
     }
     
     # convert from parents of these items to site names

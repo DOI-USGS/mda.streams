@@ -8,6 +8,7 @@
 #' @param logic how to join the constraints in with_var_src, ...: is any of the
 #'   listed parameters sufficient, or do you need all of them to be available
 #'   for a site to qualify?
+#' @inheritParams ts_has_file
 #' @inheritParams get_sites
 #' @return a character vector of site IDs
 #' @export
@@ -16,11 +17,10 @@
 #' list_sites()
 #' list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any")
 #' list_sites(with_var_src=c("wtr_nwis","doobs_nwis"), logic="any",
-#'   with_ts_version=c('tsv'), with_ts_archived=TRUE, limit=10000)
+#'   with_ts_version=c('tsv'), with_ts_archived=TRUE, limit=45)
 #' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
-#' list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy"),
-#'   any=list("disch_nwis", all=c("depth_calcDisch","stage_nwis"))), logic="all")
 #' }
+#' @seealso \code{\link{locate_site}} \code{\link{list_tses}}
 list_sites <- function(
   with_var_src = NULL, logic=c("all","any"), 
   with_ts_version='rds', with_ts_archived=FALSE, limit=10000) {
@@ -32,7 +32,7 @@ list_sites <- function(
   # combination. options 2 & 3 use the specified logic for top-level combination
   if(is.null(with_var_src)){
     # if no criteria are specified, return all sites
-    sites <- get_sites()
+    sites <- get_sites(limit=limit)
     return(sort(sites))
     
   } else if(is.list(with_var_src)) {
