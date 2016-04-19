@@ -368,7 +368,7 @@ parse_ts_archive_name <- function(
   archive_files <- grepl(paste0("^", pkg.env$archive_prefix), file_name) # identify files with the prefix
   id_ts_names <- gsub(pkg.env$archive_prefix, replacement = '', x = file_name) # remove the prefix, if present
   archive_ids <- unname(sapply(id_ts_names[archive_files], function(x) strsplit(x,'-')[[1]][1])) # extract the date code
-  ts_files <- gsub('[[:digit:]]{14}-','',id_ts_names) # remove ids, if present
+  ts_files <- gsub('^[[:digit:]]{14}-','',id_ts_names) # remove ids, if present
   parsed <- data.frame(ts_name=ts_files, is_archive=archive_files, creation_date=as.POSIXct(NA), stringsAsFactors=FALSE)
   if(length(archive_ids) > 0) {
     parsed$creation_date[archive_files] <- as.POSIXct(paste(archive_ids), format='%Y%m%d%H%M%S', tz='UTC')
