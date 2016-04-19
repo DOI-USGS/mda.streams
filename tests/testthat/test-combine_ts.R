@@ -41,12 +41,12 @@ test_that("combine_ts works", {
   # 2nd ts has more points. base=suntime, more=wtr
   bmf <- combine_ts(base, more, method='full_join')
   expect_equal(dim(bmf)[2], 3)
-  expect_more_than(dim(bmf)[1], dim(base)[1])
-  expect_more_than(dim(bmf)[1], dim(more)[1])
+  expect_gt(dim(bmf)[1], dim(base)[1])
+  expect_gt(dim(bmf)[1], dim(more)[1])
   mbf <- combine_ts(more, base, method='full_join')
   expect_equal(dim(mbf), dim(bmf))
   bmi <- combine_ts(base, more, method='inner_join')
-  expect_less_than(dim(bmi)[1], dim(base)[1])
+  expect_lt(dim(bmi)[1], dim(base)[1])
   bml <- combine_ts(base, more, method='left_join')
   expect_equal(dim(bml), c(dim(base)[1], 3))
   # if we ever expected to merge suntime as a secondary variable, we'd probably
