@@ -4,7 +4,7 @@
 \alias{summarize_ts}
 \title{Summarize a timeseries}
 \usage{
-summarize_ts(var_src, site_name, version = c("tsv", "rds"),
+summarize_ts(var_src, site_name, version = c("rds", "tsv"),
   out = c("date_updated", "start_date", "end_date", "num_dates", "num_rows",
   "num_complete", "modal_timestep", "num_modal_timesteps"),
   on_local_exists = c("skip", "stop", "replace"))

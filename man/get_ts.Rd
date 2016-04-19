@@ -6,7 +6,7 @@
 \usage{
 get_ts(var_src, site_name, method = c("approx", "full_join", "left_join",
   "inner_join"), approx_tol = as.difftime(3, units = "hours"),
-  version = c("tsv", "rds"), on_local_exists = "skip",
+  version = c("rds", "tsv"), on_local_exists = "skip",
   on_invalid = "warn", match_var = "leftmost", condense_stat = mean,
   day_start = 4, day_end = 28, quietly = FALSE)
 }

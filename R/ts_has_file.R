@@ -9,7 +9,7 @@
 #' @param with_ts_archived one or more of \code{c(TRUE,FALSE)} to limit the list
 #'   to sites that have a ts that's archived, not archived, or either
 #' @keywords internal
-ts_has_file <- function(ts_items, with_ts_version=c('tsv','rds'), with_ts_archived) {
+ts_has_file <- function(ts_items, with_ts_version=c('rds','tsv'), with_ts_archived) {
   with_ts_version <- match.arg(with_ts_version, several.ok=TRUE)
   out <- sapply(ts_items, function(item) {
     filenames <- sapply(item$files, function(file) file$name)
