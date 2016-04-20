@@ -45,7 +45,8 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
   
   # add a quick-access column of sciencebase site item IDs
-  sites_meta$sciencebase_id <- locate_site(sites_meta$site_name, format="id", browser=FALSE)
+  siteids <- item_list_children(mda.streams::locate_folder('sites'), limit=10000)
+  sites_meta$sciencebase_id <- siteids$id[match(sites_meta$site_name, siteids$title)]
   
   # merge with existing metadata if appropriate
   on_exists <- match.arg(on_exists)
@@ -171,7 +172,8 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
     mutate(site_name=make_site_name(unique(site_no), database="nwis"))
   
   # load NHDPlus ComIDs from file and attach to sites_meta
-  comids <- read.table("inst/extdata/NHDPlus_ComIDs.tsv", header=TRUE, sep="\t", colClasses="character")
+  comidfile <- system.file('extdata/NHDPlus_ComIDs.tsv', package='mda.streams')
+  comids <- read.table(comidfile, header=TRUE, sep="\t", colClasses="character")
   comids[comids$comid_best==0,'comid_best'] <- NA
   matched_comids <- comids[match(sites_meta$site_no, comids$nwis_id),c("comid_best","comid_confidence")]
   sites_meta$nhdplus_id <- matched_comids$comid_best
