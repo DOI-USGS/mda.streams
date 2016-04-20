@@ -4,7 +4,7 @@
 \alias{warning_table}
 \title{Describe data changes that will occur on combining multiple tses}
 \usage{
-warning_table(var_src, condense_stat, data, site_name, method, quietly)
+warning_table(var_src, condense_stat, data, site_name, version, method, quietly)
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
@@ -23,6 +23,9 @@ output must be a single numeric value.}
 \item{data}{list of downloaded timeseries data.frames, as named in var_src}
 
 \item{site_name}{a valid mda.streams site (see \link{list_sites})}
+
+\item{version}{character string indicating whether you want to download the 
+ts as a .tsv or .rds}
 
 \item{method}{character specifying the method to use to combine timeseries 
 datasets}
