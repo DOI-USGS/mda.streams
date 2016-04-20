@@ -13,7 +13,7 @@
 #'   metab estimation config specifications .
 #'   
 #' @param config a config table
-#' @param row a single integer specifying hte row of config to use
+#' @param row a single integer specifying the row of config to use
 #' @param times integer giving the number of times to fit the one config row
 #' @param verbose logical. give status messages?
 #' @export

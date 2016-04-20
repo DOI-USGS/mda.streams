@@ -26,7 +26,7 @@
 #' }
 #' @export
 
-stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('tsv','rds'), verbose = FALSE, url, ...){
+stage_nldas_ts <- function(sites, var, times, folder = tempdir(), version=c('rds','tsv'), verbose = FALSE, url, ...){
 
   version <- match.arg(version)
   

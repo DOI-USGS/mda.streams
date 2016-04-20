@@ -4,7 +4,7 @@
 \alias{ts_has_file}
 \title{Seek specific file types within a ts sbitem}
 \usage{
-ts_has_file(ts_items, with_ts_version = c("tsv", "rds"), with_ts_archived)
+ts_has_file(ts_items, with_ts_version = c("rds", "tsv"), with_ts_archived)
 }
 \arguments{
 \item{ts_items}{a list of timeseries sbitems}

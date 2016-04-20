@@ -17,7 +17,7 @@
 #'   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 #' }
 summarize_ts <- function(
-  var_src, site_name, version=c('tsv','rds'),
+  var_src, site_name, version=c('rds','tsv'),
   out=c("date_updated","start_date","end_date","num_dates","num_rows","num_complete","modal_timestep","num_modal_timesteps"),
   on_local_exists=c("skip","stop","replace")) {
   
