@@ -91,7 +91,7 @@ get_ts <- function(var_src, site_name, method=c('approx', 'full_join', 'left_joi
     condense_stat_nm <- as.character(substitute(condense_stat))[1] 
     if(condense_stat_nm == 'function'){condense_stat_nm <- 'custom function'} 
     
-    warning_info <- warning_table(var_src_ordered, condense_stat_nm, data_list_ordered, site_name, method, quietly)
+    warning_info <- warning_table(var_src_ordered, condense_stat_nm, data_list_ordered, site_name, version, method, quietly)
 
     # applying condense_stat
     to_condense <- grep("Condensed", warning_info$result)
@@ -210,8 +210,8 @@ condense_by_ply <- function(data_ply, data_daily_ply, day_start, day_end, ply_da
 #' @inheritParams get_ts
 #' @param data list of downloaded timeseries data.frames, as named in var_src
 #' @keywords internal
-warning_table <- function(var_src, condense_stat, data, site_name, method, quietly){
-  timestep_df <- summarize_ts(var_src=setNames(data, var_src), site_name, out="modal_timestep") %>% unitted::v()
+warning_table <- function(var_src, condense_stat, data, site_name, version, method, quietly){
+  timestep_df <- summarize_ts(var_src=setNames(data, var_src), site_name, version=version, out="modal_timestep") %>% unitted::v()
 
   all_dates <- do.call(rbind, lapply(data, function(data) {
     all_dates <- unitted::v(data$DateTime)
