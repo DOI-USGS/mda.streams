@@ -86,7 +86,7 @@
 #' head(read_ts(file_dischdaily))
 #' }
 #' @export
-stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), day_start=4, day_end=4, verbose = FALSE, ...){
+stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), day_start=4, day_end=28, verbose = FALSE, ...){
   
   if(length(var) > 1) stop("one var at a time, please")
   if(length(src) > 1) stop("one src at a time, please")
@@ -97,11 +97,8 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
   un_sites <- unique(sites)
   site <- '.local.var' #just to be sure about scope; will break if get_staging_ts doesn't use site from for loop below
   get_staging_ts <- function(var_src, ...) {
-    tryCatch({
-      get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
-    }, error=function(e) {
-      get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
-    })
+    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
+    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
   }
   choose_ts <- function(var) {
     best_src <- choose_data_source(var, site, logic="priority local")$src
@@ -219,9 +216,10 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
             calc_ts_with_input_check(inputs, 'calc_ts_veloc_calcDischRaymond')
           },
           'dosat_calcGGbts' = {
-            #if(nrow(baro_best) != nrow(wtr_best)/2) stop("need nrow(baro)~=nrow(wtr) for dosat_calcGGbts")
+            baro_best <- choose_ts('baro')
+            if(nrow(baro_best) == 2) stop("need nrow(baro) > 2 for dosat_calcGGbts")
             combo <- get_staging_ts(
-              var_src=c('wtr_nwis', choose_ts('baro')), method='approx')
+              var_src=c('wtr_nwis', baro_best), method='approx')
             calc_ts_dosat_calcGG(
               utctime = combo$DateTime,
               wtr = combo$wtr,
@@ -236,7 +234,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           },
           'dosat_calcGGbconst' = {
             wtr_best <- get_staging_ts(choose_ts('wtr'))
-            baro_const <- get_staging_ts(if('baro_src' %in% names(inputs)) inputs$baro_src else choose_ts('baro'))
+            baro_const <- get_staging_ts(if('baro_src' %in% names(inputs)) inputs$baro_src else 'baro_calcElev')
             if(nrow(baro_const)!=1 || !is.na(baro_const$DateTime)) 
               stop("need nrow(baro)==1, is.na(baro$DateTime) for dosat_calcGGbconst")
             combo <- combine_ts(wtr_best, baro_const, method='approx')
@@ -301,6 +299,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
     
     # write the data to file
     if(isTRUE(verbose)) message("writing the computed data to file")
+    if(nrow(ts_calc) > 0) ts_calc <- ts_calc[!is.na(ts_calc[,2]),]
     if(nrow(ts_calc) > 0) {
       fpath <- write_ts(ts_calc, site=site, var=var, src=src, folder)
       file_paths <- c(file_paths, fpath)
