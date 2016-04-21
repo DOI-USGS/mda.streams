@@ -13,9 +13,13 @@ ts_has_file <- function(ts_items, with_ts_version=c('rds','tsv'), with_ts_archiv
   with_ts_version <- match.arg(with_ts_version, several.ok=TRUE)
   out <- sapply(ts_items, function(item) {
     filenames <- sapply(item$files, function(file) file$name)
-    parsed <- parse_ts_path(filenames)
-    any(parsed$version %in% with_ts_version & 
-          parsed$is_archive %in% with_ts_archived)
+    if(length(filenames) > 0) {
+      parsed <- parse_ts_path(filenames)
+      any(parsed$version %in% with_ts_version & 
+            parsed$is_archive %in% with_ts_archived)
+    } else {
+      FALSE
+    }
   })
   if(length(out) > 0) out else c()
 }
