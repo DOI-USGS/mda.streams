@@ -29,7 +29,7 @@ try_calc_ts <- function(
   }
   if(calc_ts_needs$dvq_needs != '') {
     with_dvq <- get_meta('dvqcoefs') %>% v() %>%
-    {.$site_name[!complete.cases(.[, paste0('dvqcoefs.',strsplit(calc_ts_needs$dvq_needs, ' ')[[1]]), drop=FALSE])]}
+    {.$site_name[complete.cases(.[, paste0('dvqcoefs.',strsplit(calc_ts_needs$dvq_needs, ' ')[[1]]), drop=FALSE])]}
     avail_sites <- intersect(avail_sites, with_dvq)
   }
   num_avail <- length(avail_sites)
