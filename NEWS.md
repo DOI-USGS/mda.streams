@@ -1,9 +1,27 @@
 # mda.streams 0.9.5
 
+* new: try_calc_ts, which combines stage_calc_ts and post_ts in a fault-tolerant
+loop that only tries the sites that have the prerequisite data and haven't 
+already been posted in the desired time window and format
+
+* new: delete_sb_files, which deletes a single file from a single item (in an 
+optionally vectorized way). permits corrections of mis-postings even in 
+multi-file items such as metab_models and tses
+
+* new: summarize_ts_files, which quickly returns a table of ts files, their
+upload dates, and other inventory information
+
+* faster: repair_ts, which now runs locate_ts not twice but once whenever 
+possible
+
+* bugfixes and robustness improvements to stage_calc_ts and ts_has_file
+
+# mda.streams 0.9.5
+
 * config_to_metab_repeat now works better with Bayesian models and arbitrary 
 model 'strategy' fields
 
-* simulation pipeline (data -> DO simulation model -> metabolism fitting model)
+* simulation pipeline (data -> DO simulation model -> metabolism fitting model) 
 is up to date with recent package changes
 
 * updates for querying ScienceBase with sbtools 0.18.0
