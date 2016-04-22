@@ -217,7 +217,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           },
           'dosat_calcGGbts' = {
             baro_best <- choose_ts('baro')
-            if(nrow(baro_best) <= 1) stop("need nrow(baro) >= 2 for dosat_calcGGbts")
+            if(baro_best == "baro_calcElev") stop("need baro_best != baro_calcElev for dosat_calcGGbts")
             combo <- get_staging_ts(
               var_src=c('wtr_nwis', baro_best), method='approx')
             calc_ts_dosat_calcGG(
@@ -292,7 +292,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           }
         )
       }}, error=function(e) {
-        message(e, "\n")
+        message("trouble in stage_calc_ts: ", e, "\n")
         data.frame()
       }
     )

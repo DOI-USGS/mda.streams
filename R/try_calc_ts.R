@@ -59,6 +59,7 @@ try_calc_ts <- function(
         repair_ts(var_src, sites[i])
       }
     })
+    if(is.null(staged)) message("failure in stage_calc_ts: ts is NULL or has 0 non-NA values")
   }
 }
 
@@ -87,7 +88,10 @@ build_calc_ts_needs <- function(var, src) {
       'veloc_calcDischHarvey', # NA | disch_nwis dvqcoefs.k dvqcoefs.m
       'suntime_calcLon', # NA | doobs_nwis lon
       'par_calcLat', # suntime_calcLon | lat
-      'par_calcSw' # NA | sw_nldas
+      'par_calcSw', # NA | sw_nldas
+      'doamp_calcDAmp', # sitedate_calcLon dopsat_calcObsSat | NA
+      'dischdaily_calcDMean', # sitedate_calcLon | disch_nwis
+      'velocdaily_calcDMean' # sitedate_calcLon | veloc_best
     ) %>%
     {data_frame(var_src = .)} %>% 
     mutate(
@@ -116,6 +120,9 @@ build_calc_ts_needs <- function(var, src) {
     add_need('suntime_calcLon', 'vs', 'doobs_nwis') %>%
     add_need('par_calcLat', 'vs', 'suntime_calcLon') %>%
     add_need('par_calcSw', 'vs', 'sw_nldas') %>%
+    add_need('doamp_calcDAmp', 'vs', c('sitedate_calcLon', 'dopsat_calcObsSat')) %>%
+    add_need('dischdaily_calcDMean', 'vs', c('sitedate_calcLon', 'disch_nwis')) %>%
+    add_need('velocdaily_calcDMean', 'vs', c('sitedate_calcLon', 'veloc_calcDischRaymond')) %>%
     
     add_need(c('sitetime_calcLon', 'sitedate_calcLon', 'suntime_calcLon'), 'c', 'lon') %>%
     add_need('par_calcLat', 'c', 'lat') %>%
