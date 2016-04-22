@@ -30,9 +30,13 @@ repair_ts <- function(var_src, site_name, limit=5000) {
     var_src=var_src, site_name=site_name, 
     var_src_site=paste0(var_src, "-", site_name),
     ts_id_tag=locate_ts(var_src=var_src, site_name=site_name, by='tag', limit=limit),
-    ts_id_dir=locate_ts(var_src=var_src, site_name=site_name, by='either', limit=limit),
     stringsAsFactors=FALSE
   )
+  query_args$ts_id_dir <- query_args$ts_id_tag
+  if(any(is.na(query_args$ts_id_dir))) {
+    nas <- which(is.na(query_args$ts_id_dir))
+    query_args[nas, 'ts_id_dir'] <- locate_ts(var_src=query_args$var_src[nas], site_name=query_args$site_name[nas], by='dir', limit=limit)
+  }
   
   # if we can't find the item, throw an error
   if(any(bad_rows <- is.na(query_args$ts_id_dir))) {

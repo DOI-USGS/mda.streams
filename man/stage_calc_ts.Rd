@@ -5,7 +5,7 @@
 \title{stage calculated or modeled data into a time series file}
 \usage{
 stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
-  day_start = 4, day_end = 4, verbose = FALSE, ...)
+  day_start = 4, day_end = 28, verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
