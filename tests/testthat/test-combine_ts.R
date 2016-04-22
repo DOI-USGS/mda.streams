@@ -1,11 +1,11 @@
 context('combine_ts') 
 
 test_that("combine_ts works", {
-  xy <- download_ts(c('suntime_calcLon', 'doobs_nwis', 'wtr_nwis', 'baro_nldas'), 'nwis_01467087', on_local_exists="replace")
+  xy <- download_ts(c('suntime_calcLon', 'doobs_nwis', 'wtr_nwis', 'baro_nldas'), 'nwis_01467087', version='tsv', on_local_exists="replace")
   dim(base <- read_ts(xy[1]))
-  dim(same <- read_ts(xy[2]))
+  dim(same <- suppressWarnings(read_ts(xy[2])))
   dim(more <- read_ts(xy[3]))
-  dim(offset <- read_ts(xy[4])[1:1234,])
+  dim(offset <- suppressWarnings(read_ts(xy[4])[1:1234,]))
   library(dplyr); library(unitted)
   datevec <- seq(Sys.time(), Sys.time()+as.difftime(1, units='hours'), by=as.difftime(1, units='mins'))
   offline <- unitted::u(data.frame(DateTime=datevec, suntime=datevec-as.difftime(5.4, units='hours')))
@@ -41,12 +41,12 @@ test_that("combine_ts works", {
   # 2nd ts has more points. base=suntime, more=wtr
   bmf <- combine_ts(base, more, method='full_join')
   expect_equal(dim(bmf)[2], 3)
-  expect_more_than(dim(bmf)[1], dim(base)[1])
-  expect_more_than(dim(bmf)[1], dim(more)[1])
+  expect_gt(dim(bmf)[1], dim(base)[1])
+  expect_gt(dim(bmf)[1], dim(more)[1])
   mbf <- combine_ts(more, base, method='full_join')
   expect_equal(dim(mbf), dim(bmf))
   bmi <- combine_ts(base, more, method='inner_join')
-  expect_less_than(dim(bmi)[1], dim(base)[1])
+  expect_lt(dim(bmi)[1], dim(base)[1])
   bml <- combine_ts(base, more, method='left_join')
   expect_equal(dim(bml), c(dim(base)[1], 3))
   # if we ever expected to merge suntime as a secondary variable, we'd probably
@@ -56,7 +56,8 @@ test_that("combine_ts works", {
   expect_equal(dim(bma), c(dim(base)[1], 3))
   mba <- combine_ts(more, base, method='approx', approx_tol=as.difftime(3, units="hours"))
   expect_equal(dim(mba), c(dim(more)[1], 3))
-  expect_equal(mba$suntime[mba$DateTime=="2015-03-09 23:00:00 UTC"], base$suntime[base$DateTime=="2015-03-09 23:00:00 UTC"])
+  expect_equal(v(mba$suntime)[v(mba$DateTime) == "2015-03-09 23:00:00 UTC"], 
+               v(base$suntime)[v(base$DateTime) == "2015-03-09 23:00:00 UTC"])
   # dates should be added to mba only when they're close to pre-existing dates
   extras_from_more <- as.POSIXct(setdiff(more$DateTime, base$DateTime), origin="1970-01-01 00:00:00")
   added_dates <- mba[mba$DateTime %in% extras_from_more, "suntime"]

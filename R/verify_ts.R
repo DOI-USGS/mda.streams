@@ -21,7 +21,8 @@
 #' verify_ts(ts, var='wtr', checks=c('ncol','units','names')) # warning + FALSE
 #' }
 #' @export
-verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'names'), on_fail=warning){
+verify_ts <- function(
+  data, var, checks=c('ncol','unitted','tz','units','names','NA_values','NA_dates','timesteps'), on_fail=warning){
   
   tests <- list(
     'ncol' = function(x,v) {
@@ -34,8 +35,8 @@ verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'n
       is.unitted(x)
     },
     'tz' = function(x,...) {
-      (get_units(x[,1]) == 'UTC') || 
-        (all(is.na(x[,1])) && nrow(x) == 1) # allow for 1-row const tses
+      ((get_units(x[,1]) == '') && attr(x[,1],'tzone') == 'UTC') || 
+        (is.na(x[1,1]) && nrow(x) == 1) # allow for 1-row const tses
     },
     'units' = function(x,v) {
       (get_units(x[,2]) == get_units(unitbundle(get_var_src_codes(var==v, out='units')[1]))) &&
@@ -43,15 +44,33 @@ verify_ts <- function(data, var, checks = c('ncol', 'unitted', 'tz', 'units', 'n
     },
     'names' = function(x,v) {
       names(x)[2] == v
+    },
+    'NA_values' = function(x,v) {
+      if(v %in% c("gpp","er","K600"))
+        TRUE # metabolism predictions can be whatever they want; NAs are informative
+      else
+        all(!is.na(v(x[,2:ncol(x)]))) # values of input data should not be NA; missing is better
+    },
+    'NA_dates' = function(x,v) {
+      all(!is.na(v(x[,1]))) || # in general, DateTimes should not be NA
+        (is.na(x[1,1]) && nrow(x) == 1) # allow for 1-row const tses
+    },
+    'timesteps' = function(x,v) {
+      all(as.numeric(diff(v(x[,1])), units='mins') > 0) # require positive timesteps
     })
     
-  pass <- TRUE
+  failures <- c()
   for (check in checks){
     if (!tests[[check]](x = data, v = var)) {
-      on_fail("verify_ts failed on test for ", check)
-      pass <- FALSE
+      failures <- c(failures, check)
     }
   }
-  return(pass)
+  if(length(failures) > 0) {
+    on_fail("verify_ts for ", var, " failed on test",if(length(failures)>1) "s" else "",
+            " for ", paste0(failures, collapse=", "), call.=FALSE)
+    return(FALSE)
+  } else {
+    return(TRUE)
+  }
   
 }

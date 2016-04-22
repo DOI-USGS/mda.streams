@@ -46,7 +46,7 @@ stage_styx_site <- function(
   site="styx_000000", basedon="nwis_07239450", 
   times=c("2012-05-14 21:00:00","2012-05-16 07:00:00"), depth=u(0.2, "m"),
   day_start=-1.5, day_end=30, 
-  dates=c("2012-05-14","2012-05-16"), doinit, gpp=u(as.numeric(NA), "gO2 m^-2 d^-1"), 
+  dates=NA, doinit=u(as.numeric(NA), "mgO2 L^-1"), gpp=u(as.numeric(NA), "gO2 m^-2 d^-1"), 
   er=u(as.numeric(NA), "gO2 m^-2 d^-1"), K600=u(as.numeric(NA), "d^-1"),
   info=NA, verbose=TRUE) {
   
@@ -59,10 +59,10 @@ stage_styx_site <- function(
   
   ## INSTANTANEOUS (UNIT) TIMESERIES ##
   
-  # function to filter by datetimes assuming times are in local clock time (standard, not DST)
+  # function to filter by datetimes
   times.sitetime <- as.POSIXct(times, tz="UTC")
   filter_by_date <- function(df) {
-    sitetime <- convert_GMT_to_solartime(date.time = df$DateTime, longitude = coords$lon, time.type = "mean solar")
+    sitetime <- convert_UTC_to_solartime(date.time = df$DateTime, longitude = coords$lon, time.type = "mean solar")
     after_start <- if(is.na(times[1])) TRUE else sitetime >= times.sitetime[1]
     before_end <- if(length(times)<2 || is.na(times[2])) TRUE else sitetime <= times.sitetime[2]
     df[after_start & before_end, ] 
@@ -75,13 +75,14 @@ stage_styx_site <- function(
                 filter_fun=filter_by_date))
   wtr_ts <- read_ts(wtr)
   
-  # sitetime
+  # sitetime to match wtr
   sitetime <- stage_calc_ts(
     sites=site, var="sitetime", src="simLon", verbose=verbose, 
     inputs=list(utctime=wtr_ts$DateTime, longitude=coords$lon))
   sitetime_ts <- read_ts(sitetime)
   
-  # DO observed concentration
+  # DO observed concentration because (1) why not? and (2) it's a way to get
+  # doinit values
   doobs <- stage_calc_ts(
     sites=site, var="doobs", src="simCopy", verbose=verbose, 
     inputs=list(from_src="nwis", from_site=basedon, 
@@ -119,83 +120,110 @@ stage_styx_site <- function(
 
   ## DAILY TIMESERIES ##
   
-  # Dates for daily values - discover / reformat as implied by the args
+  # sitedate - discover / reformat as implied by the args, but also always check
+  # for mismatches between data and data_daily
+  sitedate_file_sitetime <- stage_calc_ts(
+    sites=site, var="sitedate", src="simLon", verbose=verbose, 
+    inputs=list(
+      sitetime=sitetime_ts$sitetime, # infer dates from wtr/sitetime timeseries
+      longitude=coords$lon,
+      day_start = day_start,
+      day_end = day_end))
+  sitedate_ts_sitetime <- read_ts(sitedate_file_sitetime)
   if(is.na(dates[1])) { 
     # determine from sitetime_ts data series
-    message("dates is NA, so pulling dates from the wtr timeseries")
-    find_dates_fun <- function(data_ply, data_daily_ply, ..., day_start, day_end, local_date) {
-      data.frame(dummy=NA)
-    }
-    date_ts <- streamMetabolizer:::mm_model_by_ply(
-      find_dates_fun, data=data.frame(local.time=sitetime_ts$sitetime), data_daily=NULL, 
-      day_start=day_start, day_end=day_end)['local.date']
+    message("dates is NA, so pulling dates from the wtr/sitetime timeseries")
+    sitedate_file <- sitedate_file_sitetime
   } else {
-    # either use as-is or treat as the bounds of a date sequence. if you
+    # either use dates as-is or treat as the bounds of a date sequence. if you 
     # definitely want as-is, just use dates
     if(is.character(dates)) {
       dates <- as.Date(dates)
       if(length(dates) == 2) {
-        message("converting dates to Date and converting to a sequence because length(dates) == 2")
+        message("converting dates to Date and converting to a sequence because is.character(dates) && length(dates) == 2")
         dates <- seq(dates[1], dates[2], by=1)
       } else {
-        message("converting dates to Date and using as-is because length(dates) != 2")
+        message("converting dates to Date and using as-is because is.character(dates) && length(dates) != 2")
       }
     } else {
-      if(!is.Date(dates)) stop("expecting dates to be either character or Date")
+      if(!lubridate::is.Date(dates)) stop("expecting dates to be either character or Date")
       message("using dates as-is because is.Date(dates)")
     }
-    date_ts <- data.frame(local.date=dates)
+    # convert dates (now known to be a character or Date vector of all desired 
+    # dates) to a vector of POSIXcts whose date is definitely the date we want 
+    # (UTC noons seem safe). then convert the vector of POSIXcts to a sitedate
+    # ts of DateTime=UTC-noon and sitedate=Date
+    sitedate_file_dates <- stage_calc_ts(
+      sites=site, var="sitedate", src="simLon", verbose=verbose, 
+      inputs=list(
+        sitetime=as.POSIXct(paste0(dates, " 12:00:00"), tz="UTC"), # use provided dates
+        longitude=coords$lon,
+        day_start = day_start,
+        day_end = day_end))
+    sitedate_ts_dates <- read_ts(sitedate_file_dates)
+    
+    # check for mismatches between sitetime-inferred dates and param-specified dates
+    daily_not_inst <- sitedate_ts_dates$sitedate[!(sitedate_ts_dates$sitedate %in% sitedate_ts_sitetime$sitedate)]
+    if(length(daily_not_inst) > 0) 
+      warning("dates in 'dates' but not 'sitetime' (kept): ", paste(daily_not_inst, collapse=", "))
+    inst_not_daily <- sitedate_ts_sitetime$sitedate[!(sitedate_ts_sitetime$sitedate %in% sitedate_ts_dates$sitedate)]
+    if(length(inst_not_daily) > 0) 
+      warning("dates in 'sitetime' but not 'dates' (dropped): ", paste(inst_not_daily, collapse=", "))
+    
+    # regardless, sitedate_file_dates is still our final choice
+    sitedate_file <- sitedate_file_dates
   }
-  
-  # sitetime
-  sitedate_file <- stage_calc_ts(
-    sites=site, var="sitedate", src="simLon", verbose=verbose, 
-    inputs=list(
-      sitetime=as.POSIXct(paste0(date_ts$local.date, " 12:00:00"), tz="UTC"),
-      longitude=coords$lon))
-  sitedate_ts <- read_ts(sitedate_file) 
+  sitedate_ts <- read_ts(sitedate_file)
   
   # locate the values of doinit, either directly from the call or inferred from doobs
-  if(missing(doinit) || is.null(doinit)) {
-    find_doinit_fun <- function(data_ply, data_daily_ply, ..., day_start, day_end, local_date) {
-      data.frame(doinit=data_ply$DO.obs[1])
-    }
+  if(missing(doinit) || is.na(doinit)) {
     doobs_ts <- read_ts(doobs)
-    doinit_ts <- streamMetabolizer:::mm_model_by_ply(
-      find_doinit_fun, data=data.frame(local.time=sitetime_ts$sitetime, DO.obs=doobs_ts$doobs), data_daily=NULL, 
-      day_start=day_start, day_end=day_end)
-    date_matches <- match(sitedate_ts$sitedate, doinit_ts$local.date)
-    if(any(is.na(date_matches))) {
-      warning("doinit could not be identified for these dates: ", paste0(as.character(dates[is.na(date_matches)]), collapse=", "))
+    doinit_file_doobs <- stage_calc_ts(
+      sites=site, var="doinit", src="simDStart", verbose=verbose, 
+      inputs=list(
+        doobs=doobs_ts$doobs,
+        sitetime=doobs_ts$DateTime,
+        longitude=coords$lon,
+        day_start = day_start,
+        day_end = day_end))
+    doinit_ts_doobs <- read_ts(doinit_file_doobs)
+    
+    doinit_ts <- left_join(sitedate_ts, doinit_ts_doobs, by='DateTime')
+    doinit_NAs <- is.na(doinit_ts$doinit)
+    if(any(doinit_NAs)) {
+      warning("doinit could not be identified for these dates: ", paste0(doinit_ts[doinit_NAs,'sitedate'], collapse=", "))
     }
-    var <- ".dplyr.var"
-    doinit <- u(doinit_ts[date_matches, 'doinit'], unique(get_var_src_codes(var=="doobs",out="units")))
+    DateTime <- '.dplyr.var'
+    doinit_ts <- doinit_ts %>% select(DateTime, doinit)
+    doinit_file <- write_ts(doinit_ts, site=site, var='doinit', src='simDStart', folder=tempdir())
+  } else {
+    if(length(doinit) == 1) doinit <- rep(doinit, nrow(sitedate_ts))
+    doinit_file <- stage_calc_ts(sites=site, var="doinit", src="simNew", inputs=list(utctime=sitedate_ts$DateTime, value=doinit), verbose=verbose)
   }
-  doinit_file <- stage_calc_ts(sites=site, var="doinit", src="simNew", inputs=list(utctime=sitedate_ts$DateTime, value=doinit), verbose=verbose)
   
   # gpp
-  if(missing(gpp)) {
+  if(missing(gpp) || is.na(gpp)) {
     warning("gpp was not supplied. using NAs in data.frame")
   }
-  if(length(gpp) == 1) gpp <- rep(gpp, nrow(date_ts))
+  if(length(gpp) == 1) gpp <- rep(gpp, nrow(sitedate_ts))
   gpp_file <- stage_calc_ts(sites=site, var="gpp", src="simNew", inputs=list(utctime=sitedate_ts$DateTime, value=gpp), verbose=verbose)
   
   # er
-  if(missing(er)) {
+  if(missing(er) || is.na(er)) {
     warning("er was not supplied. using NAs in data.frame")
   }
-  if(length(er) == 1) er <- rep(er, nrow(date_ts))
+  if(length(er) == 1) er <- rep(er, nrow(sitedate_ts))
   er_file <- stage_calc_ts(sites=site, var="er", src="simNew", inputs=list(utctime=sitedate_ts$DateTime, value=er), verbose=verbose)
   
   # K600
-  if(missing(K600)) {
+  if(missing(K600) || is.na(K600)) {
     warning("K600 was not supplied. using NAs in data.frame")
   }
-  if(length(K600) == 1) K600 <- rep(K600, nrow(date_ts))
+  if(length(K600) == 1) K600 <- rep(K600, nrow(sitedate_ts))
   K600_file <- stage_calc_ts(sites=site, var="K600", src="simNew", inputs=list(utctime=sitedate_ts$DateTime, value=K600), verbose=verbose)
   
   # bundle the filenames into a list
-  list(metadata=c(site_name=site, basedon=basedon, info=info), 
+  list(metadata=c(site_name=v(site), basedon=v(basedon), info=v(info)),
        wtr=wtr, sitetime=sitetime, depth=depth, baro=baro, dosat=dosat, suntime=suntime, par=par, doobs=doobs,
        sitedate=sitedate_file, doinit=doinit_file, gpp=gpp_file, er=er_file, K600=K600_file) 
 }

@@ -4,7 +4,8 @@
 \alias{list_datasets}
 \title{Get a vector of timeseries dataset names}
 \usage{
-list_datasets(site_name, data_type = c("ts", "watershed"), ...)
+list_datasets(site_name, data_type = c("ts", "watershed"),
+  with_ts_version = "rds", with_ts_archived = FALSE, limit = 10000)
 }
 \arguments{
 \item{site_name}{a character vector of length one with a site name such as 
@@ -12,8 +13,13 @@ those returned from make_site_name()}
 
 \item{data_type}{character. one or more dataset types to return}
 
-\item{...}{additional arguments passed to 
-\code{\link[sbtools]{query_item_identifier}}, for example \code{limit}}
+\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+dataset extension to anything in with_ts_version (if the dataset is a ts)}
+
+\item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
+to sites that have a ts that's archived, not archived, or either}
+
+\item{limit}{integer. the maximum number of items to return}
 }
 \value{
 an alphabetically sorted character vector of unique timeseries 

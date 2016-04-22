@@ -4,8 +4,8 @@
 \alias{download_ts}
 \title{Download timeseries data to local file destination}
 \usage{
-download_ts(var_src, site_name, folder = tempdir(), version = c("tsv",
-  "RData"), on_remote_missing = c("stop", "return_NA"),
+download_ts(var_src, site_name, folder = tempdir(), version = c("rds",
+  "tsv"), on_remote_missing = c("stop", "return_NA"),
   on_local_exists = c("stop", "skip", "replace"))
 }
 \arguments{
@@ -18,7 +18,7 @@ var_src)})}
 \item{folder}{string for a folder location}
 
 \item{version}{character string indicating whether you want to download the 
-ts as a .tsv or .RData}
+ts as a .tsv or .rds}
 
 \item{on_remote_missing}{character indicating what to do if the remote file 
 is missing}

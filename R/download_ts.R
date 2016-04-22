@@ -8,7 +8,7 @@
 #'   var_src)})
 #' @param folder string for a folder location
 #' @param version character string indicating whether you want to download the 
-#'   ts as a .tsv or .RData
+#'   ts as a .tsv or .rds
 #' @param on_remote_missing character indicating what to do if the remote file 
 #'   is missing
 #' @param on_local_exists character indicating what to do if the folder already 
@@ -27,7 +27,7 @@
 #'   on_local_exists="skip")
 #' }
 #' @export
-download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv','RData'),
+download_ts <- function(var_src, site_name, folder = tempdir(), version=c('rds','tsv'),
                         on_remote_missing=c("stop","return_NA"), 
                         on_local_exists=c("stop","skip","replace")) {
   
@@ -47,8 +47,8 @@ download_ts <- function(var_src, site_name, folder = tempdir(), version=c('tsv',
     mutate(
       dests = file.path(folder, files),
       need = if(on_local_exists %in% c('stop','skip')) !file.exists(dests) else TRUE,
-      item_names <- sapply(files, function(f) strsplit(f, ".", fixed=TRUE)[[1]][1], USE.NAMES=FALSE), # strip the file extension
-      ids = 'local_exists'
+      item_names = sapply(files, function(f) strsplit(f, ".", fixed=TRUE)[[1]][1], USE.NAMES=FALSE), # strip the file extension
+      ids = 'local_exists' # to be overwritten later if we look to SB for the file
     )
   
   # only query SB for those ids we actually need

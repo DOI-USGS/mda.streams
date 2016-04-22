@@ -5,13 +5,17 @@
 \title{Post a new timeseries file to SB}
 \usage{
 post_ts(files, on_exists = c("stop", "skip", "replace", "merge"),
-  verbose = TRUE)
+  archive_existing = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{files}{a string vector of file paths for POSTing}
 
-\item{on_exists}{character specifying an action when a file to post already
+\item{on_exists}{character specifying an action when a file to post already 
 exists on ScienceBase}
+
+\item{archive_existing}{logical. if the file already exists, should it be
+archived before being replaced with a new or merged file (when on_exists ==
+'replace' or 'merge', respectively)?}
 
 \item{verbose}{logical. Should status messages be given?}
 }
@@ -26,14 +30,14 @@ set_scheme("mda_streams_dev")
 sites <- c("nwis_05406479", "nwis_05435950", "nwis_04087119")
 post_site(sites, on_exists="clear")
 files <- stage_nwis_ts(sites = sites, var = "doobs", 
-  times = c('2014-01-01 00:00','2014-01-01 05:00'))
+  times = c('2014-01-01 00:00','2014-01-01 05:00'), version='tsv')
 post_ts(files)
 locate_ts("doobs_nwis", sites) # find the newly posted data online
 post_ts(files, on_exists="skip")
 post_ts(files, on_exists="replace")
 post_site(sites, on_exists="clear")
  
-set_scheme("mda_streams_")
+set_scheme("mda_streams")
 }
 }
 \author{

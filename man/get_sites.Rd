@@ -4,13 +4,20 @@
 \alias{get_sites}
 \title{A helper to list_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
-get_sites(with_dataset_name = NULL, limit = 10000)
+get_sites(with_dataset_name = NULL, with_ts_version = "rds",
+  with_ts_archived = FALSE, limit = 10000)
 }
 \arguments{
-\item{with_dataset_name}{limit sites to those with children matching the
+\item{with_dataset_name}{limit sites to those with children matching the 
 specified ts or other dataset name (e.g., "ts_doobs_nwis")}
 
-\item{limit}{numeric. Max number of sites to return}
+\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+dataset extension to anything in with_ts_version (if the dataset is a ts)}
+
+\item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
+to sites that have a ts that's archived, not archived, or either}
+
+\item{limit}{integer. the maximum number of items to return}
 }
 \value{
 a character vector of "site_root" titles (keys)
@@ -24,8 +31,10 @@ dataset, and returns as a character vector of those site names
 \dontrun{
 mda.streams:::get_sites()
 mda.streams:::get_sites(limit = 10)
-# get those sites that have water temperature
-mda.streams:::get_sites(with_dataset_name = 'ts_wtr_nwis')
+# get those sites that have water temperature in rds, non-archive form
+mda.streams:::get_sites(with_dataset_name='ts_disch_nwis', with_ts_version='tsv')
+mda.streams:::get_sites(with_dataset_name='ts_doobs_nwis', 
+  with_ts_version=c('tsv','rds'), with_ts_archived=TRUE)
 }
 }
 \keyword{internal}

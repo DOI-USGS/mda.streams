@@ -10,11 +10,13 @@ combine_ts(..., method = c("full_join", "left_join", "inner_join", "approx"),
 \arguments{
 \item{...}{one or more ts and/or const data.frames to be combined}
 
-\item{method}{character specifying the combination method to use}
+\item{method}{character specifying the method to use to combine the
+data.frames}
 
-\item{approx_tol}{difftime. if method='approx', the maximum time interval 
-over which an approximation will be used to fill in data gaps in the 
-2nd:nth data argument to combine_ts (relative to the first argument)}
+\item{approx_tol}{difftime. ignored if method != 'approx'. if method == 
+'approx', the maximum time interval over which an approximation will be 
+used to fill in data gaps in the 2nd:nth data argument to combine_ts 
+(relative to the first argument)}
 }
 \description{
 Combines one or more ts and/or const data.frames, joining on DateTime. The 

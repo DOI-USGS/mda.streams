@@ -7,7 +7,7 @@
 calc_ts_par_calcSw(utctime, sw)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{sw}{shortwave radiation in W m^-2}
 }

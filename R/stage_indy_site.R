@@ -19,7 +19,7 @@
 #' @param alt altitude in ft
 #' @param var_format What format are the data column names in - mda.streams 
 #'   format (e.g., sitetime, doobs, dosat) or streamMetabolizer format (e.g., 
-#'   local.time. DO.obs, DO.sat)?
+#'   solar.time. DO.obs, DO.sat)?
 #' @param collapse_const If a data column has all identical values, should these
 #'   be collapsed to a single const row in the ts file?
 #' @param folder the folder in which to save the staged information
@@ -67,14 +67,14 @@ stage_indy_site <- function(
   
   if(!('DateTime' %in% names(data))) {
     if(!('sitetime' %in% names(data))) stop("need DateTime and/or sitetime columns in data")
-    data$DateTime <- force_tz(convert_localtime_to_GMT(data$sitetime), tzone='UTC')
+    data$DateTime <- force_tz(convert_localtime_to_UTC(data$sitetime), tzone='UTC')
   }
   
   if('sitetime' %in% names(data)) {
     data$sitetime <- force_tz(data$sitetime, tzone='UTC')
     names(data) <- add_src('sitetime', 'indy')
   } else {
-    data$sitetime_calcLon <- force_tz(convert_GMT_to_localtime(data$DateTime, latitude=lat, longitude=lon), tzone='UTC')
+    data$sitetime_calcLon <- force_tz(convert_UTC_to_localtime(data$DateTime, latitude=lat, longitude=lon), tzone='UTC')
   }
   
   if('doobs' %in% names(data)) {
@@ -113,8 +113,9 @@ stage_indy_site <- function(
     names(data) <- add_src('par', 'indy')
   } else {
     # ignores the possibility that sw is present. if this feature becomes needed, add it here
-    solar.time <- convert_GMT_to_solartime(data$DateTime, longitude=lon, time.type='apparent solar')
-    data$par_calcLat <- convert_SW_to_PAR(calc_solar_insolation(solar.time=v(solar.time), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
+    suntime <- convert_UTC_to_solartime(data$DateTime, longitude=lon, time.type='apparent solar')
+    data$par_calcLat <- convert_SW_to_PAR(calc_solar_insolation(
+      app.solar.time=v(suntime), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
   } 
   
   # write the data (instantaneous) timeseries files

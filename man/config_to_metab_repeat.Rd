@@ -9,7 +9,7 @@ config_to_metab_repeat(config, row, times = 5, verbose = FALSE)
 \arguments{
 \item{config}{a config table}
 
-\item{row}{a single integer specifying hte row of config to use}
+\item{row}{a single integer specifying the row of config to use}
 
 \item{times}{integer giving the number of times to fit the one config row}
 

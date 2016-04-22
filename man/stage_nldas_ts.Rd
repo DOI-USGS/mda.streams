@@ -4,7 +4,8 @@
 \alias{stage_nldas_ts}
 \title{stage nldas data into a time series file}
 \usage{
-stage_nldas_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
+stage_nldas_ts(sites, var, times, folder = tempdir(), version = c("rds",
+  "tsv"), verbose = FALSE, url, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -17,7 +18,12 @@ stage_nldas_ts(sites, var, times, folder = tempdir(), verbose = FALSE, ...)
 \item{folder}{a folder to place the file outputs in (defaults to temp 
 directory)}
 
+\item{version}{character string indicating whether you want to stage the 
+\code{ts} as a .tsv or .rds}
+
 \item{verbose}{logical. provide verbose output?}
+
+\item{url}{for web dataset. If missing, uses geoknife's "nldas" url}
 
 \item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}}
 }

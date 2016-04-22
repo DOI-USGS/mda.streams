@@ -232,9 +232,16 @@ parse_site_name <- function(site_name, out="sitenum", use_names=length(out)>1) {
 #' @param ts_name the full ts name, e.g., 'ts_doobs_nwis'
 #' @param folder the folder to write the file in, or missing
 #' @param version character string indicating the file format
+#' @param creation_date NA for a standard ts_path, or a POSIXct date of file
+#'   creation if the path should describe an archived ts
 #' @return a full file path
 #' @export
-make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
+#' @examples 
+#' make_ts_path(c('nwis_08062500','nwis_83105638'), 'ts_doobs_nwis')
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', version='tsv')
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', creation_date=Sys.time())
+#' make_ts_path('nwis_08062500', 'ts_doobs_nwis', folder='temp/1', creation_date=Sys.time())
+make_ts_path <- function(site_name, ts_name, folder, version=c('rds','tsv'), creation_date=NA) {
   # basic error checking - let parse_site_name and parse_ts_name return any errors
   parse_site_name(site_name)
   parse_ts_name(ts_name)
@@ -242,7 +249,12 @@ make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
   
   file_name <- sprintf(
     '%s-%s.%s', site_name, ts_name, 
-    switch(version, 'tsv'='tsv.gz', 'RData'='RData'))
+    switch(version, 'tsv'='tsv.gz', 'rds'='rds'))
+  if(any(archive_files <- !is.na(creation_date))) {
+    if(length(creation_date) == 1 && length(file_name) > 1) 
+      creation_date <- rep(creation_date, length(file_name))
+    file_name[archive_files] <- make_ts_archive_path(file_name[archive_files], creation_date[archive_files])
+  }
   if(missing(folder)) {
     file.path(file_name) # pretty sure this does absolutely nothing
   } else {
@@ -262,14 +274,25 @@ make_ts_path <- function(site_name, ts_name, folder, version=c('tsv','RData')) {
 #' @return a character
 #' @importFrom stats setNames
 #' @export
-parse_ts_path <- function(file_path, 
-                          out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum"), 
-                          use_names=length(file_path)>1) {
+#' @examples 
+#' parse_ts_path(c("nwis_08062500-ts_doobs_nwis.rds","nwis_83105638-ts_doobs_nwis.rds"))
+#' parse_ts_path("nwis_08062500-ts_doobs_nwis.tsv.gz")
+#' parse_ts_path("ARCHIVE_20160402170237-nwis_08062500-ts_doobs_nwis.tsv.gz")
+#' parse_ts_path("temp/1/ARCHIVE_20160402170237-nwis_08062500-ts_doobs_nwis.tsv.gz")
+#' parse_ts_path(c('ARCHIVE_20160324120400-nwis_05406479-ts_doobs_nwis.tsv.gz', 
+#'   'temp/nwis_05406480-ts_doobs_nwis.tsv.gz'), use_names=TRUE)
+parse_ts_path <- function(
+  file_path, 
+  out=c("dir_name","file_name","version","site_name","ts_name","var_src","var","src","database","sitenum","is_archive","creation_date"), 
+  use_names=length(file_path)>1) {
   
   out = match.arg(out, several.ok=TRUE)
   
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
-  file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
+  archive_info <- parse_ts_archive_name(
+    file_name=sapply(file_path, basename, USE.NAMES=FALSE), 
+    out=c("ts_name","is_archive","creation_date"), use_names=FALSE)
+  file_name <- archive_info$ts_name
   splits <- strsplit(file_name, '[-.]')
   parsed <- data.frame(
     dir_name = dir_name,
@@ -281,6 +304,7 @@ parse_ts_path <- function(file_path,
   parsed <- parsed %>%
     bind_cols(parse_ts_name(parsed$ts_name, out=c("var_src", "var", "src"), use_names=FALSE)) %>%
     bind_cols(parse_site_name(parsed$site_name, out=c("database","sitenum"), use_names=FALSE)) %>%
+    bind_cols(archive_info[c("is_archive","creation_date")]) %>%
     as.data.frame()
   
   parsed <- parsed[,out]
@@ -294,6 +318,70 @@ parse_ts_path <- function(file_path,
   }
   parsed
 }
+
+
+#' Create an archive file name for a file on ScienceBase
+#' 
+#' Usually subsidiary to make_ts_path, but may also be called directly if you
+#' already have a non-archive file_path to modify
+#' 
+#' @param file_path of the file that is to be archived
+#' @param creation_date the creation date of the ScienceBase file that will be 
+#'   archived (as.POSIXct). can't be NA.
+#' @return a file name to be used as an archive
+#' @export
+#' @examples 
+#' make_ts_archive_path('nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
+#' make_ts_archive_path('temp/nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
+make_ts_archive_path <- function(file_path, creation_date) {
+  archive_id <- format(creation_date,'%Y%m%d%H%M%S-')
+  file_name <- paste0(pkg.env$archive_prefix, archive_id, basename(file_path))
+  ifelse(
+    dirname(file_path)=='.', 
+    file_name, 
+    file.path(dirname(file_path), file_name))
+}
+
+#' Split archived file path into its contents
+#' 
+#' Subsidiary to parse_ts_path, which is the exported function
+#' 
+#' @param file_name a valid file basename for ts file
+#' @param out a character for desired output ('dir_name','file_name', 
+#'   'site_name', 'ts_name', 'creation_date' or any of the out names from
+#'   parse_ts_name or parse_site_name)
+#' @param use_names logical. Should the return vector be named according to the 
+#'   input values?
+#' @return a character
+#' @examples 
+#' mda.streams:::parse_ts_archive_name(
+#'   c('ARCHIVE_20160324120400-nwis_05406479-ts_doobs_nwis.tsv.gz', 
+#'     'nwis_05406480-ts_doobs_nwis.tsv.gz'), use_names=FALSE)
+parse_ts_archive_name <- function(
+  file_name, out=c("ts_name","is_archive","creation_date"), 
+  use_names=length(file_name)>1) {
+  
+  if(any(dirname(file_name) != '.'))
+    warning('dirnames removed in parse_ts_archive_name')
+  file_name <- basename(file_name)
+  
+  archive_files <- grepl(paste0("^", pkg.env$archive_prefix), file_name) # identify files with the prefix
+  id_ts_names <- gsub(pkg.env$archive_prefix, replacement = '', x = file_name) # remove the prefix, if present
+  archive_ids <- unname(sapply(id_ts_names[archive_files], function(x) strsplit(x,'-')[[1]][1])) # extract the date code
+  ts_files <- gsub('^[[:digit:]]{14}-','',id_ts_names) # remove ids, if present
+  parsed <- data.frame(ts_name=ts_files, is_archive=archive_files, creation_date=as.POSIXct(NA), stringsAsFactors=FALSE)
+  if(length(archive_ids) > 0) {
+    parsed$creation_date[archive_files] <- as.POSIXct(paste(archive_ids), format='%Y%m%d%H%M%S', tz='UTC')
+  }
+  parsed <- parsed[,out]
+  if(!use_names) {
+    rownames(parsed) <- NULL
+  } else {
+    rownames(parsed) <- file_name
+  }
+  parsed
+}
+
 
 #' Create a standardized file name for specific file contents
 #' 

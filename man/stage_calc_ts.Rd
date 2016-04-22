@@ -5,7 +5,7 @@
 \title{stage calculated or modeled data into a time series file}
 \usage{
 stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
-  verbose = FALSE, ...)
+  day_start = 4, day_end = 28, verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -13,7 +13,7 @@ stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
 \item{var}{short name of variable as in 
 \code{unique(get_var_src_codes(out='var'))}}
 
-\item{src}{short name of src as in \code{get_var_src_codes(var==myvar,
+\item{src}{short name of src as in \code{get_var_src_codes(var==myvar, 
 out='src')}}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp 
@@ -23,6 +23,10 @@ directory)}
 inputs (data.frames, constants, etc.) to pass to the specified calculation 
 function. These inputs are downloaded from standard locations for the 
 calcXxxx variants.}
+
+\item{day_start}{hour of day start as in \code{mm_model_by_ply}}
+
+\item{day_end}{hour of day end as in \code{mm_model_by_ply}}
 
 \item{verbose}{logical. provide status messages?}
 
@@ -38,31 +42,18 @@ accept calculated/modeled data as a data.frame and return a file
 }
 \examples{
 \dontrun{
-set_scheme("mda_streams_dev")
-
 # calc
-
-file_suntime <- stage_calc_ts(sites="nwis_08062500", var="suntime", src="calcLon", verbose=TRUE)
-head(read_ts(file_suntime))
-post_ts(file_suntime, on_exists="skip", verbose=TRUE) # need this posted for next calcs
-
-file_sitetime <- stage_calc_ts(sites="nwis_08062500", var="sitetime", src="calcLon", verbose=TRUE)
-head(read_ts(file_sitetime))
-post_ts(file_sitetime, on_exists="skip", verbose=TRUE)
 
 file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 head(read_ts(file_par))
-post_ts(file_par, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
 file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch", verbose=TRUE)
 head(read_ts(file_depth))
-post_ts(file_depth, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
 file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 head(read_ts(file_dosat))
-post_ts(file_dosat, on_exists="skip", verbose=TRUE) # don't need this later, but try it out
 
-# sim
+# sim calc
 
 library(dplyr); library(unitted)
 real_doobs <- read_ts(download_ts("doobs_nwis", "nwis_08062500", on_local_exists="replace")) \%>\%
@@ -104,19 +95,9 @@ head(read_ts(file_suntime2))
 
 # daily means
 
-file_sitetimedaily <- stage_calc_ts(sites="nwis_08062500", 
-  var="sitetimedaily", src="calcLon", verbose=TRUE)
-head(read_ts(file_sitetimedaily))
-
-file_sitedate <- stage_calc_ts(sites="nwis_08062500", 
-  var="sitedate", src="calcLon", verbose=TRUE)
-str(read_ts(file_sitedate))
-
 file_dischdaily <- stage_calc_ts(sites="nwis_08062500", 
   var="dischdaily", src="calcDMean", verbose=TRUE)
 head(read_ts(file_dischdaily))
-
-set_scheme("mda_streams")
 }
 }
 

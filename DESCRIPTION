@@ -2,9 +2,9 @@ Package: mda.streams
 Type: Package
 Title: Data Preparation, Access, and Analysis Functions for the Powell Center
     Continental Stream Metabolism Project
-Version: 0.8.17
-Date: 2016-02-16
-Author: Alison Appling, Luke A Winslow, Jordan S Read
+Version: 0.9.6
+Date: 2016-04-21
+Author: Alison P Appling, Luke A Winslow, Jordan S Read, Lindsay Carr
 Maintainer: Alison Appling <aappling@usgs.gov>
 Description: Back end tools for powstreams.
 License: file LICENSE
@@ -18,8 +18,8 @@ Depends:
 Imports:
     dataRetrieval (>= 2.4.8),
     geoknife (>= 1.2.0),
-    sbtools (>= 0.15.3),
-    streamMetabolizer (>= 0.7.1),
+    sbtools (>= 0.16.0),
+    streamMetabolizer (>= 0.9.1),
     unitted (>= 0.2.5),
     dplyr,
     foreign,
@@ -27,8 +27,10 @@ Imports:
     lubridate,
     jsonlite,
     httr,
+    tidyr,
     lazyeval
 Suggests:
+    devtools,
     smwrQW (>= 0.7.9),
     testthat,
     RCurl

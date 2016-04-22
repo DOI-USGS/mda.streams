@@ -9,7 +9,7 @@ calc_ts_simNew(var, utctime, value)
 \arguments{
 \item{var}{the variable name}
 
-\item{utctime}{the DateTime with tz of UTC/GMT}
+\item{utctime}{the DateTime with tz of UTC}
 
 \item{value}{unitted vector of ts values}
 }

@@ -5,8 +5,8 @@
 \title{Split file path into contents}
 \usage{
 parse_ts_path(file_path, out = c("dir_name", "file_name", "version",
-  "site_name", "ts_name", "var_src", "var", "src", "database", "sitenum"),
-  use_names = length(file_path) > 1)
+  "site_name", "ts_name", "var_src", "var", "src", "database", "sitenum",
+  "is_archive", "creation_date"), use_names = length(file_path) > 1)
 }
 \arguments{
 \item{file_path}{a valid file path for ts file}
@@ -23,5 +23,13 @@ a character
 }
 \description{
 Split file path into contents
+}
+\examples{
+parse_ts_path(c("nwis_08062500-ts_doobs_nwis.rds","nwis_83105638-ts_doobs_nwis.rds"))
+parse_ts_path("nwis_08062500-ts_doobs_nwis.tsv.gz")
+parse_ts_path("ARCHIVE_20160402170237-nwis_08062500-ts_doobs_nwis.tsv.gz")
+parse_ts_path("temp/1/ARCHIVE_20160402170237-nwis_08062500-ts_doobs_nwis.tsv.gz")
+parse_ts_path(c('ARCHIVE_20160324120400-nwis_05406479-ts_doobs_nwis.tsv.gz', 
+  'temp/nwis_05406480-ts_doobs_nwis.tsv.gz'), use_names=TRUE)
 }
 

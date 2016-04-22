@@ -117,7 +117,7 @@ stage_metab_config <- function(
   disch=choose_data_source("disch", site, logic="unused var"),
   veloc=choose_data_source("veloc", site, logic="unused var"),
   sitedate=choose_data_source("sitedate", site, logic="unused var"),
-  doinit=choose_data_source("doobs1", site, logic="unused var"),
+  doinit=choose_data_source("doinit", site, logic="unused var"),
   gpp=choose_data_source("gpp", site, logic="unused var"),
   er=choose_data_source("er", site, logic="unused var"),
   K600=choose_data_source("K600", site, logic="unused var"),

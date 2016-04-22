@@ -7,12 +7,15 @@
 #' @param times a length 2 vector of text dates in YYYY-MM-DD format
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
+#' @param version character string indicating whether you want to stage the 
+#'   \code{ts} as a .tsv or .rds
 #' @param verbose provide verbose output (currently not implemented)
 #' @return a character vector of file handles
-#' @importFrom dataRetrieval constructNWISURL importRDB1
+#' @importFrom dataRetrieval readNWISuv
 #' @importFrom unitted u
 #' @importFrom stats setNames
 #' @importFrom lubridate with_tz
+#' @importFrom tidyr gather
 #' @import dplyr
 #'   
 #' @examples
@@ -28,8 +31,10 @@
 #'   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 #' }
 #' @export
-stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE){
+stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds','tsv'), verbose = FALSE){
 
+  version <- match.arg(version)
+  
   # # diagnose an apparent issue with NWIS - many sites return values with a 1-hour offset from what has been requested in UTC
   # all_sites <- list_sites()
   # all_files <- stage_nwis_ts(sites = all_sites, var = "doobs", times = c('2014-06-01','2014-06-02'), verbose=TRUE)
@@ -66,6 +71,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
   switch(
     var,
     sed={
+      . <- sample_dt <- sample_tm <- SuspSed <- sed <- dateTime <- '.dplyr.var'
       nwis_data <- smwrQW::importNWISqw(site_nums, p_code, begin.date=dates[1]) %>% #, end.date=dates[2] # slows everything horribly??
         transform(DateTime=as.POSIXct(paste(format(sample_dt, "%Y-%m-%d"), sample_tm), "%Y-%m-%d %H:%M", tz = "UTC"), 
                   sed=SuspSed) %>%
@@ -91,34 +97,52 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), verbose = FALSE
         readNWISuv(siteNumbers=site_nums, parameterCd=p_code, startDate = asktimes[1], endDate = asktimes[2]),
         error=function(e) {
           if(isTRUE(verbose)) {
-            message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ". NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
+            message("NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
           }
+          warning('error in data') # I want to know if it is an error vs missing data
           data.frame()
         })
-      datacol <- names(nwis_data)[5]
-      nwis_data <- nwis_data %>%
-        mutate(DateTime = dateTime) %>%
-        select_('site_no', 'DateTime', datacol) %>%
-        setNames(c('site_no', 'DateTime', var))
+      if(ncol(nwis_data) == 0) {
+        if(isTRUE(verbose)) {
+          message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ".")
+        }
+      } else {
+        ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
+        everything <- '.dplyr.var'
+        nwis_data <- nwis_data[, !ignore.cols] %>%
+          rename(DateTime = dateTime) %>%
+          select(site_no, DateTime, everything())
+      }
     }
   )
   
   # loop through to filter and write the data
   file_paths <- c()
   site_no <- datetime <- tz_cd <- DateTime <- matches <- ends_with <- ".dplyr.var"
-  if (ncol(nwis_data)!=0){
+  if (ncol(nwis_data) != 0){
     if(isTRUE(verbose)) message("writing the downloaded data to file")
     un_sites <- unique(sites)
     for (i in 1:length(un_sites)){
       
       site <- parse_site_name(un_sites[i])
-      site_data <- filter(nwis_data, site_no == site) %>%
-        select_('DateTime', var) %>%
-        filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
-        u(c(NA,var_units))
+      site_data <- filter(nwis_data, site_no == site)
+      
+      if(nrow(site_data) > 0) {
+        key <- value <- num_non_NAs <- '.dplyr.var'
+        which.var <- select(site_data, -DateTime, -site_no) %>% 
+          tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
+          filter(num_non_NAs==max(num_non_NAs)) %>% {.$key[1]}
+        
+        site_data <- select_(site_data, 'DateTime', which.var) %>%
+          filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
+          u(c(NA,var_units)) %>% 
+          setNames(c('DateTime', var))
+        
+        site_data <- site_data[!is.na(site_data[[var]]), ]
+      }
 
       if(nrow(site_data) > 0) {
-        fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder)
+        fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder, version=version)
         file_paths <- c(file_paths, fpath)
       } else {
         if(isTRUE(verbose)) message("no data found for site ", un_sites[i])

@@ -4,7 +4,8 @@
 \alias{make_ts_path}
 \title{Create a standardized file name for specific file contents}
 \usage{
-make_ts_path(site_name, ts_name, folder, version = c("tsv", "RData"))
+make_ts_path(site_name, ts_name, folder, version = c("rds", "tsv"),
+  creation_date = NA)
 }
 \arguments{
 \item{site_name}{the full site name, e.g., 'nwis_06893820'}
@@ -14,11 +15,20 @@ make_ts_path(site_name, ts_name, folder, version = c("tsv", "RData"))
 \item{folder}{the folder to write the file in, or missing}
 
 \item{version}{character string indicating the file format}
+
+\item{creation_date}{NA for a standard ts_path, or a POSIXct date of file
+creation if the path should describe an archived ts}
 }
 \value{
 a full file path
 }
 \description{
 Create a standardized file name for specific file contents
+}
+\examples{
+make_ts_path(c('nwis_08062500','nwis_83105638'), 'ts_doobs_nwis')
+make_ts_path('nwis_08062500', 'ts_doobs_nwis', version='tsv')
+make_ts_path('nwis_08062500', 'ts_doobs_nwis', creation_date=Sys.time())
+make_ts_path('nwis_08062500', 'ts_doobs_nwis', folder='temp/1', creation_date=Sys.time())
 }
 
