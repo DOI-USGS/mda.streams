@@ -51,7 +51,7 @@ modernize_metab_model <- function(metab_model) {
     # fit: rename 'date' and 'local.date' to 'solar.date' and add row.first, row.last to metab_night models
     new_fit <- get_fit(old_mm)
     if(any(c('date','local.date') %in% names(new_fit))) 
-      names(new_fit)[which(names(new_fit) %in% c('date','local.date'))] <- 'solar.date'
+      names(new_fit)[which(names(new_fit) %in% c('date','local.date'))] <- 'date'
     if(class(old_mm)=='metab_night' && !('row.first' %in% names(get_data(old_mm)))) {
       new_fit_rows <- streamMetabolizer::mm_model_by_ply(
         function(data_ply, data_daily_ply, day_start, day_end, local_date, tests, model_specs) {
@@ -65,7 +65,7 @@ modernize_metab_model <- function(metab_model) {
         day_start=new_specs$day_start, day_end=new_specs$day_end,
         tests=c(), model_specs=c()
       )
-      new_fit <- left_join(new_fit, new_fit_rows, by='solar.date')
+      new_fit <- left_join(new_fit, new_fit_rows, by='date')
     }
     
     if(class(old_mm) == 'metab_bayes') {
