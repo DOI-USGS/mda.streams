@@ -22,7 +22,7 @@ sciencebase) or a pred_file (the name of a local file name)
 The trick is that model predictions only store the input time, with was 
 either local.time (< streamMetabolizer 0.8.0) or solar.time (>=0.8.0) rather 
 than UTC time. So this function draws on our knowledge of the site-specific 
-mapping between UTC time and solar.time or solar.date (as stored in sitetime 
+mapping between UTC time and solar.time or date (as stored in sitetime 
 and sitedate, respectively) to come up with the UTC DateTime stamps that 
 correspond to these predictions. We could potentially just use
 convert_solartime_to_UTC, but I'm nervous about tiny imprecisions that would
