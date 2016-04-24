@@ -4,11 +4,15 @@
 \alias{stage_metab_ts}
 \title{Stage metabolism model outputs into ts files}
 \usage{
-stage_metab_ts(metab_outs, folder = tempdir(), verbose = FALSE)
+stage_metab_ts(metab_outs, vars = c("gpp", "er", "K600"),
+  folder = tempdir(), verbose = FALSE)
 }
 \arguments{
-\item{metab_outs}{a single metab_model or a list of metab_models from which to
-extract GPP, ER, and K600}
+\item{metab_outs}{a single metab_model or a list of metab_models from which
+to extract GPP, ER, and K600}
+
+\item{vars}{one or more strings in \code{c("gpp","er","K600")} naming the
+variables to extract and post}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp 
 directory)}

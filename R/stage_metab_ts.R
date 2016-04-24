@@ -2,8 +2,10 @@
 #' 
 #' Parse metabolism model outputs into gpp, er, and K600
 #' 
-#' @param metab_outs a single metab_model or a list of metab_models from which to
-#'   extract GPP, ER, and K600
+#' @param metab_outs a single metab_model or a list of metab_models from which
+#'   to extract GPP, ER, and K600
+#' @param vars one or more strings in \code{c("gpp","er","K600")} naming the
+#'   variables to extract and post
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
 #' @param verbose provide verbose output (currently not implemented)
@@ -13,7 +15,7 @@
 #' @import dplyr
 #' @importFrom stats setNames
 #' @export
-stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
+stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempdir(), verbose = FALSE) {
   # check inputs
   if(!is.list(metab_outs)) metab_outs <- list(metab_outs)
   
@@ -33,13 +35,13 @@ stage_metab_ts <- function(metab_outs, folder = tempdir(), verbose = FALSE) {
     # represent each corresponding Date
     coords <- get_site_coords(site)
     preds$DateTime <- convert_solartime_to_UTC(
-      as.POSIXct(paste0(preds$local.date, " 12:00:00"), tz="UTC"), 
+      as.POSIXct(paste0(preds$date, " 12:00:00"), tz="UTC"), 
       longitude=coords$lon, time.type="mean solar")
     
     # extract specific columns into ts files. this section will need rewriting
     # as the range of model options expands.
     var <- ".dplyr.var"
-    file_paths <- sapply(c("gpp","er","K600"), function(pvar) {
+    file_paths <- sapply(vars, function(pvar) {
       metab_var <- get_var_src_codes(var==pvar, out="metab_var")[1]
       var_units <- get_var_src_codes(var==pvar, out="units")[1]
       data <- preds[c("DateTime", metab_var)] %>%
