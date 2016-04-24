@@ -5,13 +5,13 @@
 #' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want to
 #'   look in
 #' @inheritParams locate_item
+#' @import sbtools
 #' @export
 #' @examples 
 #' \dontrun{
-#' locate_ts(c("doobs","wtr","disch"), "nwis_02322688")
-#' locate_ts("doobs", "nwis_02322688", format="url")
-#' locate_ts("doobs", "nwis_notasite", format="url")
-#' testthat::expect_error(locate_ts("notavar", "nwis_notasite"))
+#' locate_ts(c("doobs_nwis","baro_nldas"), "nwis_02322688")
+#' locate_ts("doobs_nwis", c("nwis_01203000","nwis_01208990","nwis_01304057"))
+#' locate_ts("doamp_calcDAmp", "nwis_02322688", format="url")
 #' }
 locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c("id","url"), by=c("tag","dir","either"), limit=5000, browser=(format=="url")) {
   by <- match.arg(by)
@@ -25,5 +25,13 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
   } else {
     site_parent <- NA
   }
-  locate_item(key=site_name, type=var_src, parent=site_parent, title=var_src, by=by, format=format, limit=limit, browser=browser)
+  if(by=='tag' && length(site_name) > 3 && length(var_src) == 1) {
+    item_list <- query_item_identifier(scheme=get_scheme(), type=var_src, limit=10000)
+    item_df <- bind_rows(lapply(item_list, function(item) data_frame(id=item$id, parentId=item$parentId)))
+    site_ids <- locate_site(site_name, by='tag')
+    matches <- item_df[match(site_ids, item_df$parentId),]
+    format_item(matches, format=format, browser=browser)
+  } else {
+    locate_item(key=site_name, type=var_src, parent=site_parent, title=var_src, by=by, format=format, limit=limit, browser=browser)
+  }
 }

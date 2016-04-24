@@ -5,14 +5,16 @@
 #' (1) config was the entire info slot, now is an element named config in a list
 #' that is the info slot.
 #' 
-#' (2) config df has more columns now; old columns have not changed names or
+#' (2) config df has more columns now; old columns have not changed names or 
 #' contents.
 #' 
-#' (3) the column named 'date' in early fits and 'local.date' in the next round
-#' is now named 'solar.date'.
+#' (3a) the column named 'local.time' in early fits is now named 'solar.time'.
 #' 
-#' (4) the args list may be expanded from before but retains the same core
-#' elements.
+#' (3b) the column named 'date' in early fits and 'local.date' and 'solar.date' 
+#' in later rounds is now [again] named 'date'.
+#' 
+#' (4) the args list may be expanded from before and is now named specs and is
+#' of class specs.
 #' 
 #' @param metab_model a model or list of models
 #' @import dplyr
@@ -47,6 +49,8 @@ modernize_metab_model <- function(metab_model) {
     new_specs <- tryCatch(
       get_specs(old_mm), 
       error=function(e) streamMetabolizer:::add_specs_class(old_mm@args))
+    if(class(old_mm) == 'metab_Kmodel' && 'method' %in% names(new_specs))
+      names(new_specs)[names(new_specs) == 'method'] <- 'engine'
     
     # fit: rename 'date' and 'local.date' to 'solar.date' and add row.first, row.last to metab_night models
     new_fit <- get_fit(old_mm)
@@ -88,6 +92,8 @@ modernize_metab_model <- function(metab_model) {
     new_data_daily <-  tryCatch(
       suppressWarnings(get_data_daily(old_mm)),
       error=function(e) NULL)
+    if('local.date' %in% names(new_data_daily))
+      names(new_data_daily)[which(names(new_data_daily) == 'local.date')] <- 'date'
     
     # pkg_version: mark with our new
     new_pkg_version <- paste0(packageVersion("streamMetabolizer"), " (was ", old_mm@pkg_version, ")")

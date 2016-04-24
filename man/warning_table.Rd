@@ -8,8 +8,7 @@ warning_table(var_src, condense_stat, data, site_name, version, method, quietly)
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
-\code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
-var_src)})}
+\code{get_var_src_codes(data_type=='ts')$var_src})}
 
 \item{condense_stat}{function name used to condense observations to 
 `match_var`'s timestep (only for variables with more frequent observations 

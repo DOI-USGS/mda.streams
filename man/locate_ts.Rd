@@ -33,10 +33,9 @@ Find a timeseries item on ScienceBase
 }
 \examples{
 \dontrun{
-locate_ts(c("doobs","wtr","disch"), "nwis_02322688")
-locate_ts("doobs", "nwis_02322688", format="url")
-locate_ts("doobs", "nwis_notasite", format="url")
-testthat::expect_error(locate_ts("notavar", "nwis_notasite"))
+locate_ts(c("doobs_nwis","baro_nldas"), "nwis_02322688")
+locate_ts("doobs_nwis", c("nwis_01203000","nwis_01208990","nwis_01304057"))
+locate_ts("doamp_calcDAmp", "nwis_02322688", format="url")
 }
 }
 
