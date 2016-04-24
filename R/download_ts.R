@@ -4,8 +4,7 @@
 #' 
 #' @param site_name a valid mda.streams site (see \link{list_sites})
 #' @param var_src a valid variable name for timeseries data (see 
-#'   \code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
-#'   var_src)})
+#'   \code{get_var_src_codes(data_type=='ts')$var_src})
 #' @param folder string for a folder location
 #' @param version character string indicating whether you want to download the 
 #'   ts as a .tsv or .rds
