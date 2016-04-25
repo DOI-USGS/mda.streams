@@ -1,5 +1,5 @@
 var	src	units	var_descrip	data_type	metab_var	priority	url	src_descrip	r_package	r_function	src_type	p_code
-airtemp	nwis	C	air temperature	ts	NA	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00020'
+airtemp	nwis	degC	air temperature	ts	NA	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00020'
 baro	indy	Pa	barometric pressure	ts	NA	1	NA	independent data source	NA	NA	data	NA
 baro	nldas	Pa	barometric pressure	ts	NA	2	http://ldas.gsfc.nasa.gov/nldas/	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
 baro	calcElev	Pa	barometric pressure	ts	NA	3	NA	"calculate baro assuming constant pressure, later to be corrected for elevation"	streamMetabolizer	NA	calc	NA

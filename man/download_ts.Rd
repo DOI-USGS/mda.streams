@@ -10,8 +10,7 @@ download_ts(var_src, site_name, folder = tempdir(), version = c("rds",
 }
 \arguments{
 \item{var_src}{a valid variable name for timeseries data (see 
-\code{dplyr::select(dplyr::filter(var_src_codes, data_type=='ts'), 
-var_src)})}
+\code{get_var_src_codes(data_type=='ts')$var_src})}
 
 \item{site_name}{a valid mda.streams site (see \link{list_sites})}
 

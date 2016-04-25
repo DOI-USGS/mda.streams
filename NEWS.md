@@ -1,4 +1,32 @@
-# mda.streams 0.9.5
+# mda.streams 0.9.6.3
+
+* locate_ts and locate_site are now much more efficient in special cases of
+looking up many items at a time
+
+* view_google_map can now open several tabs at a time
+
+* summarize_metab_model works with the newest streamMetabolizer models
+
+* parse_ts_path now accommodates archived ts files even when rownames are 
+requested
+
+* re-modernized modernize_metab_model
+
+* smarter default filename for get_config
+
+# mda.streams 0.9.6.2
+
+* include CI bounds in metab estBest timeseries files
+
+# mda.streams 0.9.6.1
+
+* date column name update in modernize_metab_model
+
+* now looks to ScienceBase for the table of var_src codes, units, etc.
+
+* minor documentation updates
+
+# mda.streams 0.9.6
 
 * new: try_calc_ts, which combines stage_calc_ts and post_ts in a fault-tolerant
 loop that only tries the sites that have the prerequisite data and haven't 
@@ -8,7 +36,7 @@ already been posted in the desired time window and format
 optionally vectorized way). permits corrections of mis-postings even in 
 multi-file items such as metab_models and tses
 
-* new: summarize_ts_files, which quickly returns a table of ts files, their
+* new: summarize_ts_files, which quickly returns a table of ts files, their 
 upload dates, and other inventory information
 
 * faster: repair_ts, which now runs locate_ts not twice but once whenever 

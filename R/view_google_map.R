@@ -18,6 +18,11 @@ view_google_map <- function(site_names, browser=TRUE) {
            paste0("https://www.google.com/maps/place//@", coords$lat, ",", coords$lon,",5z/data=!3m1!4b1!4m2!3m1!1s0x0:0x0"),
            NA), 
     site_names)
-  if(browser) BROWSE(url)
+  if(browser) {
+    # only open first 10 URLs to avoid creating a bazillion tabs (assuming this would be an accident)
+    if(length(url) > 10) 
+      warning('found >10 URLs and browser=TRUE; only browsing to the first 10')
+    sapply(url[1:min(10, length(url))], function(ur) if(!is.na(ur)) BROWSE(ur))
+  }
   return(url)
 }

@@ -8,11 +8,13 @@ list_sites(with_var_src = NULL, logic = c("all", "any"),
   with_ts_version = "rds", with_ts_archived = FALSE, limit = 10000)
 }
 \arguments{
-\item{with_var_src}{character vector of data variables (i.e., 1+ of those
-listed in get_var_src_codes(out='var_src'))}
+\item{with_var_src}{character vector of data variables (i.e., 1+ of those 
+listed in get_var_src_codes(out='var_src')), or a list of character vectors
+where list names are 'any' and/or 'all' to define a combination of logical 
+requirements}
 
-\item{logic}{how to join the constraints in with_var_src, ...: is any of the
-listed parameters sufficient, or do you need all of them to be available
+\item{logic}{how to join the constraints in with_var_src, ...: is any of the 
+listed parameters sufficient, or do you need all of them to be available 
 for a site to qualify?}
 
 \item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
@@ -27,7 +29,7 @@ to sites that have a ts that's archived, not archived, or either}
 a character vector of site IDs
 }
 \description{
-The with_var_src argument optionally limits the list to those sites that
+The with_var_src argument optionally limits the list to those sites that 
 contain specific timeseries variables.
 }
 \examples{
