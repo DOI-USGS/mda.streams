@@ -53,7 +53,11 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
   if(by %in% c("tag","either")) {
     item_df <- bind_rows(lapply(1:nrow(query_args), function(argnum) {
       # query by tag
-      item_list <- query_item_identifier(scheme=get_scheme(), type=query_args$type[argnum], key=query_args$key[argnum], limit=limit)
+      query_arg_list <- c(
+        list(scheme=get_scheme(), limit=limit),
+        if(!is.na(query_args$type[argnum])) list(type=query_args$type[argnum]), 
+        if(!is.na(query_args$key[argnum])) list(key=query_args$key[argnum]))
+      item_list <- do.call(query_item_identifier, query_arg_list)
       # create a df of NAs if item wasn't found
       arg_item_df <- if(length(item_list) == 0) {
         data.frame(title=NA_character_, id=NA_character_,stringsAsFactors=FALSE)
@@ -95,9 +99,7 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
   }
   
   # reformat the results to our liking
-  sapply(1:nrow(item_df), function(item) {
-    format_item(item_df[item,], format, browser)
-  })
+  format_item(item_df, format, browser)
 }
 
 #' Format an item as a ScienceBase ID or URL, as requested
@@ -105,8 +107,8 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
 #' Internal helper to locate_item. Doesn't check the value of format - that's up
 #' to the calling functions to do, for efficiency.
 #' 
-#' @param item a data.frame with columns for title and id describing one or more
-#'   ScienceBase items
+#' @param item a data.frame with a column for id (and optionally columns for
+#'   title, etc.) describing one or more ScienceBase items
 #' @inheritParams locate_item
 #' @import httr
 #' @keywords internal
@@ -125,7 +127,7 @@ format_item <- function(item, format, browser) {
       if(is.na(out)) {
         url <- NA
       } else {
-        ids <- sbtools::item_get(out)$identifiers[[1]]
+        ids <- sbtools::item_get(out[1])$identifiers[[1]]
         if(!is.null(ids))
           browser_format <- if(ids$type %in% c("root", "site_root")) "folder_url" else "item_url"
         else 
@@ -135,7 +137,10 @@ format_item <- function(item, format, browser) {
     } else {
       url <- out
     }
-    if(!is.na(url)) BROWSE(url)
+    # only open first 10 URLs to avoid creating a bazillion tabs (assuming this would be an accident)
+    if(length(url) > 10) 
+      warning('found >10 URLs and browser=TRUE; only browsing to the first 10')
+    sapply(url[1:min(10, length(url))], function(ur) if(!is.na(ur)) BROWSE(ur))
   }
   out
 }

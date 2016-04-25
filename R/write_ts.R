@@ -45,7 +45,7 @@ write_ts <- function(data, site, var, src, folder, version=c('rds','tsv')){
     write_unitted(data,  file = gz_con, sep=pkg.env$ts_delim)
     close(gz_con)
   } else if (version == 'rds'){
-    saveRDS(data, file = fpath, compress=pkg.env$rds_compression)
+    saveRDS(data, file = fpath, compress=TRUE)
   }
   
   invisible(fpath)

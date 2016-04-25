@@ -311,7 +311,7 @@ parse_ts_path <- function(
   if(use_names) {
     parsed <- 
       if(is.data.frame(parsed)) {
-        parsed %>% do({rownames(.) <- file_name; .}) 
+        parsed %>% do({rownames(.) <- basename(file_path); .}) 
       } else {
         parsed %>% setNames(file_name)
       }

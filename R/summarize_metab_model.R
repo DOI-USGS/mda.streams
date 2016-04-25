@@ -115,9 +115,9 @@ summarize_metab_model <- function(
   mm_summary <- lapply(seq_len(nrow(model_info)), function(model_row) {
     mm <- mms[[model_row]]
     metab <- predict_metab(mm)
-    dopreds <- tryCatch(predict_DO(mm), error=function(e) data.frame(local.date=as.Date(NA), DO.obs=NA, DO.mod=NA)[c(),])
-    local.date <- DO.obs <- DO.mod <- '.dplyr.var'
-    doRMSEdaily <- dopreds %>% group_by(local.date) %>% summarize(RMSE=sqrt(mean((DO.obs-DO.mod)^2))) %>% as.data.frame
+    dopreds <- tryCatch(predict_DO(mm), error=function(e) data.frame(date=as.Date(NA), DO.obs=NA, DO.mod=NA)[c(),])
+    date <- DO.obs <- DO.mod <- '.dplyr.var'
+    doRMSEdaily <- dopreds %>% group_by(date) %>% summarize(RMSE=sqrt(mean((DO.obs-DO.mod)^2))) %>% as.data.frame
     as.data.frame(c(
       as.list(model_info[model_row,]),
       lapply(summary_funs, function(fun) { fun(mod=mm, metab=metab, doRMSEdaily=doRMSEdaily) })

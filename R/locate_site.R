@@ -2,6 +2,8 @@
 #' 
 #' @param site_name the site ID, e.g. "nwis_02322688", whose folder you want
 #' @inheritParams locate_item
+#' @import sbtools
+#' @import dplyr
 #' @export
 #' @examples 
 #' \dontrun{
@@ -15,5 +17,12 @@ locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","eithe
   site_name <- do.call(make_site_name, parse_site_name(site_name, out=c("sitenum","database"), use_names=FALSE)) # check the site name
   browser <- isTRUE(browser)
   format <- switch(match.arg(format), id="id", url="folder_url")
-  locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by="tag"), title=site_name, by=by, format=format, limit=limit, browser=browser)
+  if(length(site_name) > 5 & by %in% c('tag')) {
+    site_items <- sbtools::query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
+    site_df <- bind_rows(lapply(site_items, function(item) data_frame(title=item$title, id=item$id)))
+    matches <- site_df[match(site_name, site_df$title),]
+    format_item(matches, format=format, browser=browser)
+  } else {
+    locate_item(key=site_name, type="site_root", parent=locate_folder("sites", by="tag"), title=site_name, by=by, format=format, limit=limit, browser=browser)
+  }
 }

@@ -16,13 +16,15 @@ Known changes since first models include:
 (1) config was the entire info slot, now is an element named config in a list
 that is the info slot.
 
-(2) config df has more columns now; old columns have not changed names or
+(2) config df has more columns now; old columns have not changed names or 
 contents.
 
-(3) the column named 'date' in early fits and 'local.date' in the next round
-is now named 'solar.date'.
+(3a) the column named 'local.time' in early fits is now named 'solar.time'.
 
-(4) the args list may be expanded from before but retains the same core
-elements.
+(3b) the column named 'date' in early fits and 'local.date' and 'solar.date' 
+in later rounds is now [again] named 'date'.
+
+(4) the args list may be expanded from before and is now named specs and is
+of class specs.
 }
 
