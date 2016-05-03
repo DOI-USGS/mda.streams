@@ -39,14 +39,14 @@ make_metab_config <- function(
   start_date=NA, end_date=NA,
   tag='0.0.0', strategy='get_metab_data', date=Sys.time(), model='metab_mle', model_args='list()') {
   
-  #' helper function for translating the above simpler args into args suitable 
-  #' for stage_metab_config
-  #' 
-  #' @param var a variable, passed in as a named object, whose name will be used
-  #'   as the variable name and whose value will be used (1) as the output of 
-  #'   choose_data_source if a data.frame, (2) as a request for an unused var if
-  #'   NULL, (3) as a request for a priority local selection if NA, and (4) as a
-  #'   specific src value if character
+  # helper function for translating the above simpler args into args suitable
+  # for stage_metab_config
+  # 
+  # @param var a variable, passed in as a named object, whose name will be used
+  #   as the variable name and whose value will be used (1) as the output of 
+  #   choose_data_source if a data.frame, (2) as a request for an unused var if
+  #   NULL, (3) as a request for a priority local selection if NA, and (4) as a
+  #   specific src value if character
   choose_src <- function(var) {
     varname <- as.character(substitute(var))
     if(is.data.frame(var)) {
