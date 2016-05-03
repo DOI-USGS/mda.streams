@@ -36,7 +36,7 @@ stage_meta_manual <- function(folder = tempdir(), verbose = FALSE) {
   if(length(missing_sites)>0) warning("these sites have no user reviews (probably on purpose): ", paste0(missing_sites, collapse=", "))
   
   # add units
-  user_review <- u(user_review, c(NA,NA,NA,"%",NA,NA,NA,NA))
+  user_review <- u(user_review, c(NA,NA,NA,"%",NA,NA,NA,NA,NA))
   
   # remove redundant columns
   long_name <- '.dplyr_var'
