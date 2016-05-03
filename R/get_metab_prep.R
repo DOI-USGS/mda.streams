@@ -1,14 +1,18 @@
 #' Get a data.frame of metabolism input data
 #' 
 #' Quick-get function for manual getting of metabolism data
-#' @inheritParams make_metab_config
-#' @param simplify_config logical. If the implied config file has only one row, should the list be reduced to one element? 
-#' @param simplify_out If \code{out} has only one element, should the list of lists be reduced to a list of data.frames?
+#' @inheritParams stage_metab_config
+#' @param out character vector of one or more elements of
+#'   \code{c('data','data_daily','info')} to return
+#' @param simplify_config logical. If the implied config file has only one row,
+#'   should the list be reduced to one element?
+#' @param simplify_out If \code{out} has only one element, should the list of
+#'   lists be reduced to a list of data.frames?
 #' @param verbose logical. give progress messages?
 #' @export
 #' @examples 
 #' md <- get_metab_prep('nwis_08062500') # list of $data, $data_daily, $info
-#' md <- get_metab_prep('nwis_08062500', simplify_config=FALSE) # list of list of $data, $data_daily, $info
+#' md <- get_metab_prep('nwis_08062500', simplify_config=FALSE) # list of lists
 #' md <- get_metab_prep('nwis_08062500', out='data') # single data.frame
 #' md <- get_metab_prep(c('nwis_08062500','nwis_01646500'), out='data') # list of data.frames
 get_metab_prep <- function(

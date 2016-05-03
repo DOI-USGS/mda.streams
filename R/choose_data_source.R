@@ -79,6 +79,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
   if('pred' %in% config[,'type']) {
     # will break if needed but not logged into SB, so try it early. also try to
     # limit the number of trips to SB and back
+    . <- '.dplyr.var'
     model_texts <- filter(config, type=='pred') %>% .$src %>% unique
     if(length(model_texts) <= 5) {
       metab_model_list <- unlist(lapply(model_texts, function(mt) list_metab_models(text=mt)))

@@ -2,6 +2,7 @@
 #' 
 #' Quick access to metabolism input data (\code{data} arg only)
 #' 
+#' @inheritParams stage_metab_config
 #' @inheritParams get_metab_prep
 #' @param simplify logical. If there's only one data.frame to retrieve, remove 
 #'   it from the enclosing list?
@@ -13,7 +14,8 @@
 #' md <- get_metab_data('nwis_08062500')
 #' md <- get_metab_data('styx_004001')
 #' login_sb()
-#' md <- get_metab_data('styx_004001', doobs=choose_data_source('doobs','styx_004001','sim',type='pred',src='160411 0.0.18'))
+#' md <- get_metab_data('styx_004001', doobs=choose_data_source(
+#'   'doobs','styx_004001','sim',type='pred',src='160411 0.0.18'))
 #' }
 get_metab_data <- function(
   site,

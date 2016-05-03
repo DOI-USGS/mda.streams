@@ -87,12 +87,6 @@ strongly recommended to use the default.}
 
 \item{model_args}{character, in R language, specifying any arguments to pass 
 to the model function}
-
-\item{var}{a variable, passed in as a named object, whose name will be used
-as the variable name and whose value will be used (1) as the output of 
-choose_data_source if a data.frame, (2) as a request for an unused var if
-NULL, (3) as a request for a priority local selection if NA, and (4) as a
-specific src value if character}
 }
 \description{
 Quick-make function for manual making of a model config file
@@ -123,8 +117,5 @@ Quick-make function for manual making of a model config file
 make_metab_config('nwis_08062500')
 make_metab_config('nwis_08062500', sitetime='calcLon', doobs='nwis', 
   dosat='calcGGbts', depth='calcDischHarvey', wtr='nwis', par='calcSw')
-helper function for translating the above simpler args into args suitable 
-for stage_metab_config
-
 }
 

@@ -14,9 +14,89 @@ get_metab_prep(site, out = c("data", "data_daily", "info"), sitetime = NA,
   simplify_out = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{simplify_config}{logical. If the implied config file has only one row, should the list be reduced to one element?}
+\item{site}{site names}
 
-\item{simplify_out}{If \code{out} has only one element, should the list of lists be reduced to a list of data.frames?}
+\item{out}{character vector of one or more elements of
+\code{c('data','data_daily','info')} to return}
+
+\item{sitetime}{Data Source for mean solar time. See Data Source Format 
+below.}
+
+\item{doobs}{Data Source for dissolved oxygen concentrations. See Data Source
+Format below.}
+
+\item{dosat}{Data Source for dissolved oxygen saturation concentrations. See 
+Data Source Format below.}
+
+\item{depth}{Data Source for mean stream depth. See Data Source Format below.}
+
+\item{wtr}{Data Source for water temperature. See Data Source Format below.}
+
+\item{par}{Data Source for light (photosynthetically available radiation, 
+PAR). See Data Source Format below.}
+
+\item{disch}{Data Source for unit-value stream discharge, for use in 
+identifying daily priors or fixed values for K600. See Data Source Format 
+below.}
+
+\item{veloc}{Data Source for unit-value flow velocity, for use in identifying
+daily priors or fixed values for K600. See Data Source Format below.}
+
+\item{sitedate}{Data Source for the dates of interest. See Data Source Format
+below.}
+
+\item{doinit}{Data Source for the first DO observation on each date to model,
+for use in data simulation. See Data Source Format below.}
+
+\item{gpp}{Data Source for daily gross primary productivity rates for use in 
+data simulation. See Data Source Format below.}
+
+\item{er}{Data Source for ecosystem respiration rates for use in data 
+simulation. See Data Source Format below.}
+
+\item{K600}{Data Source for reaeration rates for use in data simulation. See 
+Data Source Format below.}
+
+\item{K600lwr}{Data Source for lower bound on reaeration rates for use in
+data simulation. See Data Source Format below.}
+
+\item{K600upr}{Data Source for upper bound on reaeration rates for use in
+data simulation. See Data Source Format below.}
+
+\item{dischdaily}{Data Source for daily mean stream discharge, for use in 
+identifying daily priors or fixed values for K600. See Data Source Format 
+below.}
+
+\item{velocdaily}{Data Source for daily mean flow velocity, for use in 
+identifying daily priors or fixed values for K600. See Data Source Format 
+below.}
+
+\item{start_date}{NA or datetime, to be coerced with 
+\code{as.POSIXct(start_date, tz="UTC")}, at which to start the data passed 
+to the metab model}
+
+\item{end_date}{NA or datetime, to be coerced with \code{as.POSIXct(end_date,
+tz="UTC")}, at which to end the data passed to the metab model}
+
+\item{tag}{character of form "1.0.2" that uniquely identifies this set of 
+modeling runs.}
+
+\item{strategy}{character, or vector of length sites, describing this set of 
+modeling runs in concise English.}
+
+\item{date}{POSIXct indicating the date of config construction. It is 
+strongly recommended to use the default.}
+
+\item{model}{character. the name of the metabolism model to construct}
+
+\item{model_args}{character, in R language, specifying any arguments to pass 
+to the model function}
+
+\item{simplify_config}{logical. If the implied config file has only one row,
+should the list be reduced to one element?}
+
+\item{simplify_out}{If \code{out} has only one element, should the list of
+lists be reduced to a list of data.frames?}
 
 \item{verbose}{logical. give progress messages?}
 }
@@ -25,7 +105,7 @@ Quick-get function for manual getting of metabolism data
 }
 \examples{
 md <- get_metab_prep('nwis_08062500') # list of $data, $data_daily, $info
-md <- get_metab_prep('nwis_08062500', simplify_config=FALSE) # list of list of $data, $data_daily, $info
+md <- get_metab_prep('nwis_08062500', simplify_config=FALSE) # list of lists
 md <- get_metab_prep('nwis_08062500', out='data') # single data.frame
 md <- get_metab_prep(c('nwis_08062500','nwis_01646500'), out='data') # list of data.frames
 }
