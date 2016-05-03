@@ -49,7 +49,7 @@
 #' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
 #'   type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
 #' }
-choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,"ts","meta","file","const"), src) {
+choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,'ts','meta','ts_file','const','pred','pred_file','none'), src=NA) {
 
   # check args
   if(length(var) != 1) stop("exactly 1 var required")
@@ -77,7 +77,16 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
   
   # setup operations & checks as needed
   if('pred' %in% config[,'type']) {
-    metab_model_list <- list_metab_models() # will break if needed but not logged into SB, so try it early
+    # will break if needed but not logged into SB, so try it early. also try to
+    # limit the number of trips to SB and back
+    . <- '.dplyr.var'
+    model_texts <- filter(config, type=='pred') %>% .$src %>% unique
+    if(length(model_texts) <= 5) {
+      metab_model_list <- unlist(lapply(model_texts, function(mt) list_metab_models(text=mt)))
+      partial_metab_model_list <- TRUE
+    } else {
+      metab_model_list <- list_metab_models()
+    }
   }
   if('priority local' %in% logic || 'ts' %in% type) {
     priority <- '.dplyr.var'
@@ -175,7 +184,15 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
             # specific model
             parsed_mm_name <- tryCatch(parse_metab_model_name(config[row,'src']), error=function(e) NA)
             if(any(is.na(c(as.matrix(parsed_mm_name))))) {
+              # search for the model, using a partial metab_model_list if present
               mm_name <- grep(paste0("^",config[row,'site'],"-.*",config[row,'src']), metab_model_list, value=TRUE)
+              # if that failed, first attempt to repair is to make sure we're looking through all possible models
+              if(length(mm_name) != 1 && partial_metab_model_list) {
+                metab_model_list <<- list_metab_models()
+                partial_metab_model_list <<- FALSE
+                mm_name <- grep(paste0("^",config[row,'site'],"-.*",config[row,'src']), metab_model_list, value=TRUE)
+              }
+              # if that still failed, give up
               if(length(mm_name) != 1) {
                 warning("possible metab model names for site=",config[row,'site'],", src=",config[row,'src'],":\n",paste0(mm_name,collapse="\n"))
                 stop(paste0("couldn't find exactly 1 metab model name in row ",row))

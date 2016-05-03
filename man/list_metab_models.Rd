@@ -24,4 +24,9 @@ a character vector of titles of the metab_model .RData files posted
 \description{
 List the available metab_model objects
 }
+\examples{
+\dontrun{
+mms <- list_metab_models('0.0.18')
+}
+}
 
