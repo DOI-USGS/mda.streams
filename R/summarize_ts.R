@@ -10,6 +10,7 @@
 #'   in addition to the var_src and site_name and id columns.
 #' @inheritParams download_ts
 #' @import dplyr
+#' @importFrom methods is
 #' @export
 #' @examples
 #' \dontrun{

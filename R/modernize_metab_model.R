@@ -20,6 +20,7 @@
 #' @import dplyr
 #' @import streamMetabolizer
 #' @importFrom unitted u v
+#' @importFrom utils packageVersion
 #' @export
 modernize_metab_model <- function(metab_model) {
   # if metab_model isn't already a list, make it one

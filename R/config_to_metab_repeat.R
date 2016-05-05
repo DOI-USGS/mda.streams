@@ -16,6 +16,7 @@
 #' @param row a single integer specifying the row of config to use
 #' @param times integer giving the number of times to fit the one config row
 #' @param verbose logical. give status messages?
+#' @importFrom methods is
 #' @export
 config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   if(length(row) != 1) stop("this function is for 1 row at a time")

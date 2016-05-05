@@ -19,7 +19,10 @@ define_pkg_env <- function() {
 }
 pkg.env <- define_pkg_env()
 
-# Check whether this package is up to date
+#' Check whether this package is up to date
+#' 
+#' @rdname onAttach
+#' @importFrom utils available.packages contrib.url packageVersion
 .onAttach <- function(libname, pkgname) {
   GRAN_update_code <- paste0(
     '  update.packages(oldPkgs=c(\n',
