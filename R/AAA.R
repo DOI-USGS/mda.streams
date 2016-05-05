@@ -22,6 +22,9 @@ pkg.env <- define_pkg_env()
 #' Check whether this package is up to date
 #' 
 #' @rdname onAttach
+#' @param libname	a character string giving the library directory where the
+#'   package defining the namespace was found.
+#' @param pkgname	a character string giving the name of the package.
 #' @importFrom utils available.packages contrib.url packageVersion
 .onAttach <- function(libname, pkgname) {
   GRAN_update_code <- paste0(
@@ -36,9 +39,9 @@ pkg.env <- define_pkg_env()
     '  devtools::install_github("',github_pkg_ref,'")')
   
   tryCatch({
-    GRAN_pkg <- available.packages(contrib.url("http://owi.usgs.gov/R"))
+    GRAN_pkg <- utils::available.packages(utils::contrib.url("http://owi.usgs.gov/R"))
     GRAN_version <- package_version(GRAN_pkg[[pkgname, 'Version']])
-    local_version <- packageVersion(pkgname)
+    local_version <- utils::packageVersion(pkgname)
     if(local_version < GRAN_version) {
       packageStartupMessage(
         'Time to update to ', pkgname, ' version ', GRAN_version, '! You have ', local_version, '. Get stable updates with\n',

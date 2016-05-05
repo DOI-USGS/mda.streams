@@ -28,7 +28,8 @@ Imports:
     jsonlite,
     httr,
     tidyr,
-    lazyeval
+    lazyeval,
+    methods
 Suggests:
     devtools,
     smwrQW (>= 0.7.9),

@@ -10,7 +10,6 @@
 #'   in addition to the var_src and site_name and id columns.
 #' @inheritParams download_ts
 #' @import dplyr
-#' @importFrom methods is
 #' @export
 #' @examples
 #' \dontrun{
@@ -106,7 +105,7 @@ summarize_ts <- function(
     item <- ts_items[[site_row]]
     as.data.frame(c(
       as.list(ts_summary[site_row,]),
-      lapply(item_funs, function(fun) { if(is(item, 'sbitem')) fun(item) else NA }),
+      lapply(item_funs, function(fun) { if(methods::is(item, 'sbitem')) fun(item) else NA }),
       lapply(summary_funs, function(fun) { if(is.data.frame(ts)) fun(ts) else NA })
     ), stringsAsFactors=FALSE)
   })) %>% as.data.frame() %>%

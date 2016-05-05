@@ -6,6 +6,12 @@
 \usage{
 .onAttach(libname, pkgname)
 }
+\arguments{
+\item{libname}{a character string giving the library directory where the
+package defining the namespace was found.}
+
+\item{pkgname}{a character string giving the name of the package.}
+}
 \description{
 Check whether this package is up to date
 }
