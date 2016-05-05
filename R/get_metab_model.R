@@ -14,6 +14,7 @@
 #' @export
 #' @import streamMetabolizer
 #' @importFrom stats setNames
+#' @importFrom utils packageVersion
 #' @import dplyr
 get_metab_model <- function(model_name, on_local_exists='skip', version=c('modern','original'), update_sb=TRUE) {
   version <- match.arg(version)

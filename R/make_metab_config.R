@@ -83,7 +83,7 @@ make_metab_config <- function(
     K600upr=choose_src(K600upr),
     dischdaily=choose_src(dischdaily),
     velocdaily=choose_src(velocdaily),
-    start_date=NA, end_date=NA,
+    start_date=start_date, end_date=end_date,
     omit_incomplete=FALSE,
     filename=NULL)  
   
