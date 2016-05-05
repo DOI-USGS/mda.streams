@@ -104,11 +104,13 @@ lists be reduced to a list of data.frames?}
 Quick-get function for manual getting of metabolism data
 }
 \examples{
+\dontrun{
 md <- get_metab_prep('nwis_08062500') # list of $data, $data_daily, $info
 md <- get_metab_prep('nwis_08062500', simplify_config=FALSE) # list of lists
 md <- get_metab_prep('nwis_08062500', out='data') # single data.frame
 md <- get_metab_prep(c('nwis_08062500','nwis_01646500'), out='data') # list of data.frames
 md <- get_metab_prep('nwis_08062500', sitedate=NA, K600=NA, 
   start_date="2014-03-10 04:00:00", end_date="2014-03-11 04:00:00") # short data.frames
+}
 }
 
