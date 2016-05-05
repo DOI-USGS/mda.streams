@@ -158,11 +158,20 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
         )))
         
         # restrict dates of data if requested
-        if(!is.na(start_date <- as.POSIXct(config_row[[1, "start_date"]], tz="UTC"))) {
-          combo <- combo[combo$DateTime >= start_date, ]
+        datetime_col <- names(combo)[na.omit(match(c('sitetime','sitedate','DateTime'), names(combo)))[1]]
+        if(!is.na(start_date <- config_row[[1, "start_date"]])) {
+          combo_datetime <- v(combo[,datetime_col])
+          combo <- switch(
+            datatype,
+            'data'=combo[combo_datetime >= as.POSIXct(start_date, tz="UTC"), ],
+            'data_daily'=combo[combo_datetime >= as.Date(start_date), ])
         }
-        if(!is.na(end_date <- as.POSIXct(config_row[[1, "end_date"]], tz="UTC"))) {
-          combo <- combo[combo$DateTime <= end_date, ]
+        if(!is.na(end_date <- config_row[[1, "end_date"]])) {
+          combo_datetime <- v(combo[,datetime_col])
+          combo <- switch(
+            datatype, # use < for data or <= for data_daily for end_date
+            'data'=combo[combo_datetime < as.POSIXct(end_date, tz="UTC"), ],
+            'data_daily'=combo[combo_datetime <= as.Date(end_date), ])
         }
         
         # rename
