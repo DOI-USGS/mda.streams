@@ -30,9 +30,9 @@ read_ts = function(file, on_invalid=c("warn","stop")) {
                  df <- read_unitted(file, sep=pkg.env$ts_delim)
                  # convert units to tz field for suntime before verify_ts
                  if(names(df)[2] %in% c("sitetime", "suntime")) {
-                   df[,2] <- u(as.POSIXct(df[,2], tz=get_units(df[,2])), NA)
+                   df[[2]] <- u(as.POSIXct(df[[2]], tz=get_units(df[[2]])), NA)
                  } else if(names(df)[2] %in% c("sitedate")) {
-                   df[,2] <- u(as.Date(df[,2]), NA)
+                   df[[2]] <- u(as.Date(df[[2]]), NA)
                  }
                  
                  # convert units to tz field for DateTime

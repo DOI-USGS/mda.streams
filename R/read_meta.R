@@ -33,7 +33,7 @@ read_meta = function(file){
       error=function(e) NULL,
       warning=function(w) NULL)
     if(!is.null(numercol)) {
-      df[,col] <- u(numercol, get_units(df[,col]))
+      df[[col]] <- u(numercol, get_units(df[[col]]))
     }
   }
   

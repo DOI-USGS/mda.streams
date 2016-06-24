@@ -218,8 +218,8 @@ stage_meta_basic_styx <- function(sites_meta, empty_meta, verbose=FALSE) {
   styx_meta <- empty_meta[seq_len(nrow(sites_meta)),]
   if(nrow(styx_meta) == 0) return(styx_meta)
   
-  styx_meta[,'site_name'] <- sites_meta$site_name
-  styx_meta[,'long_name'] <- paste0("Simulated data: ",sites_meta$site_name)
+  styx_meta[['site_name']] <- sites_meta$site_name
+  styx_meta[['long_name']] <- u(paste0("Simulated data: ",sites_meta$site_name))
   
   styx_meta
 }
@@ -241,11 +241,11 @@ stage_meta_basic_indy <- function(sites_meta, empty_meta, verbose=FALSE) {
   im <- get_meta('indy')
   im <- im[match(sites_meta$site_name, im$site_name), ]
   
-  indy_meta[,'site_name'] <- im$site_name
-  indy_meta[,'long_name'] <- im$indy.long_name
-  indy_meta[,'lat'] <- im$indy.lat
-  indy_meta[,'lon'] <- im$indy.lon
-  indy_meta[,'alt'] <- im$indy.alt
+  indy_meta[['site_name']] <- im$site_name
+  indy_meta[['long_name']] <- im$indy.long_name
+  indy_meta[['lat']] <- im$indy.lat
+  indy_meta[['lon']] <- im$indy.lon
+  indy_meta[['alt']] <- im$indy.alt
   
   indy_meta
 }
