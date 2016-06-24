@@ -18,10 +18,10 @@ Depends:
 Imports:
     dataRetrieval (>= 2.4.8),
     geoknife (>= 1.2.0),
-    sbtools (>= 0.18.0),
+    sbtools (>= 1.0.2),
     streamMetabolizer (>= 0.9.5),
     unitted (>= 0.2.5),
-    dplyr,
+    dplyr (>= 0.5.0.9000),
     foreign,
     stringr,
     lubridate,
