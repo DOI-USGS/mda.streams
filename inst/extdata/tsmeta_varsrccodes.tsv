@@ -1,8 +1,9 @@
 var	src	units	var_descrip	data_type	metab_var	priority	url	src_descrip	r_package	r_function	src_type	p_code
 airtemp	nwis	degC	air temperature	ts	NA	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00020'
 baro	indy	Pa	barometric pressure	ts	NA	1	NA	independent data source	NA	NA	data	NA
-baro	nldas	Pa	barometric pressure	ts	NA	2	http://ldas.gsfc.nasa.gov/nldas/	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
-baro	calcElev	Pa	barometric pressure	ts	NA	3	NA	"calculate baro assuming constant pressure, later to be corrected for elevation"	streamMetabolizer	NA	calc	NA
+baro	nldas	Pa	barometric pressure	ts	NA	2	http://hydro1.sci.gsfc.nasa.gov/dods/NLDAS_FORA0125_H.002.info	"Land Data Assimilation Systems"	geoknife	geoknife	data	pressfc
+baro	gldas	Pa	barometric pressure	ts	NA	3	http://hydro1.sci.gsfc.nasa.gov/dods/GLDAS_NOAH025SUBP_3H.info	"Land Data Assimilation Systems"	geoknife	geoknife	data	psurf
+baro	calcElev	Pa	barometric pressure	ts	NA	4	NA	"calculate baro assuming constant pressure, later to be corrected for elevation"	streamMetabolizer	NA	calc	NA
 baro	simCopy	Pa	barometric pressure	ts	NA	11	NA	"simulate by copying from another site"	streamMetabolizer	NA	sim	NA
 baro	simNew	Pa	barometric pressure	ts	NA	12	NA	"arbitrarily assign numbers for model testing"	streamMetabolizer	NA	sim	NA
 depth	gagesii	m	stream depth	ts	depth	1	http://water.usgs.gov/GIS/metadata/usgswrd/XML/gagesII_Sept2011.xml	GAGES-II: Geospatial Attributes of Gages for Evaluating Streamflow	NA	NA	data	NA
@@ -65,7 +66,8 @@ suntime	calcLon	''	apparent solar time (perfect match to sun)	ts	app.solar.time	
 suntime	simLon	''	apparent solar time (perfect match to sun)	ts	app.solar.time	11	NA	time as stored or assumed	streamMetabolizer	convert_UTC_to_solartime	sim	NA
 suntime	simCopy	''	apparent solar time (perfect match to sun)	ts	app.solar.time	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 suntime	simNew	''	apparent solar time (perfect match to sun)	ts	app.solar.time	13	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
-sw	nldas	W m^-2	downwelling shortwave radiation	ts	NA	1	http://ldas.gsfc.nasa.gov/nldas/	Land Data Assimilation Systems	geoknife	geoknife	data	dswrfsfc
+sw	nldas	W m^-2	downwelling shortwave radiation	ts	NA	1	http://hydro1.sci.gsfc.nasa.gov/dods/NLDAS_FORA0125_H.002.info	Land Data Assimilation Systems	geoknife	geoknife	data	dswrfsfc
+sw	gldas	W m^-2	downwelling shortwave radiation	ts	NA	2	http://hydro1.sci.gsfc.nasa.gov/dods/GLDAS_NOAH025SUBP_3H.info	Land Data Assimilation Systems	geoknife	geoknife	data	swnet_tavg
 veloc	calcDischHarvey	m s^-1	flow velocity	ts	velocity	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_velocity	calc	NA
 veloc	calcDischRaymond	m s^-1	flow velocity	ts	velocity	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_velocity	calc	NA
 velocdaily	calcDMean	m s^-1	daily mean flow velocity	ts	velocity.daily	1	NA	daily mean values, 4am to 4am sitetime, stamped noon sitetime	mda.streams	calc_ts_velocdaily_calcDMean	calc	NA
