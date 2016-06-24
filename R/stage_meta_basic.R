@@ -45,7 +45,9 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
   
   # add a quick-access column of sciencebase site item IDs
-  siteids <- item_list_children(mda.streams::locate_folder('sites'), limit=10000)
+  siteids <- item_list_children(mda.streams::locate_folder('sites'), limit=10000) %>%
+    lapply(function(si) as.data.frame(si[c('title','id')], stringsAsFactors=FALSE)) %>%
+    bind_rows()
   sites_meta$sciencebase_id <- siteids$id[match(sites_meta$site_name, siteids$title)]
   
   # merge with existing metadata if appropriate
