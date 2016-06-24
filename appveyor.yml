@@ -17,11 +17,14 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  ps: Bootstrap
+  - ps: Bootstrap
+  - ps: (new-object net.webclient).DownloadFile("https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Windows/JAGS-4.2.0-Rtools33.exe", "C:\projects\JAGS-4.2.0.exe")
+  - cmd: C:\projects\JAGS-4.2.0.exe /S
+  - cmd: dir "C:\Program Files\JAGS"
 
 build_script:
   - R --version
-  - travis-tool.sh install_github USGS-R/streamMetabolizer@develop USGS-R/sbtools
+  - travis-tool.sh install_github hadley/dplyr hadley/tibble USGS-R/streamMetabolizer@develop USGS-R/sbtools
   - travis-tool.sh install_deps
 
 test_script:
