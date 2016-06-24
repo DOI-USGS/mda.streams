@@ -1,6 +1,20 @@
+# mda.streams 0.9.7
+
+* new: make_metab_config is like stage_metab_config but more suited to
+interactive use (less typing required)
+
+* new: get_metab_prep is a shortcut to config_to_data(stage_metab_config()),
+with less typing required
+
+* new: get_metab_data is a shortcut to get_metab_prep(out='data',
+simplify_out=TRUE)
+
+* faster: choose_data_source takes shortcuts in locating a metabolism model when
+possible
+
 # mda.streams 0.9.6.3
 
-* locate_ts and locate_site are now much more efficient in special cases of
+* locate_ts and locate_site are now much more efficient in special cases of 
 looking up many items at a time
 
 * view_google_map can now open several tabs at a time

@@ -39,7 +39,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   fits_to_save <- list()
   mtbout <- lapply(1:times, function(reprow) {
     mm <- config_to_metab(rep_config, rows=reprow, verbose=verbose)[[1]]
-    if(is(mm, 'metab_model')) {
+    if(methods::is(mm, 'metab_model')) {
       if(length(mtb_to_save) == 0 || reprow == times) mtb_to_save <<- mm
       fits_to_save[[reprow]] <<- get_fit(mm)
       tryCatch(
@@ -48,7 +48,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
           predict_metab(mm),
           prep_time=as.data.frame(as.list(get_info(mm)$prep_time)),
           fitting_time=as.data.frame(as.list(get_fitting_time(mm))),
-          fit=if(is(mm, 'metab_bayes')) get_fit(mm)$daily else get_fit(mm),
+          fit=if(methods::is(mm, 'metab_bayes')) get_fit(mm)$daily else get_fit(mm),
           stringsAsFactors=FALSE),
         error=function(e) 
           NULL
@@ -60,7 +60,7 @@ config_to_metab_repeat <- function(config, row, times=5, verbose=FALSE) {
   if(length(mtbout) > 0) mtbout <- bind_rows(mtbout)
 
   # add info to a single model object
-  if(is(mtb_to_save, 'metab_model')) {
+  if(methods::is(mtb_to_save, 'metab_model')) {
     mtb_to_save@info <- c(get_info(mtb_to_save), list(
       fit_reps=tryCatch(left_join(mtbout, data.frame(sim=sim), by=c('date'='sim.data_daily.date')), error=function(e) e),
       fit_raws=fits_to_save,

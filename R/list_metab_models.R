@@ -12,6 +12,10 @@
 #' @import sbtools
 #' @import dplyr
 #' @export
+#' @examples 
+#' \dontrun{
+#' mms <- list_metab_models('0.0.18')
+#' }
 list_metab_models = function(text, order_by=c("date","tag","row","site","strategy","title")) {
   
   order_by <- match.arg(order_by, several.ok = TRUE)
