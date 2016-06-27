@@ -4,15 +4,20 @@
 \alias{stage_nwis_sitelist}
 \title{generate nwis site_ids for given p_codes}
 \usage{
-stage_nwis_sitelist(vars, state_codes, folder = NULL, verbose = TRUE,
-  p_codes)
+stage_nwis_sitelist(vars, min.obs = 100, site.types = "ST", HUCs = 1:21,
+  folder = NULL, verbose = TRUE, p_codes)
 }
 \arguments{
 \item{vars}{a character vector of mda.streams var codes, as in 
 \code{unique(get_var_src_codes(out='var'))}}
 
-\item{state_codes}{character vector of state codes, e.g., ('CO','wi'), or 
-'all' for all data.}
+\item{min.obs}{minimum number of observations of the vars that a site must 
+have to be accepted}
+
+\item{site.types}{character vector of acceptable NWIS site types as in 
+http://maps.waterdata.usgs.gov/mapper/help/sitetype.html}
+
+\item{HUCs}{character or numeric vector of HUC codes, e.g., 1:3 or '04'}
 
 \item{folder}{directory path, or NULL, indicating where to save the file or 
 (NULL) to return it as a character vector}
