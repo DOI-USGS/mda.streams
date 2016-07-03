@@ -2,18 +2,24 @@
 % Please edit documentation in R/stage_ldas_ts.R
 \name{stage_ldas_ts}
 \alias{stage_ldas_ts}
-\title{stage gldas data into a time series file}
+\title{Stage NASA NLDAS or GLDAS data into a time series file}
 \usage{
-stage_ldas_ts(sites, var, p_code, times, folder, version, verbose, url,
-  expected_units, ...)
+stage_ldas_ts(sites, var, src = c("nldas", "gldas"), times, url,
+  folder = tempdir(), version = c("rds", "tsv"), verbose = FALSE, ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
 
-\item{var}{short name of var as in
+\item{var}{short name of var as in 
 \code{unique(get_var_src_codes(out='var'))}}
 
-\item{times}{a length 2 vector of POSIXct dates}
+\item{src}{short name of the NASA-LDAS source, either 'nldas' or 'gldas'}
+
+\item{times}{a length 2 vector of POSIXct dates, or characters convertable to
+POSIXct dates}
+
+\item{url}{for web dataset. Required because there are corrections for 
+certain urls}
 
 \item{folder}{a folder to place the file outputs in (defaults to temp 
 directory)}
@@ -23,15 +29,24 @@ directory)}
 
 \item{verbose}{logical. provide verbose output?}
 
-\item{url}{for web dataset. If missing, uses geoknife's "gldas" url}
-
 \item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}}}
 }
 \value{
 a file handle for time series file created
 }
 \description{
-get data from nldas and return a file handle
+Downloads data from NLDAS/GLDAS and returns a vector of file handles.
 }
-\keyword{internal}
+\examples{
+\dontrun{
+files <- stage_ldas_ts(sites=c("nwis_06893820","nwis_50048580","nwis_01484680"), 
+  var="baro", src='nldas', times=c('2014-01-01 00:00','2014-01-01 05:00'), verbose=TRUE)
+lapply(setNames(nm=files), read_ts)
+files <- stage_ldas_ts(sites=c("nwis_50048580","nwis_06893820","nwis_01484680"), 
+  url=paste0("dods://cida-eros-netcdfdev.er.usgs.gov:8080/thredds/dodsC/",
+             "thredds_workspace/stream_metab/gldas.ncml"),
+  var="baro", src='gldas', times=c('2014-01-01 00:00','2014-01-01 05:00'), verbose=TRUE)
+lapply(setNames(nm=files), read_ts)
+}
+}
 
