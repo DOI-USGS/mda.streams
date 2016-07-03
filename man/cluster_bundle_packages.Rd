@@ -11,7 +11,14 @@ cluster_bundle_packages(packages = "mda.streams",
 }
 \arguments{
 \item{packages}{character. the package or packages whose dependencies (and 
-the packages themselves) should be obtained}
+the packages themselves) should be obtained. at least for now, all packages
+and dependencies should have an up-to-date list of dependencies on CRAN or 
+GRAN. It's OK if the GitHub code is ahead of CRAN/GRAN as long as the
+dependencies list hasn't changed}
+
+\item{github}{character vector of GitHub references (as in 
+\code{link[github]{install_github}}) for packages to acquire from GitHub 
+rather than CRAN/GRAN}
 
 \item{bundlefile}{file.path to save the bundled packages}
 
@@ -22,8 +29,9 @@ be saved}
 dependencies}
 }
 \description{
-To use this file, unpack it. It contains a top-level folder called packages.
-To install a package from this bundle, run
-\code{install.packages('mypackagename', repos='file:packages', type='source')}
+To use this file, unpack it. It contains a top-level folder called packages. 
+To install a package from this bundle, run 
+\code{install.packages('mypackagename', repos='file:packages', 
+type='source')}
 }
 

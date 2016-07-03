@@ -1,17 +1,24 @@
 #' Build a zip file of bundled packages
 #' 
-#' To use this file, unpack it. It contains a top-level folder called packages.
-#' To install a package from this bundle, run
-#' \code{install.packages('mypackagename', repos='file:packages', type='source')}
+#' To use this file, unpack it. It contains a top-level folder called packages. 
+#' To install a package from this bundle, run 
+#' \code{install.packages('mypackagename', repos='file:packages', 
+#' type='source')}
 #' 
 #' @param packages character. the package or packages whose dependencies (and 
-#'   the packages themselves) should be obtained
+#'   the packages themselves) should be obtained. at least for now, all packages
+#'   and dependencies should have an up-to-date list of dependencies on CRAN or 
+#'   GRAN. It's OK if the GitHub code is ahead of CRAN/GRAN as long as the
+#'   dependencies list hasn't changed
+#' @param github character vector of GitHub references (as in 
+#'   \code{link[github]{install_github}}) for packages to acquire from GitHub 
+#'   rather than CRAN/GRAN
 #' @param bundlefile file.path to save the bundled packages
 #' @param pkgdir directory path where the downloaded and written packages should
 #'   be saved
 #' @param repos character vector of repositories with info on the package 
 #'   dependencies
-#' @importFrom utils available.packages
+#' @importFrom utils available.packages download.packages zip
 #' @importFrom tools package_dependencies write_PACKAGES
 #' @export
 cluster_bundle_packages <- function(packages='mda.streams', github='USGS-R/mda.streams@develop', bundlefile='./cluster_packages.zip', pkgdir='temp/pkgs', repos=union(getOption('repos'),'http://owi.usgs.gov/R')) {
