@@ -21,7 +21,7 @@ Imports:
     sbtools (>= 1.0.2),
     streamMetabolizer (>= 0.9.5),
     unitted (>= 0.2.5),
-    dplyr (>= 0.5.0.9000),
+    dplyr (>= 0.5.0),
     foreign,
     stringr,
     lubridate,
