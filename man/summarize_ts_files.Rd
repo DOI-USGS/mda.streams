@@ -9,11 +9,11 @@ summarize_ts_files(var_src)
 }
 \arguments{
 \item{var_src}{one or more var_srces to include in the query. if missing, all
-var_src values from get_var_src_codes(out='var_src') will be included (may
+var_src values from get_var_src_codes(out='var_src') will be included (may 
 be slow!)}
 }
 \description{
-The uploaded_by column is only available when you are logged in to 
+The uploaded_by column is only available when you are logged in to
 ScienceBase.
 }
 
