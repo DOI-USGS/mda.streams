@@ -55,6 +55,10 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
   var_units <- get_var_src_codes(var==vars, src=='nwis', out='units')
   site_nums <- parse_site_name(sites)
   
+  # package & deliver first status message
+  query_msg <- paste0("p_code ", p_code, " & site", if(length(site_nums)>1) "s " else " ", paste(site_nums, collapse=","))
+  if(isTRUE(verbose)) message("requesting data from NWIS for ", query_msg)
+  
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
   # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   dates <- times # keep in char format for qw data
@@ -92,20 +96,23 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
     {
       # default case for switch() applies to all metabolism input variables and 
       # anything else not listed above. For these we use dataRetrieval.
-      if(isTRUE(verbose)) message("requesting data from NWIS for p_code ", p_code)
-      nwis_data <- tryCatch(
-        readNWISuv(siteNumbers=site_nums, parameterCd=p_code, startDate = asktimes[1], endDate = asktimes[2]),
-        error=function(e) {
-          if(isTRUE(verbose)) {
-            message("NWIS says:  ", strsplit(as.character(e), "\n")[[1]][1])
-          }
-          warning('error in data') # I want to know if it is an error vs missing data
-          data.frame()
-        })
-      if(ncol(nwis_data) == 0) {
-        if(isTRUE(verbose)) {
-          message("data are unavailable for ", paste0(p_code, "-", sites,collapse=" &/| "), ".")
-        }
+      nwis_url <- ''
+      nwis_error <- ''
+      nwis_data <- tryCatch({
+        suppressMessages(withCallingHandlers(
+          readNWISuv(siteNumbers=site_nums, parameterCd=p_code, startDate = asktimes[1], endDate = asktimes[2]), 
+          message=function(m) nwis_url <<- m$message))
+      }, error=function(e) {
+        nwis_error <<- paste0(
+          "NWIS error: ", strsplit(e$message, "\n")[[1]][1], 
+          " (", query_msg, ")")
+          #if(nwis_url != '') "\n  ", substring(nwis_url, 6, nchar(nwis_url)-2))
+        data.frame()
+      })
+      if(nwis_error != '') {
+        warning(nwis_error, call.=FALSE) # I want to know if it is an error vs missing data
+      } else if (ncol(nwis_data) == 0) {
+        if(isTRUE(verbose)) message(paste0("data are unavailable for ", query_msg))
       } else {
         ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
         everything <- '.dplyr.var'
@@ -128,16 +135,28 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
       site_data <- filter(nwis_data, site_no == site)
       
       if(nrow(site_data) > 0) {
+        # choose the data column with the most non-NA values (could
+        # dplyr::coalesce someday)
         key <- value <- num_non_NAs <- '.dplyr.var'
-        which.var <- select(site_data, -DateTime, -site_no) %>% 
-          tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value))) %>% 
+        var.counts <- select(site_data, -DateTime, -site_no) %>% 
+          tidyr::gather() %>% group_by(key) %>% summarize(num_non_NAs = sum(!is.na(value)))
+        which.var <- var.counts %>% 
           filter(num_non_NAs==max(num_non_NAs)) %>% {.$key[1]}
         
+        # tell the user about the choice
+        if(nrow(var.counts) > 1 && isTRUE(verbose)) {
+          message(paste0(
+            "choosing column ", which.var, " (", filter(var.counts, key==which.var)$num_non_NAs, " non-NAs)",
+            if(nrow(var.counts) > 1) " over ", paste(sapply(filter(var.counts, key!=which.var)$key, function(k) {
+              paste0(k, " (", filter(var.counts, key==k)$num_non_NAs, ")")
+            }), collapse=', ')))
+        }
+        
+        # format the data, using the selected data column and filtering out any NA rows
         site_data <- select_(site_data, 'DateTime', which.var) %>%
           filter(DateTime >= truetimes[1] & DateTime < truetimes[2]) %>% # filter back to the times we actually want (only needed b/c of NWIS bug)
           u(c(NA,var_units)) %>% 
           setNames(c('DateTime', var))
-        
         site_data <- site_data[!is.na(site_data[[var]]), ]
       }
 
@@ -145,7 +164,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
         fpath <- write_ts(site_data, site=un_sites[i], var=var, src="nwis", folder, version=version)
         file_paths <- c(file_paths, fpath)
       } else {
-        if(isTRUE(verbose)) message("no data found for site ", un_sites[i])
+        if(isTRUE(verbose)) message(paste0("no non-NA data found for site ", un_sites[i]))
         # leave file_paths untouched if there's no new file
       }
     }

@@ -39,7 +39,7 @@ verify_ts <- function(
         (is.na(x[1,1]) && nrow(x) == 1) # allow for 1-row const tses
     },
     'units' = function(x,v) {
-      (get_units(x[,2]) == get_units(unitbundle(get_var_src_codes(var==v, out='units')[1]))) &&
+      (get_units(x[,2]) == get_units(u(1, get_var_src_codes(var==v, out='units')[1]))) &&
         (if(ncol(x)==4) length(unique(get_units(x[,2:4]))) == 1 else TRUE)
     },
     'names' = function(x,v) {
