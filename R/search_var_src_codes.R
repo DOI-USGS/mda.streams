@@ -26,9 +26,7 @@ search_var_src_codes <- function(
     c('var','src','var_src','units','var_descrip','src_descrip','data_type','p_code','metab_var','priority') %>% setNames(.,.) %>%
     sapply(function(x) eval(as.symbol(x)))
   
-  parsed <- var_src_codes %>% rownames_to_column('var_src')
-  
-  matches <- search_dataframe(parsed, constraints, match_case=match_case, fixed=fixed)
+  matches <- search_dataframe(var_src_codes, constraints, match_case=match_case, fixed=fixed)
   
   var_src_codes[matches, ]
 }
