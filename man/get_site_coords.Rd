@@ -5,8 +5,8 @@
 \title{Pull the latitude and longitude of a site from ScienceBase}
 \usage{
 get_site_coords(site_names, format = c("normal", "geoknife"),
-  on_missing = c("NA", "omit"), use_basedon = FALSE,
-  attach.units = (format == "normal"))
+  on_missing = c("NA", "omit"), out = c("site_name", "lat", "lon"),
+  use_basedon = FALSE, attach.units = (format == "normal"))
 }
 \arguments{
 \item{site_names}{a list of site names such as those returned from 
