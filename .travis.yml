@@ -28,8 +28,6 @@ before_install:
   
 r_github_packages:
   - jimhester/covr
-  - hadley/dplyr
-  - hadley/tibble
   - USGS-R/streamMetabolizer@develop
   - USGS-R/sbtools
 

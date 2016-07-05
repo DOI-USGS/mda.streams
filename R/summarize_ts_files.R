@@ -16,7 +16,8 @@ summarize_ts_files <- function(var_src) {
   fi_cols <- c('name','size','dateUploaded','uploadedBy')
   name <- dateUploaded <- site_name <- is_archive <- size <- upload_date <- 
     creation_date <- uploadedBy <- ts_item <- site_item <- file_name <- 
-    site_name <- scheme <- type <- key <- '.dplyr.var'
+    site_name <- ts_title <- parent_name <- by_tag <- by_dir <-
+    scheme <- type <- key <- '.dplyr.var'
   
   bind_rows(lapply(var_src, function(vs) {
     # query for tses matching the ts type for var_src. custom query gets us the
@@ -63,12 +64,13 @@ summarize_ts_files <- function(var_src) {
               as.data.frame(fi[fi_cols], stringsAsFactors=FALSE) %>%
                 rename(file_name=name)
             }))
-          } else as.data.frame(as.list(setNames(rep('', 4), c('file_name','size','dateUploaded','uploadedBy'))), stringsAsFactors=FALSE)
+          } else as.data.frame(setNames(list('',0,'',''), c('file_name','size','dateUploaded','uploadedBy')), stringsAsFactors=FALSE)
         data.frame(smry_items, smry_ids, smry_files, check.rows=FALSE, row.names=NULL, stringsAsFactors=FALSE)
       }))
     } else {
-      as.data.frame(as.list(
-        setNames(rep('', 3+3+4), c('ts_title','ts_item','site_item','scheme','type','key','file_name','size','dateUploaded','uploadedBy'))), 
+      as.data.frame(
+        setNames(list('','','','','','','',0,'','',''), 
+                 c('ts_title','ts_item','site_item','scheme','type','key','file_name','size','dateUploaded','uploadedBy')), 
         stringsAsFactors=FALSE)[c(),]
     } 
     
@@ -83,17 +85,24 @@ summarize_ts_files <- function(var_src) {
     # merge the site info into the ts info
     sumry <- left_join(sumry, site_sumry, by='site_item')
     
+    # filter out ts items with no files (they mess up parse_ts_path below)
+    nofiles <- which(sumry$file_name == '')
+    if(length(nofiles) > 0) {
+      warning('ts items without files: ', paste0(sumry$parent_name[nofiles], '-', sumry$ts_title[nofiles], collapse=', '))
+      sumry <- sumry[-nofiles,]
+    }
+    
     # parse ts path info and reformat df
     sumry <- 
       data.frame(
         sumry,
         if(nrow(sumry) > 0) {
           parse_ts_path(sumry$file_name, out=c('version','site_name','var_src','is_archive','creation_date'), use_names=FALSE)
-          } else {
-            list(character(), character(), character(), logical(), character()) %>%
-              setNames(c('version','site_name','var_src','is_archive','creation_date')) %>%
-              as.data.frame(stringsAsFactors=FALSE)
-          },
+        } else {
+          list(character(), character(), character(), logical(), character()) %>%
+            setNames(c('version','site_name','var_src','is_archive','creation_date')) %>%
+            as.data.frame(stringsAsFactors=FALSE)
+        },
         stringsAsFactors=FALSE) %>%
       mutate(upload_date=as.POSIXct(dateUploaded, format="%Y-%m-%dT%H:%M:%OSZ", tz='UTC'))
     

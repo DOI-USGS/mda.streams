@@ -24,7 +24,7 @@ install:
 
 build_script:
   - R --version
-  - travis-tool.sh install_github hadley/dplyr hadley/tibble USGS-R/streamMetabolizer@develop USGS-R/sbtools
+  - travis-tool.sh install_github USGS-R/streamMetabolizer@develop USGS-R/sbtools
   - travis-tool.sh install_deps
 
 test_script:
