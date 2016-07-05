@@ -3,12 +3,13 @@
 #' @param var if given, the var by which to filter the table
 #' @param src if given, the src by which to filter the table
 #' @import dplyr
+#' @import tibble
 #' @export
 build_calc_ts_needs <- function(var, src) {
   
   . <- var_src <- var_target <- src_target <- '.dplyr.var'
   
-  # create data_frame of var_target, src_target in an order that can be run top 
+  # create data frame of var_target, src_target in an order that can be run top 
   # to bottom (dependencies of row x are always in rows 1:(x-1) or not calc). OR
   # values are not currently well represented; we actually just pick one as the
   # requirement
@@ -30,7 +31,7 @@ build_calc_ts_needs <- function(var, src) {
       'dischdaily_calcDMean', # sitedate_calcLon | disch_nwis
       'velocdaily_calcDMean' # sitedate_calcLon | veloc_best
     ) %>%
-    {data_frame(var_src = .)} %>% 
+    {tibble(var_src = .)} %>% 
     mutate(
       var_target=parse_var_src(var_src, out='var'),
       src_target=parse_var_src(var_src, out='src'),

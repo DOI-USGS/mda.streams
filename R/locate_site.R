@@ -4,6 +4,7 @@
 #' @inheritParams locate_item
 #' @import sbtools
 #' @import dplyr
+#' @import tibble
 #' @export
 #' @examples 
 #' \dontrun{
@@ -19,7 +20,7 @@ locate_site <- function(site_name, format=c("id","url"), by=c("tag","dir","eithe
   format <- switch(match.arg(format), id="id", url="folder_url")
   if(length(site_name) > 5 & by %in% c('tag')) {
     site_items <- sbtools::query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
-    site_df <- bind_rows(lapply(site_items, function(item) data_frame(title=item$title, id=item$id)))
+    site_df <- bind_rows(lapply(site_items, function(item) tibble(title=item$title, id=item$id)))
     matches <- site_df[match(site_name, site_df$title),]
     format_item(matches, format=format, browser=browser)
   } else {

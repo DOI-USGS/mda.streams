@@ -6,6 +6,7 @@
 #'   look in
 #' @inheritParams locate_item
 #' @import sbtools
+#' @import tibble
 #' @export
 #' @examples 
 #' \dontrun{
@@ -27,7 +28,7 @@ locate_ts <- function(var_src="doobs_nwis", site_name="nwis_02322688", format=c(
   }
   if(by=='tag' && length(site_name) > 3 && length(var_src) == 1) {
     item_list <- query_item_identifier(scheme=get_scheme(), type=var_src, limit=10000)
-    item_df <- bind_rows(lapply(item_list, function(item) data_frame(id=item$id, parentId=item$parentId)))
+    item_df <- bind_rows(lapply(item_list, function(item) tibble(id=item$id, parentId=item$parentId)))
     site_ids <- locate_site(site_name, by='tag')
     matches <- item_df[match(site_ids, item_df$parentId),]
     format_item(matches, format=format, browser=browser)

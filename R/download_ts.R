@@ -16,6 +16,7 @@
 #'   timeseries is unavailable on ScienceBase
 #'   
 #' @import dplyr
+#' @import tibble
 #'   
 #' @author Alison P Appling, Corinna Gries, Jordan S Read, Luke A Winslow
 #' @examples
@@ -38,7 +39,7 @@ download_ts <- function(var_src, site_name, folder = tempdir(), version=c('rds',
   
   files <- dests <- '.dplyr.var'
   params <- 
-    data_frame(
+    tibble(
       var_src = var_src,
       site_name = site_name,
       files = make_ts_path(site_name, make_ts_name(var_src), version=version),

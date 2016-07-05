@@ -21,7 +21,7 @@ sites
 \examples{
 \dontrun{
 sites <- list_sites()[655:665]
-sites_meta <- data_frame(
+sites_meta <- tibble::tibble(
   site_name=sites, 
   site_database=parse_site_name(sites, out='database'),
   site_num=parse_site_name(sites, out='sitenum')) \%>\%

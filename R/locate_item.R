@@ -22,6 +22,7 @@
 #'   \code{\link[sbtools]{item_list_children}}
 #' @param browser logical. Should the URL be opened in a browser?
 #' @import dplyr
+#' @import tibble
 #' @import sbtools
 #' @importFrom stats setNames
 #' @examples 
@@ -62,7 +63,7 @@ locate_item <- function(key, type, format=c("id","item_url","folder_url"),
       arg_item_df <- if(length(item_list) == 0) {
         data.frame(title=NA_character_, id=NA_character_,stringsAsFactors=FALSE)
       } else {
-        as.data.frame(bind_rows(lapply(item_list, function(item) as_data_frame(item[c('title','id')]))))
+        as.data.frame(bind_rows(lapply(item_list, function(item) as_tibble(item[c('title','id')]))))
       }
       # attach argnum and return
       data.frame(query_args[argnum,], argnum=argnum, rename(arg_item_df, item.title=title), stringsAsFactors=FALSE)

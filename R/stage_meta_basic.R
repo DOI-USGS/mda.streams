@@ -5,6 +5,7 @@
 #' @param folder the folder in which to save the metadata file
 #' @param verbose logical. print status messages?
 #' @import dplyr
+#' @import tibble
 #' @importFrom unitted u v get_units
 #' @export
 #' @examples 
@@ -17,7 +18,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
   
   # Establish the basic site information
   sites_meta <- 
-    data_frame(
+    tibble(
       site_name=sites, 
       site_database=parse_site_name(sites, out='database'),
       site_num=parse_site_name(sites, out='sitenum')) %>%
@@ -116,7 +117,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
 #' @examples
 #' \dontrun{
 #' sites <- list_sites()[655:665]
-#' sites_meta <- data_frame(
+#' sites_meta <- tibble::tibble(
 #'   site_name=sites, 
 #'   site_database=parse_site_name(sites, out='database'),
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%
@@ -206,7 +207,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
 #' @examples
 #' \dontrun{
 #' sites <- list_sites()[655:665]
-#' sites_meta <- data_frame(
+#' sites_meta <- tibble::tibble(
 #'   site_name=sites, 
 #'   site_database=parse_site_name(sites, out='database'),
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%

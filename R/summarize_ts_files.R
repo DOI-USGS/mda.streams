@@ -10,6 +10,7 @@
 #' @import sbtools
 #' @import jsonlite
 #' @import dplyr
+#' @import tibble
 #' @export
 summarize_ts_files <- function(var_src) {
   if(missing(var_src)) var_src <- get_var_src_codes(out='var_src')
@@ -45,13 +46,13 @@ summarize_ts_files <- function(var_src) {
     # summarize the ts query results
     sumry <- if(length(ts_items) > 0) {
       bind_rows(lapply(ts_items, function(tsi) {
-        smry_items <- data_frame(
+        smry_items <- tibble(
           ts_title=tsi$title,
           ts_item=tsi$id,
           site_item=tsi$parentId)
         smry_ids <- 
           if(exists('identifiers', tsi)) { 
-            data_frame(
+            tibble(
               scheme=tsi$identifiers[[1]]$scheme,
               type=tsi$identifiers[[1]]$type,
               key=tsi$identifiers[[1]]$key)

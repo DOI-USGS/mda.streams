@@ -18,6 +18,8 @@
 #' download_metab_model("nwis_04087088-200-150730 0.0.7 MLE_for_PRK_wHarvey_and_sw")
 #' }
 #' @import sbtools
+#' @import dplyr
+#' @import tibble
 #' @export
 download_metab_model <- function(model_name, folder = tempdir(), version=c('modern','original'),
                                  on_remote_missing=c("stop","return_NA"), 
@@ -31,7 +33,7 @@ download_metab_model <- function(model_name, folder = tempdir(), version=c('mode
   
   files <- dests <- '.dplyr.var'
   params <- 
-    data_frame(
+    tibble(
       files = make_metab_model_path(model_name, version=version),
       folder = folder,
       model_name = model_name) %>%

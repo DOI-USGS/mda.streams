@@ -9,8 +9,11 @@
 #' @inheritParams ts_has_file
 #' @param limit integer. the maximum number of items to return
 #' @return a character vector of "site_root" titles (keys)
+#' @import jsonlite
+#' @import httr
 #' @import sbtools
-#' @keywords internal
+#' @import dplyr
+#' @import tibble
 #' @examples
 #' \dontrun{
 #' mda.streams:::get_sites()
@@ -20,9 +23,7 @@
 #' mda.streams:::get_sites(with_dataset_name='ts_doobs_nwis', 
 #'   with_ts_version=c('tsv','rds'), with_ts_archived=TRUE)
 #' }
-#' @import jsonlite
-#' @import httr
-#' @import sbtools
+#' @keywords internal
 get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_archived=FALSE, limit=10000){
 
   if (is.null(with_dataset_name)){
@@ -53,7 +54,7 @@ get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_arc
       # get all sites IDs and titles, then filter to sites whose IDs match ours.
       # override limit arg because this is a superset of the final output
       all_site_items <- query_item_identifier(scheme=get_scheme(), type='site_root', limit=10000)
-      all_site_info <- bind_rows(lapply(all_site_items, function(site) as_data_frame(site[c('title','id')])))
+      all_site_info <- bind_rows(lapply(all_site_items, function(site) as_tibble(site[c('title','id')])))
       sites <- all_site_info$title[match(site_ids, all_site_info$id)] # translate IDs to site names
       # this code would be slower because it involves many SB queries:
       # sites <- sapply(site_ids, function(id) as.sbitem(id)$title)
