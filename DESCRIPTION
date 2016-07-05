@@ -22,6 +22,7 @@ Imports:
     streamMetabolizer (>= 0.9.5),
     unitted (>= 0.2.5),
     dplyr (>= 0.5.0),
+    tibble (>= 0.1.1),
     foreign,
     stringr,
     lubridate,
