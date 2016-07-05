@@ -12,6 +12,8 @@
 #' @param priority text to search for in the priority column
 #' @param var_src_codes table of var_src_codes to search
 #' @inheritParams search_dataframe
+#' @import dplyr
+#' @import tibble
 #' @examples 
 #' search_var_src_codes(units='mgO2 L^-1')
 #' @export
@@ -24,7 +26,7 @@ search_var_src_codes <- function(
     c('var','src','var_src','units','var_descrip','src_descrip','data_type','p_code','metab_var','priority') %>% setNames(.,.) %>%
     sapply(function(x) eval(as.symbol(x)))
   
-  parsed <- var_src_codes %>% add_rownames('var_src')
+  parsed <- var_src_codes %>% rownames_to_column('var_src')
   
   matches <- search_dataframe(parsed, constraints, match_case=match_case, fixed=fixed)
   

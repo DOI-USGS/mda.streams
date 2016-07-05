@@ -12,6 +12,7 @@
 #'   default is to pull this list from ScienceBase
 #' @inheritParams search_dataframe
 #' @import dplyr
+#' @import tibble
 #' @importFrom unitted v
 #' @export
 #' 
@@ -27,7 +28,7 @@ search_sites <- function(everything=NA, site_name=NA, long_name=NA, database=NA,
     sapply(function(x) eval(as.symbol(x)))
   
   site_info <- v(get_meta('basic'))
-  parsed <- parse_site_name(site_names, out=c("database","sitenum")) %>% add_rownames('site_name') %>%
+  parsed <- parse_site_name(site_names, out=c("database","sitenum")) %>% rownames_to_column('site_name') %>%
     left_join(select(site_info, site_name, long_name, lat, lon, alt), by='site_name') %>%
     mutate(everything=paste(site_name, long_name))
   
