@@ -1,15 +1,35 @@
 #' Log into ScienceBase with your myUSGS credentials
 #' 
-#' BE CAREFUL NOT TO POST OR SHARE YOUR PASSWORD! Use the same username and 
-#' password you set up via the ScienceBase interface or your government 
-#' employer. This function is equivalent to 
+#' BE CAREFUL NOT TO POST OR SHARE YOUR PASSWORD! Even better, set up your 
+#' ~/.R/stream_metab.yaml with fields for sb_user and sb_password so you never
+#' again have to bring your password into the R global environment. If that file
+#' exists and you call \code{login_sb()} with no arguments, the file contents 
+#' will be used to log you in.
+#' 
+#' Use the same username and password you set up via the ScienceBase interface 
+#' or your government employer. This function is equivalent to 
 #' \code{sbtools::\link[sbtools]{authenticate_sb}} but easier to type.
 #' 
 #' @param username Your ScienceBase/myUSGS username, usually an email address
 #' @import sbtools
 #' @export
 login_sb <- function(username) {
-  if(missing(username)) authenticate_sb() else authenticate_sb(username)
+  # if username is provided, assume the user wants to log in manually
+  if(!missing(username)) {
+    return(authenticate_sb(username))
+  }
+  
+  # next possibility is that yaml pkg is available and a profile exists
+  filename <- file.path(Sys.getenv("HOME"), ".R", "stream_metab.yaml")
+  if(requireNamespace('yaml', quietly=TRUE) && file.exists(filename)) {
+    profile <- yaml::yaml.load_file(filename)
+    if(exists('sb_user', profile) && exists('sb_password', profile)) {    
+      return(authenticate_sb(profile$sb_user, profile$sb_password))
+    }
+  }
+  
+  # last resort is to log in manually w/ both username and password
+  return(authenticate_sb())
 }
 
 #' Throw error or warning if SB login is inactive
