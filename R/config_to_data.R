@@ -296,6 +296,7 @@ config_to_data_column <- function(var, type, site, src, optional=FALSE) {
 #' @importFrom unitted u v
 #' @import streamMetabolizer
 #' @import dplyr
+#' @import tibble
 #' @keywords internal
 config_preds_to_data_column <- function(var, site, src, type) {
   # load the model
@@ -331,7 +332,7 @@ config_preds_to_data_column <- function(var, site, src, type) {
   # determine which time translation needs to happen
   preds_res <- '.dplyr.var'
   time_relation <- 
-    data_frame(
+    tibble(
       preds_res = c('inst','daily'),
       preds_col = c('solar.time','date'),
       ts_col = c('sitetime','sitedate')) %>%
