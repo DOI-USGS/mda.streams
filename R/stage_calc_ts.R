@@ -32,12 +32,20 @@
 #' 
 #' file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 #' head(read_ts(file_par))
+#' attr(file_par, 'choices')
 #' 
-#' file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch", verbose=TRUE)
+#' file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 #' head(read_ts(file_depth))
+#' attr(file_depth, 'choices')
 #' 
 #' file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 #' head(read_ts(file_dosat))
+#' 
+#' # with data provenance
+#' 
+#' some_sites <- c('nwis_08062500','styx_001002','nwis_05515500','nwis_295826095082200')
+#' file_par <- stage_calc_ts(sites=some_sites, var="par", src="calcLat", verbose=TRUE)
+#' attr(file_par, 'choices')
 #' 
 #' # sim calc
 #' 
@@ -86,27 +94,52 @@
 #' head(read_ts(file_dischdaily))
 #' }
 #' @export
-stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), day_start=4, day_end=28, verbose = FALSE, ...){
+stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), inputs=list(), day_start=4, day_end=28, verbose = FALSE, ...){
   
+  version <- match.arg(version)
   if(length(var) > 1) stop("one var at a time, please")
   if(length(src) > 1) stop("one src at a time, please")
   verify_var_src(var, src, on_fail=warning)
   
-  # loop through sites, adding to file_paths for any successfully computed & written ts files
-  file_paths <- c()
-  un_sites <- unique(sites)
-  site <- '.local.var' #just to be sure about scope; will break if get_staging_ts doesn't use site from for loop below
-  get_staging_ts <- function(var_src, ...) {
-    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
-    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
-  }
+  # define helper functions that know which site we're in (in the loop that
+  # follows these definitions) and pull data while noting data provenance
+  site <- choices <- '.local.var' #just to confirm scope; would break if these helpers didn't use site & choices from for loop below
   choose_ts <- function(var) {
     best_src <- choose_data_source(var, site, logic="priority local")$src
     if(is.na(best_src)) stop("could not locate an appropriate ", var, " ts for ", site)
-    paste0(var, "_", best_src)
+    make_var_src(var, best_src)
   }
+  get_staging_ts <- function(var_src, ...) {
+    choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
+    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
+    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
+  }
+  get_staging_coord <- function(type=c('lat','lon','alt')) {
+    type <- match.arg(type)
+    best_src <- if(parse_site_name(site, out='database')=='styx') 'styx' else 'basic'
+    coords <- get_site_coords(site, out=c('site_name', type), use_basedon=(best_src=='styx'))
+    choices <<- c(choices, setNames(best_src, paste0('coord.', type)))
+    coords[[type]]
+  }
+  get_staging_coef <- function(coef=c('c','f','a','b','k','m')) {
+    coef <- match.arg(coef)
+    choices <<- c(choices, setNames('dvqcoefs', paste0('dvqcoef.', coef)))
+    dvqcoefs <- get_meta('dvqcoefs')
+    dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
+    if(nrow(dvqcoef) != 1) {
+      u(NA, switch(coef, c='m', f='', a='m', b='', k='m s^-1', m=''))
+    } else {
+      dvqcoef[[1, paste0('dvqcoefs.',coef)]]
+    }
+  }
+
+  # loop through sites, adding to file_paths for any successfully computed & written ts files
+  file_paths <- c()
+  file_choices <- list()
+  un_sites <- unique(sites)
   for (i in 1:length(un_sites)){
     site <- un_sites[i]
+    choices <- c() # gets reset for each site & modified each time get_staging_ts, get_staging_coord, or get_staging_coef is called
     
     # compute the data
     if(isTRUE(verbose)) message("computing the data for ", site, "-", var, "_", src)
@@ -119,11 +152,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
         )
       } else {
         switch(
-          paste0(var, "_", src),
+          make_var_src(var, src),
           'sitetime_calcLon' = {
             calc_ts_sitetime_calcLon(
               utctime = get_staging_ts("doobs_nwis")$DateTime, 
-              longitude = get_site_coords(site)$lon)
+              longitude = get_staging_coord('lon'))
           },
           'sitetime_simLon' = {
             calc_ts_with_input_check(inputs, 'calc_ts_sitetime_calcLon')
@@ -132,13 +165,13 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           #   sitetime <- get_staging_ts("sitetime_calcLon")
           #   calc_ts_sitetimedaily_calcLon(
           #     sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
-          #     longitude = get_site_coords(site)$lon)
+          #     longitude = get_staging_coord('lon'))
           # },
           'sitedate_calcLon' = {
             sitetime <- get_staging_ts("sitetime_calcLon")
             calc_ts_sitedate_calcLon(
               sitetime = sitetime$sitetime, 
-              longitude = get_site_coords(site)$lon,
+              longitude = get_staging_coord('lon'),
               day_start = day_start,
               day_end = day_end)
           },
@@ -148,7 +181,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           'suntime_calcLon' = {
             calc_ts_suntime_calcLon(
               utctime = get_staging_ts("doobs_nwis")$DateTime, 
-              longitude = get_site_coords(site)$lon)
+              longitude = get_staging_coord('lon'))
           },
           'suntime_simLon' = {
             calc_ts_with_input_check(inputs, 'calc_ts_suntime_calcLon')
@@ -158,7 +191,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
             calc_ts_par_calcLat(
               utctime = suntime_calcLon$DateTime,
               suntime = suntime_calcLon$suntime,
-              latitude = get_site_coords(site)$lat)
+              latitude = get_staging_coord('lat'))
           },
           'par_calcSw' = {
             sw_nldas <- get_staging_ts('sw_nldas')
@@ -183,14 +216,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           },
           'depth_calcDischHarvey' = {
             disch_nwis <- get_staging_ts("disch_nwis")
-            dvqcoefs <- get_meta('dvqcoefs')
-            dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-            if(nrow(dvqcoef) == 0) dvqcoef[1,'c'] <- u(NA,'m')
             calc_ts_depth_calcDischHarvey(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch,
-              c = dvqcoef[[1,'dvqcoefs.c']],
-              f = dvqcoef[[1,'dvqcoefs.f']])
+              c = get_staging_coef('c'),
+              f = get_staging_coef('f'))
           },
           'depth_simDischRaymond' = {
             calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDischRaymond')
@@ -203,14 +233,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
           },
           'veloc_calcDischHarvey' = {
             disch_nwis <- get_staging_ts("disch_nwis")
-            dvqcoefs <- get_meta('dvqcoefs')
-            dvqcoef <- dvqcoefs[which(dvqcoefs$site_name==site),]
-            if(nrow(dvqcoef) == 0) dvqcoef[1,'k'] <- u(NA,'m s^-1')
             calc_ts_veloc_calcDischHarvey(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch,
-              k = dvqcoef[[1,'dvqcoefs.k']],
-              m = dvqcoef[[1,'dvqcoefs.m']])
+              k = get_staging_coef('k'),
+              m = get_staging_coef('m'))
           },
           'veloc_simDischRaymond' = {
             calc_ts_with_input_check(inputs, 'calc_ts_veloc_calcDischRaymond')
@@ -226,15 +253,19 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
               baro = combo$baro)
           },
           'baro_calcElev' = {
-            meta_b <- get_meta('basic')
-            elev_ft <- meta_b[meta_b$site_name==site, 'alt']
+            elev_ft <- get_staging_coord('alt')
             u(data.frame(
               DateTime=NA, 
               baro=calc_air_pressure(elevation=elev_ft*u(0.3048,"m ft^-1"), attach.units=TRUE)*u(100, "Pa mb^-1")))
           },
           'dosat_calcGGbconst' = {
             wtr_best <- get_staging_ts(choose_ts('wtr'))
-            baro_const <- get_staging_ts(if('baro_src' %in% names(inputs)) inputs$baro_src else 'baro_calcElev')
+            baro_const <- if('baro_src' %in% names(inputs)) {
+              ignore <- get_staging_ts('baro_src') # just so the choice gets logged
+              inputs$baro_src 
+            } else {
+              get_staging_ts('baro_calcElev')
+            }
             if(nrow(baro_const)!=1 || !is.na(baro_const$DateTime)) 
               stop("need nrow(baro)==1, is.na(baro$DateTime) for dosat_calcGGbconst")
             combo <- combine_ts(wtr_best, baro_const, method='approx')
@@ -288,7 +319,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
               select(DateTime, velocdaily=veloc)
           },
           {
-            stop("the calculation for var_src ", paste0(var, "_", src), " isn't implemented yet")
+            stop("the calculation for ", make_var_src(var, src), " isn't implemented yet")
           }
         )
       }}, error=function(e) {
@@ -301,7 +332,9 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
     if(isTRUE(verbose)) message("writing the computed data to file")
     if(nrow(ts_calc) > 0) ts_calc <- ts_calc[!is.na(ts_calc[,2]),]
     if(nrow(ts_calc) > 0) {
-      fpath <- write_ts(ts_calc, site=site, var=var, src=src, folder)
+      fpath <- write_ts(ts_calc, site=site, var=var, src=src, folder=folder, version=version)
+      file_choices <- c(file_choices, list(
+        mutate(as.data.frame(as.list(choices), stringsAsFactors=FALSE), site_name=site, file_path=fpath)))
       file_paths <- c(file_paths, fpath)
     } else {
       if(isTRUE(verbose)) message("nrow(data) == 0 for site ", site)
@@ -309,6 +342,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), inputs=list(), da
     }
   }
   
+  if(length(file_paths) > 0) attr(file_paths, 'choices') <- bind_rows(file_choices)
   return(file_paths)
 }
 

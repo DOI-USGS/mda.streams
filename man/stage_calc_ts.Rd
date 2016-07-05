@@ -4,8 +4,9 @@
 \alias{stage_calc_ts}
 \title{stage calculated or modeled data into a time series file}
 \usage{
-stage_calc_ts(sites, var, src, folder = tempdir(), inputs = list(),
-  day_start = 4, day_end = 28, verbose = FALSE, ...)
+stage_calc_ts(sites, var, src, folder = tempdir(), version = c("rds",
+  "tsv"), inputs = list(), day_start = 4, day_end = 28, verbose = FALSE,
+  ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -46,12 +47,20 @@ accept calculated/modeled data as a data.frame and return a file
 
 file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 head(read_ts(file_par))
+attr(file_par, 'choices')
 
-file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDisch", verbose=TRUE)
+file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 head(read_ts(file_depth))
+attr(file_depth, 'choices')
 
 file_dosat <- stage_calc_ts(sites="nwis_08062500", var="dosat", src="calcGGbconst", verbose=TRUE)
 head(read_ts(file_dosat))
+
+# with data provenance
+
+some_sites <- c('nwis_08062500','styx_001002','nwis_05515500','nwis_295826095082200')
+file_par <- stage_calc_ts(sites=some_sites, var="par", src="calcLat", verbose=TRUE)
+attr(file_par, 'choices')
 
 # sim calc
 
