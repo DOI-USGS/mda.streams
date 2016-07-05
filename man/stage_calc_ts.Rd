@@ -20,6 +20,8 @@ out='src')}}
 \item{folder}{a folder to place the file outputs in (defaults to temp 
 directory)}
 
+\item{version}{the format (rds/tsv) in which to save the calculated ts}
+
 \item{inputs}{appropriate only when src is a simXxxx type. a list of named 
 inputs (data.frames, constants, etc.) to pass to the specified calculation 
 function. These inputs are downloaded from standard locations for the 

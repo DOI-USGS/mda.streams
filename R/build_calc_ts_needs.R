@@ -1,5 +1,7 @@
 #' Build and return the table calc_ts_needs
 #' 
+#' @param var if given, the var by which to filter the table
+#' @param src if given, the src by which to filter the table
 #' @import dplyr
 #' @export
 build_calc_ts_needs <- function(var, src) {

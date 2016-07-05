@@ -6,6 +6,11 @@
 \usage{
 build_calc_ts_needs(var, src)
 }
+\arguments{
+\item{var}{if given, the var by which to filter the table}
+
+\item{src}{if given, the src by which to filter the table}
+}
 \description{
 Build and return the table calc_ts_needs
 }

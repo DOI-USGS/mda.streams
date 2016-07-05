@@ -16,7 +16,8 @@ summarize_ts_files <- function(var_src) {
   fi_cols <- c('name','size','dateUploaded','uploadedBy')
   name <- dateUploaded <- site_name <- is_archive <- size <- upload_date <- 
     creation_date <- uploadedBy <- ts_item <- site_item <- file_name <- 
-    site_name <- scheme <- type <- key <- '.dplyr.var'
+    site_name <- ts_title <- parent_name <- by_tag <- by_dir <-
+    scheme <- type <- key <- '.dplyr.var'
   
   bind_rows(lapply(var_src, function(vs) {
     # query for tses matching the ts type for var_src. custom query gets us the

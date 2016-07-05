@@ -9,6 +9,7 @@
 #'   out='src')}
 #' @param folder a folder to place the file outputs in (defaults to temp 
 #'   directory)
+#' @param version the format (rds/tsv) in which to save the calculated ts
 #' @param inputs appropriate only when src is a simXxxx type. a list of named 
 #'   inputs (data.frames, constants, etc.) to pass to the specified calculation 
 #'   function. These inputs are downloaded from standard locations for the 

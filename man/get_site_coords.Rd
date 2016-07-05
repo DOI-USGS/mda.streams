@@ -20,6 +20,9 @@ excludes sites with incomplete coordinate data.}
 to include missing sites in the output but with NA for both lon and lat. 
 Use "omit" to omit those sites from the output.}
 
+\item{out}{vector of column names to include in the output; only honored if
+format=='normal'}
+
 \item{use_basedon}{logical. If TRUE, and if there are sites among site_names 
 that have NA in their lat or lon fields but also have a character value in 
 their styx.basedon metadata field, then lat and lon will be pulled from the
