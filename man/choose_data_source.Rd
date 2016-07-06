@@ -5,7 +5,8 @@
 \title{Select the specific data source to use for a given variable and site}
 \usage{
 choose_data_source(var, site, logic = c("priority local", "unused var"),
-  type = c(NA, "ts", "meta", "file", "const"), src)
+  type = c(NA, "ts", "meta", "ts_file", "const", "pred", "pred_file", "none"),
+  src = NA)
 }
 \arguments{
 \item{var}{character. A single variable name as in 

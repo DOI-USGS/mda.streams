@@ -21,9 +21,11 @@ Checks the config row for valid src-site-logic pairs with respect to a given
 model
 }
 \examples{
+\dontrun{
 egconfig <- suppressWarnings(
   stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
     site="nwis_04087142", filename=NULL))
 verify_config(egconfig)
+}
 }
 

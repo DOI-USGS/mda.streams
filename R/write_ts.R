@@ -31,9 +31,9 @@ write_ts <- function(data, site, var, src, folder, version=c('rds','tsv')){
 
     # also do it if the var is a datetime
     if(names(data)[2] %in% c("sitetime", "suntime")) {
-      if(tz(data[,2]) != "UTC") stop("tz of ",names(data)[2]," must be 'UTC'")
-      if(get_units(data[,2]) != "") stop(names(data)[2], " units should be empty on call to write_ts")
-      data[,2] <- u(data[,2], 'UTC')
+      if(tz(data[[2]]) != "UTC") stop("tz of ",names(data)[2]," must be 'UTC'")
+      if(get_units(data[[2]]) != "") stop(names(data)[2], " units should be empty on call to write_ts")
+      data[[2]] <- u(data[[2]], 'UTC')
     }
   }
   

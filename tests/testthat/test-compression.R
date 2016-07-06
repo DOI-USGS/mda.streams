@@ -2,6 +2,7 @@
 
 test_saveRDS_manual <- function() {
   library(dplyr)
+  library(tibble)
   library(microbenchmark)
   
   ## functions
@@ -15,7 +16,7 @@ test_saveRDS_manual <- function() {
     size <- file.info(test)$size / (1024) ^ 2
     
     file.remove(test)
-    data_frame(save, load, size)
+    tibble(save, load, size)
   }
   save_load_timing <- function(dat, reps=10, ...) {
     bind_rows(

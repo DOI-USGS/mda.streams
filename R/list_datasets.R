@@ -19,6 +19,7 @@
 #' @importFrom stringr str_detect
 #' @importFrom stats setNames
 #' @import dplyr
+#' @import tibble
 #' @export
 list_datasets = function(
   site_name, data_type=c("ts","watershed"), 
@@ -46,7 +47,7 @@ list_datasets = function(
   if(length(site_items) > 0) {
     prefix_matches <- lapply(
       setNames(str_match_patterns,str_match_patterns), 
-      function (x) str_detect(item_titles, pattern = x)) %>% as_data_frame()
+      function (x) str_detect(item_titles, pattern = x)) %>% as_tibble()
     is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
     is_ts <- unlist(unname(prefix_matches[,1]))
     

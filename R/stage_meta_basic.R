@@ -5,6 +5,7 @@
 #' @param folder the folder in which to save the metadata file
 #' @param verbose logical. print status messages?
 #' @import dplyr
+#' @import tibble
 #' @importFrom unitted u v get_units
 #' @export
 #' @examples 
@@ -17,7 +18,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
   
   # Establish the basic site information
   sites_meta <- 
-    data_frame(
+    tibble(
       site_name=sites, 
       site_database=parse_site_name(sites, out='database'),
       site_num=parse_site_name(sites, out='sitenum')) %>%
@@ -45,7 +46,9 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
   sites_meta <- left_join(sites_meta, meta_merged, by="site_name", copy=TRUE)
   
   # add a quick-access column of sciencebase site item IDs
-  siteids <- item_list_children(mda.streams::locate_folder('sites'), limit=10000)
+  siteids <- item_list_children(mda.streams::locate_folder('sites'), limit=10000) %>%
+    lapply(function(si) as.data.frame(si[c('title','id')], stringsAsFactors=FALSE)) %>%
+    bind_rows()
   sites_meta$sciencebase_id <- siteids$id[match(sites_meta$site_name, siteids$title)]
   
   # merge with existing metadata if appropriate
@@ -114,7 +117,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
 #' @examples
 #' \dontrun{
 #' sites <- list_sites()[655:665]
-#' sites_meta <- data_frame(
+#' sites_meta <- tibble::tibble(
 #'   site_name=sites, 
 #'   site_database=parse_site_name(sites, out='database'),
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%
@@ -204,7 +207,7 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
 #' @examples
 #' \dontrun{
 #' sites <- list_sites()[655:665]
-#' sites_meta <- data_frame(
+#' sites_meta <- tibble::tibble(
 #'   site_name=sites, 
 #'   site_database=parse_site_name(sites, out='database'),
 #'   site_num=parse_site_name(sites, out='sitenum')) %>%
@@ -216,8 +219,8 @@ stage_meta_basic_styx <- function(sites_meta, empty_meta, verbose=FALSE) {
   styx_meta <- empty_meta[seq_len(nrow(sites_meta)),]
   if(nrow(styx_meta) == 0) return(styx_meta)
   
-  styx_meta[,'site_name'] <- sites_meta$site_name
-  styx_meta[,'long_name'] <- paste0("Simulated data: ",sites_meta$site_name)
+  styx_meta[['site_name']] <- sites_meta$site_name
+  styx_meta[['long_name']] <- u(paste0("Simulated data: ",sites_meta$site_name))
   
   styx_meta
 }
@@ -239,11 +242,11 @@ stage_meta_basic_indy <- function(sites_meta, empty_meta, verbose=FALSE) {
   im <- get_meta('indy')
   im <- im[match(sites_meta$site_name, im$site_name), ]
   
-  indy_meta[,'site_name'] <- im$site_name
-  indy_meta[,'long_name'] <- im$indy.long_name
-  indy_meta[,'lat'] <- im$indy.lat
-  indy_meta[,'lon'] <- im$indy.lon
-  indy_meta[,'alt'] <- im$indy.alt
+  indy_meta[['site_name']] <- im$site_name
+  indy_meta[['long_name']] <- im$indy.long_name
+  indy_meta[['lat']] <- im$indy.lat
+  indy_meta[['lon']] <- im$indy.lon
+  indy_meta[['alt']] <- im$indy.alt
   
   indy_meta
 }

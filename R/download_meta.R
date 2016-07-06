@@ -18,6 +18,8 @@
 #' }
 #' @import sbtools
 #' @import tools
+#' @import dplyr
+#' @import tibble
 #' @export
 download_meta <- function(type, folder = tempdir(), 
                         on_remote_missing=c("stop","return_NA"), 
@@ -30,7 +32,7 @@ download_meta <- function(type, folder = tempdir(),
   
   files <- dests <- '.dplyr.var'
   params <- 
-    data_frame(
+    tibble(
       files = make_meta_path(type),
       folder = folder,
       type = type) %>%

@@ -5,7 +5,7 @@ if(sbtools::is_logged_in()) {
   test_that("can stage sitelist and post sites", {
     set_scheme("mda_streams_dev")
     # stage
-    sites <- stage_nwis_sitelist(c('doobs'), 'WI')
+    sites <- stage_nwis_sitelist(c('doobs'), HUCs=21)
     expect_equal(length(sites), 1118) # this was 22 back in summer 2015 - WI has added a loooottt of doobs sites, or maybe we're no longer filtering correctly?
     expect_true(all(make_site_name(c('04027000', '040871488', '05406500'), 'nwis') %in% sites))
     

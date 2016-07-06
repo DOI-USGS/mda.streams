@@ -9,6 +9,7 @@
 #'   pull this list from ScienceBase
 #' @inheritParams search_dataframe
 #' @import dplyr
+#' @import tibble
 #' @export
 #' @examples 
 #' \dontrun{
@@ -23,7 +24,7 @@ search_metab_runs <- function(metab_run_title=NA, date=NA, tag=NA, strategy=NA,
     c('metab_run_title','date','tag','strategy') %>% setNames(.,.) %>%
     sapply(function(x) eval(as.symbol(x)))
   
-  parsed <- parse_metab_run_title(metab_runs) %>% add_rownames('metab_run_title')
+  parsed <- parse_metab_run_title(metab_runs) %>% rownames_to_column('metab_run_title')
   
   matches <- search_dataframe(parsed, constraints, match_case=match_case, fixed=fixed)
   
