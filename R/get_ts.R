@@ -219,20 +219,20 @@ warning_table <- function(var_src, condense_stat, data, site_name, version, meth
     return(data.frame(start_date = all_dates[1], 
                       end_date = tail(all_dates, 1)))  
   }))
-    
   timestep_df <- timestep_df %>% bind_cols(., all_dates) 
   
   get_timestep_info <- function(v, t, s, e, condense_stat, t_match, s_match, e_match){
     
     res_words <- 
-      switch(
+      if(is.na(t)) NA else switch(
         as.character(t),
         "60" = "hourly",
         "1440" = "daily",
         paste(t, "min"))
     
     res_result <- 
-      if(is.na(t)){"Replicated"
+      if(is.na(t_match)){"NA"
+      }else if(is.na(t)){"Replicated"
       }else if(t == t_match){"As is"
       }else if(t > t_match){"NAs added"
       }else {
@@ -248,13 +248,15 @@ warning_table <- function(var_src, condense_stat, data, site_name, version, meth
       }
     
     start_result <- 
-      if(is.na(s)){"NA (replicated)"
+      if(is.na(s_match)){"NA"
+      }else if(is.na(s)){"NA (replicated)"
       }else if(s < s_match){"Earlier (truncated)"
       }else if(s > s_match){"Later (NAs added)"
       }else if(s == s_match){"Equal"}
     
     end_result <- 
-      if(is.na(e)){"NA (replicated)"
+      if(is.na(e_match)){"NA"
+      }else if(is.na(e)){"NA (replicated)"
       }else if(e < e_match){"Earlier (NAs added)"
       }else if(e > e_match){"Later (truncated)"
       }else if(e == e_match){"Equal"}
@@ -268,7 +270,7 @@ warning_table <- function(var_src, condense_stat, data, site_name, version, meth
     rowwise() %>% 
     do(get_timestep_info(v = .$var_src, t = .$modal_timestep, s = .$start_date, e = .$end_date,
                          condense_stat = condense_stat, t_match = timestep_df$modal_timestep[1],
-                         s_match = all_dates$start_date[1], e_match = all_dates$end_date[1]))
+                         s_match = timestep_df$start_date[1], e_match = timestep_df$end_date[1]))
 
   match_res <- warning_df$resolution_change[1]
   match_var <- var_src[1]

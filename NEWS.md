@@ -1,66 +1,90 @@
+# mda.streams 0.9.12+ to 0.9.13
+
+* minor improvements to `get_ts`, `build_calc_ts_needs` (again), and
+`stage_calc_ts` in support of the ongoing data re-pull in the `stream_metab_usa`
+project
+
+# mda.streams 0.9.12
+
+* updates throughout to accommodate changes to package dependencies (`dplyr` and
+`tibble`)
+
+* new: `login_sb` now looks for username and password in a stream_metab profile
+file if that file exists (outside the project directory)
+
+* `stage_calc_ts` now tracks and reports on input data provenance for truly
+calculated (`src == calc[XYZ]`) variables
+
+* minor improvements to `build_calc_ts_needs`, `get_site_coords`,
+`summarize_ts_files`, `stage_nwis_ts`, `stage_ldas_ts`, `stage_nwis_sitelist` in
+support of the ongoing data re-pull in the `stream_metab_usa` project
+
+* new: `cluster_bundle_packages` builds a zip file of bundled package and
+dependency sources for use in cluster computing
+
 # mda.streams 0.9.7
 
-* new: make_metab_config is like stage_metab_config but more suited to
+* new: `make_metab_config` is like `stage_metab_config` but more suited to 
 interactive use (less typing required)
 
-* new: get_metab_prep is a shortcut to config_to_data(stage_metab_config()),
+* new: `get_metab_prep` is a shortcut to `config_to_data(stage_metab_config())`,
 with less typing required
 
-* new: get_metab_data is a shortcut to get_metab_prep(out='data',
-simplify_out=TRUE)
+* new: `get_metab_data` is a shortcut to `get_metab_prep(out='data',
+simplify_out=TRUE)`
 
-* faster: choose_data_source takes shortcuts in locating a metabolism model when
-possible
+* faster: `choose_data_source` takes shortcuts in locating a metabolism model
+when possible
 
 # mda.streams 0.9.6.3
 
-* locate_ts and locate_site are now much more efficient in special cases of 
+* `locate_ts` and `locate_site` are now much more efficient in special cases of 
 looking up many items at a time
 
-* view_google_map can now open several tabs at a time
+* `view_google_map` can now open several tabs at a time
 
-* summarize_metab_model works with the newest streamMetabolizer models
+* `summarize_metab_mode`l works with the newest streamMetabolizer models
 
-* parse_ts_path now accommodates archived ts files even when rownames are 
+* `parse_ts_path` now accommodates archived ts files even when rownames are 
 requested
 
-* re-modernized modernize_metab_model
+* re-modernized `modernize_metab_model`
 
-* smarter default filename for get_config
+* smarter default filename for `get_config`
 
 # mda.streams 0.9.6.2
 
-* include CI bounds in metab estBest timeseries files
+* include CI bounds in metab `estBest` timeseries files
 
 # mda.streams 0.9.6.1
 
-* date column name update in modernize_metab_model
+* date column name update in `modernize_metab_model`
 
-* now looks to ScienceBase for the table of var_src codes, units, etc.
+* now looks to ScienceBase for the table of `var_src` codes, units, etc.
 
 * minor documentation updates
 
 # mda.streams 0.9.6
 
-* new: try_calc_ts, which combines stage_calc_ts and post_ts in a fault-tolerant
-loop that only tries the sites that have the prerequisite data and haven't 
-already been posted in the desired time window and format
+* new: `try_calc_ts`, which combines `stage_calc_ts` and `post_ts` in a
+fault-tolerant loop that only tries the sites that have the prerequisite data
+and haven't already been posted in the desired time window and format
 
-* new: delete_sb_files, which deletes a single file from a single item (in an 
+* new: `delete_sb_files`, which deletes a single file from a single item (in an 
 optionally vectorized way). permits corrections of mis-postings even in 
-multi-file items such as metab_models and tses
+multi-file items such as `metab_model`s and `ts`es
 
-* new: summarize_ts_files, which quickly returns a table of ts files, their 
+* new: `summarize_ts_files`, which quickly returns a table of ts files, their 
 upload dates, and other inventory information
 
-* faster: repair_ts, which now runs locate_ts not twice but once whenever 
+* faster: `repair_ts`, which now runs `locate_ts` not twice but once whenever 
 possible
 
-* bugfixes and robustness improvements to stage_calc_ts and ts_has_file
+* bugfixes and robustness improvements to `stage_calc_ts` and `ts_has_file`
 
 # mda.streams 0.9.5
 
-* config_to_metab_repeat now works better with Bayesian models and arbitrary 
+* `config_to_metab_repeat` now works better with Bayesian models and arbitrary 
 model 'strategy' fields
 
 * simulation pipeline (data -> DO simulation model -> metabolism fitting model) 
@@ -68,8 +92,8 @@ is up to date with recent package changes
 
 * updates for querying ScienceBase with sbtools 0.18.0
 
-* more internal functions seek .Rds timeseries data; external functions (get_ts,
-etc.) still seek .tsv by default for backward compatibility
+* more internal functions seek .Rds timeseries data; external functions
+(`get_ts`, etc.) still seek .tsv by default for backward compatibility
 
 # mda.streams 0.9.4
 
@@ -78,12 +102,12 @@ text (.tsv) - allows greater precision and censoring information in stored data
 
 * now using gO2 and mgO2 for units of oxygen variables
 
-* stage_nldas_ts has been updated in response to changes in how NLDAS data are 
+* `stage_nldas_ts` has been updated in response to changes in how NLDAS data are
 served
 
 * updates for querying ScienceBase with sbtools 0.16.0
 
-* stage_calc_ts for stage_styx_site are back up to date
+* `stage_calc_ts` for `stage_styx_site` are back up to date
 
 # mda.streams 0.9.3
 
@@ -91,15 +115,15 @@ served
 
 # mda.streams 0.9.2
 
-* complex requests to get_ts() are about 7 times faster now if accompanied by 
+* complex requests to `get_ts()` are about 7 times faster now if accompanied by 
 update to streamMetabolizer v0.9.3
 
 # mda.streams 0.9.1
 
-* read_ts, write_ts, post_ts, and download_ts now support either .tsv or .Rds 
-versions of data (Jordan Read)
+* `read_ts`, `write_ts`, `post_ts`, and `download_ts` now support either .tsv or
+.Rds versions of data (Jordan Read)
 
-* get_ts is now much smarter about requests for multiple timeseries whose 
+* `get_ts` is now much smarter about requests for multiple timeseries whose 
 temporal resolutions and/or extents are different (e.g., merging daily and 
 15-minute data) (Lindsay Carr)
 
@@ -109,9 +133,9 @@ temporal resolutions and/or extents are different (e.g., merging daily and
 
 * file downloads are faster and more internally streamlined (0.8.17)
 
-* get_metab_model now posts a modernized model to SB when practical (0.8.16)
+* `get_metab_model` now posts a modernized model to SB when practical (0.8.16)
 
-* make get_sites private (0.8.15)
+* make `get_sites` private (0.8.15)
 
 # mda.streams 0.8.14
 
