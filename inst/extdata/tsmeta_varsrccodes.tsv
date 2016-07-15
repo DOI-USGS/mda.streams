@@ -67,7 +67,7 @@ suntime	simLon	''	apparent solar time (perfect match to sun)	ts	app.solar.time	1
 suntime	simCopy	''	apparent solar time (perfect match to sun)	ts	app.solar.time	12	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 suntime	simNew	''	apparent solar time (perfect match to sun)	ts	app.solar.time	13	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
 sw	nldas	W m^-2	downwelling shortwave radiation	ts	NA	1	http://hydro1.sci.gsfc.nasa.gov/dods/NLDAS_FORA0125_H.002.info	Land Data Assimilation Systems	geoknife	geoknife	data	dswrfsfc
-sw	gldas	W m^-2	downwelling shortwave radiation	ts	NA	2	http://hydro1.sci.gsfc.nasa.gov/dods/GLDAS_NOAH025SUBP_3H.info	Land Data Assimilation Systems	geoknife	geoknife	data	swnet_tavg
+sw	gldas	W m^-2	downwelling shortwave radiation	ts	NA	2	http://hydro1.sci.gsfc.nasa.gov/dods/GLDAS_NOAH025SUBP_3H.info	Land Data Assimilation Systems	geoknife	geoknife	data	swdown
 veloc	calcDischHarvey	m s^-1	flow velocity	ts	velocity	5	NA	"calculate from discharge and Harvey et al. coefficients"	streamMetabolizer	calc_velocity	calc	NA
 veloc	calcDischRaymond	m s^-1	flow velocity	ts	velocity	6	NA	"calculate from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_velocity	calc	NA
 velocdaily	calcDMean	m s^-1	daily mean flow velocity	ts	velocity.daily	1	NA	daily mean values, 4am to 4am sitetime, stamped noon sitetime	mda.streams	calc_ts_velocdaily_calcDMean	calc	NA
