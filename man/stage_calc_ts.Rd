@@ -6,7 +6,8 @@
 \usage{
 stage_calc_ts(sites, var, src, folder = tempdir(), version = c("rds",
   "tsv"), inputs = list(), day_start = 4, day_end = 28, verbose = FALSE,
-  ...)
+  with_ts_version = "rds", with_ts_archived = FALSE,
+  with_ts_uploaded_after = "2015-01-01", ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -32,6 +33,15 @@ calcXxxx variants.}
 \item{day_end}{hour of day end as in \code{mm_model_by_ply}}
 
 \item{verbose}{logical. provide status messages?}
+
+\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+dataset extension to anything in with_ts_version (if the dataset is a ts)}
+
+\item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
+to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
 
 \item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}} 
 and \code{\link[unitted]{write_unitted}}}

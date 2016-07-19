@@ -52,15 +52,6 @@ list_datasets = function(
     is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
     is_ts <- unlist(unname(prefix_matches[,1]))
     
-    # further filter by ts file criteria if appropriate
-    if(sum(is_ts) > 0) {
-      is_desired_ts <- is_ts
-      is_desired_ts[is_ts] <- ts_has_file(
-        site_items[is_ts], with_ts_version=with_ts_version, 
-        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
-      site_items <- site_items[!is_ts | is_desired_ts]
-    }
-      
     # create a vector of dataset names
     datasets <- 
       sapply(site_items, function(item) item$title) %>%
@@ -69,6 +60,15 @@ list_datasets = function(
       unique() %>%
       sort()
     
+    # further filter by ts file criteria if appropriate
+    if(sum(is_ts) > 0) {
+      is_desired_ts <- is_ts
+      is_desired_ts[is_ts] <- ts_has_file(
+        site_items[is_ts], with_ts_version=with_ts_version, 
+        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
+      datasets <- datasets[!is_ts | is_desired_ts]
+    }
+      
   } else {
     datasets <- character(0)
   }
