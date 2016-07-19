@@ -24,7 +24,8 @@
 #'   with_ts_version=c('tsv','rds'), with_ts_archived=TRUE)
 #' }
 #' @keywords internal
-get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_archived=FALSE, limit=10000){
+get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_archived=FALSE, 
+                      with_ts_uploaded_after='2015-01-01', limit=10000) {
 
   if (is.null(with_dataset_name)){
     # get the superset of sites. this query is used in both if{} blocks but with
@@ -42,7 +43,9 @@ get_sites <- function(with_dataset_name=NULL, with_ts_version='rds', with_ts_arc
     if(is_ts) { #length(ts_items) > 0 && 
       if(!is.logical(with_ts_archived) || length(with_ts_archived) < 1) 
         stop("with_ts_archived must be logical")
-      has_file <- ts_has_file(ts_items, with_ts_version=with_ts_version, with_ts_archived=with_ts_archived)
+      has_file <- ts_has_file(
+        ts_items, with_ts_version=with_ts_version, 
+        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
       ts_items <- ts_items[has_file]
     }
     

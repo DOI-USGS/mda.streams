@@ -4,7 +4,8 @@
 \alias{ts_has_file}
 \title{Seek specific file types within a ts sbitem}
 \usage{
-ts_has_file(ts_items, with_ts_version = c("rds", "tsv"), with_ts_archived)
+ts_has_file(ts_items, with_ts_version = c("rds", "tsv"),
+  with_ts_archived = c(TRUE, FALSE), with_ts_uploaded_after = "2015-01-01")
 }
 \arguments{
 \item{ts_items}{a list of timeseries sbitems}
@@ -14,6 +15,9 @@ dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
 to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
 }
 \description{
 Converts a list of ts sbitems into a vector of T/Fs for whether the item as a

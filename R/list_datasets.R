@@ -23,7 +23,8 @@
 #' @export
 list_datasets = function(
   site_name, data_type=c("ts","watershed"), 
-  with_ts_version='rds', with_ts_archived=FALSE, limit=10000) {
+  with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01', 
+  limit=10000) {
   
   # process args
   if(length(site_name) != 1) stop("expecting site_name to be a character vector of length 1")
@@ -54,7 +55,9 @@ list_datasets = function(
     # further filter by ts file criteria if appropriate
     if(sum(is_ts) > 0) {
       is_desired_ts <- is_ts
-      is_desired_ts[is_ts] <- ts_has_file(site_items[is_ts], with_ts_version=with_ts_version, with_ts_archived=with_ts_archived)
+      is_desired_ts[is_ts] <- ts_has_file(
+        site_items[is_ts], with_ts_version=with_ts_version, 
+        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
       site_items <- site_items[!is_ts | is_desired_ts]
     }
       

@@ -5,7 +5,8 @@
 \title{Get a vector of timeseries dataset names}
 \usage{
 list_datasets(site_name, data_type = c("ts", "watershed"),
-  with_ts_version = "rds", with_ts_archived = FALSE, limit = 10000)
+  with_ts_version = "rds", with_ts_archived = FALSE,
+  with_ts_uploaded_after = "2015-01-01", limit = 10000)
 }
 \arguments{
 \item{site_name}{a character vector of length one with a site name such as 
@@ -18,6 +19,9 @@ dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
 to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
 
 \item{limit}{integer. the maximum number of items to return}
 }
