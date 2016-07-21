@@ -6,7 +6,8 @@
 \usage{
 choose_data_source(var, site, logic = c("priority local", "unused var"),
   type = c(NA, "ts", "meta", "ts_file", "const", "pred", "pred_file", "none"),
-  src = NA)
+  src = NA, with_ts_version = "rds", with_ts_archived = FALSE,
+  with_ts_uploaded_after = "2015-01-01")
 }
 \arguments{
 \item{var}{character. A single variable name as in 
@@ -24,6 +25,15 @@ must be specified.}
 
 \item{src}{character indicating a src to be interpreted in the context of 
 \code{type}}
+
+\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+dataset extension to anything in with_ts_version (if the dataset is a ts)}
+
+\item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
+to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
 }
 \value{
 a 4-column data.frame component of a config file

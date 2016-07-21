@@ -50,7 +50,10 @@ stage_ldas_ts <- function(sites, var, src=c('nldas','gldas'), times, url, folder
   expected_units <- var_src_info$units
   
   # define the geoknife stencil
-  lon_lat <- get_site_coords(sites, format="geoknife")
+  lon_lat <- get_site_coords(sites, format="geoknife", use_basedon=FALSE) # could do use_basedon=TRUE for styx
+  if(verbose) 
+    message('omitting these sites for lack of coordinates: ', 
+            paste0(names(lon_lat)[!complete.cases(t(lon_lat))], collapse=', '))
   lon_lat_df <- lon_lat[complete.cases(t(lon_lat))]
   stencil <- simplegeom(lon_lat_df)
   
@@ -90,8 +93,8 @@ stage_ldas_ts <- function(sites, var, src=c('nldas','gldas'), times, url, folder
   # check units & convert to unitted format if needed
   data_out <- filter(data_out, variable == p_code)
   units <- as.character(data_out$units) %>% unique()
-  if (p_code == "dswrfsfc" && units == 'W/m^2')
-    units <- "W m^-2"
+  if(p_code == "dswrfsfc" && units == 'W/m^2') units <- "W m^-2"
+  if(p_code %in% c("psurf","swdown") && is.na(units)) units <- expected_units # see GH issue #124
   verify_units(u(1,units), expected_units, violation.handler=warning)
 
   # write the output into one file per site

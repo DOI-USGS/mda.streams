@@ -55,7 +55,7 @@ archive_ts <- function(var_src, site_name, version=c('tsv','rds'), ts_id, filena
     # rename the file to the archive name by updating the item fields
     if(verbose) message("archiving ", files[i,'filename'], " as ", archive_name)
     item_fields[[archive_index]]$name <- archive_name
-    item_update(ts_id, info = list(files=item_fields)) # do field ids disappear?
+    item_update(files[i,'ts_id'], info = list(files=item_fields)) # do field ids disappear?
     
     return(archive_name)
   })

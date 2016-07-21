@@ -1,5 +1,7 @@
 # mda.streams 0.9.12+ to 0.9.13
 
+* `list_sites` and `list_tses` now accept a `with_ts_uploaded_after` argument
+
 * minor improvements to `get_ts`, `build_calc_ts_needs` (again), and
 `stage_calc_ts` in support of the ongoing data re-pull in the `stream_metab_usa`
 project

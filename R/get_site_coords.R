@@ -60,7 +60,10 @@ get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missin
       sites_w_proxies <- match(lon_lat$site_name[na_lat_lons], styx_meta$site_name)
       proxies <- styx_meta[sites_w_proxies, 'styx.basedon']
       non_site_cols <- setdiff(out, 'site_name')
-      lon_lat[na_lat_lons, non_site_cols] <- basic_meta[match(proxies, basic_meta$site_name), non_site_cols]
+      # extract and reassign units to get around R 3.3.1 warning: implicit list embedding of S4 objects is deprecated
+      lon_lat_units <- get_units(lon_lat)
+      lon_lat[na_lat_lons, non_site_cols] <- v(basic_meta[match(proxies, basic_meta$site_name), non_site_cols])
+      lon_lat <- u(lon_lat, lon_lat_units)
     }
   }
   

@@ -7,7 +7,7 @@
 #' @export
 build_calc_ts_needs <- function(var, src) {
   
-  . <- var_src <- var_target <- src_target <- '.dplyr.var'
+  . <- priority <- var_src <- var_target <- src_target <- '.dplyr.var'
   
   ## helper functions
   

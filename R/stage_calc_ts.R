@@ -17,6 +17,7 @@
 #' @param day_start hour of day start as in \code{mm_model_by_ply}
 #' @param day_end hour of day end as in \code{mm_model_by_ply}
 #' @param verbose logical. provide status messages?
+#' @inheritParams ts_has_file
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
 #' @return a file handle for time series file created
@@ -95,7 +96,10 @@
 #' head(read_ts(file_dischdaily))
 #' }
 #' @export
-stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), inputs=list(), day_start=4, day_end=28, verbose = FALSE, ...){
+stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), 
+                          inputs=list(), day_start=4, day_end=28, verbose = FALSE, 
+                          with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01',
+                          ...){
   
   version <- match.arg(version)
   if(length(var) > 1) stop("one var at a time, please")
@@ -106,14 +110,21 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
   # follows these definitions) and pull data while noting data provenance
   site <- choices <- '.local.var' #just to confirm scope; would break if these helpers didn't use site & choices from for loop below
   choose_ts <- function(var) {
-    best_src <- choose_data_source(var, site, logic="priority local")$src
-    if(is.na(best_src)) stop("could not locate an appropriate ", var, " ts for ", site)
+    best_src <- tryCatch(
+      choose_data_source(
+        var, site, logic="priority local",
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)$src,
+      warning=function(w) {
+        stop('with var=',var,', site=',site,', version=',with_ts_version,
+             ', archived=',with_ts_archived,', uploaded_after=',with_ts_uploaded_after,': ',
+             w$message)
+      })
+    
     make_var_src(var, best_src)
   }
   get_staging_ts <- function(var_src, ...) {
     choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
-    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
-    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
+    get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ...) # only finds non-archived, ignores upload dates
   }
   get_staging_coord <- function(type=c('lat','lon','alt')) {
     type <- match.arg(type)
