@@ -50,25 +50,24 @@ list_datasets = function(
       setNames(str_match_patterns,str_match_patterns), 
       function (x) str_detect(item_titles, pattern = x)) %>% as_tibble()
     is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
-    is_ts <- unlist(unname(prefix_matches[,1]))
+    is_ts <- if(exists('ts_',prefix_matches)) unlist(unname(prefix_matches[,'ts_'])) else rep(FALSE, nrow(prefix_matches))
+    
+    # further filter by ts file criteria if appropriate
+    is_desired_ts <- is_ts
+    if(sum(is_ts) > 0) {
+      is_desired_ts[is_ts] <- ts_has_file(
+        site_items[is_ts], with_ts_version=with_ts_version, 
+        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
+    }
     
     # create a vector of dataset names
     datasets <- 
       sapply(site_items, function(item) item$title) %>%
-      ifelse(is_ts, parse_ts_name(.), .) %>%
-      .[is_dataset] %>%
+      .[is_ts] %>%
+      parse_ts_name(.) %>%
       unique() %>%
       sort()
     
-    # further filter by ts file criteria if appropriate
-    if(sum(is_ts) > 0) {
-      is_desired_ts <- is_ts
-      is_desired_ts[is_ts] <- ts_has_file(
-        site_items[is_ts], with_ts_version=with_ts_version, 
-        with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
-      datasets <- datasets[!is_ts | is_desired_ts]
-    }
-      
   } else {
     datasets <- character(0)
   }

@@ -114,13 +114,17 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
       choose_data_source(
         var, site, logic="priority local",
         with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)$src,
-      warning=function(w) stop(w))
+      warning=function(w) {
+        stop('with var=',var,', site=',site,', version=',with_ts_version,
+             ', archived=',with_ts_archived,', uploaded_after=',with_ts_uploaded_after,': ',
+             w$message)
+      })
+    
     make_var_src(var, best_src)
   }
   get_staging_ts <- function(var_src, ...) {
     choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
-    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
-    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
+    get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ...) # only finds non-archived, ignores upload dates
   }
   get_staging_coord <- function(type=c('lat','lon','alt')) {
     type <- match.arg(type)
