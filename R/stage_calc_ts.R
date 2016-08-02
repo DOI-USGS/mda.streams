@@ -124,7 +124,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
   }
   get_staging_ts <- function(var_src, ...) {
     choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
-    get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ...) # only finds non-archived, ignores upload dates
+    ts <- get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ..., quietly=TRUE) # only finds non-archived, ignores upload dates
+    ts <- ts[complete.cases(ts),]
+    if(nrow(ts) == 0) 
+      stop('with var_src=c(',paste0(var_src, collapse=', '),'), site=',site,', version=',with_ts_version,': no complete rows returned')
+    ts
   }
   get_staging_coord <- function(type=c('lat','lon','alt')) {
     type <- match.arg(type)
@@ -300,14 +304,14 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             DateTime <- dopsat <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', 'dopsat_calcObsSat'), 
-              condense_stat = function(dopsat) diff(range(dopsat)), day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              condense_stat = function(dopsat) diff(range(dopsat)), day_start=day_start, day_end=day_end) %>%
               select(DateTime, doamp=dopsat)
           },
           'dischdaily_calcDMean' = {
             DateTime <- disch <- dischdaily <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', choose_ts('disch')), 
-              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              condense_stat = mean, day_start=day_start, day_end=day_end) %>%
               select(DateTime, dischdaily=disch) %>%
               mutate(dischdaily = dischdaily * u(0.0283168466, "m^3 ft^-3"))
           },
@@ -315,7 +319,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             DateTime <- veloc <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', choose_ts('veloc')), 
-              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              condense_stat = mean, day_start=day_start, day_end=day_end) %>%
               select(DateTime, velocdaily=veloc)
           },
           {
@@ -323,7 +327,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
           }
         )
       }}, error=function(e) {
-        message("trouble in stage_calc_ts: ", e, "\n")
+        warning("trouble in stage_calc_ts: ", e, "\n")
         data.frame()
       }
     )
@@ -337,7 +341,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
         mutate(as.data.frame(as.list(choices), stringsAsFactors=FALSE), site_name=site, file_path=fpath)))
       file_paths <- c(file_paths, fpath)
     } else {
-      if(isTRUE(verbose)) message("nrow(data) == 0 for site ", site)
+      warning("no non-NA values were calculated for var_src ", make_var_src(var, src), ", site ", site)
       # leave file_paths untouched if there's no new file
     }
   }
