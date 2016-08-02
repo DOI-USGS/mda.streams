@@ -62,6 +62,7 @@ get_site_coords <- function(site_names, format=c("normal","geoknife"), on_missin
       non_site_cols <- setdiff(out, 'site_name')
       # extract and reassign units to get around R 3.3.1 warning: implicit list embedding of S4 objects is deprecated
       lon_lat_units <- get_units(lon_lat)
+      lon_lat <- v(lon_lat)
       lon_lat[na_lat_lons, non_site_cols] <- v(basic_meta[match(proxies, basic_meta$site_name), non_site_cols])
       lon_lat <- u(lon_lat, lon_lat_units)
     }
