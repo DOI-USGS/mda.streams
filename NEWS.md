@@ -1,8 +1,9 @@
 # mda.streams 0.9.12+ to 0.9.13
 
-* `list_sites` and `list_tses` now accept a `with_ts_uploaded_after` argument
+* `list_sites`, `list_datasets`, and `list_tses` now accept a
+`with_ts_uploaded_after` argument
 
-* minor improvements to `get_ts`, `build_calc_ts_needs` (again), and
+* minor improvements to `get_ts`, `build_calc_ts_needs` (again), and 
 `stage_calc_ts` in support of the ongoing data re-pull in the `stream_metab_usa`
 project
 
@@ -11,17 +12,17 @@ project
 * updates throughout to accommodate changes to package dependencies (`dplyr` and
 `tibble`)
 
-* new: `login_sb` now looks for username and password in a stream_metab profile
+* new: `login_sb` now looks for username and password in a stream_metab profile 
 file if that file exists (outside the project directory)
 
-* `stage_calc_ts` now tracks and reports on input data provenance for truly
+* `stage_calc_ts` now tracks and reports on input data provenance for truly 
 calculated (`src == calc[XYZ]`) variables
 
-* minor improvements to `build_calc_ts_needs`, `get_site_coords`,
+* minor improvements to `build_calc_ts_needs`, `get_site_coords`, 
 `summarize_ts_files`, `stage_nwis_ts`, `stage_ldas_ts`, `stage_nwis_sitelist` in
 support of the ongoing data re-pull in the `stream_metab_usa` project
 
-* new: `cluster_bundle_packages` builds a zip file of bundled package and
+* new: `cluster_bundle_packages` builds a zip file of bundled package and 
 dependency sources for use in cluster computing
 
 # mda.streams 0.9.7
@@ -32,10 +33,10 @@ interactive use (less typing required)
 * new: `get_metab_prep` is a shortcut to `config_to_data(stage_metab_config())`,
 with less typing required
 
-* new: `get_metab_data` is a shortcut to `get_metab_prep(out='data',
+* new: `get_metab_data` is a shortcut to `get_metab_prep(out='data', 
 simplify_out=TRUE)`
 
-* faster: `choose_data_source` takes shortcuts in locating a metabolism model
+* faster: `choose_data_source` takes shortcuts in locating a metabolism model 
 when possible
 
 # mda.streams 0.9.6.3
@@ -68,8 +69,8 @@ requested
 
 # mda.streams 0.9.6
 
-* new: `try_calc_ts`, which combines `stage_calc_ts` and `post_ts` in a
-fault-tolerant loop that only tries the sites that have the prerequisite data
+* new: `try_calc_ts`, which combines `stage_calc_ts` and `post_ts` in a 
+fault-tolerant loop that only tries the sites that have the prerequisite data 
 and haven't already been posted in the desired time window and format
 
 * new: `delete_sb_files`, which deletes a single file from a single item (in an 
@@ -94,7 +95,7 @@ is up to date with recent package changes
 
 * updates for querying ScienceBase with sbtools 0.18.0
 
-* more internal functions seek .Rds timeseries data; external functions
+* more internal functions seek .Rds timeseries data; external functions 
 (`get_ts`, etc.) still seek .tsv by default for backward compatibility
 
 # mda.streams 0.9.4
