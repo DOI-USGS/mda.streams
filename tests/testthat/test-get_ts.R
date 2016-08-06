@@ -5,14 +5,14 @@ test_that('get_ts works', {
   # easy ones: no errors or warnings
   doobs <- suppressWarnings(get_ts('doobs_nwis', 'nwis_06601200')) # verify_ts for doobs failed on test for units 
   sw <- suppressWarnings(get_ts('sw_nldas', 'nwis_06601200')) # verify_ts for sw failed on test for timesteps
-  gpp <- suppressWarnings(get_ts('gpp_estBest', 'nwis_06601200', version='tsv')) # verify_ts for gpp failed on test for units 
+  gpp <- suppressWarnings(get_ts('gpp_estBest', 'nwis_06601200', version='rds')) # verify_ts for gpp failed on test for units 
   
   # multiple sites gives error on purpose
   expect_error(suppressWarnings(get_ts('sitetime_calcLon', c('nwis_06601200','nwis_08062500'))), 
                "only one site_name is allowed")
   
   # multiple compatible tses works fine, no warning or error
-  tses <- suppressWarnings(get_ts(c('sitetime_calcLon','doobs_nwis'), 'nwis_06601200', version='tsv')) # verify_ts for doobs failed on test for units
+  tses <- suppressWarnings(get_ts(c('sitetime_calcLon','doobs_nwis'), 'nwis_06601200', version='rds')) # verify_ts for doobs failed on test for units
   
   # multiple different-length, different-resolution tses give useful warnings
   expect_warning(get_ts(c('sw_nldas','doobs_nwis'), 'nwis_06601200'))
@@ -30,8 +30,8 @@ test_that('get_ts works', {
   expect_equal(nrow(matchdoobs2), nrow(doobs))
   
   # realistic request
-  tses1 <- suppressWarnings(get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp'), 'nwis_06601200', version='tsv', quietly=TRUE)) # one var to condense
-  tses2 <- suppressWarnings(get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp','baro_nldas'), 'nwis_06601200', version='tsv', quietly=TRUE)) # >1 var to condense
+  tses1 <- suppressWarnings(get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp'), 'nwis_06601200', version='rds', quietly=TRUE)) # one var to condense
+  tses2 <- suppressWarnings(get_ts(c('gpp_estBest','doobs_nwis','doamp_calcDAmp','baro_nldas'), 'nwis_06601200', version='rds', quietly=TRUE)) # >1 var to condense
   expect_equal(nrow(tses1), nrow(gpp))
   expect_equal(nrow(tses2), nrow(gpp))
   

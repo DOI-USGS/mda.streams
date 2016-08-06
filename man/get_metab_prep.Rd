@@ -123,7 +123,7 @@ md <- get_metab_prep(c('nwis_08062500','nwis_01646500'), out='data') # list of d
 md <- get_metab_prep('nwis_08062500', sitedate=NA, K600=NA, 
   start_date="2014-03-10 04:00:00", end_date="2014-03-11 04:00:00") # short data.frames
 md <- get_metab_prep('nwis_08062500', sitetime=NULL, doobs=NULL, dosat=NULL, depth=NULL, 
-  wtr=NULL, par=NULL, sitedate=NA, K600='estBest', dischdaily=NA, model='metab_Kmodel') # other model
+  wtr=NULL, par=NULL, sitedate=NA, K600='estBest', dischdaily=NA, model='metab_Kmodel')
 }
 }
 
