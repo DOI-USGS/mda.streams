@@ -51,10 +51,17 @@
 #'   simulation. See Data Source Format below.
 #' @param K600 Data Source for reaeration rates for use in data simulation. See 
 #'   Data Source Format below.
-#' @param K600lwr Data Source for lower bound on reaeration rates for use in
+#' @param K600lwr Data Source for lower bound on reaeration rates for use in 
 #'   data simulation. See Data Source Format below.
-#' @param K600upr Data Source for upper bound on reaeration rates for use in
+#' @param K600upr Data Source for upper bound on reaeration rates for use in 
 #'   data simulation. See Data Source Format below.
+#' @param gppinit Data Source for initial values of daily gross primary
+#'   productivity rates for use in likelihood maximization. See Data Source
+#'   Format below.
+#' @param erinit Data Source for initial values of ecosystem respiration rates
+#'   for use in likelihood maximization. See Data Source Format below.
+#' @param K600init Data Source for initial values of reaeration rates for use in
+#'   likelihood maximization. See Data Source Format below.
 #' @param dischdaily Data Source for daily mean stream discharge, for use in 
 #'   identifying daily priors or fixed values for K600. See Data Source Format 
 #'   below.
@@ -123,6 +130,9 @@ stage_metab_config <- function(
   K600=choose_data_source("K600", site, logic="unused var"),
   K600lwr=choose_data_source("K600lwr", site, logic="unused var"),
   K600upr=choose_data_source("K600upr", site, logic="unused var"),
+  gppinit=choose_data_source("gppinit", site, logic="unused var"),
+  erinit=choose_data_source("erinit", site, logic="unused var"),
+  K600init=choose_data_source("K600init", site, logic="unused var"),
   dischdaily=choose_data_source("dischdaily", site, logic="unused var"),
   velocdaily=choose_data_source("velocdaily", site, logic="unused var"),
   start_date=NA, end_date=NA,
@@ -137,6 +147,7 @@ stage_metab_config <- function(
     sitetime=sitetime, 
     doobs=doobs, dosat=dosat, depth=depth, wtr=wtr, par=par, disch=disch, veloc=veloc,
     sitedate=sitedate, doinit=doinit, gpp=gpp, er=er, K600=K600, K600lwr=K600lwr, K600upr=K600upr, 
+    gppinit=gppinit, erinit=erinit, K600init=K600init,
     dischdaily=dischdaily, velocdaily=velocdaily,
     start_date=as.POSIXct(start_date, tz="UTC"), end_date=as.POSIXct(end_date, tz="UTC"),
     stringsAsFactors=FALSE)
@@ -173,5 +184,3 @@ stage_metab_config <- function(
     return(config)
   }
 }
-
-

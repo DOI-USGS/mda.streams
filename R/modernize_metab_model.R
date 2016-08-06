@@ -39,9 +39,7 @@ modernize_metab_model <- function(metab_model) {
     if('config.row' %in% names(old_config)) old_config$config.row <- as.numeric(old_config$config.row)
     empty_config <- stage_metab_config(tag='0.0.0', strategy='updating SB metab model', site=NA, filename=NULL)
     new_config <- bind_rows(empty_config, old_config) %>% as.data.frame(stringsAsFactors=FALSE)
-    if(!('config.row' %in% names(old_config))) {
-      new_config$config.row <- rownames(old_config)
-    }
+    if(!('config.row' %in% names(old_config))) { new_config$config.row <- rownames(old_config) }
     new_info <- if(is.list(old_info)) old_info else list()
     new_info$config <- new_config
  
@@ -53,20 +51,35 @@ modernize_metab_model <- function(metab_model) {
     if(class(old_mm) == 'metab_Kmodel' && 'method' %in% names(new_specs))
       names(new_specs)[names(new_specs) == 'method'] <- 'engine'
     
-    # fit: rename 'date' and 'local.date' to 'solar.date' and add row.first, row.last to metab_night models
+    # data: rename 'local.time' to 'solar.time' (and also see below, where we'll
+    # add preds to the data after putting it into a new metab_model)
+    new_data <- get_data(old_mm)
+    if('local.time' %in% names(new_data))
+      names(new_data)[which(names(new_data) == 'local.time')] <- 'solar.time'
+    
+    # data_daily: may be missing from older sites, so seek it robustly.
+    # Otherwise, don't change it.
+    new_data_daily <-  tryCatch(
+      suppressWarnings(get_data_daily(old_mm)),
+      error=function(e) NULL)
+    if('local.date' %in% names(new_data_daily))
+      names(new_data_daily)[which(names(new_data_daily) == 'local.date')] <- 'date'
+    
+    # fit: rename 'date' and 'local.date' to 'solar.date' and add row.first,
+    # row.last to metab_night models
     new_fit <- get_fit(old_mm)
     if(any(c('date','local.date') %in% names(new_fit))) 
       names(new_fit)[which(names(new_fit) %in% c('date','local.date'))] <- 'date'
     if(class(old_mm)=='metab_night' && !('row.first' %in% names(get_data(old_mm)))) {
       new_fit_rows <- streamMetabolizer::mm_model_by_ply(
-        function(data_ply, data_daily_ply, day_start, day_end, local_date, tests, model_specs) {
+        function(data_ply, ...) {
           which_night <- which(data_ply$light < 0.1) #v(u(0.1, "umol m^-2 s^-1")))
           has_night <- length(which_night) > 0
           data.frame(
             row.first = if(has_night) which_night[1] else NA,
             row.last = if(has_night) which_night[length(which_night)] else NA)
         },
-        data=v(get_data(old_mm)), data_daily=NULL,
+        data=new_data, data_daily=NULL,
         day_start=new_specs$day_start, day_end=new_specs$day_end,
         tests=c(), model_specs=c()
       )
@@ -82,20 +95,6 @@ modernize_metab_model <- function(metab_model) {
       suppressWarnings(get_fitting_time(old_mm)),
       error=function(e) system.time({}))
 
-    # data: rename 'local.time' to 'solar.time' (and also see below, where we'll
-    # add preds to the data after putting it into a new metab_model)
-    new_data <- get_data(old_mm)
-    if('local.time' %in% names(new_data))
-      names(new_data)[which(names(new_data) == 'local.time')] <- 'solar.time'
-    
-    # data_daily: may be missing from older sites, so seek it robustly.
-    # Otherwise, don't change it.
-    new_data_daily <-  tryCatch(
-      suppressWarnings(get_data_daily(old_mm)),
-      error=function(e) NULL)
-    if('local.date' %in% names(new_data_daily))
-      names(new_data_daily)[which(names(new_data_daily) == 'local.date')] <- 'date'
-    
     # pkg_version: mark with our new
     new_pkg_version <- paste0(packageVersion("streamMetabolizer"), " (was ", old_mm@pkg_version, ")")
     

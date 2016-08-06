@@ -7,7 +7,8 @@
 make_metab_config(site, sitetime = NA, doobs = NA, dosat = NA,
   depth = NA, wtr = NA, par = NA, disch = NULL, veloc = NULL,
   sitedate = NULL, doinit = NULL, gpp = NULL, er = NULL, K600 = NULL,
-  K600lwr = NULL, K600upr = NULL, dischdaily = NULL, velocdaily = NULL,
+  K600lwr = NULL, K600upr = NULL, gppinit = NULL, erinit = NULL,
+  K600init = NULL, dischdaily = NULL, velocdaily = NULL,
   start_date = NA, end_date = NA, tag = "0.0.0",
   strategy = "get_metab_data", date = Sys.time(), model = "metab_mle",
   model_args = "list()")
@@ -53,11 +54,21 @@ simulation. See Data Source Format below.}
 \item{K600}{Data Source for reaeration rates for use in data simulation. See 
 Data Source Format below.}
 
-\item{K600lwr}{Data Source for lower bound on reaeration rates for use in
+\item{K600lwr}{Data Source for lower bound on reaeration rates for use in 
 data simulation. See Data Source Format below.}
 
-\item{K600upr}{Data Source for upper bound on reaeration rates for use in
+\item{K600upr}{Data Source for upper bound on reaeration rates for use in 
 data simulation. See Data Source Format below.}
+
+\item{gppinit}{Data Source for initial values of daily gross primary
+productivity rates for use in likelihood maximization. See Data Source
+Format below.}
+
+\item{erinit}{Data Source for initial values of ecosystem respiration rates
+for use in likelihood maximization. See Data Source Format below.}
+
+\item{K600init}{Data Source for initial values of reaeration rates for use in
+likelihood maximization. See Data Source Format below.}
 
 \item{dischdaily}{Data Source for daily mean stream discharge, for use in 
 identifying daily priors or fixed values for K600. See Data Source Format 
@@ -114,8 +125,10 @@ Quick-make function for manual making of a model config file
   expected units, are defined in the help file for \code{\link{mm_data}}.
 }
 \examples{
+\dontrun{
 make_metab_config('nwis_08062500')
 make_metab_config('nwis_08062500', sitetime='calcLon', doobs='nwis', 
   dosat='calcGGbts', depth='calcDischHarvey', wtr='nwis', par='calcSw')
+}
 }
 
