@@ -39,6 +39,8 @@ test_that("combine_ts works", {
   expect_equal(dim(bsa), c(dim(base)[1], 3))
   
   # 2nd ts has more points. base=suntime, more=wtr
+  base <- base[1:(nrow(base)/2),]
+  more <- more[101:nrow(more),]
   bmf <- combine_ts(base, more, method='full_join')
   expect_equal(dim(bmf)[2], 3)
   expect_gt(dim(bmf)[1], dim(base)[1])
@@ -63,7 +65,6 @@ test_that("combine_ts works", {
   added_dates <- mba[mba$DateTime %in% extras_from_more, "suntime"]
   expect_false(is.na(added_dates[2]))
   expect_true(is.na(added_dates[50]))
-  expect_false(is.na(added_dates[75]))
 
   # two tses with entirely non-overlapping dates
   bof <- combine_ts(base, offset, method='full_join')
