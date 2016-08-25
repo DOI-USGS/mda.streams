@@ -27,6 +27,8 @@ pkg.env <- define_pkg_env()
 #' @param pkgname	a character string giving the name of the package.
 #' @importFrom utils available.packages contrib.url packageVersion
 .onAttach <- function(libname, pkgname) {
+  packageStartupMessage(paste("Funding for", pkgname, "expires summer 2017, after which bugfixes & new features will be minimal"))
+  
   GRAN_update_code <- paste0(
     '  update.packages(oldPkgs=c(\n',
     '    "mda.streams","dataRetrieval","geoknife","sbtools","smwrQW","streamMetabolizer","unitted",\n',

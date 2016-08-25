@@ -49,7 +49,7 @@ list_datasets = function(
     prefix_matches <- lapply(
       setNames(str_match_patterns,str_match_patterns), 
       function (x) str_detect(item_titles, pattern = x)) %>% as_tibble()
-    is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern
+    is_dataset <- prefix_matches %>% rowSums() > 0 # each row is 1 site_items$title; each col is a match for a different str_match_pattern; any match is enough
     is_ts <- if(exists('ts_',prefix_matches)) unlist(unname(prefix_matches[,'ts_'])) else rep(FALSE, nrow(prefix_matches))
     
     # further filter by ts file criteria if appropriate
@@ -62,9 +62,8 @@ list_datasets = function(
     
     # create a vector of dataset names
     datasets <- 
-      sapply(site_items, function(item) item$title) %>%
-      .[is_ts] %>%
-      parse_ts_name(.) %>%
+      item_titles[is_desired_ts] %>%
+      parse_ts_name() %>%
       unique() %>%
       sort()
     

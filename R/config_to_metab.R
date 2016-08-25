@@ -101,10 +101,10 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
         # if the data are valid, also remove units. eventually want to be able
         # to pass units to metab_fun.
         . <- '.dplyr.var'
-        metab_data <- metab_data_list$data
+        metab_data <- metab_data_list[['data']] # do this way for exact matching (to not confuse with data_daily)
         metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
         metab_data <- v(metab_data)
-        metab_data_daily <- metab_data_list$data_daily
+        metab_data_daily <- metab_data_list$data_daily # OK b/c partial matching won't confuse w/ anything else
         if(!is.null(metab_data_daily)) {
           metab_data_daily <- v(metab_data_daily)
         }
