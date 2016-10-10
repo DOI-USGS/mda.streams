@@ -67,14 +67,14 @@ stage_indy_site <- function(
   
   if(!('DateTime' %in% names(data))) {
     if(!('sitetime' %in% names(data))) stop("need DateTime and/or sitetime columns in data")
-    data$DateTime <- force_tz(convert_localtime_to_UTC(data$sitetime), tzone='UTC')
+    data$DateTime <- u(force_tz(convert_localtime_to_UTC(v(data$sitetime)), tzone='UTC'), NA)
   }
   
   if('sitetime' %in% names(data)) {
-    data$sitetime <- force_tz(data$sitetime, tzone='UTC')
+    data$sitetime <- u(force_tz(v(data$sitetime), tzone='UTC'), NA)
     names(data) <- add_src('sitetime', 'indy')
   } else {
-    data$sitetime_calcLon <- force_tz(convert_UTC_to_localtime(data$DateTime, latitude=lat, longitude=lon), tzone='UTC')
+    data$sitetime_calcLon <- u(force_tz(convert_UTC_to_localtime(v(data$DateTime), latitude=lat, longitude=lon), tzone='UTC'), NA)
   }
   
   if('doobs' %in% names(data)) {
