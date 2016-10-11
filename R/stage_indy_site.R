@@ -34,6 +34,7 @@ stage_indy_site <- function(
   lat=u(as.numeric(NA),'degN'), lon=u(as.numeric(NA),'degE'),
   alt=u(as.numeric(NA),'ft'),
   var_format=c('mda.streams','streamMetabolizer'),
+  remove_NAs=TRUE,
   collapse_const=TRUE,
   folder=tempdir()
 ) {
@@ -57,8 +58,7 @@ stage_indy_site <- function(
     names(data) <- mda_names
   }
 
-  # fill in missing data if possible, and add the appropriate src code to each
-  # column name
+  # add the appropriate src code to each column name
   add_src <- function(varname, srcname='indy') {
     datnames <- names(data)
     datnames[datnames==varname] <- paste0(varname, '_', srcname)
@@ -131,9 +131,16 @@ stage_indy_site <- function(
           tsdat <- tsdat[1,]
         }
       }
-      write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+      if(remove_NAs) {
+        tsdat <- tsdat[!is.na(tsdat[,2]), ]
+      }
+      tryCatch({
+        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+      }, error=function(e) NULL)
     }
   )
+  # remove any failed attempts to write_ts; just don't write them
+  data_list <- data_list[!sapply(data_list, is.null)]
     
   # bundle the filenames into a list
   c(list(site_name=site_name, metadata=staged_meta), data_list)

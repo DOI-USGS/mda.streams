@@ -7,8 +7,8 @@
 stage_indy_site(site_num, data, info = as.character(NA),
   long_name = as.character(NA), lat = u(as.numeric(NA), "degN"),
   lon = u(as.numeric(NA), "degE"), alt = u(as.numeric(NA), "ft"),
-  var_format = c("mda.streams", "streamMetabolizer"), collapse_const = TRUE,
-  folder = tempdir())
+  var_format = c("mda.streams", "streamMetabolizer"), remove_NAs = TRUE,
+  collapse_const = TRUE, folder = tempdir())
 }
 \arguments{
 \item{site_num}{The id, not necessarily numeric that is to follow 'indy_' in 
