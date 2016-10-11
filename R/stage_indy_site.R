@@ -34,6 +34,7 @@ stage_indy_site <- function(
   lat=u(as.numeric(NA),'degN'), lon=u(as.numeric(NA),'degE'),
   alt=u(as.numeric(NA),'ft'),
   var_format=c('mda.streams','streamMetabolizer'),
+  remove_NAs=TRUE,
   collapse_const=TRUE,
   folder=tempdir()
 ) {
@@ -57,8 +58,7 @@ stage_indy_site <- function(
     names(data) <- mda_names
   }
 
-  # fill in missing data if possible, and add the appropriate src code to each
-  # column name
+  # add the appropriate src code to each column name
   add_src <- function(varname, srcname='indy') {
     datnames <- names(data)
     datnames[datnames==varname] <- paste0(varname, '_', srcname)
@@ -67,14 +67,14 @@ stage_indy_site <- function(
   
   if(!('DateTime' %in% names(data))) {
     if(!('sitetime' %in% names(data))) stop("need DateTime and/or sitetime columns in data")
-    data$DateTime <- force_tz(convert_localtime_to_UTC(data$sitetime), tzone='UTC')
+    data$DateTime <- u(force_tz(convert_localtime_to_UTC(v(data$sitetime)), tzone='UTC'), NA)
   }
   
   if('sitetime' %in% names(data)) {
-    data$sitetime <- force_tz(data$sitetime, tzone='UTC')
+    data$sitetime <- u(force_tz(v(data$sitetime), tzone='UTC'), NA)
     names(data) <- add_src('sitetime', 'indy')
   } else {
-    data$sitetime_calcLon <- force_tz(convert_UTC_to_localtime(data$DateTime, latitude=lat, longitude=lon), tzone='UTC')
+    data$sitetime_calcLon <- u(force_tz(convert_UTC_to_localtime(v(data$DateTime), latitude=lat, longitude=lon), tzone='UTC'), NA)
   }
   
   if('doobs' %in% names(data)) {
@@ -131,9 +131,16 @@ stage_indy_site <- function(
           tsdat <- tsdat[1,]
         }
       }
-      write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+      if(remove_NAs) {
+        tsdat <- tsdat[!is.na(tsdat[,2]), ]
+      }
+      tryCatch({
+        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+      }, error=function(e) NULL)
     }
   )
+  # remove any failed attempts to write_ts; just don't write them
+  data_list <- data_list[!sapply(data_list, is.null)]
     
   # bundle the filenames into a list
   c(list(site_name=site_name, metadata=staged_meta), data_list)

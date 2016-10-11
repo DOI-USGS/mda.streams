@@ -4,11 +4,15 @@
 \alias{post_indy_site}
 \title{Create a indy site and post a list of timeseries files to it}
 \usage{
-post_indy_site(file_list)
+post_indy_site(file_list, on_site_exists = c("clear", "skip", "stop",
+  "replace"), summarize = FALSE)
 }
 \arguments{
 \item{file_list}{a list of files as given by stage_indy_site. The site name 
 will be determined from the first item (a metadata vector) in this list.}
+
+\item{on_site_exists}{see \code{on_exists} argument to
+\code{\link{post_site}}}
 }
 \description{
 This function is easiest to use when applied to the output of 

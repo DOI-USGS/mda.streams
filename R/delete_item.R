@@ -54,15 +54,13 @@ delete_item <- function(item_ids, item_names, delete_files=FALSE, delete_childre
       # identify child items to delete
       children <- item_list_children(item_id, limit=1000)
       # delete them
-      if(nrow(children) > 0) {
-        for(child in children$id) {
-          delete_item(item_id=child, item_name=child, delete_files=FALSE, delete_children=TRUE, delete_item=TRUE, verbose=verbose)
-        }
+      for(child in sapply(children, function(child) child$id)) {
+        delete_item(item_ids=child, item_names=child, delete_files=FALSE, delete_children=TRUE, delete_item=TRUE, verbose=verbose)
       }
       # sleep to give time for full deletion
       for(wait in 1:50) {
         Sys.sleep(0.2)
-        if(nrow(item_list_children(item_id, limit=1)) == 0) break
+        if(length(item_list_children(item_id, limit=1)) == 0) break
         if(wait==50) stop("failed to delete children & therefore item (", item_id, ")")
       }
       deletion_msg <- c(deletion_msg, list("deleted all children")) # this will be overwritten if delete_item=TRUE
