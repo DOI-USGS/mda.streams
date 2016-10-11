@@ -36,10 +36,12 @@ stage_indy_site <- function(
   var_format=c('mda.streams','streamMetabolizer'),
   remove_NAs=TRUE,
   collapse_const=TRUE,
-  folder=tempdir()
+  folder=tempdir(),
+  version=c('rds','tsv')
 ) {
   
   var_format <- match.arg(var_format)
+  version <- match.arg(version)
   
   site_name <- paste0("indy_", site_num)
   staged_meta <- stage_meta_indy(rows=u(data.frame(
@@ -98,7 +100,7 @@ stage_indy_site <- function(
       data$baro <- calc_air_pressure(elevation=alt*u(0.3048,"m ft^-1"), attach.units = TRUE)*u(100,"Pa mb^-1")
       baro_src = 'calcElev'
     }
-    data$dosat <- calc_DO_at_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
+    data$dosat <- calc_DO_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
     names(data) <- add_src('dosat', if(length(unique(data$baro))==1) 'calcGGbconst' else 'calcGGbts')
     names(data) <- add_src('baro', baro_src)
   }
@@ -135,7 +137,8 @@ stage_indy_site <- function(
         tsdat <- tsdat[!is.na(tsdat[,2]), ]
       }
       tryCatch({
-        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), 
+                 folder=folder, version=version)
       }, error=function(e) NULL)
     }
   )
