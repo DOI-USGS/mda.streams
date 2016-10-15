@@ -37,7 +37,7 @@ stage_indy_site <- function(
   var_format=c('mda.streams','streamMetabolizer'),
   remove_NAs=TRUE,
   collapse_const=TRUE,
-  version = c("rds", "tsv"),
+  version=c('rds','tsv'),
   folder=tempdir()
 ) {
   
