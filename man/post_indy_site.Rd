@@ -11,8 +11,10 @@ post_indy_site(file_list, on_site_exists = c("clear", "skip", "stop",
 \item{file_list}{a list of files as given by stage_indy_site. The site name 
 will be determined from the first item (a metadata vector) in this list.}
 
-\item{on_site_exists}{see \code{on_exists} argument to
+\item{on_site_exists}{see \code{on_exists} argument to 
 \code{\link{post_site}}}
+
+\item{summarize}{logical. return a summary of the site's tses?}
 }
 \description{
 This function is easiest to use when applied to the output of 

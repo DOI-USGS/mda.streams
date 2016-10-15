@@ -15,19 +15,9 @@ repos:
   CRAN: https://cran.rstudio.com
   GRAN: http://owi.usgs.gov/R
   
-before_install:
-  - wget https://sourceforge.net/projects/mcmc-jags/files/JAGS/4.x/Source/JAGS-4.2.0.tar.gz
-  - tar xfvs JAGS-4.2.0.tar.gz
-  - cd JAGS-4.2.0
-  - sudo ./configure
-  - sudo make
-  - sudo make install
-  - cd ..
-  - sudo rm -f JAGS-4.2.0.tar.gz
-  - sudo rm -rf JAGS-4.2.0
-  
 r_github_packages:
   - jimhester/covr
+  - appling/unitted
   - USGS-R/streamMetabolizer@develop
   - USGS-R/sbtools
 

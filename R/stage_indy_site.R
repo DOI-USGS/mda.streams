@@ -20,6 +20,7 @@
 #' @param var_format What format are the data column names in - mda.streams 
 #'   format (e.g., sitetime, doobs, dosat) or streamMetabolizer format (e.g., 
 #'   solar.time. DO.obs, DO.sat)?
+#' @param remove_NAs logical. Should ts rows with NAs be removed?
 #' @param collapse_const If a data column has all identical values, should these
 #'   be collapsed to a single const row in the ts file?
 #' @inheritParams write_ts

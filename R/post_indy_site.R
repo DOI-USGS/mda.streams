@@ -5,8 +5,9 @@
 #' 
 #' @param file_list a list of files as given by stage_indy_site. The site name 
 #'   will be determined from the first item (a metadata vector) in this list.
-#' @param on_site_exists see \code{on_exists} argument to
+#' @param on_site_exists see \code{on_exists} argument to 
 #'   \code{\link{post_site}}
+#' @param summarize logical. return a summary of the site's tses?
 #' @examples 
 #' \dontrun{
 #' staged <- stage_indy_site(info="help file example for post_indy_site")

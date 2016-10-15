@@ -32,6 +32,8 @@ site_name is prefixed with 'nwis' (in which case this will be looked up)}
 format (e.g., sitetime, doobs, dosat) or streamMetabolizer format (e.g., 
 solar.time. DO.obs, DO.sat)?}
 
+\item{remove_NAs}{logical. Should ts rows with NAs be removed?}
+
 \item{collapse_const}{If a data column has all identical values, should these
 be collapsed to a single const row in the ts file?}
 
