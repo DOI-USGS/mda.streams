@@ -612,7 +612,7 @@ calc_ts_veloc_calcDischHarvey <- function(utctime, disch, k, m) {
 calc_ts_dosat_calcGG <- function(utctime, wtr, baro) {
   data.frame(
     DateTime = utctime,
-    dosat = calc_DO_at_sat(
+    dosat = calc_DO_sat(
       temp.water = wtr, 
       pressure.air = baro * u(0.01, "mb Pa^-1"),
       salinity.water = u(0, 'PSU'))) %>% u()

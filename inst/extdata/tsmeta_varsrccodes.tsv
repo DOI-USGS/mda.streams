@@ -27,10 +27,10 @@ doobs	simCopy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	11	NA	simulate 
 doamp	calcDAmp	%	daily amplitude in dissolved oxygen percent saturation	ts	NA	1	NA	daily max-min of dopsat (4am to 4am)	mda.streams	max(dopsat)-min(dopsat)	calc	NA
 dopsat	calcObsSat	%	percent dissolved oxygen saturation	ts	NA	1	NA	choose_data_source to get best dosat, divide doobs by dosat	mda.streams	100*doobs/dosat	calc	NA
 dosat	indy	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	1	NA	independent data source	NA	NA	data	NA
-dosat	calcGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	calcGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	3	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	simGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using a baro ts & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
-dosat	simGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_at_sat	calc	NA
+dosat	calcGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	2	NA	calculate DO at saturation using baro_nldas & Garcia-Gordon equations	streamMetabolizer	calc_DO_sat	calc	NA
+dosat	calcGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	3	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_sat	calc	NA
+dosat	simGGbts	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	11	NA	calculate DO at saturation using a baro ts & Garcia-Gordon equations	streamMetabolizer	calc_DO_sat	calc	NA
+dosat	simGGbconst	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	12	NA	calculate DO at saturation using constant baro & Garcia-Gordon equations	streamMetabolizer	calc_DO_sat	calc	NA
 dosat	simCopy	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	13	NA	simulate by copying from another site	streamMetabolizer	NA	sim	NA
 dosat	simNew	mgO2 L^-1	hypothetical dissolved oxygen concentration at saturation	ts	DO.sat	14	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
 er	estBest	gO2 m^-2 d^-1	daily ecosystem respiration	ts	ER	1	NA	estimate by best-available model run to date	streamMetabolizer	NA	est	NA

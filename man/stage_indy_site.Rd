@@ -8,7 +8,7 @@ stage_indy_site(site_num, data, info = as.character(NA),
   long_name = as.character(NA), lat = u(as.numeric(NA), "degN"),
   lon = u(as.numeric(NA), "degE"), alt = u(as.numeric(NA), "ft"),
   var_format = c("mda.streams", "streamMetabolizer"), remove_NAs = TRUE,
-  collapse_const = TRUE, folder = tempdir())
+  collapse_const = TRUE, version = c("rds", "tsv"), folder = tempdir())
 }
 \arguments{
 \item{site_num}{The id, not necessarily numeric that is to follow 'indy_' in 
@@ -34,6 +34,8 @@ solar.time. DO.obs, DO.sat)?}
 
 \item{collapse_const}{If a data column has all identical values, should these
 be collapsed to a single const row in the ts file?}
+
+\item{version}{the output version for the file (tsv, rds)}
 
 \item{folder}{the folder in which to save the staged information}
 }

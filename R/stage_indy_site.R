@@ -22,6 +22,7 @@
 #'   solar.time. DO.obs, DO.sat)?
 #' @param collapse_const If a data column has all identical values, should these
 #'   be collapsed to a single const row in the ts file?
+#' @inheritParams write_ts
 #' @param folder the folder in which to save the staged information
 #' @export
 #' @importFrom unitted u v
@@ -36,10 +37,12 @@ stage_indy_site <- function(
   var_format=c('mda.streams','streamMetabolizer'),
   remove_NAs=TRUE,
   collapse_const=TRUE,
+  version = c("rds", "tsv"),
   folder=tempdir()
 ) {
   
   var_format <- match.arg(var_format)
+  version <- match.arg(version)
   
   site_name <- paste0("indy_", site_num)
   staged_meta <- stage_meta_indy(rows=u(data.frame(
@@ -65,16 +68,25 @@ stage_indy_site <- function(
     datnames
   }
   
+  
+  # check/force tzs first so can be used in datetime and/or sitetime calcs
+  if(('sitetime' %in% names(data)) && (lubridate::tz(v(data$sitetime)) != 'UTC')) {
+    warning('forcing tz(sitetime) to UTC')
+    data$sitetime <- u(force_tz(v(data$sitetime), tzone='UTC'), NA)
+  }
+  if(('DateTime' %in% names(data)) && (lubridate::tz(v(data$DateTime)) != 'UTC')) {
+    stop('tz(DateTime) must be UTC')
+  }
+  
   if(!('DateTime' %in% names(data))) {
     if(!('sitetime' %in% names(data))) stop("need DateTime and/or sitetime columns in data")
-    data$DateTime <- u(force_tz(convert_localtime_to_UTC(v(data$sitetime)), tzone='UTC'), NA)
+    data$DateTime <- u(convert_solartime_to_UTC(v(data$sitetime), lon), NA)
   }
   
   if('sitetime' %in% names(data)) {
-    data$sitetime <- u(force_tz(v(data$sitetime), tzone='UTC'), NA)
     names(data) <- add_src('sitetime', 'indy')
   } else {
-    data$sitetime_calcLon <- u(force_tz(convert_UTC_to_localtime(v(data$DateTime), latitude=lat, longitude=lon), tzone='UTC'), NA)
+    data$sitetime_calcLon <- u(convert_UTC_to_solartime(v(data$DateTime), longitude=lon), NA)
   }
   
   if('doobs' %in% names(data)) {
@@ -98,7 +110,7 @@ stage_indy_site <- function(
       data$baro <- calc_air_pressure(elevation=alt*u(0.3048,"m ft^-1"), attach.units = TRUE)*u(100,"Pa mb^-1")
       baro_src = 'calcElev'
     }
-    data$dosat <- calc_DO_at_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
+    data$dosat <- calc_DO_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
     names(data) <- add_src('dosat', if(length(unique(data$baro))==1) 'calcGGbconst' else 'calcGGbts')
     names(data) <- add_src('baro', baro_src)
   }
@@ -135,7 +147,8 @@ stage_indy_site <- function(
         tsdat <- tsdat[!is.na(tsdat[,2]), ]
       }
       tryCatch({
-        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), 
+                 version=version, folder=folder)
       }, error=function(e) NULL)
     }
   )
