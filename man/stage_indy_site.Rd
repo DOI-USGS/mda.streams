@@ -7,8 +7,8 @@
 stage_indy_site(site_num, data, info = as.character(NA),
   long_name = as.character(NA), lat = u(as.numeric(NA), "degN"),
   lon = u(as.numeric(NA), "degE"), alt = u(as.numeric(NA), "ft"),
-  var_format = c("mda.streams", "streamMetabolizer"), collapse_const = TRUE,
-  folder = tempdir())
+  var_format = c("mda.streams", "streamMetabolizer"), remove_NAs = TRUE,
+  collapse_const = TRUE, version = c("rds", "tsv"), folder = tempdir())
 }
 \arguments{
 \item{site_num}{The id, not necessarily numeric that is to follow 'indy_' in 
@@ -32,8 +32,12 @@ site_name is prefixed with 'nwis' (in which case this will be looked up)}
 format (e.g., sitetime, doobs, dosat) or streamMetabolizer format (e.g., 
 solar.time. DO.obs, DO.sat)?}
 
+\item{remove_NAs}{logical. Should ts rows with NAs be removed?}
+
 \item{collapse_const}{If a data column has all identical values, should these
 be collapsed to a single const row in the ts file?}
+
+\item{version}{the output version for the file (tsv, rds)}
 
 \item{folder}{the folder in which to save the staged information}
 }
