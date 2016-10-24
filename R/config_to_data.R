@@ -14,7 +14,7 @@
 #' @return NA or a unitted data.frame, possibly with attributes "errors" and/or 
 #'   "warnings" attached (see on_error)
 #' @import dplyr
-#' @importFrom unitted u
+#' @importFrom unitted u v
 #' @importFrom stats setNames
 #' @import streamMetabolizer
 #' @examples 
@@ -70,11 +70,17 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
   data_args <- intersect(c('data','data_daily'), names(formals(metab_fun)))
   for(possible_arg in data_args) {
     arg_default <- eval(formals(metab_fun)[[possible_arg]])
-    data_needs_list[[possible_arg]] <- colnames(arg_default)
-    var_needs_list[[possible_arg]] <- var_lookup[match(colnames(arg_default), var_lookup$metab_var),"var"]
+    data_needs_list[[possible_arg]] <- names(arg_default)
+    var_needs_list[[possible_arg]] <- var_lookup[match(names(arg_default), var_lookup$metab_var),"var"]
     optional_list[[possible_arg]] <- attr(arg_default, 'optional')
+    # if we couldn't look it up in var_lookup, it's not a data need we need to import
+    na_needs <- which(is.na(var_needs_list[[possible_arg]]))
+    if(length(na_needs) > 0) {
+      data_needs_list[[possible_arg]] <- data_needs_list[[possible_arg]][-na_needs]
+      var_needs_list[[possible_arg]]<- var_needs_list[[possible_arg]][-na_needs]
+    }
   }
-
+  
   # prepare vectors to collect any errors/warnings
   err_strs <- warn_strs <- character()
 
@@ -113,11 +119,12 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
       type <- config_row[[1,data_specs[[data]][['type']]]]
       site <- config_row[[1,data_specs[[data]][['site']]]]
       src <- config_row[[1,data_specs[[data]][['src']]]]
+      opt <- data %in% optional
       
       # run config_to_data_column (defined below) in a tryCatch block
       data <- withCallingHandlers(
         tryCatch(
-          config_to_data_column(var, type, site, src, optional=(data %in% optional)),
+          config_to_data_column(var, type, site, src, optional=opt),
           error=function(e) { 
             err_strs <<- c(err_strs, paste0(var,"-",type,": ",e$message))
             NA 
