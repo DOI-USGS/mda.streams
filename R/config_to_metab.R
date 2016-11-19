@@ -122,14 +122,8 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
     }
     
     # Run the model
-    if(verbose) message("row ", row, ": running metab_fun...")
-    message(paste0(names(metab_data), collapse=', '))
-    message(paste0(names(metab_data_daily), collapse=', '))
-    message(paste0(names(metab_args), collapse=', '))
-    message(metab_args$specs)
-    message(metab_args)
+    if(verbose) message("row ", row, ": running metab_fun")
     fit <- tryCatch({
-      # do.call(metab_fun, c(list(data=metab_data, data_daily=metab_data_daily), metab_args))
       metab_fun(specs=metab_args$specs, data=metab_data, data_daily=metab_data_daily, info=metab_args$info)
     },
     error=function(e) {
