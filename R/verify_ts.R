@@ -23,7 +23,7 @@
 #' }
 #' @export
 verify_ts <- function(
-  data, var, checks=c('ncol','unitted','tz','units','names','NA_values','NA_dates','timesteps'), on_fail=warning){
+  data, var, checks=c('ncol','nrow','unitted','tz','units','names','NA_values','NA_dates','timesteps'), on_fail=warning){
   
   tests <- list(
     'ncol' = function(x,v) {
@@ -31,6 +31,9 @@ verify_ts <- function(
         ncol(x) %in% c(2,4)
       else
         ncol(x) == 2
+    },
+    'nrow' = function(x,...) {
+      nrow(x) > 0
     },
     'unitted' = function(x,...) {
       is.unitted(x)

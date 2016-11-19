@@ -178,7 +178,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             calc_ts_with_input_check(inputs, 'calc_ts_sitetime_calcLon')
           },
           'sitedate_calcLon' = {
-            sitetime <- get_staging_ts("sitetime_calcLon")
+            sitetime <- get_staging_ts(choose_ts("sitetime"))
             calc_ts_sitedate_calcLon(
               sitetime = sitetime$sitetime, 
               longitude = get_staging_coord('lon'),

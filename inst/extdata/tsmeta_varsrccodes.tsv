@@ -17,8 +17,10 @@ depth	calcDisch	m	stream depth	ts	depth	8	NA	"calculate depth from discharge and
 depth	simDischRaymond	m	stream depth	ts	depth	11	NA	"calculate depth from discharge and Raymond et al. 2012 equation"	streamMetabolizer	calc_depth	sim	NA
 depth	simCopy	m	stream depth	ts	depth	12	NA	"simulate by copying from another site"	streamMetabolizer	NA	sim	NA
 depth	simNew	m	stream depth	ts	depth	13	NA	"arbitrarily assign numbers for model testing"	streamMetabolizer	NA	sim	NA
-disch	nwis	ft^3 s^-1	discharge	ts	discharge	1	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
-dischdaily	calcDMean	m^3 s^-1	daily mean discharge	ts	discharge.daily	1	NA	daily mean values, 4am to 4am sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
+disch	indy	ft^3 s^-1	discharge	ts	discharge	1	NA	independent data source	NA	NA	data	NA
+disch	nwis	ft^3 s^-1	discharge	ts	discharge	2	http://waterdata.usgs.gov/nwis	National Water Information System	dataRetrieval	readNWISuv	data	'00060'
+dischdaily	indy	m^3 s^-1	daily mean discharge	ts	discharge.daily	1	NA	independent data source	NA	NA	data	NA
+dischdaily	calcDMean	m^3 s^-1	daily mean discharge	ts	discharge.daily	2	NA	daily mean values, 4am to 4am sitetime, stamped noon sitetime	mda.streams	calc_ts_dischdaily_calcDMean	calc	NA
 doinit	simNew	mgO2 L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	12	NA	arbitrarily assign numbers for model testing	streamMetabolizer	NA	sim	NA
 doinit	simDStart	mgO2 L^-1	first 'observed' dissolved oxygen concentration of each date	ts	DO.mod.1	13	NA	first value of each day (default 4am)	streamMetabolizer	NA	sim	NA
 doobs	indy	mgO2 L^-1	dissolved oxygen concentration	ts	DO.obs	1	NA	independent data source	NA	NA	data	NA
