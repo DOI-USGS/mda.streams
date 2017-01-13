@@ -131,6 +131,10 @@ stage_indy_site <- function(
       app.solar.time=v(suntime), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
   } 
   
+  if('disch' %in% names(data)) {
+    names(data) <- add_src('disch', 'indy')
+  }
+  
   # write the data (instantaneous) timeseries files
   data_names <- names(data)[which(names(data) != 'DateTime')]
   data_list <- lapply(

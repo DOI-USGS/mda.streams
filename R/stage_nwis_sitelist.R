@@ -6,7 +6,7 @@
 #' @param min.obs minimum number of observations of the vars that a site must 
 #'   have to be accepted
 #' @param site.types character vector of acceptable NWIS site types as in 
-#'   http://maps.waterdata.usgs.gov/mapper/help/sitetype.html
+#'   https://maps.waterdata.usgs.gov/mapper/help/sitetype.html
 #' @param HUCs character or numeric vector of HUC codes, e.g., 1:3 or '04'
 #' @param folder directory path, or NULL, indicating where to save the file or 
 #'   (NULL) to return it as a character vector

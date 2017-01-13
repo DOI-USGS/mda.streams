@@ -42,7 +42,7 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
     # as the range of model options expands.
     var <- ".dplyr.var"
     file_paths <- sapply(vars, function(pvar) {
-      metab_var <- get_var_src_codes(var==pvar, out="metab_var")[1]
+      metab_var <- toupper(pvar) # this isn't available in var_src_codes, which does the download translation but not the upload in this case
       var_units <- get_var_src_codes(var==pvar, out="units")[1]
       data <- preds[c("DateTime", paste0(metab_var,c('','.lower','.upper')))] %>%
         setNames(c("DateTime",paste0(pvar,c('','lwr','upr')))) %>%
