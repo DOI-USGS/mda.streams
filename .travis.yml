@@ -13,13 +13,11 @@ env:
 
 repos:
   CRAN: https://cran.rstudio.com
-  GRAN: http://owi.usgs.gov/R
+  GRAN: https://owi.usgs.gov/R
   
 r_github_packages:
   - jimhester/covr
-  - appling/unitted
   - USGS-R/streamMetabolizer@develop
-  - USGS-R/sbtools
 
 after_success:
   - Rscript -e 'covr::coveralls()'
