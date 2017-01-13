@@ -16,13 +16,13 @@ Copyright: This software is in the public domain because it contains materials
 Depends:
     R (>= 3.1)
 Imports:
-    dataRetrieval (>= 2.4.8),
-    geoknife (>= 1.2.0),
+    dataRetrieval (>= 2.6.6),
+    geoknife (>= 1.5.2),
     sbtools (>= 1.0.2),
-    streamMetabolizer (>= 0.9.7),
+    streamMetabolizer (>= 0.9.18),
     unitted (>= 0.2.7),
     dplyr (>= 0.5.0),
-    tibble (>= 1.1.0),
+    tibble (>= 1.2.0),
     foreign,
     stringr,
     lubridate,
