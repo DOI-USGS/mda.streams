@@ -1,4 +1,4 @@
-# saveRDS test script from http://rpubs.com/hadley/saveRDS
+# saveRDS test script from https://rpubs.com/hadley/saveRDS
 
 test_saveRDS_manual <- function() {
   library(dplyr)

@@ -60,7 +60,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
   if(isTRUE(verbose)) message("requesting data from NWIS for ", query_msg)
   
   # request times with 1-hour buffer to deal with NWIS bug. specify times as UTC
-  # (see http://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
+  # (see https://waterservices.usgs.gov/rest/IV-Service.html#Specifying)
   dates <- times # keep in char format for qw data
   truetimes <- as.POSIXct(paste0(times, " 00:00:00"), tz="UTC")
   asktimes <- format(truetimes + as.difftime(c(-1, 0), units="hours"), "%Y-%m-%dT%H:%MZ")
