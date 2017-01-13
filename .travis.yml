@@ -17,6 +17,7 @@ repos:
   
 r_github_packages:
   - jimhester/covr
+  - appling/unitted
   - USGS-R/streamMetabolizer@develop
 
 after_success:

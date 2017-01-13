@@ -25,8 +25,8 @@ environment:
 
 build_script:
   - R --version
-  - Rscript -e "install.packages(c('sbtools', 'smwrQW', 'unitted'), repos=c('https://owi.usgs.gov/R', 'https://cran.rstudio.com'))"
-  - travis-tool.sh install_github USGS-R/streamMetabolizer@develop
+  - Rscript -e "install.packages(c('sbtools', 'smwrQW'), repos=c('https://owi.usgs.gov/R', 'https://cran.rstudio.com'))"
+  - travis-tool.sh install_github appling/unitted USGS-R/streamMetabolizer@develop
   - travis-tool.sh install_deps
 
 test_script:
