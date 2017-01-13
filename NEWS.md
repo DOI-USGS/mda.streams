@@ -1,6 +1,9 @@
 # mda.streams 0.9.12+ to 0.9.13
 
-* `list_sites`, `list_datasets`, and `list_tses` now accept a
+* `config_to_data` now converts instantaneous discharge (`disch`) from cfs, as
+on ScienceBase, to cms, as required by streamMetabolizer
+
+* `list_sites`, `list_datasets`, and `list_tses` now accept a 
 `with_ts_uploaded_after` argument
 
 * minor improvements to `get_ts`, `build_calc_ts_needs` (again), and 
