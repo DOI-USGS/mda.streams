@@ -56,7 +56,7 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
   on_error <- match.arg(on_error)
   
   # get a lookup table to translate between mda.streams vars and metab vars
-  var <- '.dplyr.var'
+  metab_var <- '.dplyr.var'
   var_lookup <- unique(get_var_src_codes(out=c("metab_var","var","metab_units","units"))) %>%
     filter(!is.na(metab_var))
   
@@ -134,7 +134,7 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
       data <- withCallingHandlers(
         tryCatch({
           dat <- config_to_data_column(var, type, site, src, optional=opt)
-          if(!is.na(conv)) dat[[2]] <- dat[[2]] * conv
+          if(is.data.frame(dat) && !is.na(conv)) dat[[2]] <- dat[[2]] * conv
           dat
         }, error=function(e) { 
           err_strs <<- c(err_strs, paste0(var,"-",type,": ",e$message))
