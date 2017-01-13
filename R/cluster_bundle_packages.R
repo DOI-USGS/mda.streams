@@ -21,7 +21,7 @@
 #' @importFrom utils available.packages download.packages zip
 #' @importFrom tools package_dependencies write_PACKAGES
 #' @export
-cluster_bundle_packages <- function(packages='mda.streams', github='USGS-R/mda.streams@develop', bundlefile='./cluster_packages.zip', pkgdir='temp/pkgs', repos=union(getOption('repos'),'http://owi.usgs.gov/R')) {
+cluster_bundle_packages <- function(packages='mda.streams', github='USGS-R/mda.streams@develop', bundlefile='./cluster_packages.zip', pkgdir='temp/pkgs', repos=union(getOption('repos'),'https://owi.usgs.gov/R')) {
   # get the database of pkgs in CRAN and GRAN. db should include current or 
   # recent versions of all packages of interest. if we run into the case where 
   # we've just added a package to a GitHub repo, haven't pushed the repo to 

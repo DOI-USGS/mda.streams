@@ -11,8 +11,8 @@ view_file <- function(path) {
   }
   switch(
     .Platform$OS.type,
-    'windows'=suppressWarnings(shell(paste0("explorer ", gsub("/", "\\", path, fixed=TRUE)), intern=TRUE)), #http://stackoverflow.com/questions/11031317/open-windows-explorer-with-specific-path-using-system-command
-    'unix'=system(paste0("open ", path))) #http://stackoverflow.com/questions/11780810/launch-mac-finder-window-with-specified-path
+    'windows'=suppressWarnings(shell(paste0("explorer ", gsub("/", "\\", path, fixed=TRUE)), intern=TRUE)), # https://stackoverflow.com/questions/11031317/open-windows-explorer-with-specific-path-using-system-command
+    'unix'=system(paste0("open ", path))) # https://stackoverflow.com/questions/11780810/launch-mac-finder-window-with-specified-path
   invisible()
 }
 

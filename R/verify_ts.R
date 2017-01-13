@@ -10,7 +10,8 @@
 #'   and stop. if the function does not halt evaluation, FALSE is returned after
 #'   the function is first called.
 #' @return TRUE if is valid, FALSE if not
-#' @importFrom unitted is.unitted get_units
+#' @importFrom unitted is.unitted get_units deunitted u v
+#' @importClassesFrom unitted unitted unitted_data.frame
 #' @examples 
 #' \dontrun{
 #' files <- stage_nwis_ts(sites = c("nwis_06893820","nwis_01484680"), var = "doobs",
@@ -22,7 +23,7 @@
 #' }
 #' @export
 verify_ts <- function(
-  data, var, checks=c('ncol','unitted','tz','units','names','NA_values','NA_dates','timesteps'), on_fail=warning){
+  data, var, checks=c('ncol','nrow','unitted','tz','units','names','NA_values','NA_dates','timesteps'), on_fail=warning){
   
   tests <- list(
     'ncol' = function(x,v) {
@@ -30,6 +31,9 @@ verify_ts <- function(
         ncol(x) %in% c(2,4)
       else
         ncol(x) == 2
+    },
+    'nrow' = function(x,...) {
+      nrow(x) > 0
     },
     'unitted' = function(x,...) {
       is.unitted(x)
@@ -59,7 +63,12 @@ verify_ts <- function(
     'timesteps' = function(x,v) {
       all(as.numeric(diff(v(x[,1])), units='mins') > 0) # require positive timesteps
     })
-    
+  
+  if(class(data) == 'unitted_data.frame' && !is.data.frame(data)) {
+    warning("unitted_data.frame got loaded imperfectly. This happens when mda.streams is called from the command line using Rscript; consider R CMD BATCH instead.")
+    data <- deunitted(data)
+    checks <- checks[!(checks %in% c('unitted','tz','units'))]
+  }
   failures <- c()
   for (check in checks){
     if (!tests[[check]](x = data, v = var)) {

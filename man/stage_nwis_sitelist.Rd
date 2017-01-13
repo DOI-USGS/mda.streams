@@ -15,7 +15,7 @@ stage_nwis_sitelist(vars, min.obs = 100, site.types = "ST", HUCs = 1:21,
 have to be accepted}
 
 \item{site.types}{character vector of acceptable NWIS site types as in 
-http://maps.waterdata.usgs.gov/mapper/help/sitetype.html}
+https://maps.waterdata.usgs.gov/mapper/help/sitetype.html}
 
 \item{HUCs}{character or numeric vector of HUC codes, e.g., 1:3 or '04'}
 
