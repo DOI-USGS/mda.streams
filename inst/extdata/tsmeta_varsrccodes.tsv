@@ -52,9 +52,10 @@
 "K600"	"simNew"	"d^-1"	"gas exchange rate"	"ts"	"K600.daily"	"d^-1"	"12"	NA	"arbitrarily assign numbers for model testing"	"streamMetabolizer"	NA	"sim"	NA
 "K600init"	"param"	"d^-1"	"initial gas exchange rate"	"ts"	"K600.init"	"d^-1"	"1"	NA	"model fitting parameter"	"streamMetabolizer"	NA	"param"	NA
 "par"	"indy"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"1"	NA	"independent data source"	NA	NA	"data"	NA
-"par"	"calcLat"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"2"	NA	"calculate PAR using site latitude and suntime"	"streamMetabolizer"	"calc_solar_insolation"	"calc"	NA
-"par"	"calcSw"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"3"	NA	"convert shortwave radiation to PAR using coefs from Britton & Dodd (1976)"	"streamMetabolizer"	"convert_SW_to_PAR"	"calc"	NA
-"par"	"nwis"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"4"	"http://waterdata.usgs.gov/nwis"	"National Water Information System"	"dataRetrieval"	"readNWISuv"	"data"	"99988"
+"par"	"calcLatSw"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"2"	NA	"calculate PAR by merging calcSw and calcLat"	"streamMetabolizer"	"calc_light_merged"	"calc"	NA
+"par"	"calcLat"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"3"	NA	"calculate PAR using site latitude and suntime"	"streamMetabolizer"	"calc_light"	"calc"	NA
+"par"	"calcSw"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"4"	NA	"convert shortwave radiation to PAR using coefs from Britton & Dodd (1976)"	"streamMetabolizer"	"convert_SW_to_PAR"	"calc"	NA
+"par"	"nwis"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"5"	"http://waterdata.usgs.gov/nwis"	"National Water Information System"	"dataRetrieval"	"readNWISuv"	"data"	"99988"
 "par"	"simLat"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"11"	NA	"calculate PAR using site latitude and suntime"	"streamMetabolizer"	"calc_solar_insolation"	"sim"	NA
 "par"	"simCopy"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"12"	NA	"simulate by copying from another site"	"streamMetabolizer"	NA	"sim"	NA
 "par"	"simNew"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"13"	NA	"arbitrarily assign numbers for model testing"	"streamMetabolizer"	NA	"sim"	NA

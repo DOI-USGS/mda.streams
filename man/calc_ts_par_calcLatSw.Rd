@@ -4,12 +4,12 @@
 \alias{calc_ts_par_calcLatSw}
 \title{Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data}
 \usage{
-calc_ts_par_calcLatSw(utctime, parlat, parsw, latitude, longitude)
+calc_ts_par_calcLatSw(parsw, parlat, latitude, longitude)
 }
 \arguments{
-\item{utctime}{the DateTime with tz of UTC}
-
 \item{parlat}{PAR in umol m^2 s^-1}
+
+\item{utctime}{the DateTime with tz of UTC}
 }
 \description{
 Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
