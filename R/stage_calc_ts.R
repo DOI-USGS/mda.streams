@@ -209,6 +209,14 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
               utctime = sw_best$DateTime,
               sw = sw_best$sw)
           },
+          'par_calcLatSw' = {
+            par_calcLat <- get_staging_ts('par_calcLat')
+            par_calcSw <- get_staging_ts('par_calcSw')
+            calc_ts_par_calcLatSw(
+              utctime = par_calcLat$DateTime,
+              parlat = par_calcLat$par,
+              parsw = par_calcSw$par)
+          },
           'par_simLat' = {
             calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
           },
@@ -514,6 +522,23 @@ calc_ts_par_calcSw <- function(utctime, sw) {
     DateTime = utctime,
     par = convert_SW_to_PAR(sw)) %>% 
     u()
+}
+
+#' Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
+#' 
+#' @param utctime the DateTime with tz of UTC
+#' @param parlat PAR in umol m^2 s^-1
+#' @import streamMetabolizer
+#' @importFrom unitted u
+#' 
+#' @keywords internal
+calc_ts_par_calcLatSw <- function(utctime, parlat, parsw, latitude, longitude) {
+  data.frame(
+    DateTime = utctime,
+    par = calc_light_merged(
+      PAR.obs=parsw, solar.time=parlat$solar.time, 
+      latitude=latitude, longitude=longitude)
+  )
 }
 
 
