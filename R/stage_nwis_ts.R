@@ -116,6 +116,7 @@ stage_nwis_ts <- function(sites, var, times, folder = tempdir(), version=c('rds'
       } else {
         ignore.cols <- grepl('_cd', names(nwis_data)) # _cd includes flag, tz, agency. 
         everything <- '.dplyr.var'
+        names(nwis_data) <- make.names(names(nwis_data))
         nwis_data <- nwis_data[, !ignore.cols] %>%
           rename(DateTime = dateTime) %>%
           select(site_no, DateTime, everything())
