@@ -1,6 +1,11 @@
+# mda.0.9.14
+
+* added `par_calcLatSw` option to `stage_calc_ts` to compute the merger of
+modeled and observed light
+
 # mda.streams 0.9.12+ to 0.9.13
 
-* `config_to_data` now converts instantaneous discharge (`disch`) from cfs, as
+* `config_to_data` now converts instantaneous discharge (`disch`) from cfs, as 
 on ScienceBase, to cms, as required by streamMetabolizer
 
 * `list_sites`, `list_datasets`, and `list_tses` now accept a 

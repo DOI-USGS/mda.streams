@@ -544,6 +544,7 @@ calc_ts_par_calcSw <- function(utctime, sw) {
 #' 
 #' @keywords internal
 calc_ts_par_calcLatSw <- function(parsw, parlat, latitude, longitude) {
+  DateTime <- par <- solar.time <- '.dplyr.var'
   parobs <- parsw %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(solar.time, light=par)
   parmod <- parlat %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(DateTime, solar.time)
   data.frame(
