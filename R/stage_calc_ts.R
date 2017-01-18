@@ -36,6 +36,15 @@
 #' head(read_ts(file_par))
 #' attr(file_par, 'choices')
 #' 
+#' file_parMerged <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLatSw", verbose=TRUE)
+#' head(read_ts(file_parMerged))
+#' attr(file_parMerged, 'choices')
+#' library(ggplot2)
+#' ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
+#' pm <- read_ts(file_parMerged)
+#' subset(unitted::v(pm), par>5000)
+#' pm[273085:273095,]
+#' 
 #' file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 #' head(read_ts(file_depth))
 #' attr(file_depth, 'choices')
@@ -208,6 +217,15 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             calc_ts_par_calcSw(
               utctime = sw_best$DateTime,
               sw = sw_best$sw)
+          },
+          'par_calcLatSw' = {
+            par_calcLat <- get_staging_ts('par_calcLat')
+            par_calcSw <- get_staging_ts('par_calcSw')
+            calc_ts_par_calcLatSw(
+              parsw = par_calcSw,
+              parlat = par_calcLat,
+              latitude = get_staging_coord('lat'), 
+              longitude = get_staging_coord('lon'))
           },
           'par_simLat' = {
             calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
@@ -514,6 +532,27 @@ calc_ts_par_calcSw <- function(utctime, sw) {
     DateTime = utctime,
     par = convert_SW_to_PAR(sw)) %>% 
     u()
+}
+
+#' Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
+#' 
+#' @param utctime the DateTime with tz of UTC
+#' @param parlat PAR in umol m^2 s^-1
+#' @import streamMetabolizer
+#' @import dplyr
+#' @importFrom unitted u
+#' 
+#' @keywords internal
+calc_ts_par_calcLatSw <- function(parsw, parlat, latitude, longitude) {
+  DateTime <- par <- solar.time <- '.dplyr.var'
+  parobs <- parsw %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(solar.time, light=par)
+  parmod <- parlat %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(DateTime, solar.time)
+  data.frame(
+    DateTime = parmod$DateTime,
+    par = calc_light_merged(
+      PAR.obs=parobs, solar.time=parmod$solar.time, 
+      latitude=latitude, longitude=longitude, max.gap=NA)$light # use modeled light wherever observed is unavailable
+  ) %>% u()
 }
 
 
