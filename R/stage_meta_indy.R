@@ -8,6 +8,7 @@
 #'   function is called (except that this copying is currently only implemented 
 #'   for the 'basic' metadata table).
 #' @inheritParams stage_meta_styx
+#' @importFrom unitted u is.unitted get_units
 #' @export
 stage_meta_indy <- function(
   rows=u(data.frame(
@@ -19,7 +20,7 @@ stage_meta_indy <- function(
   
   if(!is.unitted(rows)) stop("rows must be unitted")
   rows <- u(
-    as.data.frame(lapply(rows, function(col) if(is.factor(col)) as.character(col) else col), stringsAsFactors=FALSE),
+    as.data.frame(lapply(v(rows), function(col) if(is.factor(col)) as.character(col) else col), stringsAsFactors=FALSE),
     get_units(rows))
   
   if('indy' %in% list_metas()) {

@@ -25,7 +25,8 @@
 #' @seealso \code{\link{locate_site}} \code{\link{list_tses}}
 list_sites <- function(
   with_var_src = NULL, logic=c("all","any"), 
-  with_ts_version='rds', with_ts_archived=FALSE, limit=10000) {
+  with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01',
+  limit=10000) {
   
   # process args
   logic <- match.arg(logic)
@@ -47,7 +48,8 @@ list_sites <- function(
       if(newlogic=="") newlogic <- "all" # if unspecified, use the default
       sites <- append(sites, list_sites(
         with_var_src[[k]], logic=newlogic, 
-        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, limit=limit))
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, 
+        with_ts_uploaded_after=with_ts_uploaded_after, limit=limit))
     }
     
   } else {
@@ -64,7 +66,8 @@ list_sites <- function(
     for (k in 1:length(data_names)){
       sites <- append(sites, get_sites(
         with_dataset_name = data_names[[k]],
-        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, limit=limit))
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, 
+        with_ts_uploaded_after=with_ts_uploaded_after, limit=limit))
     }
   }
 

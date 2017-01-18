@@ -20,6 +20,9 @@ stage_metab_config(tag, strategy, date = Sys.time(), model = "metab_mle",
   K600 = choose_data_source("K600", site, logic = "unused var"),
   K600lwr = choose_data_source("K600lwr", site, logic = "unused var"),
   K600upr = choose_data_source("K600upr", site, logic = "unused var"),
+  gppinit = choose_data_source("gppinit", site, logic = "unused var"),
+  erinit = choose_data_source("erinit", site, logic = "unused var"),
+  K600init = choose_data_source("K600init", site, logic = "unused var"),
   dischdaily = choose_data_source("dischdaily", site, logic = "unused var"),
   velocdaily = choose_data_source("velocdaily", site, logic = "unused var"),
   start_date = NA, end_date = NA, omit_incomplete = TRUE,
@@ -80,11 +83,21 @@ simulation. See Data Source Format below.}
 \item{K600}{Data Source for reaeration rates for use in data simulation. See 
 Data Source Format below.}
 
-\item{K600lwr}{Data Source for lower bound on reaeration rates for use in
+\item{K600lwr}{Data Source for lower bound on reaeration rates for use in 
 data simulation. See Data Source Format below.}
 
-\item{K600upr}{Data Source for upper bound on reaeration rates for use in
+\item{K600upr}{Data Source for upper bound on reaeration rates for use in 
 data simulation. See Data Source Format below.}
+
+\item{gppinit}{Data Source for initial values of daily gross primary
+productivity rates for use in likelihood maximization. See Data Source
+Format below.}
+
+\item{erinit}{Data Source for initial values of ecosystem respiration rates
+for use in likelihood maximization. See Data Source Format below.}
+
+\item{K600init}{Data Source for initial values of reaeration rates for use in
+likelihood maximization. See Data Source Format below.}
 
 \item{dischdaily}{Data Source for daily mean stream discharge, for use in 
 identifying daily priors or fixed values for K600. See Data Source Format 

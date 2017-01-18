@@ -14,7 +14,7 @@
 #' @return NA or a unitted data.frame, possibly with attributes "errors" and/or 
 #'   "warnings" attached (see on_error)
 #' @import dplyr
-#' @importFrom unitted u
+#' @importFrom unitted u v
 #' @importFrom stats setNames
 #' @import streamMetabolizer
 #' @examples 
@@ -24,11 +24,12 @@
 #' config <- stage_metab_config(tag="0.0.1", strategy="try stage_metab_config", 
 #'   site="nwis_04087142", dosat=choose_data_source("dosat", "nwis_04087142", 
 #'     logic="simple dosat", type="const", src="12,mg L^-1"), 
+#'     disch=choose_data_source("disch", "nwis_04087142"),
 #'   depth=choose_data_source("depth", "nwis_04087142", logic="local file", 
 #'     type="ts_file", src=depth_file), filename=NULL)
-#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=streamMetabolizer::metab_mle)
+#' cdat <- config_to_data(config[1,], row_num=1, metab_fun=streamMetabolizer::metab_bayes)
 #' names(cdat)
-#' head(cdat[['data']])
+#' head(cdat[['data']][which(complete.cases(cdat[['data']])),])
 #'  
 #' login_sb()
 #' site="nwis_01646000"
@@ -55,7 +56,9 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
   on_error <- match.arg(on_error)
   
   # get a lookup table to translate between mda.streams vars and metab vars
-  var_lookup <- unique(get_var_src_codes(out=c("metab_var","var")))
+  metab_var <- '.dplyr.var'
+  var_lookup <- unique(get_var_src_codes(out=c("metab_var","var","metab_units","units"))) %>%
+    filter(!is.na(metab_var))
   
   # get a list of vars and the relevant columns supplied in the config_row
   spec_suffixes <- colnames(choose_data_source(var="doobs", site=NA, logic="unused var"))
@@ -70,11 +73,17 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
   data_args <- intersect(c('data','data_daily'), names(formals(metab_fun)))
   for(possible_arg in data_args) {
     arg_default <- eval(formals(metab_fun)[[possible_arg]])
-    data_needs_list[[possible_arg]] <- colnames(arg_default)
-    var_needs_list[[possible_arg]] <- var_lookup[match(colnames(arg_default), var_lookup$metab_var),"var"]
+    data_needs_list[[possible_arg]] <- names(arg_default)
+    var_needs_list[[possible_arg]] <- var_lookup[match(names(arg_default), var_lookup$metab_var), 'var']
     optional_list[[possible_arg]] <- attr(arg_default, 'optional')
+    # if we couldn't look it up in var_lookup, it's not a data need we need to import
+    na_needs <- which(is.na(var_needs_list[[possible_arg]]))
+    if(length(na_needs) > 0) {
+      data_needs_list[[possible_arg]] <- data_needs_list[[possible_arg]][-na_needs]
+      var_needs_list[[possible_arg]] <- var_needs_list[[possible_arg]][-na_needs]
+    }
   }
-
+  
   # prepare vectors to collect any errors/warnings
   err_strs <- warn_strs <- character()
 
@@ -113,15 +122,24 @@ config_to_data <- function(config_row, row_num, metab_fun, on_error=c('stop','wa
       type <- config_row[[1,data_specs[[data]][['type']]]]
       site <- config_row[[1,data_specs[[data]][['site']]]]
       src <- config_row[[1,data_specs[[data]][['src']]]]
-      
+      opt <- data %in% optional
+      # create a conversion factor if needed
+      units <- var_lookup[var_lookup$var==var,c('metab_units','units')]
+      conv <- if(units$metab_units == units$units) NA else {
+        if(var == 'disch') u(0.028316847, 'm^3 ft^-3') else # multiplier to convert from units=ft^3/s to metab_units=m^3/s
+          stop("units != metab_units but only know how to convert for var == 'disch'")
+      }
+                 
       # run config_to_data_column (defined below) in a tryCatch block
       data <- withCallingHandlers(
-        tryCatch(
-          config_to_data_column(var, type, site, src, optional=(data %in% optional)),
-          error=function(e) { 
-            err_strs <<- c(err_strs, paste0(var,"-",type,": ",e$message))
-            NA 
-          }),
+        tryCatch({
+          dat <- config_to_data_column(var, type, site, src, optional=opt)
+          if(is.data.frame(dat) && !is.na(conv)) dat[[2]] <- dat[[2]] * conv
+          dat
+        }, error=function(e) { 
+          err_strs <<- c(err_strs, paste0(var,"-",type,": ",e$message))
+          NA 
+        }),
         warning=function(w) { 
           warn_strs <<- c(warn_strs, paste0(var,"-",type,": ",w$message))
           invokeRestart("muffleWarning")

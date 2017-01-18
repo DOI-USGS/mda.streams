@@ -6,7 +6,8 @@
 \usage{
 stage_calc_ts(sites, var, src, folder = tempdir(), version = c("rds",
   "tsv"), inputs = list(), day_start = 4, day_end = 28, verbose = FALSE,
-  ...)
+  with_ts_version = "rds", with_ts_archived = FALSE,
+  with_ts_uploaded_after = "2015-01-01", ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -33,6 +34,15 @@ calcXxxx variants.}
 
 \item{verbose}{logical. provide status messages?}
 
+\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+dataset extension to anything in with_ts_version (if the dataset is a ts)}
+
+\item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
+to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
+
 \item{...}{additional arguments passed to \code{\link[geoknife]{geoknife}} 
 and \code{\link[unitted]{write_unitted}}}
 }
@@ -50,6 +60,15 @@ accept calculated/modeled data as a data.frame and return a file
 file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 head(read_ts(file_par))
 attr(file_par, 'choices')
+
+file_parMerged <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLatSw", verbose=TRUE)
+head(read_ts(file_parMerged))
+attr(file_parMerged, 'choices')
+library(ggplot2)
+ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
+pm <- read_ts(file_parMerged)
+subset(unitted::v(pm), par>5000)
+pm[273085:273095,]
 
 file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 head(read_ts(file_depth))

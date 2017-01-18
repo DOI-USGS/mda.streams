@@ -74,11 +74,12 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
       }
       
       # Prepare the model arguments
-      metab_args <- NA
-      try(metab_args <- eval(parse(text=config[[row,'model_args']])), silent=TRUE)
-      if(isTRUE(is.na(metab_args)) || !is.list(metab_args)) {
+      metab_args <- tryCatch(
+        eval(parse(text=config[[row,'model_args']])), 
+        error=function(e) e$message )
+      if(!is.list(metab_args)) {
         out <- "error in evaluating metab_args"
-        attr(out, "errors") <- "could not parse or evaluate args"
+        attr(out, "errors") <- if(is.character(metab_args)) metab_args else "could not parse or evaluate args"
         return(out)
       }
       # add the config row to the info arg
@@ -101,15 +102,15 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
         # if the data are valid, also remove units. eventually want to be able
         # to pass units to metab_fun.
         . <- '.dplyr.var'
-        metab_data <- metab_data_list$data
-        metab_data <- u(metab_data, get_units(metab_data) %>% replace(., which(.=="mg L^-1"), "mgO2 L^-1"))
+        metab_data <- metab_data_list[['data']] # do this way for exact matching (to not confuse with data_daily)
+        metab_data <- u(metab_data, get_units(metab_data) %>% { replace(., which(.=="mg L^-1"), "mgO2 L^-1") })
         metab_data <- v(metab_data)
-        metab_data_daily <- metab_data_list$data_daily
+        metab_data_daily <- metab_data_list$data_daily # OK b/c partial matching won't confuse w/ anything else
         if(!is.null(metab_data_daily)) {
           metab_data_daily <- v(metab_data_daily)
         }
       }
-      
+      message('adjusted units of metab_data')
     })
     
     # Add info on the time we took to prepare the args & data
@@ -121,9 +122,9 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
     }
     
     # Run the model
-    if(verbose) message("row ", row, ": running metab_fun...")
+    if(verbose) message("row ", row, ": running metab_fun")
     fit <- tryCatch({
-      do.call(metab_fun, c(list(data=metab_data, data_daily=metab_data_daily), metab_args))
+      metab_fun(specs=metab_args$specs, data=metab_data, data_daily=metab_data_daily, info=metab_args$info)
     },
     error=function(e) {
       out <- "error in model run"

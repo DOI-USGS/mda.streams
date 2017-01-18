@@ -18,6 +18,8 @@
 #' md <- get_metab_prep(c('nwis_08062500','nwis_01646500'), out='data') # list of data.frames
 #' md <- get_metab_prep('nwis_08062500', sitedate=NA, K600=NA, 
 #'   start_date="2014-03-10 04:00:00", end_date="2014-03-11 04:00:00") # short data.frames
+#' md <- get_metab_prep('nwis_08062500', sitetime=NULL, doobs=NULL, dosat=NULL, depth=NULL, 
+#'   wtr=NULL, par=NULL, sitedate=NA, K600='estBest', dischdaily=NA, model='metab_Kmodel')
 #' }
 get_metab_prep <- function(
   site, out=c('data','data_daily','info'),
@@ -25,6 +27,7 @@ get_metab_prep <- function(
   disch=NULL, veloc=NULL, 
   sitedate=NULL, doinit=NULL, 
   gpp=NULL, er=NULL, K600=NULL, K600lwr=NULL, K600upr=NULL,
+  gppinit=NULL, erinit=NULL, K600init=NULL,
   dischdaily=NULL, velocdaily=NULL,
   start_date=NA, end_date=NA,
   tag='0.0.0', strategy='get_metab_data', date=Sys.time(), model='metab_mle', model_args='list()',
@@ -39,6 +42,7 @@ get_metab_prep <- function(
     sitetime=sitetime, doobs=doobs, dosat=dosat, depth=depth, wtr=wtr, par=par,
     disch=disch, veloc=veloc, sitedate=sitedate, doinit=doinit,
     gpp=gpp, er=er, K600=K600, K600lwr=K600lwr, K600upr=K600upr,
+    gppinit=gppinit, erinit=erinit, K600init=K600init,
     dischdaily=dischdaily, velocdaily=velocdaily,
     start_date=start_date, end_date=end_date,
     tag=tag, strategy=strategy, date=date, model=model, model_args=model_args)
@@ -46,14 +50,23 @@ get_metab_prep <- function(
   # make a data list from the config file
   metab_data_list <- config_to_metab(
     config=config, rows=seq_len(nrow(config)), verbose=verbose, prep_only=TRUE)
+  names(metab_data_list) <- site
   
   # simplify the output if requested
   if(length(out) < 3) {
     metab_data_list <- lapply(metab_data_list, function(mdl) {
-      if(length(out) == 1 && simplify_out) 
-        mdl[[out]] 
-      else 
-        mdl[out]
+      if(is.character(mdl) && mdl == 'error in data prep') {
+        if(verbose) {
+          message(paste0(c('Errors:', attr(mdl, 'errors')), collapse='\n'))
+          message(paste0(c('Warnings:', attr(mdl, 'warnings')), collapse='\n'))
+        }
+        mdl
+      } else {
+        if(length(out) == 1 && simplify_out) 
+          mdl[[out]] 
+        else 
+          mdl[out]
+      }
     })
   }
   if(length(metab_data_list) == 1 && simplify_config) 

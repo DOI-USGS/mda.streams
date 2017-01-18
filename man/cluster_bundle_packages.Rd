@@ -7,7 +7,7 @@
 cluster_bundle_packages(packages = "mda.streams",
   github = "USGS-R/mda.streams@develop",
   bundlefile = "./cluster_packages.zip", pkgdir = "temp/pkgs",
-  repos = union(getOption("repos"), "http://owi.usgs.gov/R"))
+  repos = union(getOption("repos"), "https://owi.usgs.gov/R"))
 }
 \arguments{
 \item{packages}{character. the package or packages whose dependencies (and 

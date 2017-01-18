@@ -18,6 +18,7 @@
 #' @param type character in \code{c("ts","meta","file","const")}.
 #' @param src character indicating a src to be interpreted in the context of 
 #'   \code{type}
+#' @inheritParams ts_has_file
 #' @return a 4-column data.frame component of a config file
 #' @import dplyr
 #' @export
@@ -49,7 +50,8 @@
 #' K600=choose_data_source(var="K600", site="nwis_08062500", logic="nighttime reg", 
 #'   type="pred", src="nwis_08062500-307-150730 0.0.6 nighttime_k_plus_data")
 #' }
-choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,'ts','meta','ts_file','const','pred','pred_file','none'), src=NA) {
+choose_data_source <- function(var, site, logic=c('priority local', 'unused var'), type=c(NA,'ts','meta','ts_file','const','pred','pred_file','none'), src=NA, 
+                               with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01') {
 
   # check args
   if(length(var) != 1) stop("exactly 1 var required")
@@ -101,12 +103,19 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
       for(psrc in ranked_src$src) { site_has_ts[psrc] <- FALSE }
       if(nrow(site_has_ts) > nrow(ranked_src)*2) { # loop by src if there are many sites
         for(psrc in ranked_src$src) {
-          sitelist <- list_sites(make_var_src(var,psrc))
+          sitelist <- list_sites(
+            make_var_src(var,psrc), 
+            with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
           site_has_ts[site_has_ts$site %in% sitelist, psrc] <- TRUE
         }
       } else { # loop by site if there are few sites
         for(s in site_has_ts$site) {
-          varsrclist <- grep(paste0("^", var, "_"), list_datasets(site_name=s, data_type='ts'), value=TRUE)
+          varsrclist <- grep(
+            paste0("^", var, "_"), 
+            list_datasets(
+              site_name=s, data_type='ts', 
+              with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after), 
+            value=TRUE)
           site_has_ts[site_has_ts$site==s, parse_var_src(varsrclist, out="src")] <- TRUE
         }
       }

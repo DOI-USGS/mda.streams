@@ -17,6 +17,7 @@
 #' @param day_start hour of day start as in \code{mm_model_by_ply}
 #' @param day_end hour of day end as in \code{mm_model_by_ply}
 #' @param verbose logical. provide status messages?
+#' @inheritParams ts_has_file
 #' @param ... additional arguments passed to \code{\link[geoknife]{geoknife}} 
 #'   and \code{\link[unitted]{write_unitted}}
 #' @return a file handle for time series file created
@@ -34,6 +35,15 @@
 #' file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbose=TRUE)
 #' head(read_ts(file_par))
 #' attr(file_par, 'choices')
+#' 
+#' file_parMerged <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLatSw", verbose=TRUE)
+#' head(read_ts(file_parMerged))
+#' attr(file_parMerged, 'choices')
+#' library(ggplot2)
+#' ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
+#' pm <- read_ts(file_parMerged)
+#' subset(unitted::v(pm), par>5000)
+#' pm[273085:273095,]
 #' 
 #' file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 #' head(read_ts(file_depth))
@@ -95,7 +105,10 @@
 #' head(read_ts(file_dischdaily))
 #' }
 #' @export
-stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), inputs=list(), day_start=4, day_end=28, verbose = FALSE, ...){
+stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), 
+                          inputs=list(), day_start=4, day_end=28, verbose = FALSE, 
+                          with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01',
+                          ...){
   
   version <- match.arg(version)
   if(length(var) > 1) stop("one var at a time, please")
@@ -106,14 +119,25 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
   # follows these definitions) and pull data while noting data provenance
   site <- choices <- '.local.var' #just to confirm scope; would break if these helpers didn't use site & choices from for loop below
   choose_ts <- function(var) {
-    best_src <- choose_data_source(var, site, logic="priority local")$src
-    if(is.na(best_src)) stop("could not locate an appropriate ", var, " ts for ", site)
+    best_src <- tryCatch(
+      choose_data_source(
+        var, site, logic="priority local",
+        with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)$src,
+      warning=function(w) {
+        stop('with var=',var,', site=',site,', version=',with_ts_version,
+             ', archived=',with_ts_archived,', uploaded_after=',with_ts_uploaded_after,': ',
+             w$message)
+      })
+    
     make_var_src(var, best_src)
   }
   get_staging_ts <- function(var_src, ...) {
     choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
-    get_ts(var_src, site, version='rds', on_local_exists="replace", ...)
-    #get_ts(var_src, site, version='tsv', on_local_exists="replace", ...)
+    ts <- get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ..., quietly=TRUE) # only finds non-archived, ignores upload dates
+    ts <- ts[complete.cases(ts),]
+    if(nrow(ts) == 0) 
+      stop('with var_src=c(',paste0(var_src, collapse=', '),'), site=',site,', version=',with_ts_version,': no complete rows returned')
+    ts
   }
   get_staging_coord <- function(type=c('lat','lon','alt')) {
     type <- match.arg(type)
@@ -156,20 +180,14 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
           make_var_src(var, src),
           'sitetime_calcLon' = {
             calc_ts_sitetime_calcLon(
-              utctime = get_staging_ts("doobs_nwis")$DateTime, 
+              utctime = get_staging_ts(choose_ts('doobs'))$DateTime, 
               longitude = get_staging_coord('lon'))
           },
           'sitetime_simLon' = {
             calc_ts_with_input_check(inputs, 'calc_ts_sitetime_calcLon')
           },
-          # 'sitetimedaily_calcLon' = {
-          #   sitetime <- get_staging_ts("sitetime_calcLon")
-          #   calc_ts_sitetimedaily_calcLon(
-          #     sitetime = as.POSIXct(paste0(unique(format(sitetime$sitetime, "%Y-%m-%d")), " 12:00:00"), tz="UTC"), 
-          #     longitude = get_staging_coord('lon'))
-          # },
           'sitedate_calcLon' = {
-            sitetime <- get_staging_ts("sitetime_calcLon")
+            sitetime <- get_staging_ts(choose_ts("sitetime"))
             calc_ts_sitedate_calcLon(
               sitetime = sitetime$sitetime, 
               longitude = get_staging_coord('lon'),
@@ -181,7 +199,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
           },
           'suntime_calcLon' = {
             calc_ts_suntime_calcLon(
-              utctime = get_staging_ts("doobs_nwis")$DateTime, 
+              utctime = get_staging_ts(choose_ts('doobs'))$DateTime, 
               longitude = get_staging_coord('lon'))
           },
           'suntime_simLon' = {
@@ -195,28 +213,31 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
               latitude = get_staging_coord('lat'))
           },
           'par_calcSw' = {
-            sw_nldas <- get_staging_ts('sw_nldas')
+            sw_best <- get_staging_ts(choose_ts('sw'))
             calc_ts_par_calcSw(
-              utctime = sw_nldas$DateTime,
-              sw = sw_nldas$sw)
+              utctime = sw_best$DateTime,
+              sw = sw_best$sw)
+          },
+          'par_calcLatSw' = {
+            par_calcLat <- get_staging_ts('par_calcLat')
+            par_calcSw <- get_staging_ts('par_calcSw')
+            calc_ts_par_calcLatSw(
+              parsw = par_calcSw,
+              parlat = par_calcLat,
+              latitude = get_staging_coord('lat'), 
+              longitude = get_staging_coord('lon'))
           },
           'par_simLat' = {
             calc_ts_with_input_check(inputs, 'calc_ts_par_calcLat')
           },
-          # 'depth_calcDisch' = { #identical to calcDischRaymond
-          #   disch_nwis <- get_staging_ts("disch_nwis")
-          #   calc_ts_depth_calcDisch(
-          #     utctime = disch_nwis$DateTime,
-          #     disch = disch_nwis$disch)
-          # },
           'depth_calcDischRaymond' = {
-            disch_nwis <- get_staging_ts("disch_nwis")
+            disch_nwis <- get_staging_ts(choose_ts('disch'))
             calc_ts_depth_calcDischRaymond(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch)
           },
           'depth_calcDischHarvey' = {
-            disch_nwis <- get_staging_ts("disch_nwis")
+            disch_nwis <- get_staging_ts(choose_ts('disch'))
             calc_ts_depth_calcDischHarvey(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch,
@@ -227,13 +248,13 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             calc_ts_with_input_check(inputs, 'calc_ts_depth_calcDischRaymond')
           },
           'veloc_calcDischRaymond' = {
-            disch_nwis <- get_staging_ts("disch_nwis")
+            disch_nwis <- get_staging_ts(choose_ts('disch'))
             calc_ts_veloc_calcDischRaymond(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch)
           },
           'veloc_calcDischHarvey' = {
-            disch_nwis <- get_staging_ts("disch_nwis")
+            disch_nwis <- get_staging_ts(choose_ts('disch'))
             calc_ts_veloc_calcDischHarvey(
               utctime = disch_nwis$DateTime,
               disch = disch_nwis$disch,
@@ -247,7 +268,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             baro_best <- choose_ts('baro')
             if(baro_best == "baro_calcElev") stop("need baro_best != baro_calcElev for dosat_calcGGbts")
             combo <- get_staging_ts(
-              var_src=c('wtr_nwis', baro_best), method='approx')
+              var_src=c(choose_ts('wtr'), baro_best), method='approx')
             calc_ts_dosat_calcGG(
               utctime = combo$DateTime,
               wtr = combo$wtr,
@@ -301,22 +322,22 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
             DateTime <- dopsat <- '.dplyr.var'
             get_staging_ts(
               var_src=c('sitedate_calcLon', 'dopsat_calcObsSat'), 
-              condense_stat = function(dopsat) diff(range(dopsat)), day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              condense_stat = function(dopsat) diff(range(dopsat)), day_start=day_start, day_end=day_end) %>%
               select(DateTime, doamp=dopsat)
           },
           'dischdaily_calcDMean' = {
             DateTime <- disch <- dischdaily <- '.dplyr.var'
             get_staging_ts(
-              var_src=c(choose_ts('sitedate'), choose_ts('disch')), 
-              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              var_src=c('sitedate_calcLon', choose_ts('disch')), 
+              condense_stat = mean, day_start=day_start, day_end=day_end) %>%
               select(DateTime, dischdaily=disch) %>%
               mutate(dischdaily = dischdaily * u(0.0283168466, "m^3 ft^-3"))
           },
           'velocdaily_calcDMean' = {
             DateTime <- veloc <- '.dplyr.var'
             get_staging_ts(
-              var_src=c(choose_ts('sitedate'), choose_ts('veloc')), 
-              condense_stat = mean, day_start=day_start, day_end=day_end, quietly=TRUE) %>%
+              var_src=c('sitedate_calcLon', choose_ts('veloc')), 
+              condense_stat = mean, day_start=day_start, day_end=day_end) %>%
               select(DateTime, velocdaily=veloc)
           },
           {
@@ -324,7 +345,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
           }
         )
       }}, error=function(e) {
-        message("trouble in stage_calc_ts: ", e, "\n")
+        warning("trouble in stage_calc_ts: ", e, "\n")
         data.frame()
       }
     )
@@ -338,7 +359,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
         mutate(as.data.frame(as.list(choices), stringsAsFactors=FALSE), site_name=site, file_path=fpath)))
       file_paths <- c(file_paths, fpath)
     } else {
-      if(isTRUE(verbose)) message("nrow(data) == 0 for site ", site)
+      warning("no non-NA values were calculated for var_src ", make_var_src(var, src), ", site ", site)
       # leave file_paths untouched if there's no new file
     }
   }
@@ -513,6 +534,27 @@ calc_ts_par_calcSw <- function(utctime, sw) {
     u()
 }
 
+#' Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
+#' 
+#' @param utctime the DateTime with tz of UTC
+#' @param parlat PAR in umol m^2 s^-1
+#' @import streamMetabolizer
+#' @import dplyr
+#' @importFrom unitted u
+#' 
+#' @keywords internal
+calc_ts_par_calcLatSw <- function(parsw, parlat, latitude, longitude) {
+  DateTime <- par <- solar.time <- '.dplyr.var'
+  parobs <- parsw %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(solar.time, light=par)
+  parmod <- parlat %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(DateTime, solar.time)
+  data.frame(
+    DateTime = parmod$DateTime,
+    par = calc_light_merged(
+      PAR.obs=parobs, solar.time=parmod$solar.time, 
+      latitude=latitude, longitude=longitude, max.gap=NA)$light # use modeled light wherever observed is unavailable
+  ) %>% u()
+}
+
 
 #' #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' #' coefficients
@@ -609,7 +651,7 @@ calc_ts_veloc_calcDischHarvey <- function(utctime, disch, k, m) {
 calc_ts_dosat_calcGG <- function(utctime, wtr, baro) {
   data.frame(
     DateTime = utctime,
-    dosat = calc_DO_at_sat(
+    dosat = calc_DO_sat(
       temp.water = wtr, 
       pressure.air = baro * u(0.01, "mb Pa^-1"),
       salinity.water = u(0, 'PSU'))) %>% u()

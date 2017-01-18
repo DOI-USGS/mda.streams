@@ -20,8 +20,10 @@
 #' @param var_format What format are the data column names in - mda.streams 
 #'   format (e.g., sitetime, doobs, dosat) or streamMetabolizer format (e.g., 
 #'   solar.time. DO.obs, DO.sat)?
+#' @param remove_NAs logical. Should ts rows with NAs be removed?
 #' @param collapse_const If a data column has all identical values, should these
 #'   be collapsed to a single const row in the ts file?
+#' @inheritParams write_ts
 #' @param folder the folder in which to save the staged information
 #' @export
 #' @importFrom unitted u v
@@ -34,11 +36,14 @@ stage_indy_site <- function(
   lat=u(as.numeric(NA),'degN'), lon=u(as.numeric(NA),'degE'),
   alt=u(as.numeric(NA),'ft'),
   var_format=c('mda.streams','streamMetabolizer'),
+  remove_NAs=TRUE,
   collapse_const=TRUE,
+  version=c('rds','tsv'),
   folder=tempdir()
 ) {
   
   var_format <- match.arg(var_format)
+  version <- match.arg(version)
   
   site_name <- paste0("indy_", site_num)
   staged_meta <- stage_meta_indy(rows=u(data.frame(
@@ -57,24 +62,32 @@ stage_indy_site <- function(
     names(data) <- mda_names
   }
 
-  # fill in missing data if possible, and add the appropriate src code to each
-  # column name
+  # add the appropriate src code to each column name
   add_src <- function(varname, srcname='indy') {
     datnames <- names(data)
     datnames[datnames==varname] <- paste0(varname, '_', srcname)
     datnames
   }
   
+  
+  # check/force tzs first so can be used in datetime and/or sitetime calcs
+  if(('sitetime' %in% names(data)) && (lubridate::tz(v(data$sitetime)) != 'UTC')) {
+    warning('forcing tz(sitetime) to UTC')
+    data$sitetime <- u(force_tz(v(data$sitetime), tzone='UTC'), NA)
+  }
+  if(('DateTime' %in% names(data)) && (lubridate::tz(v(data$DateTime)) != 'UTC')) {
+    stop('tz(DateTime) must be UTC')
+  }
+  
   if(!('DateTime' %in% names(data))) {
     if(!('sitetime' %in% names(data))) stop("need DateTime and/or sitetime columns in data")
-    data$DateTime <- force_tz(convert_localtime_to_UTC(data$sitetime), tzone='UTC')
+    data$DateTime <- u(convert_solartime_to_UTC(v(data$sitetime), lon), NA)
   }
   
   if('sitetime' %in% names(data)) {
-    data$sitetime <- force_tz(data$sitetime, tzone='UTC')
     names(data) <- add_src('sitetime', 'indy')
   } else {
-    data$sitetime_calcLon <- force_tz(convert_UTC_to_localtime(data$DateTime, latitude=lat, longitude=lon), tzone='UTC')
+    data$sitetime_calcLon <- u(convert_UTC_to_solartime(v(data$DateTime), longitude=lon), NA)
   }
   
   if('doobs' %in% names(data)) {
@@ -98,7 +111,7 @@ stage_indy_site <- function(
       data$baro <- calc_air_pressure(elevation=alt*u(0.3048,"m ft^-1"), attach.units = TRUE)*u(100,"Pa mb^-1")
       baro_src = 'calcElev'
     }
-    data$dosat <- calc_DO_at_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
+    data$dosat <- calc_DO_sat(temp.water=data$wtr, pressure.air=data$baro*u(0.01,"mb Pa^-1"))
     names(data) <- add_src('dosat', if(length(unique(data$baro))==1) 'calcGGbconst' else 'calcGGbts')
     names(data) <- add_src('baro', baro_src)
   }
@@ -118,6 +131,10 @@ stage_indy_site <- function(
       app.solar.time=v(suntime), latitude=lat, max.insolation=convert_PAR_to_SW(2326), attach.units=TRUE))
   } 
   
+  if('disch' %in% names(data)) {
+    names(data) <- add_src('disch', 'indy')
+  }
+  
   # write the data (instantaneous) timeseries files
   data_names <- names(data)[which(names(data) != 'DateTime')]
   data_list <- lapply(
@@ -131,9 +148,17 @@ stage_indy_site <- function(
           tsdat <- tsdat[1,]
         }
       }
-      write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), folder=folder)
+      if(remove_NAs) {
+        tsdat <- tsdat[!is.na(tsdat[,2]), ]
+      }
+      tryCatch({
+        write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), 
+                 version=version, folder=folder)
+      }, error=function(e) NULL)
     }
   )
+  # remove any failed attempts to write_ts; just don't write them
+  data_list <- data_list[!sapply(data_list, is.null)]
     
   # bundle the filenames into a list
   c(list(site_name=site_name, metadata=staged_meta), data_list)

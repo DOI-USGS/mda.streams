@@ -26,15 +26,18 @@
 #' @inheritParams stage_metab_config
 #' @export
 #' @examples 
+#' \dontrun{
 #' make_metab_config('nwis_08062500')
 #' make_metab_config('nwis_08062500', sitetime='calcLon', doobs='nwis', 
 #'   dosat='calcGGbts', depth='calcDischHarvey', wtr='nwis', par='calcSw')
+#' }
 make_metab_config <- function(
   site, 
   sitetime=NA, doobs=NA, dosat=NA, depth=NA, wtr=NA, par=NA,
   disch=NULL, veloc=NULL, 
   sitedate=NULL, doinit=NULL, 
   gpp=NULL, er=NULL, K600=NULL, K600lwr=NULL, K600upr=NULL,
+  gppinit=NULL, erinit=NULL, K600init=NULL,
   dischdaily=NULL, velocdaily=NULL,
   start_date=NA, end_date=NA,
   tag='0.0.0', strategy='get_metab_data', date=Sys.time(), model='metab_mle', model_args='list()') {
@@ -81,6 +84,9 @@ make_metab_config <- function(
     K600=choose_src(K600),
     K600lwr=choose_src(K600lwr),
     K600upr=choose_src(K600upr),
+    gppinit=choose_src(gppinit),
+    erinit=choose_src(erinit),
+    K600init=choose_src(K600init),
     dischdaily=choose_src(dischdaily),
     velocdaily=choose_src(velocdaily),
     start_date=start_date, end_date=end_date,

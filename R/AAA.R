@@ -27,11 +27,13 @@ pkg.env <- define_pkg_env()
 #' @param pkgname	a character string giving the name of the package.
 #' @importFrom utils available.packages contrib.url packageVersion
 .onAttach <- function(libname, pkgname) {
+  packageStartupMessage(paste("Funding for", pkgname, "expires summer 2017, after which bugfixes & new features will be minimal"))
+  
   GRAN_update_code <- paste0(
     '  update.packages(oldPkgs=c(\n',
     '    "mda.streams","dataRetrieval","geoknife","sbtools","smwrQW","streamMetabolizer","unitted",\n',
     '    "dplyr","foreign","stringr","lubridate","jsonlite","httr","lazyeval"),\n',
-    '    dependencies=TRUE, repos=c("http://owi.usgs.gov/R", "https://cran.rstudio.com"))')
+    '    dependencies=TRUE, repos=c("https://owi.usgs.gov/R", "https://cran.rstudio.com"))')
   github_owner <- 'USGS-R'
   github_branch <- 'develop'
   github_pkg_ref <- paste0(github_owner,'/',pkgname,'@',github_branch)
@@ -39,7 +41,7 @@ pkg.env <- define_pkg_env()
     '  devtools::install_github("',github_pkg_ref,'")')
   
   tryCatch({
-    GRAN_pkg <- utils::available.packages(utils::contrib.url("http://owi.usgs.gov/R"))
+    GRAN_pkg <- utils::available.packages(utils::contrib.url("https://owi.usgs.gov/R"))
     GRAN_version <- package_version(GRAN_pkg[[pkgname, 'Version']])
     local_version <- utils::packageVersion(pkgname)
     if(local_version < GRAN_version) {

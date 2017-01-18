@@ -4,8 +4,8 @@
 \alias{verify_ts}
 \title{verify timeseries data.frame format and contents}
 \usage{
-verify_ts(data, var, checks = c("ncol", "unitted", "tz", "units", "names",
-  "NA_values", "NA_dates", "timesteps"), on_fail = warning)
+verify_ts(data, var, checks = c("ncol", "nrow", "unitted", "tz", "units",
+  "names", "NA_values", "NA_dates", "timesteps"), on_fail = warning)
 }
 \arguments{
 \item{data}{a \code{\link[unitted]{unitted}} data.frame with date and value}

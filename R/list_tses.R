@@ -7,6 +7,6 @@
 #' @examples
 #' list_tses(site = "nwis_50231500")
 #' @export
-list_tses = function(site_name, with_ts_version='rds', with_ts_archived=FALSE, limit=10000) {
-  list_datasets(site_name=site_name, data_type='ts', with_ts_version=with_ts_version, with_ts_archived=with_ts_archived)
+list_tses = function(site_name, with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01', limit=10000) {
+  list_datasets(site_name=site_name, data_type='ts', with_ts_version=with_ts_version, with_ts_archived=with_ts_archived, with_ts_uploaded_after=with_ts_uploaded_after)
 }

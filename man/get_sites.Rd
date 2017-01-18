@@ -5,7 +5,8 @@
 \title{A helper to list_sites. Gets site IDS from sciencebase w/ simple data query}
 \usage{
 get_sites(with_dataset_name = NULL, with_ts_version = "rds",
-  with_ts_archived = FALSE, limit = 10000)
+  with_ts_archived = FALSE, with_ts_uploaded_after = "2015-01-01",
+  limit = 10000)
 }
 \arguments{
 \item{with_dataset_name}{limit sites to those with children matching the 
@@ -16,6 +17,9 @@ dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
 to sites that have a ts that's archived, not archived, or either}
+
+\item{with_ts_uploaded_after}{POSIXct, or convertible to POSIXct, giving date
+after which a ts must have been uploaded to count}
 
 \item{limit}{integer. the maximum number of items to return}
 }
