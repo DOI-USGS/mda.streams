@@ -24,7 +24,7 @@
 #'   attach.units=TRUE, or a matrix if format='geoknife'
 #' @export
 #' @examples 
-#' get_site_coords(c("nwis_01467200","styx_001001","nwis_351111089512501","nwis_07239450")) 
+#' get_site_coords(c("nwis_01467200","nwis_351111089512501","nwis_07239450")) 
 #' get_site_coords(c("styx_001001","nwis_07239450"), use_basedon=TRUE) 
 #' get_site_coords(c("nwis_01467200","nwis_09327000","nwis_351111089512501",
 #'     "styx_000001001"), format="geoknife")

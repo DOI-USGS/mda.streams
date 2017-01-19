@@ -61,6 +61,15 @@ file_par <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLat", verbo
 head(read_ts(file_par))
 attr(file_par, 'choices')
 
+file_parMerged <- stage_calc_ts(sites="nwis_08062500", var="par", src="calcLatSw", verbose=TRUE)
+head(read_ts(file_parMerged))
+attr(file_parMerged, 'choices')
+library(ggplot2)
+ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
+pm <- read_ts(file_parMerged)
+subset(unitted::v(pm), par>5000)
+pm[273085:273095,]
+
 file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 head(read_ts(file_depth))
 attr(file_depth, 'choices')

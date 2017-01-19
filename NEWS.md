@@ -1,6 +1,15 @@
-# mda.streams 0.9.12+ to 0.9.13
+# 0.9.15
 
-* `config_to_data` now converts instantaneous discharge (`disch`) from cfs, as
+* added `par_calcLatSw` to `build_calc_ts_needs`
+
+# 0.9.14
+
+* added `par_calcLatSw` option to `stage_calc_ts` to compute the merger of
+modeled and observed light
+
+# 0.9.12+ to 0.9.13
+
+* `config_to_data` now converts instantaneous discharge (`disch`) from cfs, as 
 on ScienceBase, to cms, as required by streamMetabolizer
 
 * `list_sites`, `list_datasets`, and `list_tses` now accept a 
@@ -10,7 +19,7 @@ on ScienceBase, to cms, as required by streamMetabolizer
 `stage_calc_ts` in support of the ongoing data re-pull in the `stream_metab_usa`
 project
 
-# mda.streams 0.9.12
+# 0.9.12
 
 * updates throughout to accommodate changes to package dependencies (`dplyr` and
 `tibble`)
@@ -28,7 +37,7 @@ support of the ongoing data re-pull in the `stream_metab_usa` project
 * new: `cluster_bundle_packages` builds a zip file of bundled package and 
 dependency sources for use in cluster computing
 
-# mda.streams 0.9.7
+# 0.9.7
 
 * new: `make_metab_config` is like `stage_metab_config` but more suited to 
 interactive use (less typing required)
@@ -42,7 +51,7 @@ simplify_out=TRUE)`
 * faster: `choose_data_source` takes shortcuts in locating a metabolism model 
 when possible
 
-# mda.streams 0.9.6.3
+# 0.9.6.3
 
 * `locate_ts` and `locate_site` are now much more efficient in special cases of 
 looking up many items at a time
@@ -58,11 +67,11 @@ requested
 
 * smarter default filename for `get_config`
 
-# mda.streams 0.9.6.2
+# 0.9.6.2
 
 * include CI bounds in metab `estBest` timeseries files
 
-# mda.streams 0.9.6.1
+# 0.9.6.1
 
 * date column name update in `modernize_metab_model`
 
@@ -70,7 +79,7 @@ requested
 
 * minor documentation updates
 
-# mda.streams 0.9.6
+# 0.9.6
 
 * new: `try_calc_ts`, which combines `stage_calc_ts` and `post_ts` in a 
 fault-tolerant loop that only tries the sites that have the prerequisite data 
@@ -88,7 +97,7 @@ possible
 
 * bugfixes and robustness improvements to `stage_calc_ts` and `ts_has_file`
 
-# mda.streams 0.9.5
+# 0.9.5
 
 * `config_to_metab_repeat` now works better with Bayesian models and arbitrary 
 model 'strategy' fields
@@ -101,7 +110,7 @@ is up to date with recent package changes
 * more internal functions seek .Rds timeseries data; external functions 
 (`get_ts`, etc.) still seek .tsv by default for backward compatibility
 
-# mda.streams 0.9.4
+# 0.9.4
 
 * moving toward system-wide use of binary (.Rds) timeseries files rather than 
 text (.tsv) - allows greater precision and censoring information in stored data
@@ -115,16 +124,16 @@ served
 
 * `stage_calc_ts` for `stage_styx_site` are back up to date
 
-# mda.streams 0.9.3
+# 0.9.3
 
 * Now automatically checks for available updates when you attach the package
 
-# mda.streams 0.9.2
+# 0.9.2
 
 * complex requests to `get_ts()` are about 7 times faster now if accompanied by 
 update to streamMetabolizer v0.9.3
 
-# mda.streams 0.9.1
+# 0.9.1
 
 * `read_ts`, `write_ts`, `post_ts`, and `download_ts` now support either .tsv or
 .Rds versions of data (Jordan Read)
@@ -133,7 +142,7 @@ update to streamMetabolizer v0.9.3
 temporal resolutions and/or extents are different (e.g., merging daily and 
 15-minute data) (Lindsay Carr)
 
-# mda.streams 0.9.0
+# 0.9.0
 
 ## Changes
 
@@ -143,7 +152,7 @@ temporal resolutions and/or extents are different (e.g., merging daily and
 
 * make `get_sites` private (0.8.15)
 
-# mda.streams 0.8.14
+# 0.8.14
 
 ## Status
 
