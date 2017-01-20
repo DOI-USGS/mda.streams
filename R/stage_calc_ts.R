@@ -133,7 +133,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
   get_staging_ts <- function(var_src, ...) {
     choices <<- c(choices, setNames(parse_var_src(var_src, out='src'), paste0('var.', parse_var_src(var_src, out='var'))))
     ts <- get_ts(var_src, site, version=with_ts_version, on_local_exists="replace", ..., quietly=TRUE) # only finds non-archived, ignores upload dates
-    if (!(nrow(ts) == 1 & is.na(ts[1,1]) & !is.na(ts[1,2]))){
+    if (!(nrow(ts) == 1 && is.na(ts[1,1]) && !is.na(ts[1,2]))){
       ts <- ts[complete.cases(ts),]  
     } # else is constant data.frame
     
