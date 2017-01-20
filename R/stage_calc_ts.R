@@ -42,8 +42,7 @@
 #' library(ggplot2)
 #' ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
 #' pm <- read_ts(file_parMerged)
-#' subset(unitted::v(pm), par>5000)
-#' pm[273085:273095,]
+#' subset(unitted::v(pm), par>5000) # make sure there aren't any extreme values
 #' 
 #' file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 #' head(read_ts(file_depth))
@@ -219,11 +218,11 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
               sw = sw_best$sw)
           },
           'par_calcLatSw' = {
-            par_calcLat <- get_staging_ts('par_calcLat')
+            doobs_nwis <- get_staging_ts('doobs_nwis')
             par_calcSw <- get_staging_ts('par_calcSw')
             calc_ts_par_calcLatSw(
               parsw = par_calcSw,
-              parlat = par_calcLat,
+              doobs = doobs_nwis,
               latitude = get_staging_coord('lat'), 
               longitude = get_staging_coord('lon'))
           },
@@ -534,19 +533,23 @@ calc_ts_par_calcSw <- function(utctime, sw) {
     u()
 }
 
-#' Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
+#' Internal - calculate par by merging modeled (calcLat) and observed (calcSw) 
+#' data
 #' 
 #' @param utctime the DateTime with tz of UTC
-#' @param parlat PAR in umol m^2 s^-1
+#' @param parsw ts of observed PAR in umol m^2 s^-1
+#' @param doobs ts of observed values (probably dissolved oxygen concentrations,
+#'   but the 2nd column gets ignored) containing the DateTime UTC values for
+#'   which PAR should be interpolated/extrapolated
 #' @import streamMetabolizer
 #' @import dplyr
 #' @importFrom unitted u
-#' 
+#'   
 #' @keywords internal
-calc_ts_par_calcLatSw <- function(parsw, parlat, latitude, longitude) {
+calc_ts_par_calcLatSw <- function(parsw, doobs, latitude, longitude) {
   DateTime <- par <- solar.time <- '.dplyr.var'
   parobs <- parsw %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(solar.time, light=par)
-  parmod <- parlat %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(DateTime, solar.time)
+  parmod <- doobs %>% mutate(solar.time = convert_UTC_to_solartime(DateTime, longitude)) %>% select(DateTime, solar.time)
   data.frame(
     DateTime = parmod$DateTime,
     par = calc_light_merged(

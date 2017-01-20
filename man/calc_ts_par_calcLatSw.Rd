@@ -2,17 +2,23 @@
 % Please edit documentation in R/stage_calc_ts.R
 \name{calc_ts_par_calcLatSw}
 \alias{calc_ts_par_calcLatSw}
-\title{Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data}
+\title{Internal - calculate par by merging modeled (calcLat) and observed (calcSw) 
+data}
 \usage{
-calc_ts_par_calcLatSw(parsw, parlat, latitude, longitude)
+calc_ts_par_calcLatSw(parsw, doobs, latitude, longitude)
 }
 \arguments{
-\item{parlat}{PAR in umol m^2 s^-1}
+\item{parsw}{ts of observed PAR in umol m^2 s^-1}
+
+\item{doobs}{ts of observed values (probably dissolved oxygen concentrations,
+but the 2nd column gets ignored) containing the DateTime UTC values for
+which PAR should be interpolated/extrapolated}
 
 \item{utctime}{the DateTime with tz of UTC}
 }
 \description{
-Internal - calculate par by merging modeled (calcLat) and observed (calcSw) data
+Internal - calculate par by merging modeled (calcLat) and observed (calcSw) 
+data
 }
 \keyword{internal}
 

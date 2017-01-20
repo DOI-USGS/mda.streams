@@ -67,8 +67,7 @@ attr(file_parMerged, 'choices')
 library(ggplot2)
 ggplot(unitted::v(read_ts(file_parMerged)), aes(x=DateTime, y=par)) + geom_line()
 pm <- read_ts(file_parMerged)
-subset(unitted::v(pm), par>5000)
-pm[273085:273095,]
+subset(unitted::v(pm), par>5000) # make sure there aren't any extreme values
 
 file_depth <- stage_calc_ts(sites="nwis_08062500", var="depth", src="calcDischHarvey", verbose=TRUE)
 head(read_ts(file_depth))
