@@ -2,8 +2,8 @@ Package: mda.streams
 Type: Package
 Title: Data Preparation, Access, and Analysis Functions for the Powell Center
     Continental Stream Metabolism Project
-Version: 0.9.14
-Date: 2017-01-17
+Version: 0.9.15
+Date: 2017-01-19
 Author: Alison P Appling, Luke A Winslow, Jordan S Read, Lindsay Carr
 Maintainer: Alison Appling <aappling@usgs.gov>
 Description: Back end tools for powstreams.

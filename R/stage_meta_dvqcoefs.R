@@ -15,7 +15,7 @@ stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
   meta_basic$site_num <- as.numeric(meta_basic$site_num)
   
   # import Jud's list
-  jud_coefs <- read.table(system.file("extdata/RatingCurves_JudHarvey.tsv", package="mda.streams"), header=T, sep="\t", colClasses="numeric")
+  jud_coefs <- read.table(system.file("extdata/RatingCurves_JudHarvey.tsv", package="mda.streams"), header=T, sep="\t")
   
   # determine which site_nums we can't use from Jud
   unknown_sites <- setdiff(jud_coefs$site_num, meta_basic$site_num)
@@ -26,7 +26,7 @@ stage_meta_dvqcoefs <- function(folder = tempdir(), verbose = FALSE) {
   
   # turn NA flags (-9999.00) into NAs
   for(col in 1:ncol(jud_coefs)) {
-    jud_coefs[jud_coefs[,col]==-9999,col] <- NA
+    jud_coefs[which(is.na(jud_coefs[[col]]) | jud_coefs[[col]]==-9999), col] <- NA
   }
   
   # while we're here, see how Jud's NHD codes match with ours
