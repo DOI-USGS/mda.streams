@@ -73,7 +73,7 @@ build_calc_ts_needs <- function(var, src) {
     add_need('suntime_calcLon', 'vs', vs_options('doobs')) %>% add_need('suntime_calcLon', 'c', 'lon') %>%
     add_need('par_calcLat', 'vs', 'suntime_calcLon') %>% add_need('par_calcLat', 'c', 'lat') %>%
     add_need('par_calcSw', 'vs', vs_options('sw')) %>%
-    add_need('par_calcLatSw', 'vs', c('par_calcSw', 'par_calcLat')) %>% add_need('par_calcLatSw', 'c', c('lat','lon')) %>% 
+    add_need('par_calcLatSw', 'vs', c('doobs_nwis', 'par_calcSw')) %>% add_need('par_calcLatSw', 'c', c('lat','lon')) %>% 
     add_need('sitedate_calcLon', 'vs', 'sitetime_calcLon') %>% add_need('sitedate_calcLon', 'c', 'lon') %>%
     add_need('doamp_calcDAmp', 'vs', c('sitedate_calcLon', 'dopsat_calcObsSat')) %>%
     add_need('dischdaily_calcDMean', 'vs', c('sitedate_calcLon', vs_options('disch'))) %>%
