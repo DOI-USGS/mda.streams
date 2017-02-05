@@ -4,7 +4,7 @@
 #' file meeting the criteria
 #' 
 #' @param ts_items a list of timeseries sbitems
-#' @param with_ts_version one or more of \code{c('tsv','rds')} to limit the 
+#' @param with_ts_version one or more of \code{c('rds','tsv')} to limit the 
 #'   dataset extension to anything in with_ts_version (if the dataset is a ts)
 #' @param with_ts_archived one or more of \code{c(TRUE,FALSE)} to limit the list
 #'   to sites that have a ts that's archived, not archived, or either

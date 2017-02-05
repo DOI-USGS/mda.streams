@@ -4,7 +4,7 @@
 \alias{archive_ts}
 \title{Archive a timeseries file}
 \usage{
-archive_ts(var_src, site_name, version = c("tsv", "rds"), ts_id, filename,
+archive_ts(var_src, site_name, version = c("rds", "tsv"), ts_id, filename,
   verbose = TRUE)
 }
 \arguments{

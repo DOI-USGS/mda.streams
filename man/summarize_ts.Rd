@@ -19,7 +19,7 @@ the site or sites (e.g., "nwis_24309857") where each timeseries dataset
 should be sought.}
 
 \item{version}{character string indicating whether you want to download the 
-ts as a .tsv or .rds}
+ts as an .rds or .tsv}
 
 \item{out}{a list of one or more outputs to include in the summary dataframe,
 in addition to the var_src and site_name and id columns.}

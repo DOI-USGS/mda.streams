@@ -10,7 +10,7 @@ ts_has_file(ts_items, with_ts_version = c("rds", "tsv"),
 \arguments{
 \item{ts_items}{a list of timeseries sbitems}
 
-\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+\item{with_ts_version}{one or more of \code{c('rds','tsv')} to limit the 
 dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list

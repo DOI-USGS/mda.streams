@@ -19,7 +19,7 @@ stage_nwis_ts(sites, var, times, folder = tempdir(), version = c("rds",
 directory)}
 
 \item{version}{character string indicating whether you want to stage the 
-\code{ts} as a .tsv or .rds}
+\code{ts} as an .rds or .tsv}
 
 \item{verbose}{provide verbose output (currently not implemented)}
 }

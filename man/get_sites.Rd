@@ -12,7 +12,7 @@ get_sites(with_dataset_name = NULL, with_ts_version = "rds",
 \item{with_dataset_name}{limit sites to those with children matching the 
 specified ts or other dataset name (e.g., "ts_doobs_nwis")}
 
-\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+\item{with_ts_version}{one or more of \code{c('rds','tsv')} to limit the 
 dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list

@@ -24,7 +24,7 @@ output must be a single numeric value.}
 \item{site_name}{a valid mda.streams site (see \link{list_sites})}
 
 \item{version}{character string indicating whether you want to download the 
-ts as a .tsv or .rds}
+ts as an .rds or .tsv}
 
 \item{method}{character specifying the method to use to combine timeseries 
 datasets}

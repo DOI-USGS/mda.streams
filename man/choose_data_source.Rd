@@ -26,7 +26,7 @@ must be specified.}
 \item{src}{character indicating a src to be interpreted in the context of 
 \code{type}}
 
-\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+\item{with_ts_version}{one or more of \code{c('rds','tsv')} to limit the 
 dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
