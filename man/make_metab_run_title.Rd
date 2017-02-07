@@ -16,4 +16,3 @@ make_metab_run_title(date, tag, strategy)
 \description{
 Combine the date, tag, and strategy of a model_run into a title
 }
-

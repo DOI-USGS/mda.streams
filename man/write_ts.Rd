@@ -24,4 +24,3 @@ Writes a ts file (with format specific to mda.streams) a data.frame into a
 compressed file suitable for posting to ScienceBase
 }
 \keyword{internal}
-

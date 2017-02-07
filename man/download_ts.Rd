@@ -43,4 +43,3 @@ download_ts(var_src = c('doobs_nwis','baro_nldas'), site_name = 'nwis_06893300',
 \author{
 Alison P Appling, Corinna Gries, Jordan S Read, Luke A Winslow
 }
-

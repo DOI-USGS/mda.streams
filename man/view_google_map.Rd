@@ -21,4 +21,3 @@ cat(view_google_map("nwis_01484680"))
 view_google_map(c("nwis_01467200","nwis_09327000","nwis_351111089512501"))
 }
 }
-

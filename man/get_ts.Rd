@@ -90,4 +90,3 @@ downloaded to the code{tempdir()} during this R session, or (2)
 will be out of date relative to ScienceBase, but the benefit is faster 
 ts-getting.
 }
-

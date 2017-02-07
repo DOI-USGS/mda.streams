@@ -15,4 +15,3 @@ package defining the namespace was found.}
 \description{
 Check whether this package is up to date
 }
-

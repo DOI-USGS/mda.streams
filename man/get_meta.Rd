@@ -24,4 +24,3 @@ a metadata table
 \description{
 Keeps a locally cached copy to reduce the size and number of requests to SB.
 }
-

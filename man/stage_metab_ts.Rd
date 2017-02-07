@@ -25,4 +25,3 @@ a character vector of file handles
 \description{
 Parse metabolism model outputs into gpp, er, and K600
 }
-

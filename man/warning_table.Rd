@@ -38,4 +38,3 @@ var_srces are condensed. Return a smaller table containing the timestep and
 expected resolution of each var_src after condensing.
 }
 \keyword{internal}
-

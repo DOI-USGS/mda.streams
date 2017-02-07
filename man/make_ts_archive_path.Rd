@@ -23,4 +23,3 @@ already have a non-archive file_path to modify
 make_ts_archive_path('nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
 make_ts_archive_path('temp/nwis_05406480-ts_doobs_nwis.tsv.gz', Sys.time())
 }
-

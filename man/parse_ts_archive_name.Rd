@@ -28,4 +28,3 @@ mda.streams:::parse_ts_archive_name(
   c('ARCHIVE_20160324120400-nwis_05406479-ts_doobs_nwis.tsv.gz', 
     'nwis_05406480-ts_doobs_nwis.tsv.gz'), use_names=FALSE)
 }
-

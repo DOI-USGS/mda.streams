@@ -20,4 +20,3 @@ Posts a file from the local computer to ScienceBase.
 \author{
 Luke Winslow
 }
-

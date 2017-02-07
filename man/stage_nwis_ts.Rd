@@ -42,4 +42,3 @@ stage_nwis_ts(sites = list_sites(), var = "par",
   times = c('2014-01-01', '2014-01-03'), verbose=TRUE) 
 }
 }
-

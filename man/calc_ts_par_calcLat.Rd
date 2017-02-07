@@ -17,4 +17,3 @@ calc_ts_par_calcLat(utctime, suntime, latitude)
 Internal - calculate par_calcLat from any data
 }
 \keyword{internal}
-

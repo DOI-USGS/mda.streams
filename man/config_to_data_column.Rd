@@ -24,4 +24,3 @@ a data.frame, else NA
 For use within config_to_data
 }
 \keyword{internal}
-

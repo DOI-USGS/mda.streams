@@ -19,4 +19,3 @@ contains a file with the intended download name}
 \description{
 Download and read a config file from a metab run on SB
 }
-

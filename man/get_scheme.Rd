@@ -16,4 +16,3 @@ character name of the scheme
 \description{
 Gives a warning and returns NULL if scheme has not been set
 }
-

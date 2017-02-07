@@ -36,4 +36,3 @@ summarize_ts(rep(c("doobs_nwis", "wtr_nwis"), each=4),
   rep(c("nwis_01021050","nwis_01036390","nwis_01073389","nwis_notasite"), times=2))
 }
 }
-

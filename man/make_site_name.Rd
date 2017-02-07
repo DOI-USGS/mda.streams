@@ -23,4 +23,3 @@ site ID in ScienceBase and mda.streams lingo
 Translate a site name from database and site number to a 
 ScienceBase+mda.streams site ID
 }
-

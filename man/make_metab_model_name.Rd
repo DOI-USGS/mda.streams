@@ -16,4 +16,3 @@ make_metab_model_name(title, row, site)
 \description{
 Produce a name unique to a single metab_model
 }
-

@@ -18,4 +18,3 @@ parse_metab_model_path(file_path, out = c("dir_name", "file_name",
 \description{
 Parse a file path into metab_model information
 }
-

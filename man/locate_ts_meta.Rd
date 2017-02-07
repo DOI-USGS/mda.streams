@@ -31,4 +31,3 @@ Find a timeseries metadata object on ScienceBase
 locate_ts_meta('basic')
 }
 }
-

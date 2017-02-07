@@ -15,4 +15,3 @@ session is not currently authorized}
 Default is an error
 }
 \keyword{internal}
-

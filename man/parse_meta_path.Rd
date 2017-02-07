@@ -21,4 +21,3 @@ a data.frame, one row per path
 \description{
 Split a metadata file path into contents
 }
-

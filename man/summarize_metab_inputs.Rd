@@ -23,4 +23,3 @@ config data.frame to use for this particular data summary.}
 \description{
 Summarize a timeseries
 }
-
