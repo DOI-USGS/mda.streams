@@ -24,4 +24,3 @@ Converts a list of ts sbitems into a vector of T/Fs for whether the item as a
 file meeting the criteria
 }
 \keyword{internal}
-

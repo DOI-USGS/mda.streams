@@ -43,4 +43,3 @@ set_scheme("mda_streams")
 \author{
 Luke Winslow, Corinna Gries, Jordan S Read
 }
-

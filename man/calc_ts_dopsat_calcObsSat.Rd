@@ -17,4 +17,3 @@ calc_ts_dopsat_calcObsSat(utctime, doobs, dosat)
 Internal - calculate dopsat_calcObsSat from any data
 }
 \keyword{internal}
-

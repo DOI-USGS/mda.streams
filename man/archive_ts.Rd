@@ -32,4 +32,3 @@ other arguments omitted. If ts_id and filename are omitted, the var_src,
 site, and version of the file to archive should be supplied instead, and this
 function will locate the corresponding file[s] on ScienceBase.
 }
-

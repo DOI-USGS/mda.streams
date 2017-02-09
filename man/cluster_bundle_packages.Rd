@@ -34,4 +34,3 @@ To install a package from this bundle, run
 \code{install.packages('mypackagename', repos='file:packages', 
 type='source')}
 }
-

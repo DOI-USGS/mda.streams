@@ -15,4 +15,3 @@ calc_ts_sitedate_calcLon(sitetime, longitude, day_start = 4, day_end = 28)
 Internal - calculate sitedate_calcLon from any data
 }
 \keyword{internal}
-

@@ -43,4 +43,3 @@ Cndense according to day_start, day_end, and the local solar mean time of the
 site
 }
 \keyword{internal}
-

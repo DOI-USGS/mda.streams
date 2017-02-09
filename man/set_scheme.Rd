@@ -12,4 +12,3 @@ set_scheme(scheme)
 \description{
 Set the scheme name of the project
 }
-

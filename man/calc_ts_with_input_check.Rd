@@ -16,4 +16,3 @@ the inputs}
 Checks to see that the inputs are just the right ones to supply to the
 function named by calc_fun
 }
-

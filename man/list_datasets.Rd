@@ -39,4 +39,3 @@ possible variables.
 list_datasets(site_name = 'nwis_01021050')
 }
 }
-

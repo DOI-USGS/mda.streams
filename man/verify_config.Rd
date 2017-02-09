@@ -28,4 +28,3 @@ egconfig <- suppressWarnings(
 verify_config(egconfig)
 }
 }
-

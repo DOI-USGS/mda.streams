@@ -24,4 +24,3 @@ vector of T/F values where T indicates that the row of the dataframe
 Wrapper for grepl
 }
 \keyword{internal}
-

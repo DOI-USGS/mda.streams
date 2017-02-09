@@ -21,4 +21,3 @@ if length(out)==1 a vector, else a data.frame
 \description{
 Translate a var_src into a variable and a source
 }
-

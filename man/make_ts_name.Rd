@@ -19,4 +19,3 @@ timseries name[s] in ScienceBase lingo (e.g., "\code{ts_wtr})
 \description{
 Translate a timeseries name from mda.streams to ScienceBase
 }
-

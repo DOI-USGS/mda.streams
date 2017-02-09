@@ -29,4 +29,3 @@ This function really only makes sense in the context of models that are
 fitted from simulated doobs data, which in turn must be specified as preds 
 from a metab_sim model.
 }
-

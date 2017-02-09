@@ -32,4 +32,3 @@ post_metab_run(
   files=c("config.tsv", "condor_notes.txt"))
 }
 }
-

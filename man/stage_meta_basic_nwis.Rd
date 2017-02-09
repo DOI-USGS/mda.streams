@@ -31,4 +31,3 @@ str(mda.streams:::stage_meta_basic_nwis(sites_meta, verbose=TRUE))
 }
 }
 \keyword{internal}
-

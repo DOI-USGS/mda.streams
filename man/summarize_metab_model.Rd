@@ -33,4 +33,3 @@ mymms <- c("nwis_11462500-4-150729 0.0.5 bob_sites_test_mle",
 summarize_metab_model(mymms) # be patient
 }
 }
-

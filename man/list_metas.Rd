@@ -12,4 +12,3 @@ a character vector of titles of the meta tables posted on SB
 \description{
 List the available metadata tables
 }
-

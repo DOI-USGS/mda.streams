@@ -34,4 +34,3 @@ list_tses(site = "nwis_50231500")
 \seealso{
 \code{\link{get_ts}} \code{\link{locate_ts}} \code{\link{list_sites}}
 }
-

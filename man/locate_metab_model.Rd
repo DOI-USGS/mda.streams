@@ -31,4 +31,3 @@ Find a metab_model item on ScienceBase
 locate_metab_model("nwis_02322688-147-150724 0.0.4 nighttime_k", format="url", browser=FALSE)
 }
 }
-

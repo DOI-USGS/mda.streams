@@ -49,4 +49,3 @@ from NWIS, the site should be established as an 'nwis' site (see post_site)
 as for other NWIS sites; this will enable lookups of other NWIS data and 
 metadata for the site.
 }
-

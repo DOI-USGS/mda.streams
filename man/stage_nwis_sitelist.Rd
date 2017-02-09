@@ -46,4 +46,3 @@ sites_file <- stage_nwis_sitelist(
   state_codes=c("wi"), folder=tempdir()); readLines(sites_file)
 }
 }
-

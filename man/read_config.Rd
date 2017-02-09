@@ -15,4 +15,3 @@ config data.frame
 \description{
 Read a config file
 }
-

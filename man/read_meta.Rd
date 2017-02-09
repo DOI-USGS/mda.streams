@@ -21,10 +21,9 @@ file <- download_meta(type='basic')
 meta_basic <- read_meta(file)
 }
 }
-\author{
-Alison P. Appling
-}
 \seealso{
 \code{\link{download_meta}}
 }
-
+\author{
+Alison P. Appling
+}

@@ -12,4 +12,3 @@ Moves/reformats the tables of variable and source metadata from inst/extdata
 storage location for data used internally by mda.streams)
 }
 \keyword{internal}
-

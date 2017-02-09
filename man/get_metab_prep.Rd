@@ -126,4 +126,3 @@ md <- get_metab_prep('nwis_08062500', sitetime=NULL, doobs=NULL, dosat=NULL, dep
   wtr=NULL, par=NULL, sitedate=NA, K600='estBest', dischdaily=NA, model='metab_Kmodel')
 }
 }
-

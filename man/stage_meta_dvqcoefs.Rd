@@ -14,4 +14,3 @@ stage_meta_dvqcoefs(folder = tempdir(), verbose = FALSE)
 \description{
 Pull in scaling coefficients from Jud Harvey
 }
-

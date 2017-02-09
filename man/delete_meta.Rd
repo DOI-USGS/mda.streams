@@ -17,4 +17,3 @@ delete_meta(types, files_only = FALSE, verbose = TRUE)
 Deletes a metadata object
 }
 \keyword{internal}
-

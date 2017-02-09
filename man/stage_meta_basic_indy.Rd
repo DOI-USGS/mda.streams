@@ -18,4 +18,3 @@ opening lines of stage_meta_basic}
 Helper to stage_meta_basic. Copies data from meta_indy into meta_basic where 
 this is available.
 }
-

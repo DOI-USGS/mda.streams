@@ -14,4 +14,3 @@ write_config(config, file)
 \description{
 Write a config file
 }
-

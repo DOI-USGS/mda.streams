@@ -48,4 +48,3 @@ list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
 \seealso{
 \code{\link{locate_site}} \code{\link{list_tses}}
 }
-

@@ -142,6 +142,7 @@ probably, but not necessarily, be run on a Condor cluster.
   The variables requiring Data Source specification, along with their 
   expected units, are defined in the help file for \code{\link{mm_data}}.
 }
+
 \examples{
 \dontrun{
 login_sb()
@@ -171,4 +172,3 @@ mc <- stage_metab_config(tag="0.0.1", strategy="test styx config",
   doobs=choose_data_source("doobs", styxsites, logic="unused var"), omit_incomplete=FALSE)
 }
 }
-

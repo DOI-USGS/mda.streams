@@ -25,4 +25,3 @@ most modern version isn't up there yet?}
 Uses a previously-downloaded copy of this metab_model unless (1) that 
 download occurred in a different R session, or (2) on_local_exists-'replace'.
 }
-

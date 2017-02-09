@@ -47,4 +47,3 @@ Internal - calculate depth_calcDisch from any data using the Raymond et al.
 coefficients
 }
 \keyword{internal}
-

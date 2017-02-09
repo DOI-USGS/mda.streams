@@ -23,4 +23,3 @@ a single TRUE if successful, else on_fail(msg) followed by a vector
 \description{
 Check whether a var_src is listed in get_var_src_codes()
 }
-

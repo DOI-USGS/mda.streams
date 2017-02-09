@@ -13,4 +13,3 @@ view_folder(path)
 Opens the specified folder, or the containing folder of the specified file,
 in the file explorer
 }
-

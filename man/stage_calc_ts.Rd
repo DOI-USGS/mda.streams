@@ -129,4 +129,3 @@ file_dischdaily <- stage_calc_ts(sites="nwis_08062500",
 head(read_ts(file_dischdaily))
 }
 }
-

@@ -20,4 +20,3 @@ Internal helper to locate_item. Doesn't check the value of format - that's up
 to the calling functions to do, for efficiency.
 }
 \keyword{internal}
-

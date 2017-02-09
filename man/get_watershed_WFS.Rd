@@ -29,4 +29,3 @@ get_watershed_WFS('fake_site'))
 \seealso{
 \code{\link{get_watershed_WMS}}
 }
-

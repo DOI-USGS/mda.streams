@@ -32,4 +32,3 @@ config_to_metab(config=stage_metab_config(
   filename=NULL))
 }
 }
-

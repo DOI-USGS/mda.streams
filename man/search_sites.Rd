@@ -38,4 +38,3 @@ search_sites('indy')
 search_sites('connecticut river')
 search_sites('NE$|Nebr.$', match_case=TRUE, fixed=FALSE)
 }
-

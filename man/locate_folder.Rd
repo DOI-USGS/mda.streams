@@ -34,4 +34,3 @@ locate_folder("publications", format="url")
 testthat::expect_error(locate_folder("cvs", format="url"))
 }
 }
-

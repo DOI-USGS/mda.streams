@@ -16,4 +16,3 @@ see \code{get_var_src_codes(var=='doobs', out='src')}}
 \description{
 Translate a variable and data source into a var_src
 }
-
