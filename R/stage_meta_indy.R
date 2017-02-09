@@ -8,7 +8,7 @@
 #'   function is called (except that this copying is currently only implemented 
 #'   for the 'basic' metadata table).
 #' @inheritParams stage_meta_styx
-#' @importFrom unitted u is.unitted get_units
+#' @importFrom unitted u v is.unitted get_units write_unitted
 #' @export
 stage_meta_indy <- function(
   rows=u(data.frame(
@@ -41,7 +41,7 @@ stage_meta_indy <- function(
     }
     
     # add truly new rows
-    new_meta <- rbind.unitted(old_meta, rows)
+    new_meta <- rbind(old_meta, rows)
   } else {
     new_meta <- rows
   }
