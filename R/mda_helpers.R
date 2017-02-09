@@ -572,7 +572,7 @@ parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","mode
   dir_name <- sapply(file_path, dirname, USE.NAMES=FALSE)
   file_name <- sapply(file_path, basename, USE.NAMES=FALSE)
   
-  version <- if(substring(file_name, 1, 3) == "mmm") "modern" else "original"
+  version <- ifelse(substring(file_name, 1, 3) == "mmm", "modern", "original")
   parsed <- data.frame(
     dir_name = dir_name,
     file_name = file_name, 

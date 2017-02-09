@@ -19,8 +19,13 @@ login_sb <- function(username) {
     return(authenticate_sb(username))
   }
   
-  # next possibility is that yaml pkg is available and a profile exists
+  # next possibility is that yaml pkg is available and a profile exists. putting
+  # the yaml in ~/.R is preferred. putting the yaml in the current working
+  # directory is also an option (useful for cluster runs) but not widely
+  # advertised because it increases the risk of accidentally committing a
+  # password file to a versioning system
   filename <- file.path(Sys.getenv("HOME"), ".R", "stream_metab.yaml")
+  if(!file.exists(filename)) filename <- "stream_metab.yaml" 
   if(requireNamespace('yaml', quietly=TRUE) && file.exists(filename)) {
     profile <- yaml::yaml.load_file(filename)
     if(exists('sb_user', profile) && exists('sb_password', profile)) {    
