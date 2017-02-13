@@ -21,4 +21,3 @@ a data.frame, one row per path
 \description{
 Parse the title of a metab_model run
 }
-

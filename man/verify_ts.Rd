@@ -35,4 +35,3 @@ verify_ts(ts, var='doobs', checks=c('ncol','units','names')) # TRUE
 verify_ts(ts, var='wtr', checks=c('ncol','units','names')) # warning + FALSE
 }
 }
-

@@ -19,4 +19,3 @@ a joined, sorted, unitted tbl_df
 A function to combine unitted data.frames/tbl_dfs
 }
 \keyword{internal}
-

@@ -45,4 +45,3 @@ download_item_files(item_id, on_local_exists="replace")
 \author{
 Alison P Appling, Corinna Gries, Jordan S Read, Luke A Winslow
 }
-

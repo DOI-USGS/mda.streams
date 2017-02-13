@@ -18,4 +18,3 @@ Data-reading function from comments in
 http://blog.revolutionanalytics.com/2014/06/reading-data-from-the-new-version-of-google-spreadsheets.html
 }
 \keyword{internal}
-

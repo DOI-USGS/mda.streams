@@ -17,4 +17,3 @@ calc_ts_dosat_calcGG(utctime, wtr, baro)
 Internal - calculate dosat_calcGG from any data
 }
 \keyword{internal}
-

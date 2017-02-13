@@ -18,7 +18,7 @@ requirements}
 listed parameters sufficient, or do you need all of them to be available 
 for a site to qualify?}
 
-\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+\item{with_ts_version}{one or more of \code{c('rds','tsv')} to limit the 
 dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
@@ -48,4 +48,3 @@ list_sites(list("wtr_nwis",any=c("doobs_nwis","doobs_simCopy")), logic="all")
 \seealso{
 \code{\link{locate_site}} \code{\link{list_tses}}
 }
-

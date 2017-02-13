@@ -44,4 +44,3 @@ information to run \code{\link{config_to_metab}} or
 clusterApplyLB(c1, 1:nrow(config), config_to_metab_clusterfun(config, rows))
 }
 }
-

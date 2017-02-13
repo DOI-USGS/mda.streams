@@ -24,10 +24,9 @@ file <- download_ts(var_src = "baro_nldas", site_name = "nwis_06893820")
 baro_pressure <- read_ts(file)
 }
 }
-\author{
-Jordan S. Read, Alison Appling
-}
 \seealso{
 \code{\link{download_ts}}
 }
-
+\author{
+Jordan S. Read, Alison Appling
+}

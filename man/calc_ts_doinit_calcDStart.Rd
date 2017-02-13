@@ -18,4 +18,3 @@ calc_ts_doinit_calcDStart(sitetime, doobs, longitude, day_start = 4,
 Internal - calculate doinit_calcDStart from any data
 }
 \keyword{internal}
-

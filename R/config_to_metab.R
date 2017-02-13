@@ -129,6 +129,8 @@ config_to_metab <- function(config, rows, verbose=TRUE, prep_only=FALSE) {
     error=function(e) {
       out <- "error in model run"
       attr(out, "errors") <- as.character(e$message)
+      attr(out, "error_object") <- e
+      attr(out, "inputs") <- list(specs=metab_args$specs, data=metab_data, data_daily=metab_data_daily, info=metab_args$info)
       out
     })
     

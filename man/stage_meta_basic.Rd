@@ -24,4 +24,3 @@ Create/modify sites file
 stage_meta_basic(sites=list_sites()[655:665], verbose=TRUE, folder=NULL)
 }
 }
-

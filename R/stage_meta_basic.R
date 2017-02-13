@@ -6,7 +6,7 @@
 #' @param verbose logical. print status messages?
 #' @import dplyr
 #' @import tibble
-#' @importFrom unitted u v get_units
+#' @importFrom unitted u v is.unitted get_units write_unitted
 #' @export
 #' @examples 
 #' \dontrun{
@@ -78,7 +78,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
       }
       
       # add truly new rows
-      new_meta <- rbind.unitted(old_meta, sites_meta)
+      new_meta <- rbind(old_meta, sites_meta)
     } else {
       new_meta <- sites_meta
     }

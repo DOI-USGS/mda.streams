@@ -31,4 +31,3 @@ make_ts_path('nwis_08062500', 'ts_doobs_nwis', version='tsv')
 make_ts_path('nwis_08062500', 'ts_doobs_nwis', creation_date=Sys.time())
 make_ts_path('nwis_08062500', 'ts_doobs_nwis', folder='temp/1', creation_date=Sys.time())
 }
-

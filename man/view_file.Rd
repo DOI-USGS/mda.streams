@@ -12,4 +12,3 @@ view_file(path)
 \description{
 Opens the specified file using the default program for that file type
 }
-

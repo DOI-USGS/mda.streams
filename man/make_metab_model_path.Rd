@@ -17,4 +17,3 @@ or a modernized one that works with the current streamMetabolizer version}
 \description{
 Combine the model_name and folder into a file path for a metab_model
 }
-

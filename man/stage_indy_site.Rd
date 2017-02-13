@@ -37,7 +37,7 @@ solar.time. DO.obs, DO.sat)?}
 \item{collapse_const}{If a data column has all identical values, should these
 be collapsed to a single const row in the ts file?}
 
-\item{version}{the output version for the file (tsv, rds)}
+\item{version}{the output version for the file (rds, tsv)}
 
 \item{folder}{the folder in which to save the staged information}
 }
@@ -49,4 +49,3 @@ from NWIS, the site should be established as an 'nwis' site (see post_site)
 as for other NWIS sites; this will enable lookups of other NWIS data and 
 metadata for the site.
 }
-

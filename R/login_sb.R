@@ -1,7 +1,7 @@
 #' Log into ScienceBase with your myUSGS credentials
 #' 
 #' BE CAREFUL NOT TO POST OR SHARE YOUR PASSWORD! Even better, set up your 
-#' ~/.R/stream_metab.yaml with fields for sb_user and sb_password so you never
+#' ~/.R/stream_metab.yaml with fields for sb_user and sb_password so you never 
 #' again have to bring your password into the R global environment. If that file
 #' exists and you call \code{login_sb()} with no arguments, the file contents 
 #' will be used to log you in.
@@ -11,17 +11,24 @@
 #' \code{sbtools::\link[sbtools]{authenticate_sb}} but easier to type.
 #' 
 #' @param username Your ScienceBase/myUSGS username, usually an email address
+#' @param filename The file path to a yaml file where fields for sb_user and
+#'   sb_password can be found. This file will be ignored if \code{username} is
+#'   given.
 #' @import sbtools
 #' @export
-login_sb <- function(username) {
+login_sb <- function(username, filename='~/.R/stream_metab.yaml') {
   # if username is provided, assume the user wants to log in manually
   if(!missing(username)) {
     return(authenticate_sb(username))
   }
   
-  # next possibility is that yaml pkg is available and a profile exists
-  filename <- file.path(Sys.getenv("HOME"), ".R", "stream_metab.yaml")
-  if(requireNamespace('yaml', quietly=TRUE) && file.exists(filename)) {
+  # next possibility is that yaml pkg is available and a profile exists. putting
+  # the yaml in ~/.R is preferred. putting the yaml in the current working
+  # directory is also an option (useful for cluster runs) but not widely
+  # advertised because it increases the risk of accidentally committing a
+  # password file to a versioning system
+  if(file.exists(filename)) {
+    if(!requireNamespace('yaml', quietly=TRUE)) stop("need the yaml package to log in by file")
     profile <- yaml::yaml.load_file(filename)
     if(exists('sb_user', profile) && exists('sb_password', profile)) {    
       return(authenticate_sb(profile$sb_user, profile$sb_password))

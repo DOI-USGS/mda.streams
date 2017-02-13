@@ -4,7 +4,7 @@
 \alias{archive_ts}
 \title{Archive a timeseries file}
 \usage{
-archive_ts(var_src, site_name, version = c("tsv", "rds"), ts_id, filename,
+archive_ts(var_src, site_name, version = c("rds", "tsv"), ts_id, filename,
   verbose = TRUE)
 }
 \arguments{
@@ -32,4 +32,3 @@ other arguments omitted. If ts_id and filename are omitted, the var_src,
 site, and version of the file to archive should be supplied instead, and this
 function will locate the corresponding file[s] on ScienceBase.
 }
-

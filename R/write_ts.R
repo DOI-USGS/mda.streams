@@ -8,7 +8,7 @@
 #' @param var the variable name of the output, e.g., 'doobs'
 #' @param src the source of the data, e.g., 'nwis' or 'nldas'
 #' @param folder the folder to write the file in
-#' @param version the output version for the file (tsv, rds)
+#' @param version the output version for the file (rds, tsv)
 #' @keywords internal
 #' @importFrom lubridate tz
 #' @importFrom unitted u

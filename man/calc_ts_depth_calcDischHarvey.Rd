@@ -21,4 +21,3 @@ Internal - calculate depth_calcDisch from discharge and depth-vs-discharge
 coefficients from Jud Harvey
 }
 \keyword{internal}
-

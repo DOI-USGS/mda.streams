@@ -49,4 +49,3 @@ files <- stage_ldas_ts(sites=c("nwis_50048580","nwis_06893820","nwis_01484680"),
 lapply(setNames(nm=files), read_ts)
 }
 }
-

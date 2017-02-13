@@ -38,4 +38,3 @@ locate_ts("doobs_nwis", c("nwis_01203000","nwis_01208990","nwis_01304057"))
 locate_ts("doamp_calcDAmp", "nwis_02322688", format="url")
 }
 }
-

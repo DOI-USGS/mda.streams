@@ -28,4 +28,3 @@ a joined function
 Combine several tables into a single table
 }
 \keyword{internal}
-

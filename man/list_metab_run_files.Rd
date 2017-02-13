@@ -17,4 +17,3 @@ dataframe of file names and sizes within a metab_run
 \description{
 List the files stored in a metabolism runs
 }
-

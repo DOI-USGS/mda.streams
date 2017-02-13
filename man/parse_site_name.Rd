@@ -23,4 +23,3 @@ the database, sitenum, or both. If both, the return value is a
 \description{
 Split site name into siteID (used for NWIS site numbers)
 }
-

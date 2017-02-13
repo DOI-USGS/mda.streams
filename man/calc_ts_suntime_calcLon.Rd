@@ -15,4 +15,3 @@ calc_ts_suntime_calcLon(utctime, longitude)
 Internal - calculate suntime_calcLon from any data
 }
 \keyword{internal}
-

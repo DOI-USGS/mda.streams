@@ -28,4 +28,3 @@ a character vector of file handles
 \description{
 Parse a list of metab_outs into individual .RData files
 }
-

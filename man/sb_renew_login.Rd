@@ -16,4 +16,3 @@ Uses username and password to log in if session is expired or was never
 authorized. Otherwise, pings SB to keep the session fresh.
 }
 \keyword{internal}
-
