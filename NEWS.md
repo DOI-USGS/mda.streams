@@ -1,3 +1,7 @@
+# 0.9.20
+
+* accommodate NAs in `parse_metab_model_path`, `_name`, and `_title`
+
 # 0.9.15
 
 * added `par_calcLatSw` to `build_calc_ts_needs`
