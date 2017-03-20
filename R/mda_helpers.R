@@ -470,14 +470,22 @@ parse_metab_run_title <- function(title, out=c('date','tag','strategy'), use_nam
       stringsAsFactors=FALSE) %>%
     mutate(
       date = substr(title, 1, split_1-1),
-      tag = numeric_version(substr(title, split_1+1, split_2-1)),
+      tag = NA, # replaced just below
       strategy = substr(title, split_2+1, nchar(title)))
+  # numeric_versions need special treatment to keep their class when combined
+  parsed$tag <- do.call(c, lapply(1:length(title), function(i) {
+    if(is.na(title[i])) {
+      numeric_version(NA, strict=FALSE)
+    } else {
+      numeric_version(substr(title[i], parsed$split_1[i]+1, parsed$split_2[i]-1))
+    }
+  }))
   
   parsed <- parsed[,out]
   if(use_names) {
     parsed <- 
       if(is.data.frame(parsed)) {
-        parsed %>% do({rownames(.) <- title; .}) 
+        parsed %>% do({rownames(.) <- ifelse(is.na(title), paste0('NA.', 1:length(title)), title); .}) 
       } else {
         parsed %>% setNames(title)
       }
@@ -529,7 +537,7 @@ parse_metab_model_name <- function(model_name, out=c('title','row','site','date'
   if(use_names) {
     parsed <- 
       if(is.data.frame(parsed)) {
-        parsed %>% do({rownames(.) <- model_name; .}) 
+        parsed %>% do({rownames(.) <- ifelse(is.na(model_name), paste0('NA.', 1:length(model_name)), model_name); .}) 
       } else {
         parsed %>% setNames(model_name)
       }
@@ -587,7 +595,7 @@ parse_metab_model_path <- function(file_path, out=c("dir_name","file_name","mode
   if(use_names) {
     parsed <- 
       if(is.data.frame(parsed)) {
-        parsed %>% do({rownames(.) <- file_name; .}) 
+        parsed %>% do({rownames(.) <- ifelse(is.na(file_name), paste0('NA.', 1:length(file_name)), file_name); .}) 
       } else {
         parsed %>% setNames(file_name)
       }

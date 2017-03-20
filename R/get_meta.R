@@ -96,7 +96,7 @@ get_meta <- function(types=list_metas(), out='all', on_local_exists=c('skip','re
   # figure out which rows are relevant
   out_rows <- which(unname(apply(v(data)[paste0('row_in.', types)], 1, any)))
   # subset to relevant rows and requested cols
-  data <- unique(data[out_rows, out, drop=FALSE])
+  data <- distinct(data[out_rows, out, drop=FALSE])
   
   data
 }
