@@ -28,7 +28,9 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
       metab_night="estNight",
       "estBest"
     )
-    preds <- predict_metab(metab_mod)
+    preds <- predict_metab(metab_mod) %>%
+      full_join(get_params(metab_mod, uncertainty='ci'), by='date') %>%
+      rename(K600=K600.daily, K600.lower=K600.daily.lower, K600.upper=K600.daily.upper)
     site <- config_row[[1,"site"]]
     
     # add a DateTime column to preds, using noon sitetime (mean solar time) to
