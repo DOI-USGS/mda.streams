@@ -191,7 +191,7 @@ condense_by_ply <- function(data_ply, data_daily_ply, day_start, day_end, ply_da
   
   vars_list <- lapply(setNames(vars, vars), function(var, df, stat_func){
     has_nm <- paste0("has.", var)
-    has <- which(!is.na(df[,has_nm]))
+    has <- which(!is.na(df[[has_nm]]))
     condensed_var <- stat_func(df[has, var])
     return(condensed_var)
   }, df = data_ply, stat_func = args$stat_func)

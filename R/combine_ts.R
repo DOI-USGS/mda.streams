@@ -43,7 +43,7 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
       # figure out what the time gap is between a given x datetime and the
       # nearest y datetime
       x_date_num <- as.numeric(x$DateTime)
-      y_date_num <- as.numeric(y$DateTime)[!is.na(y[,2])]
+      y_date_num <- as.numeric(y$DateTime)[!is.na(y[[2]])]
       prev_y <- approx(x=y_date_num, y=y_date_num, xout=x_date_num, method="constant", f=0, rule=2)
       next_y <- approx(x=y_date_num, y=y_date_num, xout=x_date_num, method="constant", f=1, rule=2) 
       min_gap <- pmin(abs(prev_y$y-prev_y$x), abs(next_y$y-next_y$x))
@@ -54,19 +54,19 @@ combine_ts <- function(..., method=c('full_join', 'left_join', 'inner_join', 'ap
         y_date_num <- y_date_num + c(0,0.01)
         y <- rbind(y,y)
       }
-      y_val_num <- as.numeric(y[,2])[!is.na(y[,2])] # only interpolate non-NAs
+      y_val_num <- as.numeric(y[,2])[!is.na(y[[2]])] # only interpolate non-NAs
       y_approx <- approx(x=y_date_num, y=y_val_num, xout=x_date_num, rule=2)$y
       posix_origin <- as.POSIXct("1970-01-01 00:00:00", tz="UTC") # in ?as.POSIXct | Note
-      if(any(grepl('POSIX', class(y[,2])))) {
+      if(any(grepl('POSIX', class(y[[2]])))) {
         y_approx <- as.POSIXct(y_approx, origin=posix_origin, tz="UTC")
-      } else if(any(grepl('Date', class(y[,2])))) {
+      } else if(any(grepl('Date', class(y[[2]])))) {
         y_approx <- as.Date(y_approx, origin=posix_origin, tz="UTC")
       }
       # remove the value if the gap is beyond our tolerance
       y_approx[min_gap > approx_toln] <-  NA
       
       # combine x and y_approx into a data.frame
-      df <- data.frame(x, y=u(y_approx, get_units(y[,2]))) %>%
+      df <- data.frame(x, y=u(y_approx, get_units(y[[2]]))) %>%
         setNames(c(names(x), names(y)[2])) %>%
         u()
       DateTime <- '.dplyr.var'

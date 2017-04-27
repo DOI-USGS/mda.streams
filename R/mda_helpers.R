@@ -139,7 +139,7 @@ parse_ts_name <- function(ts_name, out="var_src", use_names=length(ts_name)>1) {
   
   # renaming
   parsed <- do.call(rbind, splits)
-  parsed[,1] <- var_src
+  parsed[parsed=='ts'] <- var_src
   parsed <- parsed[,match(out, splitcols)]
   if(length(match(out, splitcols)) > 1) {
     if(is.null(dim(parsed))) parsed <- parsed %>% t() 

@@ -47,7 +47,7 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
       data <- preds[c("DateTime", paste0(metab_var,c('','.lower','.upper')))] %>%
         setNames(c("DateTime",paste0(pvar,c('','lwr','upr')))) %>%
         u(c(NA, rep(var_units,3)))
-      if(length(data[,2]) > 0 && length(which(!is.na(data[,2]))) > 0) {
+      if(length(data[[2]]) > 0 && length(which(!is.na(data[[2]]))) > 0) {
         verify_var_src(pvar, src, on_fail=warning)
         write_ts(data=data, site=site, var=pvar, src=src, folder=folder)
       } else {
