@@ -31,7 +31,7 @@ combine_tables <- function(..., by, fun=combine_dplyr('full_join', by=by), allow
   for(dot in dots[-1]) {
     data <- 
       if(isTRUE(allow_constants) && is_const(dot)) {
-        data.frame(data, rep(dot[,2],nrow(data))) %>%
+        data.frame(data, rep(dot[[2]],nrow(data))) %>%
           setNames(c(names(data), names(dot[2]))) %>%
           u()
       } else {

@@ -31,7 +31,7 @@ stage_meta_basic <- function(sites=list_sites(), on_exists=c('replace','add_rows
     site_name=u(as.character(NA),NA), long_name=u(as.character(NA),NA),
     lat=u(as.numeric(NA),"degN"), lon=u(as.numeric(NA),"degE"), coord_datum=u(as.character(NA),NA), 
     alt=u(as.numeric(NA),"ft"), alt_datum=u(as.character(NA),NA), site_type=u(as.character(NA),NA), 
-    nhdplus_id=u(as.numeric(NA),NA), nhdplus_id_confidence=u(as.character(NA),NA),
+    nhdplus_id=u(as.numeric(NA),NA),
     stringsAsFactors=FALSE))[NULL,]
   meta_nwis <- sites_meta[sites_meta$site_database=="nwis",] %>% stage_meta_basic_nwis(empty_meta=empty_meta, verbose=verbose)
   meta_styx <- sites_meta[sites_meta$site_database=="styx",] %>% stage_meta_basic_styx(empty_meta=empty_meta, verbose=verbose)
@@ -175,22 +175,49 @@ stage_meta_basic_nwis <- function(sites_meta, empty_meta, verbose=FALSE) {
     mutate(site_name=make_site_name(unique(site_no), database="nwis"))
   
   # load NHDPlus ComIDs from file and attach to sites_meta
-  comidfile <- system.file('extdata/NHDPlus_ComIDs.tsv', package='mda.streams')
-  comids <- read.table(comidfile, header=TRUE, sep="\t", colClasses="character")
-  comids[comids$comid_best==0,'comid_best'] <- NA
-  matched_comids <- comids[match(sites_meta$site_no, comids$nwis_id),c("comid_best","comid_confidence")]
-  sites_meta$nhdplus_id <- matched_comids$comid_best
-  sites_meta$nhdplus_id_confidence <- matched_comids$comid_confidence
+  comidfile <- system.file('extdata/170505_stets_COMIDs_Slopes.csv', package='mda.streams')
+  comids <- read.table(comidfile, header=TRUE, sep=",", colClasses="character", skip=3)
+  matched_comids <- comids[match(sites_meta$site_name, comids$site_name),"COMID"]
+  
+  # These were the COMIDs from 7/1/2015. Ted reconciled these with Jud's recent 
+  # COMID matchups and some hand checking in GIS to produce the above file 
+  # (170505_stets_COMIDs_Slopes.csv). However, this reconciliation didn't 
+  # provide COMIDs for sites not in the chosen 367 sites, so here we'll merge in
+  # COMIDs from old sites that probably don't have metabolism estimates but 
+  # might someday. This still leaves 99 sites, hopefully important ones, for
+  # which nhdplus_id is NA
+  oldcomidfile <- system.file('extdata/NHDPlus_ComIDs.tsv', package='mda.streams')
+  oldcomids <- read.table(oldcomidfile, header=TRUE, sep="\t", colClasses="character")
+  oldcomids[oldcomids$comid_best==0,'comid_best'] <- NA
+  oldmatched_comids <- oldcomids[match(sites_meta$site_no, oldcomids$nwis_id),"comid_best"]
+  
+  # Merge the new and old COMIDs
+  sites_meta$nhdplus_id_v1 <- ifelse(!is.na(matched_comids), matched_comids, oldmatched_comids)
+                                         
+  # Third possible source of COMIDs: the NLDI API. Takes ~2.5 minutes to run 100 sites
+  nldi_comids <- sapply(sites_meta$site_no[is.na(sites_meta$nhdplus_id_v1)], function(site_no) {
+    nldi_site <- sprintf('https://cida.usgs.gov/nldi/nwissite/USGS-%s', site_no)
+    comid <- tryCatch({
+      nldi_data <- jsonlite::fromJSON(nldi_site)
+      nldi_data$features$properties$comid
+    }, error=function(e) NA)
+    return(comid)
+  })
+  nldi_comids[nldi_comids==""] <- NA
+  matched_nldi_comids <- nldi_comids[match(sites_meta$site_no, names(nldi_comids))]
+  
+  # Add the NLDI COMIDs to the ted/james/jud COMIDs
+  sites_meta$nhdplus_id <- ifelse(!is.na(sites_meta$nhdplus_id_v1), sites_meta$nhdplus_id_v1, matched_nldi_comids)
   
   # format
-  nhdplus_id <- nhdplus_id_confidence <- '.dplyr.var'
+  nhdplus_id <- '.dplyr.var'
   sites_meta  %>%
     # put columns in proper order
-    select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, site_type, nhdplus_id, nhdplus_id_confidence) %>%
+    select(site_name, long_name, lat, lon, coord_datum, alt, alt_datum, site_type, nhdplus_id) %>%
     # add units
     as.data.frame() %>%
     u(c(site_name=NA, long_name=NA, lat="degN", lon="degE", coord_datum=NA, 
-        alt="ft", alt_datum=NA, site_type=NA, nhdplus_id=NA, nhdplus_id_confidence=NA))
+        alt="ft", alt_datum=NA, site_type=NA, nhdplus_id=NA))
 }
 
 #' Get data for Styx (simulated data) sites

@@ -46,7 +46,7 @@ summarize_ts <- function(
     end_date = function(ts) max(ts$DateTime),
     num_dates = function(ts) length(unique(as.Date(ts$DateTime))),
     num_rows = function(ts) nrow(ts),
-    num_complete = function(ts) length(which(!is.na(ts[,2]))),
+    num_complete = function(ts) length(which(!is.na(ts[[2]]))),
     modal_timestep = function(ts) {
       if(nrow(ts)==1) {
         NA 

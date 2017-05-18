@@ -19,6 +19,7 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
   # check inputs
   if(!is.list(metab_outs)) metab_outs <- list(metab_outs)
   
+  K600.daily <- K600.daily.lower <- K600.daily.upper <- '.dplyr.var'
   staged <- unname(unlist(lapply(metab_outs, function(metab_mod) {
     # pull info from the model
     config_row <- get_info(metab_mod)$config
@@ -28,7 +29,9 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
       metab_night="estNight",
       "estBest"
     )
-    preds <- predict_metab(metab_mod)
+    preds <- predict_metab(metab_mod) %>%
+      full_join(get_params(metab_mod, uncertainty='ci'), by='date') %>%
+      rename(K600=K600.daily, K600.lower=K600.daily.lower, K600.upper=K600.daily.upper)
     site <- config_row[[1,"site"]]
     
     # add a DateTime column to preds, using noon sitetime (mean solar time) to
@@ -47,7 +50,7 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
       data <- preds[c("DateTime", paste0(metab_var,c('','.lower','.upper')))] %>%
         setNames(c("DateTime",paste0(pvar,c('','lwr','upr')))) %>%
         u(c(NA, rep(var_units,3)))
-      if(length(data[,2]) > 0 && length(which(!is.na(data[,2]))) > 0) {
+      if(length(data[[2]]) > 0 && length(which(!is.na(data[[2]]))) > 0) {
         verify_var_src(pvar, src, on_fail=warning)
         write_ts(data=data, site=site, var=pvar, src=src, folder=folder)
       } else {

@@ -39,12 +39,12 @@ verify_ts <- function(
       is.unitted(x)
     },
     'tz' = function(x,...) {
-      ((get_units(x[,1]) == '') && attr(x[,1],'tzone') == 'UTC') || 
-        (is.na(x[1,1]) && nrow(x) == 1) # allow for 1-row const tses
+      ((get_units(x[[1]]) == '') && attr(x[[1]],'tzone') == 'UTC') || 
+        (is.na(x[[1,1]]) && nrow(x) == 1) # allow for 1-row const tses
     },
     'units' = function(x,v) {
-      (!is.na(get_units(x[,2]))) && 
-        (get_units(x[,2]) == get_units(u(1, get_var_src_codes(var==v, out='units')[1]))) &&
+      (!is.na(get_units(x[[2]]))) && 
+        (get_units(x[[2]]) == get_units(u(1, get_var_src_codes(var==v, out='units')[1]))) &&
         (if(ncol(x)==4) length(unique(get_units(x[,2:4]))) == 1 else TRUE)
     },
     'names' = function(x,v) {
@@ -57,11 +57,11 @@ verify_ts <- function(
         all(!is.na(v(x[,2:ncol(x)]))) # values of input data should not be NA; missing is better
     },
     'NA_dates' = function(x,v) {
-      all(!is.na(v(x[,1]))) || # in general, DateTimes should not be NA
-        (is.na(x[1,1]) && nrow(x) == 1) # allow for 1-row const tses
+      all(!is.na(v(x[[1]]))) || # in general, DateTimes should not be NA
+        (is.na(x[[1,1]]) && nrow(x) == 1) # allow for 1-row const tses
     },
     'timesteps' = function(x,v) {
-      all(as.numeric(diff(v(x[,1])), units='mins') > 0) # require positive timesteps
+      all(as.numeric(diff(v(x[[1]])), units='mins') > 0) # require positive timesteps
     })
   
   if(class(data) == 'unitted_data.frame' && !is.data.frame(data)) {
