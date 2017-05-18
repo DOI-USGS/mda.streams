@@ -19,6 +19,7 @@ stage_metab_ts <- function(metab_outs, vars=c("gpp","er","K600"), folder = tempd
   # check inputs
   if(!is.list(metab_outs)) metab_outs <- list(metab_outs)
   
+  K600.daily <- K600.daily.lower <- K600.daily.upper <- '.dplyr.var'
   staged <- unname(unlist(lapply(metab_outs, function(metab_mod) {
     # pull info from the model
     config_row <- get_info(metab_mod)$config
