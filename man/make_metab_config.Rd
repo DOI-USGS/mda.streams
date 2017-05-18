@@ -124,6 +124,7 @@ Quick-make function for manual making of a model config file
   The variables requiring Data Source specification, along with their 
   expected units, are defined in the help file for \code{\link{mm_data}}.
 }
+
 \examples{
 \dontrun{
 make_metab_config('nwis_08062500')
@@ -131,4 +132,3 @@ make_metab_config('nwis_08062500', sitetime='calcLon', doobs='nwis',
   dosat='calcGGbts', depth='calcDischHarvey', wtr='nwis', par='calcSw')
 }
 }
-

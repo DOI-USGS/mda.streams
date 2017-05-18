@@ -7,7 +7,7 @@
 #'   \code{get_var_src_codes(data_type=='ts')$var_src})
 #' @param folder string for a folder location
 #' @param version character string indicating whether you want to download the 
-#'   ts as a .tsv or .rds
+#'   ts as an .rds or .tsv
 #' @param on_remote_missing character indicating what to do if the remote file 
 #'   is missing
 #' @param on_local_exists character indicating what to do if the folder already 

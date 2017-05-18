@@ -25,4 +25,3 @@ identifiable by ComID. This function pulls data from one ARCLV table, subsets
 to just the reaches relevant to the Powell Center study, and prepares that 
 table to be posted as a metadata table in the Powell Center SB directory.
 }
-

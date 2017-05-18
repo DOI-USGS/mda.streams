@@ -78,7 +78,7 @@ choose_data_source <- function(var, site, logic=c('priority local', 'unused var'
   }
   
   # setup operations & checks as needed
-  if('pred' %in% config[,'type']) {
+  if('pred' %in% config[['type']]) {
     # will break if needed but not logged into SB, so try it early. also try to
     # limit the number of trips to SB and back
     . <- '.dplyr.var'

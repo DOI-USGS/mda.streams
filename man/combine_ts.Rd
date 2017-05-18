@@ -38,4 +38,3 @@ ggplot(unitted::v(approxjoined), aes(x=DateTime, y=wtr)) +
   geom_line(data=unitted::v(fulljoined), color="red")
 }
 }
-

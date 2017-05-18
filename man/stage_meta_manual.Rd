@@ -14,4 +14,3 @@ stage_meta_manual(folder = tempdir(), verbose = FALSE)
 \description{
 Pull in user review data from Google Spreadsheet at
 }
-

@@ -28,4 +28,3 @@ condense_by_ply(data_ply, data_daily_ply, day_start, day_end, ply_date,
 Following mm_model_by_ply_prototype
 }
 \keyword{internal}
-

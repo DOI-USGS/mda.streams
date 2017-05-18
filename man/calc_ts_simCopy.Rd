@@ -21,4 +21,3 @@ data.frame of the standard ts form for mda.streams}
 Internal - calculate any variable with simNew from any data
 }
 \keyword{internal}
-

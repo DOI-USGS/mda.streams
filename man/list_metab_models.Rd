@@ -29,4 +29,3 @@ List the available metab_model objects
 mms <- list_metab_models('0.0.18')
 }
 }
-

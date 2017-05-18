@@ -29,4 +29,3 @@ convert_solartime_to_UTC, but I'm nervous about tiny imprecisions that would
 make these not match up to other DateTime stamps.
 }
 \keyword{internal}
-

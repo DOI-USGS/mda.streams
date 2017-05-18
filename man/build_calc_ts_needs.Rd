@@ -14,4 +14,3 @@ build_calc_ts_needs(var, src)
 \description{
 Build and return the table calc_ts_needs
 }
-

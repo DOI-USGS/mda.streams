@@ -42,4 +42,3 @@ search_metab_models('indy', row="68.", fixed=FALSE)
 search_metab_models(strategy='NIGHT', site='411955088280601')
 }
 }
-

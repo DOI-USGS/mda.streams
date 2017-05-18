@@ -143,13 +143,13 @@ stage_indy_site <- function(
       tsdat <- data[c('DateTime',datcol)]
       names(tsdat)[2] <- parse_var_src(datcol, 'var')
       if(collapse_const) {
-        if(length(unique(tsdat[,2])) == 1) {
+        if(length(unique(tsdat[[2]])) == 1) {
           tsdat[1,1] <- as.POSIXct(NA)
           tsdat <- tsdat[1,]
         }
       }
       if(remove_NAs) {
-        tsdat <- tsdat[!is.na(tsdat[,2]), ]
+        tsdat <- tsdat[!is.na(tsdat[[2]]), ]
       }
       tryCatch({
         write_ts(data=tsdat, site=site_name, var=parse_var_src(datcol, 'var'), src=parse_var_src(datcol, 'src'), 

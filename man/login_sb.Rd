@@ -4,14 +4,18 @@
 \alias{login_sb}
 \title{Log into ScienceBase with your myUSGS credentials}
 \usage{
-login_sb(username)
+login_sb(username, filename = "~/.R/stream_metab.yaml")
 }
 \arguments{
 \item{username}{Your ScienceBase/myUSGS username, usually an email address}
+
+\item{filename}{The file path to a yaml file where fields for sb_user and
+sb_password can be found. This file will be ignored if \code{username} is
+given.}
 }
 \description{
 BE CAREFUL NOT TO POST OR SHARE YOUR PASSWORD! Even better, set up your 
-~/.R/stream_metab.yaml with fields for sb_user and sb_password so you never
+~/.R/stream_metab.yaml with fields for sb_user and sb_password so you never 
 again have to bring your password into the R global environment. If that file
 exists and you call \code{login_sb()} with no arguments, the file contents 
 will be used to log you in.
@@ -21,4 +25,3 @@ Use the same username and password you set up via the ScienceBase interface
 or your government employer. This function is equivalent to 
 \code{sbtools::\link[sbtools]{authenticate_sb}} but easier to type.
 }
-

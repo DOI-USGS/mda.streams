@@ -15,4 +15,3 @@ calc_ts_par_calcSw(utctime, sw)
 Internal - calculate par from SW data
 }
 \keyword{internal}
-

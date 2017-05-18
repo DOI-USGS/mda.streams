@@ -17,4 +17,3 @@ calc_ts_simNew(var, utctime, value)
 Internal - calculate any variable with simNew from any data
 }
 \keyword{internal}
-

@@ -17,7 +17,7 @@
 #' @param filename character. the filename[s] to archive
 #' @param verbose logical. give status messages?
 #' @import sbtools
-archive_ts <- function(var_src, site_name, version=c('tsv','rds'), ts_id, filename, verbose=TRUE) {
+archive_ts <- function(var_src, site_name, version=c('rds','tsv'), ts_id, filename, verbose=TRUE) {
   
   # check session
   sb_require_login("stop")

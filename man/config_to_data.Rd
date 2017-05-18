@@ -61,4 +61,3 @@ cdat <- config_to_data(config[1,], row_num=1,
   metab_fun=streamMetabolizer::metab_Kmodel)
 }
 }
-

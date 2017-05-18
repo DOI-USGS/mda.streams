@@ -21,4 +21,3 @@ Internal - calculate par by merging modeled (calcLat) and observed (calcSw)
 data
 }
 \keyword{internal}
-

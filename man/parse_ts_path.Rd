@@ -32,4 +32,3 @@ parse_ts_path("temp/1/ARCHIVE_20160402170237-nwis_08062500-ts_doobs_nwis.tsv.gz"
 parse_ts_path(c('ARCHIVE_20160324120400-nwis_05406479-ts_doobs_nwis.tsv.gz', 
   'temp/nwis_05406480-ts_doobs_nwis.tsv.gz'), use_names=TRUE)
 }
-

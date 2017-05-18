@@ -25,7 +25,7 @@ used to fill in data gaps (relative to the variable identified in
 \code{match_var})}
 
 \item{version}{character string indicating whether you want to download the 
-ts as a .tsv or .rds}
+ts as an .rds or .tsv}
 
 \item{on_local_exists}{character indicating what to do if the folder already 
 contains a file with the intended download name}
@@ -90,4 +90,3 @@ downloaded to the code{tempdir()} during this R session, or (2)
 will be out of date relative to ScienceBase, but the benefit is faster 
 ts-getting.
 }
-

@@ -17,11 +17,10 @@ write_ts(data, site, var, src, folder, version = c("rds", "tsv"))
 
 \item{folder}{the folder to write the file in}
 
-\item{version}{the output version for the file (tsv, rds)}
+\item{version}{the output version for the file (rds, tsv)}
 }
 \description{
 Writes a ts file (with format specific to mda.streams) a data.frame into a
 compressed file suitable for posting to ScienceBase
 }
 \keyword{internal}
-

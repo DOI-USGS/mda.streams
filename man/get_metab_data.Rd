@@ -120,4 +120,3 @@ md <- get_metab_data('styx_004001', doobs=choose_data_source(
   'doobs','styx_004001','sim',type='pred',src='160411 0.0.18'))
 }
 }
-

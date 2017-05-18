@@ -10,7 +10,7 @@
 #'   by the new rows.
 #' @param folder where to store the staged file
 #' @param verbose logical. give status messages?
-#' @importFrom unitted u write_unitted is.unitted rbind.unitted
+#' @importFrom unitted u write_unitted is.unitted
 #' @import dplyr
 #' @export
 stage_meta_styx <- function(rows, on_exists=c("stop","replace"), folder = tempdir(), verbose = FALSE) {
@@ -38,7 +38,7 @@ stage_meta_styx <- function(rows, on_exists=c("stop","replace"), folder = tempdi
     }
     
     # add truly new rows
-    new_meta <- rbind.unitted(old_meta, rows)
+    new_meta <- rbind(old_meta, rows)
   } else {
     new_meta <- rows
   }

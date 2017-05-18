@@ -14,4 +14,3 @@ the package environment
 \code{scheme} - string identifying the ScienceBase scheme where this SB project
   resides, accessed by \code{\link{set_scheme}} and \code{\link{get_scheme}}.
 }
-

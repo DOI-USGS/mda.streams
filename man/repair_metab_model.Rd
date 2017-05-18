@@ -18,4 +18,3 @@ Sometimes items/files get posted but the identifiers don't get updated,
 making it harder to search for the ts item. This function gives ScienceBase 
 another chance to add tags.
 }
-

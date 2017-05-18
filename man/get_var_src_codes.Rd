@@ -28,4 +28,3 @@ get_var_src_codes(out=c('var','var_src','p_code'))
 get_var_src_codes(src_type=="data", !is.na(p_code), 
   out=list('var','var_src','p_code', 'src_type'))
 }
-

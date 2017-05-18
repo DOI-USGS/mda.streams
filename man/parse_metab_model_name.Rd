@@ -19,4 +19,3 @@ list elements?}
 \description{
 Parse a metab_model name
 }
-

@@ -16,4 +16,3 @@ be slow!)}
 The uploaded_by column is only available when you are logged in to
 ScienceBase.
 }
-

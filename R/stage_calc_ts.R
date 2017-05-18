@@ -354,7 +354,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
     
     # write the data to file
     if(isTRUE(verbose)) message("writing the computed data to file")
-    if(nrow(ts_calc) > 0) ts_calc <- ts_calc[!is.na(ts_calc[,2]),]
+    if(nrow(ts_calc) > 0) ts_calc <- ts_calc[!is.na(ts_calc[[2]]),]
     if(nrow(ts_calc) > 0) {
       fpath <- write_ts(ts_calc, site=site, var=var, src=src, folder=folder, version=version)
       file_choices <- c(file_choices, list(

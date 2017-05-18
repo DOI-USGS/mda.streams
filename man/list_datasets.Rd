@@ -14,7 +14,7 @@ those returned from make_site_name()}
 
 \item{data_type}{character. one or more dataset types to return}
 
-\item{with_ts_version}{one or more of \code{c('tsv','rds')} to limit the 
+\item{with_ts_version}{one or more of \code{c('rds','tsv')} to limit the 
 dataset extension to anything in with_ts_version (if the dataset is a ts)}
 
 \item{with_ts_archived}{one or more of \code{c(TRUE,FALSE)} to limit the list
@@ -39,4 +39,3 @@ possible variables.
 list_datasets(site_name = 'nwis_01021050')
 }
 }
-

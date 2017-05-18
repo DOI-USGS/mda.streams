@@ -1,10 +1,19 @@
+# 0.9.24
+
+* update `stage_meta_basic` to include new NHDPlusV2 COMIDs from Ted and the
+Network Linked Data Index (NLDI)
+
+# 0.9.20
+
+* accommodate NAs in `parse_metab_model_path`, `_name`, and `_title`
+
 # 0.9.15
 
 * added `par_calcLatSw` to `build_calc_ts_needs`
 
 # 0.9.14
 
-* added `par_calcLatSw` option to `stage_calc_ts` to compute the merger of
+* added `par_calcLatSw` option to `stage_calc_ts` to compute the merger of 
 modeled and observed light
 
 # 0.9.12+ to 0.9.13

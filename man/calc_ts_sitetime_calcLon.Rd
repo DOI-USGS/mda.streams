@@ -15,4 +15,3 @@ calc_ts_sitetime_calcLon(utctime, longitude)
 Internal - calculate sitetime_calcLon from any data
 }
 \keyword{internal}
-

@@ -21,4 +21,3 @@ Internal - calculate velocity from discharge and velocity-vs-discharge
 coefficients from Jud Harvey
 }
 \keyword{internal}
-
