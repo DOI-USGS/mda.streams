@@ -51,6 +51,7 @@
 "K600"	"estNight"	"d^-1"	"gas exchange rate"	"ts"	"K600.daily"	"d^-1"	"3"	NA	"calculate K600 & ER for individual days by nighttime regression"	"streamMetabolizer"	"metab_night"	"calc"	NA
 "K600"	"simNew"	"d^-1"	"gas exchange rate"	"ts"	"K600.daily"	"d^-1"	"12"	NA	"arbitrarily assign numbers for model testing"	"streamMetabolizer"	NA	"sim"	NA
 "K600init"	"param"	"d^-1"	"initial gas exchange rate"	"ts"	"K600.init"	"d^-1"	"1"	NA	"model fitting parameter"	"streamMetabolizer"	NA	"param"	NA
+"mfootdaily"	"calc3vK"	"m"	"metabolic footprint distance"	"ts"	NA	"m"	"1"	NA	"3 * daily mean velocity / daily mean KO2"	"streamMetabolizer"	"convert_K600_to_kGAS"	"calc"	NA
 "par"	"indy"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"1"	NA	"independent data source"	NA	NA	"data"	NA
 "par"	"calcLatSw"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"2"	NA	"calculate PAR by merging calcSw and calcLat"	"streamMetabolizer"	"calc_light_merged"	"calc"	NA
 "par"	"calcLat"	"umol m^-2 s^-1"	"photosynthetically active radiation"	"ts"	"light"	"umol m^-2 s^-1"	"3"	NA	"calculate PAR using site latitude and suntime"	"streamMetabolizer"	"calc_light"	"calc"	NA
