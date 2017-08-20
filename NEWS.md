@@ -1,6 +1,12 @@
+# 0.10.0
+
+* by default, `login_sb` now attempts to access a 'stream_metab' secret in a 
+default vault using the `secret` package. The GitHub version of `secret` is
+recommended
+
 # 0.9.24
 
-* update `stage_meta_basic` to include new NHDPlusV2 COMIDs from Ted and the
+* update `stage_meta_basic` to include new NHDPlusV2 COMIDs from Ted and the 
 Network Linked Data Index (NLDI)
 
 # 0.9.20
