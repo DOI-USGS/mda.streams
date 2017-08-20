@@ -5,7 +5,7 @@ test_that('get_ts works', {
   # easy ones: no errors or warnings
   doobs <- suppressWarnings(get_ts('doobs_nwis', 'nwis_06601200')) # verify_ts for doobs failed on test for units 
   sw <- suppressWarnings(get_ts('sw_nldas', 'nwis_06601200')) # verify_ts for sw failed on test for timesteps
-  gpp <- suppressWarnings(get_ts('gpp_estBest', 'nwis_03027500', version='tsv')) # verify_ts for gpp failed on test for units 
+  gpp <- suppressWarnings(get_ts('gpp_estBest', 'nwis_03027500', version='rds')) # verify_ts for gpp failed on test for units 
   
   # multiple sites gives error on purpose
   expect_error(suppressWarnings(get_ts('sitetime_calcLon', c('nwis_06601200','nwis_08062500'))), 

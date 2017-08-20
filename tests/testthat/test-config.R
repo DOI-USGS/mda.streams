@@ -3,7 +3,7 @@ context("config")
 test_that("config files can be staged", {
   
   config_file <- stage_metab_config(
-    tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=tempfile())
+    tag="0.0.1", strategy="try stage_metab_config", site="nwis_04213152", filename=tempfile())
   expect_is(read.table(config_file, header=TRUE, stringsAsFactors=FALSE), "data.frame")
   
   config_object <- stage_metab_config(
@@ -17,7 +17,7 @@ test_that("config files can be staged", {
 test_that("config files can be verified", {
   
   egconfig <- stage_metab_config(
-    tag="0.0.1", strategy="try stage_metab_config", site="nwis_04087142", filename=NULL)
+    tag="0.0.1", strategy="try stage_metab_config", site="nwis_04213152", filename=NULL)
   expect_true(verify_config(egconfig))
   expect_false(suppressWarnings(verify_config(egconfig[,c(1,3:5,9:30,9)])))
   expect_warning(verify_config(egconfig[,c(1,3:5,9:30,9)]))
