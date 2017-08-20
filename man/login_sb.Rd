@@ -9,9 +9,14 @@ login_sb(username, filename = "~/.R/stream_metab.yaml")
 \arguments{
 \item{username}{Your ScienceBase/myUSGS username, usually an email address}
 
-\item{filename}{The file path to a yaml file where fields for sb_user and
-sb_password can be found. This file will be ignored if \code{username} is
-given.}
+\item{filename}{DEPRECATED: The file path to a yaml file where fields for 
+sb_user and sb_password can be found. This file will be ignored if 
+\code{username} is given. INSTEAD of relying on a .yaml file, consider 
+installing the secret package, creating a vault, and creating a secret 
+called 'stream_metab' in that vault with fields for sb_user and 
+sb_password. Configure the environment variables USER_KEY and 
+R_SECRET_VAULT so that the defualts work for accessing the 'stream_metab'
+secret.}
 }
 \description{
 BE CAREFUL NOT TO POST OR SHARE YOUR PASSWORD! Even better, set up your 
