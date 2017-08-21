@@ -102,11 +102,15 @@
 #' file_dischdaily <- stage_calc_ts(sites="nwis_08062500", 
 #'   var="dischdaily", src="calcDMean", verbose=TRUE)
 #' head(read_ts(file_dischdaily))
+#' 
+#' file_mfootdaily <- stage_calc_ts(sites="nwis_08062500", 
+#'   var="mfootdaily", src="calc3vK", verbose=TRUE)
+#' head(read_ts(file_mfootdaily))
 #' }
 #' @export
 stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','tsv'), 
                           inputs=list(), day_start=4, day_end=28, verbose = FALSE, 
-                          with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2015-01-01',
+                          with_ts_version='rds', with_ts_archived=FALSE, with_ts_uploaded_after='2017-01-01',
                           ...){
   
   version <- match.arg(version)
@@ -342,6 +346,17 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
               condense_stat = mean, day_start=day_start, day_end=day_end) %>%
               select(DateTime, velocdaily=veloc)
           },
+          'mfootdaily_calc3vK' = {
+            combo_daily <- get_staging_ts(
+              var_src=c('sitedate_calcLon', 'K600_estBest', choose_ts('veloc'), choose_ts('wtr')), 
+              condense_stat = mean, day_start=day_start, day_end=day_end,
+              method='approx')
+            calc_mfootdaily_calc3vK(
+              utctime=combo_daily$DateTime,
+              K600=combo_daily$K600,
+              veloc=combo_daily$veloc,
+              wtr=combo_daily$wtr)
+          },
           {
             stop("the calculation for ", make_var_src(var, src), " isn't implemented yet")
           }
@@ -561,23 +576,6 @@ calc_ts_par_calcLatSw <- function(parsw, doobs, latitude, longitude) {
   ) %>% u()
 }
 
-
-#' #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
-#' #' coefficients
-#' #' 
-#' #' @param utctime the DateTime with tz of UTC
-#' #' @param disch the discharge in ft^3 s^-1
-#' #' @importFrom unitted u
-#' #' @import streamMetabolizer
-#' #'   
-#' #' @keywords internal
-#' calc_ts_depth_calcDisch <- function(utctime, disch) {
-#'   Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
-#'   data.frame(
-#'     DateTime = utctime,
-#'     depth = calc_depth(Q=Q)) %>% u()
-#' }
-
 #' Internal - calculate depth_calcDisch from any data using the Raymond et al.
 #' coefficients
 #' 
@@ -709,4 +707,25 @@ calc_ts_simCopy <- function(var, from_src, from_site, filter_fun) {
     get_ts(var_src=make_var_src(var, from_src), site_name=from_site, version='tsv', on_local_exists="replace")
   })
   if(!is.null(filter_fun)) filter_fun(from_data) else from_data
+}
+
+#' Internal - calculate the metabolic footprint for each day
+#' 
+#' From Chapra & DiToro 1991, between eq 1 & eq 2: "sufficiently long distance"
+#' = >3U/ka, where U = stream velocity (m d^-1), ka = reaeration rate (d^-1)
+#' 
+#' @param date the Dates of K600
+#' @param utctime the DateTime with tz of UTC corresponding to the date vector
+#' @param veloc the instantaneous velocities
+#' @param K600 the daily estimates of K600
+#' @param wtrdf the ts dataframe for instantaneous water temperatures (with 
+#'   DateTime column)
+#'   
+#' @keywords internal
+calc_mfootdaily_calc3vK <- function(utctime, K600, veloc, wtr) {
+  KO2 <- streamMetabolizer::convert_k600_to_kGAS(K600, temperature=wtr, gas='O2')
+  data.frame(
+    DateTime = utctime,
+    mfootdaily = 3 * veloc*u(60*60*24, 's d^-1') / KO2) %>%
+    u()
 }

@@ -12,3 +12,4 @@ mda.streams.Rproj
 # Temporary files
 tests/temp/
 temp
+inst/doc
