@@ -2,7 +2,11 @@
 title: "Model metabolism wtih a config file"
 author: "Alison Appling"
 date: "July 17, 2015"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, echo=FALSE}
@@ -18,15 +22,15 @@ library(dplyr)
 This package facilitates multiple runs of a metabolism model, each time modeling one or many sites, to compare modeling methods.
 
 ```{r}
+sites <- c("nwis_01649190", "nwis_06478522")
 config_df <- stage_metab_config(
-  tag="0.0.1", strategy="model_by_config vignette", 
-  model="metab_mle",
-  site=c("nwis_03067510","nwis_11285500","nwis_07109500"), 
-  filename=NULL)
+  tag='0.0.1', strategy='model_by_config vignette', date=Sys.time(), 
+  model="metab_mle", model_args="list(specs=specs('mle'))", site=sites, 
+  start_date="2015-03-15", end_date="2015-04-15", filename=NULL)
 config_df
 ```
 
 ```{r}
-config_to_metab(config=config_df[1,])
+config_to_metab(config=config_df[2,])
 ```
 

@@ -37,7 +37,10 @@ Suggests:
     testthat,
     RCurl,
     secret,
-    yaml
+    yaml,
+    knitr,
+    rmarkdown
 LazyLoad: yes
 LazyData: yes
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
