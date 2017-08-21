@@ -349,8 +349,7 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
           'mfootdaily_calc3vK' = {
             combo_daily <- get_staging_ts(
               var_src=c('sitedate_calcLon', 'K600_estBest', choose_ts('veloc'), choose_ts('wtr')), 
-              condense_stat = mean, day_start=day_start, day_end=day_end,
-              method='approx')
+              match_var='K600_estBest', condense_stat = mean, day_start=day_start, day_end=day_end)
             calc_mfootdaily_calc3vK(
               utctime=combo_daily$DateTime,
               K600=combo_daily$K600,

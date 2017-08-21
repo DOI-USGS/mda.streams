@@ -97,10 +97,13 @@ get_ts <- function(var_src, site_name, method=c('approx', 'full_join', 'left_joi
     to_condense <- grep("Condensed", warning_info$result)
     
     . <- '.dplyr.var'
-    longitude <- ifelse(length(to_condense) != 0, 
-                        get_meta("basic") %>% v() %>% filter(site_name == get('site_name')) %>% .$lon,
-                        NA)
-    
+    longitude <- if(length(to_condense) != 0) {
+      mb <- v(get_meta('basic'))
+      mb[mb$site_name == site_name, 'lon']
+    } else {
+      NA
+    }
+
     #distinguish NA observations from NAs added during the full_join
     if(length(to_condense) > 0) {
       original_obs_list <- lapply(data_list_ordered[to_condense], function(d){
