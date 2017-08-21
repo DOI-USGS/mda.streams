@@ -19,6 +19,9 @@ r_github_packages:
   - jimhester/covr
   - appling/unitted
   - USGS-R/streamMetabolizer@develop
+  
+r_packages:
+  - ggplot2
 
 after_success:
   - Rscript -e 'covr::coveralls()'
