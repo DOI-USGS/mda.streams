@@ -75,7 +75,7 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
 
 
 summarize_meta_struct <- function(meta_struct) {
-  mf_counts <- meta_struct %>% group_by(dam_flag, canal_flag, npdes_flag) %>% count()
+  mf_counts <- meta_struct %>% group_by(struct.dam_flag, struct.canal_flag, struct.npdes_flag) %>% count()
   flags <- c(0,50,80,95)
   
   cum_counts <- bind_rows(lapply(flags, function(dam) {
@@ -86,23 +86,26 @@ summarize_meta_struct <- function(meta_struct) {
           npdes_atleast = npdes,
           canal_atleast = canal,
           count = filter(mf_counts, 
-                         dam_flag >= dam,
-                         npdes_flag >= npdes,
-                         canal_flag >= canal) %>% 
+                         struct.dam_flag >= dam,
+                         struct.npdes_flag >= npdes,
+                         struct.canal_flag >= canal) %>% 
             pull(n) %>% sum
         )
       }))
     }))
   }))
   
-  # if we're going to display this, i'd do it this way
-  filter(cum_counts, dam_atleast == npdes_atleast, npdes_atleast == canal_atleast)
-  
-  # a more exhaustive set of counts
-  cum_counts %>%
-    tidyr::spread(key=canal_atleast, value=count) %>%
-    mutate(counts=paste(`0`,`50`,`80`,`95`,sep='|')) %>%
-    select(-`95`,-`80`,-`50`,-`0`) %>%
-    tidyr::spread(key=npdes_atleast, value=counts)
-  
+  list(
+    simple =
+      # if we're going to display this, i'd do it this way
+      filter(cum_counts, dam_atleast == npdes_atleast, npdes_atleast == canal_atleast),
+    complete = {
+      # a more exhaustive set of counts. 
+      message("for complete counts, rows=dams, cols=npdes, pipes=canals")
+      cum_counts %>%
+        tidyr::spread(key=canal_atleast, value=count) %>%
+        mutate(counts=paste(`0`,`50`,`80`,`95`,sep='|')) %>%
+        select(-`95`,-`80`,-`50`,-`0`) %>%
+        tidyr::spread(key=npdes_atleast, value=counts)
+    })
 }
