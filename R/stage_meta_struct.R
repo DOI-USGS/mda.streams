@@ -12,10 +12,11 @@
 #' @param verbose logical. print status messages?
 #' @import dplyr
 #' @importFrom unitted u v get_units
-#' @importFrom utils read.table
+#' @importFrom utils read.csv
 #' @export
-stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CONF_struct_170407.csv", 
-                                  folder = tempdir(), verbose = FALSE) {
+stage_meta_struct <- function(struct_file, folder = tempdir(), verbose = FALSE) {
+  
+  if(missing(struct_file)) struct_file <- "../stream_metab_usa/1_spatial/in/CONF_struct_170407.csv"
   
   # get a list of sites known to us/sciencebase
   meta_basic <- get_meta('basic')
@@ -37,20 +38,23 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
   # are -log(0.05)v/k = 3v/K and the footprint distances for 80% turnover are
   # -log(0.2)v/k = 1.6v/k. so we can use the same quantiles but multiply by
   # 1.6/3 = -log(0.2)/3 to get quantiles for 80% turnover
+  q50 <- q80 <- q95 <- site_name <- . <- CANAL_DIST <- DAM_DIST <- NPDES_DIST <- `0` <- `50` <- `80` <- `95` <- 
+    canal_flag <- dam_flag <- npdes_flag <- '.dplyr.var'
   mf_qs <- left_join(mf_quants, struct, by=c('site_name'='site_no')) %>%
     rename(q50='50%', q80='80%', q95='95%') %>%
+    mutate(q50=q50*-log(0.2)/3, q80=q80*-log(0.2)/3, q95=q95*-log(0.2)/3) %>% # convert from 95% to 80% turnover footprints
     group_by(site_name) %>%
     do(mutate(
       .,
-      canal_flag = ifelse(CANAL_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(CANAL_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(CANAL_DIST > q50*-log(0.5)/3, 50, 0))), # 50th quantile of 50%-turnover footprints
-      dam_flag = ifelse(DAM_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(DAM_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(DAM_DIST > q50*-log(0.5)/3, 50, 0))), # 50th quantile of 50%-turnover footprints
-      npdes_flag = ifelse(NPDES_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(NPDES_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(NPDES_DIST > q50*-log(0.5)/3, 50, 0))) # 50th quantile of 50%-turnover footprints
+      canal_flag = ifelse(CANAL_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(CANAL_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(CANAL_DIST > q50, 50, 0))), # 50th quantile of 80%-turnover footprints
+      dam_flag = ifelse(DAM_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(DAM_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(DAM_DIST > q50, 50, 0))), # 50th quantile of 80%-turnover footprints
+      npdes_flag = ifelse(NPDES_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(NPDES_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(NPDES_DIST > q50, 50, 0))) # 50th quantile of 80%-turnover footprints
     )) %>%
     ungroup()
   
@@ -75,7 +79,15 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
 
 
 summarize_meta_struct <- function(meta_struct) {
-  mf_counts <- meta_struct %>% group_by(dam_flag, canal_flag, npdes_flag) %>% count()
+  canal_atleast <- canal_flag <- dam_atleast <- dam_flag <- npdes_atleast <- npdes_flag <- 
+    `0` <- `50` <- `80` <- `95` <- struct.canal_flag <- struct.dam_flag <- struct.npdes_flag <- '.dplyr.var'
+  
+  mf_counts <- meta_struct
+  if('dam_flag' %in% names(mf_counts)) {
+    mf_counts <- rename(mf_counts, struct.dam_flag=dam_flag, struct.canal_flag=canal_flag, struct.npdes_flag=npdes_flag)
+  }
+  mf_counts <- mf_counts %>%
+    group_by(struct.dam_flag, struct.canal_flag, struct.npdes_flag) %>% count()
   flags <- c(0,50,80,95)
   
   cum_counts <- bind_rows(lapply(flags, function(dam) {
@@ -86,23 +98,27 @@ summarize_meta_struct <- function(meta_struct) {
           npdes_atleast = npdes,
           canal_atleast = canal,
           count = filter(mf_counts, 
-                         dam_flag >= dam,
-                         npdes_flag >= npdes,
-                         canal_flag >= canal) %>% 
+                         struct.dam_flag >= dam,
+                         struct.npdes_flag >= npdes,
+                         struct.canal_flag >= canal) %>% 
             pull(n) %>% sum
         )
       }))
     }))
   }))
   
-  # if we're going to display this, i'd do it this way
-  filter(cum_counts, dam_atleast == npdes_atleast, npdes_atleast == canal_atleast)
-  
-  # a more exhaustive set of counts
-  cum_counts %>%
-    tidyr::spread(key=canal_atleast, value=count) %>%
-    mutate(counts=paste(`0`,`50`,`80`,`95`,sep='|')) %>%
-    select(-`95`,-`80`,-`50`,-`0`) %>%
-    tidyr::spread(key=npdes_atleast, value=counts)
-  
+  counts <- '.dplyr.var'
+  list(
+    simple =
+      # if we're going to display this, i'd do it this way
+      filter(cum_counts, dam_atleast == npdes_atleast, npdes_atleast == canal_atleast),
+    complete = {
+      # a more exhaustive set of counts. 
+      message("for complete counts, rows=dams, cols=npdes, pipes=canals")
+      cum_counts %>%
+        tidyr::spread(key=canal_atleast, value=count) %>%
+        mutate(counts=paste(`0`,`50`,`80`,`95`,sep='|')) %>%
+        select(-`95`,-`80`,-`50`,-`0`) %>%
+        tidyr::spread(key=npdes_atleast, value=counts)
+    })
 }
