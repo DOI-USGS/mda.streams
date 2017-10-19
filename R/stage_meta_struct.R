@@ -39,18 +39,19 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
   # 1.6/3 = -log(0.2)/3 to get quantiles for 80% turnover
   mf_qs <- left_join(mf_quants, struct, by=c('site_name'='site_no')) %>%
     rename(q50='50%', q80='80%', q95='95%') %>%
+    mutate(q50=q50*-log(0.2)/3, q80=q80*-log(0.2)/3, q95=q95*-log(0.2)/3) %>% # convert from 95% to 80% turnover footprints
     group_by(site_name) %>%
     do(mutate(
       .,
-      canal_flag = ifelse(CANAL_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(CANAL_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(CANAL_DIST > q50*-log(0.5)/3, 50, 0))), # 50th quantile of 50%-turnover footprints
-      dam_flag = ifelse(DAM_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(DAM_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(DAM_DIST > q50*-log(0.5)/3, 50, 0))), # 50th quantile of 50%-turnover footprints
-      npdes_flag = ifelse(NPDES_DIST > q95, 95, # 95th quantile of 95%-turnover footprints
-                          ifelse(NPDES_DIST > q80*-log(0.2)/3, 80, # 80th quantile of 80%-turnover footprints
-                                 ifelse(NPDES_DIST > q50*-log(0.5)/3, 50, 0))) # 50th quantile of 50%-turnover footprints
+      canal_flag = ifelse(CANAL_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(CANAL_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(CANAL_DIST > q50, 50, 0))), # 50th quantile of 80%-turnover footprints
+      dam_flag = ifelse(DAM_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(DAM_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(DAM_DIST > q50, 50, 0))), # 50th quantile of 80%-turnover footprints
+      npdes_flag = ifelse(NPDES_DIST > q95, 95, # 95th quantile of 80%-turnover footprints
+                          ifelse(NPDES_DIST > q80, 80, # 80th quantile of 80%-turnover footprints
+                                 ifelse(NPDES_DIST > q50, 50, 0))) # 50th quantile of 80%-turnover footprints
     )) %>%
     ungroup()
   
@@ -75,7 +76,12 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
 
 
 summarize_meta_struct <- function(meta_struct) {
-  mf_counts <- meta_struct %>% group_by(struct.dam_flag, struct.canal_flag, struct.npdes_flag) %>% count()
+  mf_counts <- meta_struct
+  if('dam_flag' %in% names(mf_counts)) {
+    mf_counts <- rename(mf_counts, struct.dam_flag=dam_flag, struct.canal_flag=canal_flag, struct.npdes_flag=npdes_flag)
+  }
+  mf_counts <- mf_counts %>%
+    group_by(struct.dam_flag, struct.canal_flag, struct.npdes_flag) %>% count()
   flags <- c(0,50,80,95)
   
   cum_counts <- bind_rows(lapply(flags, function(dam) {
