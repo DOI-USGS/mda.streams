@@ -12,10 +12,11 @@
 #' @param verbose logical. print status messages?
 #' @import dplyr
 #' @importFrom unitted u v get_units
-#' @importFrom utils read.table
+#' @importFrom utils read.csv
 #' @export
-stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CONF_struct_170407.csv", 
-                                  folder = tempdir(), verbose = FALSE) {
+stage_meta_struct <- function(struct_file, folder = tempdir(), verbose = FALSE) {
+  
+  if(missing(struct_file)) struct_file <- "../stream_metab_usa/1_spatial/in/CONF_struct_170407.csv"
   
   # get a list of sites known to us/sciencebase
   meta_basic <- get_meta('basic')
@@ -37,6 +38,8 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
   # are -log(0.05)v/k = 3v/K and the footprint distances for 80% turnover are
   # -log(0.2)v/k = 1.6v/k. so we can use the same quantiles but multiply by
   # 1.6/3 = -log(0.2)/3 to get quantiles for 80% turnover
+  q50 <- q80 <- q95 <- site_name <- . <- CANAL_DIST <- DAM_DIST <- NPDES_DIST <- `0` <- `50` <- `80` <- `95` <- 
+    canal_flag <- dam_flag <- npdes_flag <- '.dplyr.var'
   mf_qs <- left_join(mf_quants, struct, by=c('site_name'='site_no')) %>%
     rename(q50='50%', q80='80%', q95='95%') %>%
     mutate(q50=q50*-log(0.2)/3, q80=q80*-log(0.2)/3, q95=q95*-log(0.2)/3) %>% # convert from 95% to 80% turnover footprints
@@ -76,6 +79,9 @@ stage_meta_struct <- function(struct_file = "../stream_metab_usa/1_spatial/in/CO
 
 
 summarize_meta_struct <- function(meta_struct) {
+  canal_atleast <- canal_flag <- dam_atleast <- dam_flag <- npdes_atleast <- npdes_flag <- 
+    `0` <- `50` <- `80` <- `95` <- struct.canal_flag <- struct.dam_flag <- struct.npdes_flag <- '.dplyr.var'
+  
   mf_counts <- meta_struct
   if('dam_flag' %in% names(mf_counts)) {
     mf_counts <- rename(mf_counts, struct.dam_flag=dam_flag, struct.canal_flag=canal_flag, struct.npdes_flag=npdes_flag)
@@ -101,6 +107,7 @@ summarize_meta_struct <- function(meta_struct) {
     }))
   }))
   
+  counts <- '.dplyr.var'
   list(
     simple =
       # if we're going to display this, i'd do it this way

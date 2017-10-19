@@ -4,9 +4,7 @@
 \alias{stage_meta_struct}
 \title{Create/modify file of interferences within the metabolic footprints}
 \usage{
-
-  stage_meta_struct(struct_file = "../stream_metab_usa/1_spatial/in/CONF_struct_170407.csv",
-  folder = tempdir(), verbose = FALSE)
+stage_meta_struct(struct_file, folder = tempdir(), verbose = FALSE)
 }
 \arguments{
 \item{struct_file}{path to the file containing data on distances to
