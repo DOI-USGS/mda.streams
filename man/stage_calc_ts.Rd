@@ -7,7 +7,7 @@
 stage_calc_ts(sites, var, src, folder = tempdir(), version = c("rds",
   "tsv"), inputs = list(), day_start = 4, day_end = 28, verbose = FALSE,
   with_ts_version = "rds", with_ts_archived = FALSE,
-  with_ts_uploaded_after = "2015-01-01", ...)
+  with_ts_uploaded_after = "2017-01-01", ...)
 }
 \arguments{
 \item{sites}{a character vector of valid NWIS site IDs}
@@ -127,5 +127,9 @@ head(read_ts(file_suntime2))
 file_dischdaily <- stage_calc_ts(sites="nwis_08062500", 
   var="dischdaily", src="calcDMean", verbose=TRUE)
 head(read_ts(file_dischdaily))
+
+file_mfootdaily <- stage_calc_ts(sites="nwis_08062500", 
+  var="mfootdaily", src="calc3vK", verbose=TRUE)
+head(read_ts(file_mfootdaily))
 }
 }

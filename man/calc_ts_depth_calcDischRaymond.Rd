@@ -2,22 +2,7 @@
 % Please edit documentation in R/stage_calc_ts.R
 \name{calc_ts_depth_calcDischRaymond}
 \alias{calc_ts_depth_calcDischRaymond}
-\title{#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
-#' coefficients
-#' 
-#' @param utctime the DateTime with tz of UTC
-#' @param disch the discharge in ft^3 s^-1
-#' @importFrom unitted u
-#' @import streamMetabolizer
-#'   
-#' @keywords internal
-calc_ts_depth_calcDisch <- function(utctime, disch) {
-  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
-  data.frame(
-    DateTime = utctime,
-    depth = calc_depth(Q=Q)) %>% u()
-}
-Internal - calculate depth_calcDisch from any data using the Raymond et al.
+\title{Internal - calculate depth_calcDisch from any data using the Raymond et al.
 coefficients}
 \usage{
 calc_ts_depth_calcDischRaymond(utctime, disch)
@@ -28,21 +13,6 @@ calc_ts_depth_calcDischRaymond(utctime, disch)
 \item{disch}{the discharge in ft^3 s^-1}
 }
 \description{
-#' Internal - calculate depth_calcDisch from any data using the Raymond et al.
-#' coefficients
-#' 
-#' @param utctime the DateTime with tz of UTC
-#' @param disch the discharge in ft^3 s^-1
-#' @importFrom unitted u
-#' @import streamMetabolizer
-#'   
-#' @keywords internal
-calc_ts_depth_calcDisch <- function(utctime, disch) {
-  Q <- verify_units(disch * u(0.0283168466,"m^3 ft^-3"), 'm^3 s^-1')
-  data.frame(
-    DateTime = utctime,
-    depth = calc_depth(Q=Q)) %>% u()
-}
 Internal - calculate depth_calcDisch from any data using the Raymond et al.
 coefficients
 }
