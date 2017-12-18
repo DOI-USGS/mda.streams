@@ -356,6 +356,13 @@ stage_calc_ts <- function(sites, var, src, folder = tempdir(), version=c('rds','
               veloc=combo_daily$veloc,
               wtr=combo_daily$wtr)
           },
+          'swdaily_calcDMean' = {
+            DateTime <- sw <- swdaily <- '.dplyr.var'
+            get_staging_ts(
+              var_src=c('sitedate_calcLon', choose_ts('sw')), 
+              condense_stat = mean, day_start=day_start, day_end=day_end) %>%
+              select(DateTime, swdaily=sw)
+          },
           {
             stop("the calculation for ", make_var_src(var, src), " isn't implemented yet")
           }

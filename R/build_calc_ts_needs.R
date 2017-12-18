@@ -49,6 +49,7 @@ build_calc_ts_needs <- function(var, src) {
       'par_calcLatSw', # par_calcLat | sw_best
       'sitedate_calcLon', # sitetime_calcLon | lon
       'doamp_calcDAmp', # sitedate_calcLon dopsat_calcObsSat | NA
+      'swdaily_calcDMean', # sitedate_calcLon | sw_best
       'dischdaily_calcDMean', # sitedate_calcLon | disch_best
       'velocdaily_calcDMean', # sitedate_calcLon | veloc_best
       'mfootdaily_calc3vK' # sitedate_calcLon K600_estBest veloc_best | wtr_best
@@ -77,6 +78,7 @@ build_calc_ts_needs <- function(var, src) {
     add_need('par_calcLatSw', 'vs', c('doobs_nwis', 'par_calcSw')) %>% add_need('par_calcLatSw', 'c', c('lat','lon')) %>% 
     add_need('sitedate_calcLon', 'vs', 'sitetime_calcLon') %>% add_need('sitedate_calcLon', 'c', 'lon') %>%
     add_need('doamp_calcDAmp', 'vs', c('sitedate_calcLon', 'dopsat_calcObsSat')) %>%
+    add_need('swdaily_calcDMean', 'vs', c('sitedate_calcLon', vs_options('sw'))) %>%
     add_need('dischdaily_calcDMean', 'vs', c('sitedate_calcLon', vs_options('disch'))) %>%
     add_need('velocdaily_calcDMean', 'vs', c('sitedate_calcLon', vs_options('veloc'))) %>%
     add_need('mfootdaily_calc3vK', 'vs', c('sitedate_calcLon', 'K600_estBest', vs_options('veloc'), vs_options('wtr')))
