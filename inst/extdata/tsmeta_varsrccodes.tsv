@@ -20,7 +20,7 @@
 "disch"	"indy"	"ft^3 s^-1"	"discharge"	"ts"	"discharge"	"m^3 s^-1"	"1"	NA	"independent data source"	NA	NA	"data"	NA
 "disch"	"nwis"	"ft^3 s^-1"	"discharge"	"ts"	"discharge"	"m^3 s^-1"	"2"	"http://waterdata.usgs.gov/nwis"	"National Water Information System"	"dataRetrieval"	"readNWISuv"	"data"	"00060"
 "dischdaily"	"indy"	"m^3 s^-1"	"daily mean discharge"	"ts"	"discharge.daily"	"m^3 s^-1"	"1"	NA	"independent data source"	NA	NA	"data"	NA
-"dischdaily"	"calcDMean"	"m^3 s^-1"	"daily mean discharge"	"ts"	"discharge.daily"	"m^3 s^-1"	"2"	NA	"daily mean values, 4am to 4am sitetime, stamped noon sitetime"	"mda.streams"	"calc_ts_dischdaily_calcDMean"	"calc"	NA
+"dischdaily"	"calcDMean"	"m^3 s^-1"	"daily mean discharge"	"ts"	"discharge.daily"	"m^3 s^-1"	"2"	NA	"daily mean values, 4am to 4am sitetime, stamped noon sitetime"	"mda.streams"	"get_staging_ts, condense_stat=mean"	"calc"	NA
 "doinit"	"simNew"	"mgO2 L^-1"	"first observed dissolved oxygen concentration of each date"	"ts"	"DO.mod.1"	"mgO2 L^-1"	"12"	NA	"arbitrarily assign numbers for model testing"	"streamMetabolizer"	NA	"sim"	NA
 "doinit"	"simDStart"	"mgO2 L^-1"	"first observed dissolved oxygen concentration of each date"	"ts"	"DO.mod.1"	"mgO2 L^-1"	"13"	NA	"first value of each day (default 4am)"	"streamMetabolizer"	NA	"sim"	NA
 "doobs"	"indy"	"mgO2 L^-1"	"dissolved oxygen concentration"	"ts"	"DO.obs"	"mgO2 L^-1"	"1"	NA	"independent data source"	NA	NA	"data"	NA
@@ -75,9 +75,10 @@
 "suntime"	"simNew"	""	"apparent solar time (perfect match to sun)"	"ts"	"app.solar.time"	""	"13"	NA	"arbitrarily assign numbers for model testing"	"streamMetabolizer"	NA	"sim"	NA
 "sw"	"nldas"	"W m^-2"	"downwelling shortwave radiation"	"ts"	NA	"W m^-2"	"1"	"http://hydro1.sci.gsfc.nasa.gov/dods/NLDAS_FORA0125_H.002.info"	"Land Data Assimilation Systems"	"geoknife"	"geoknife"	"data"	"dswrfsfc"
 "sw"	"gldas"	"W m^-2"	"downwelling shortwave radiation"	"ts"	NA	"W m^-2"	"2"	"http://hydro1.sci.gsfc.nasa.gov/dods/GLDAS_NOAH025SUBP_3H.info"	"Land Data Assimilation Systems"	"geoknife"	"geoknife"	"data"	"swdown"
+"swdaily"	"calcDMean"	"W m^-2"	"daily mean downwelling shortwave radiation"	"ts"	NA	"W m^-2"	"1"	NA	"daily mean values, 4am to 4am sitetime, stamped noon sitetime"	"mda.streams"	"get_staging_ts, condense_stat=mean"	"calc"	NA
 "veloc"	"calcDischHarvey"	"m s^-1"	"flow velocity"	"ts"	"velocity"	"m s^-1"	"5"	NA	"calculate from discharge and Harvey et al. coefficients"	"streamMetabolizer"	"calc_velocity"	"calc"	NA
 "veloc"	"calcDischRaymond"	"m s^-1"	"flow velocity"	"ts"	"velocity"	"m s^-1"	"6"	NA	"calculate from discharge and Raymond et al. 2012 equation"	"streamMetabolizer"	"calc_velocity"	"calc"	NA
-"velocdaily"	"calcDMean"	"m s^-1"	"daily mean flow velocity"	"ts"	"velocity.daily"	"m s^-1"	"1"	NA	"daily mean values, 4am to 4am sitetime, stamped noon sitetime"	"mda.streams"	"calc_ts_velocdaily_calcDMean"	"calc"	NA
+"velocdaily"	"calcDMean"	"m s^-1"	"daily mean flow velocity"	"ts"	"velocity.daily"	"m s^-1"	"1"	NA	"daily mean values, 4am to 4am sitetime, stamped noon sitetime"	"mda.streams"	"get_staging_ts, condense_stat=mean"	"calc"	NA
 "wtr"	"indy"	"degC"	"water temperature"	"ts"	"temp.water"	"degC"	"1"	NA	"independent data source"	NA	NA	"data"	NA
 "wtr"	"nwis"	"degC"	"water temperature"	"ts"	"temp.water"	"degC"	"2"	"http://waterdata.usgs.gov/nwis"	"National Water Information System"	"dataRetrieval"	"readNWISuv"	"data"	"00010"
 "wtr"	"simCopy"	"degC"	"water temperature"	"ts"	"temp.water"	"degC"	"11"	NA	"simulate by copying from another site"	"streamMetabolizer"	NA	"sim"	NA
